@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { pointerToBasisPoints } from "./editor-coordinates";
+import { pointerToBasisPoints } from "./map-coordinates";
 
 describe("pointerToBasisPoints", () => {
 	it("normalizes the center of a rendered map", () => {

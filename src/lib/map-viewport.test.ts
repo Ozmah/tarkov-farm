@@ -5,9 +5,9 @@ import {
 	fitView,
 	viewportPointToImagePoint,
 	zoomViewAtPoint,
-} from "./editor-viewport";
+} from "./map-viewport";
 
-describe("editor viewport transforms", () => {
+describe("map viewport transforms", () => {
 	it("fits and centers an image inside the viewport", () => {
 		expect(
 			fitView({ width: 1_000, height: 600 }, { width: 2_000, height: 1_000 }),

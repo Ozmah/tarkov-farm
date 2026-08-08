@@ -2,19 +2,26 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LocalMapEditor } from "@/components/editor/local-map-editor";
 import { getEditorData } from "@/functions/editor";
+import { validateCatalogSearch } from "@/lib/catalog-search";
 
 type EditorSearch = {
+	documents?: string;
 	map?: string;
 	image?: string;
 	location?: string;
 };
 
 export const Route = createFileRoute("/editor")({
-	validateSearch: (search: Record<string, unknown>): EditorSearch => ({
-		map: readSearchValue(search.map),
-		image: readSearchValue(search.image),
-		location: readSearchValue(search.location),
-	}),
+	validateSearch: (search: Record<string, unknown>): EditorSearch => {
+		const catalogSearch = validateCatalogSearch(search);
+
+		return {
+			documents: catalogSearch.documents,
+			map: readSearchValue(search.map),
+			image: readSearchValue(search.image),
+			location: readSearchValue(search.location),
+		};
+	},
 	loaderDeps: () => ({}),
 	loader: () => getEditorData(),
 	staleTime: Number.POSITIVE_INFINITY,

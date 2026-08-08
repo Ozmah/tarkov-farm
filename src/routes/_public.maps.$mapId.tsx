@@ -1,0 +1,260 @@
+import { CrosshairIcon } from "@phosphor-icons/react";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { LocationDetailsPanel } from "@/components/map/location-details-panel";
+import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
+import { MapWorkspace } from "@/components/map/map-workspace";
+import { MapAttribution } from "@/components/map-attribution";
+import {
+	usePreparePublicMapNavigation,
+	usePublicLayoutConfiguration,
+} from "@/components/public-layout-context";
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
+import { Separator } from "@/components/ui/separator";
+import { useSidebar } from "@/components/ui/sidebar";
+import { getPublicMapData } from "@/functions/catalog";
+import {
+	encodeDocumentFilters,
+	readCatalogId,
+	readSelectedDocumentIds,
+} from "@/lib/catalog-search";
+import { Route as PublicLayoutRoute } from "./_public";
+
+export const Route = createFileRoute("/_public/maps/$mapId")({
+	loader: async ({ params }) => {
+		if (readCatalogId(params.mapId) !== params.mapId) {
+			throw notFound();
+		}
+
+		const mapData = await getPublicMapData({ data: { mapId: params.mapId } });
+
+		if (!mapData) {
+			throw notFound();
+		}
+
+		return mapData;
+	},
+	staleTime: 30_000,
+	preloadStaleTime: 30_000,
+	component: MapPage,
+});
+
+function MapPage() {
+	const mapData = Route.useLoaderData();
+	const catalog = PublicLayoutRoute.useLoaderData();
+	const search = Route.useSearch();
+	const navigate = Route.useNavigate();
+	const prepareMapNavigation = usePreparePublicMapNavigation();
+	const filterableDocumentIds = new Set(
+		catalog.documents
+			.filter((document) => document.isFilterable)
+			.map((document) => document.id),
+	);
+	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
+		(id) => filterableDocumentIds.has(id),
+	);
+	const selectedDocumentIdSet = new Set(selectedDocumentIds);
+	const selectedImage =
+		mapData.images.find((image) => image.viewKey === search.view) ??
+		mapData.images.find((image) => image.viewKey === "main") ??
+		mapData.images[0];
+	const visibleLocations = mapData.locations.filter(
+		(location) =>
+			location.mapImageId === selectedImage?.id &&
+			(selectedDocumentIdSet.size === 0 ||
+				selectedDocumentIdSet.has(location.documentId)),
+	);
+	const selectedLocation = visibleLocations.find(
+		(location) => location.id === search.location,
+	);
+	const selectedScreenshots = selectedLocation
+		? mapData.screenshots.filter(
+				(screenshot) => screenshot.locationId === selectedLocation.id,
+			)
+		: [];
+	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
+
+	const sidebarPanel = (closePanel: () => void) => (
+		<RouteMapSidebarPanel
+			locations={visibleLocations}
+			maps={catalog.maps}
+			mapViews={mapData.images.map((image) => ({
+				id: image.viewKey,
+				name: image.name,
+			}))}
+			selectedLocationId={selectedLocation?.id}
+			selectedMapId={mapData.map.id}
+			selectedMapViewId={selectedImage?.viewKey}
+			onBack={closePanel}
+			onLocationSelect={(locationId) =>
+				void navigate({
+					to: "/maps/$mapId",
+					params: { mapId: mapData.map.id },
+					search: {
+						documents: documentSearch,
+						location: locationId,
+						view: selectedImage?.viewKey,
+					},
+				})
+			}
+			onMapChange={(mapId) => {
+				const map = catalog.maps.find((item) => item.id === mapId);
+
+				if (map) {
+					prepareMapNavigation(map);
+				}
+
+				void navigate({
+					to: "/maps/$mapId",
+					params: { mapId },
+					search: { documents: documentSearch },
+				});
+			}}
+			onMapViewChange={(view) =>
+				void navigate({
+					to: "/maps/$mapId",
+					params: { mapId: mapData.map.id },
+					search: {
+						documents: documentSearch,
+						location: undefined,
+						view,
+					},
+					replace: true,
+				})
+			}
+		/>
+	);
+
+	usePublicLayoutConfiguration(
+		{
+			editorSearch: {
+				documents: documentSearch,
+				image: selectedImage?.id,
+				location: selectedLocation?.id,
+				map: mapData.map.id,
+			},
+			headerMeta: `${visibleLocations.length} ${visibleLocations.length === 1 ? "location" : "locations"}`,
+			sidebarPanel,
+		},
+		[
+			mapData.map.id,
+			selectedImage?.id,
+			selectedLocation?.id,
+			documentSearch,
+			visibleLocations.length,
+		].join(":"),
+	);
+
+	return (
+		<div className="flex min-h-0 flex-1 flex-col">
+			{selectedImage ? (
+				<div className="relative min-h-0 flex-1">
+					<div inert={selectedLocation ? true : undefined} className="h-full">
+						<MapWorkspace
+							key={selectedImage.id}
+							ariaLabel={`${mapData.map.name} map`}
+							className="h-full"
+							image={selectedImage}
+							instructions="Drag to move · Wheel or controls to zoom"
+							markers={visibleLocations.map((location, index) => ({
+								id: location.id,
+								label: String(index + 1),
+								name: location.name,
+								xBasisPoints: location.xBasisPoints,
+								yBasisPoints: location.yBasisPoints,
+							}))}
+							selectedMarkerId={selectedLocation?.id}
+							toolbarStart={
+								<>
+									<p className="max-w-36 truncate font-heading text-sm">
+										{selectedImage.name}
+									</p>
+									<Separator orientation="vertical" className="h-4" />
+								</>
+							}
+							onSelectMarker={(locationId) =>
+								void navigate({
+									to: "/maps/$mapId",
+									params: { mapId: mapData.map.id },
+									search: {
+										documents: documentSearch,
+										location: locationId,
+										view: selectedImage.viewKey,
+									},
+								})
+							}
+						/>
+					</div>
+
+					{selectedLocation ? (
+						<LocationDetailsPanel
+							location={selectedLocation}
+							screenshots={selectedScreenshots}
+							onClose={() =>
+								void navigate({
+									to: "/maps/$mapId",
+									params: { mapId: mapData.map.id },
+									search: {
+										documents: documentSearch,
+										location: undefined,
+										view: selectedImage.viewKey,
+									},
+									replace: true,
+								})
+							}
+						/>
+					) : null}
+				</div>
+			) : (
+				<Empty>
+					<EmptyHeader>
+						<EmptyMedia variant="icon">
+							<CrosshairIcon aria-hidden="true" />
+						</EmptyMedia>
+						<EmptyTitle>No map image</EmptyTitle>
+						<EmptyDescription>
+							This map does not have a current public image.
+						</EmptyDescription>
+					</EmptyHeader>
+				</Empty>
+			)}
+
+			<footer className="shrink-0 border-border border-t px-4 py-2 text-center">
+				<MapAttribution mapId={mapData.map.id} />
+			</footer>
+		</div>
+	);
+}
+
+type RouteMapSidebarPanelProps = React.ComponentProps<typeof MapSidebarPanel>;
+
+function RouteMapSidebarPanel(props: RouteMapSidebarPanelProps) {
+	const { isMobile, setOpenMobile } = useSidebar();
+
+	function runNavigation(action: () => void) {
+		action();
+
+		if (isMobile) {
+			setOpenMobile(false);
+		}
+	}
+
+	return (
+		<MapSidebarPanel
+			{...props}
+			onBack={props.onBack}
+			onLocationSelect={(locationId) =>
+				runNavigation(() => props.onLocationSelect(locationId))
+			}
+			onMapChange={(mapId) => runNavigation(() => props.onMapChange(mapId))}
+			onMapViewChange={(mapViewId) =>
+				runNavigation(() => props.onMapViewChange(mapViewId))
+			}
+		/>
+	);
+}

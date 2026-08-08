@@ -14,25 +14,7 @@ export function isLoopbackHostname(hostname: string) {
 }
 
 export function assertLocalEditorAccess(options?: { mutation?: boolean }) {
-	if (
-		process.env.APP_ENV?.trim().toLowerCase() !== "local" ||
-		process.env.NODE_ENV === "production"
-	) {
-		throw notFound();
-	}
-
-	const requestUrl = getRequestUrl({
-		xForwardedHost: false,
-		xForwardedProto: false,
-	});
-
-	if (!isLoopbackHostname(requestUrl.hostname)) {
-		throw notFound();
-	}
-
-	const requestIp = getRequestIP({ xForwardedFor: false });
-
-	if (requestIp && !isLoopbackAddress(requestIp)) {
+	if (!canAccessLocalEditor()) {
 		throw notFound();
 	}
 
@@ -40,6 +22,10 @@ export function assertLocalEditorAccess(options?: { mutation?: boolean }) {
 		return;
 	}
 
+	const requestUrl = getRequestUrl({
+		xForwardedHost: false,
+		xForwardedProto: false,
+	});
 	const request = getRequest();
 	const origin = request.headers.get("origin");
 	const fetchSite = request.headers.get("sec-fetch-site");
@@ -59,6 +45,32 @@ export function assertLocalEditorAccess(options?: { mutation?: boolean }) {
 	if (originUrl.origin !== requestUrl.origin) {
 		throw notFound();
 	}
+}
+
+export function canAccessLocalEditor() {
+	if (
+		process.env.APP_ENV?.trim().toLowerCase() !== "local" ||
+		process.env.NODE_ENV === "production"
+	) {
+		return false;
+	}
+
+	const requestUrl = getRequestUrl({
+		xForwardedHost: false,
+		xForwardedProto: false,
+	});
+
+	if (!isLoopbackHostname(requestUrl.hostname)) {
+		return false;
+	}
+
+	const requestIp = getRequestIP({ xForwardedFor: false });
+
+	if (requestIp && !isLoopbackAddress(requestIp)) {
+		return false;
+	}
+
+	return true;
 }
 
 function isLoopbackAddress(address: string) {

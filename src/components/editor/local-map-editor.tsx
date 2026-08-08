@@ -1,9 +1,4 @@
-import {
-	ArrowLeftIcon,
-	CrosshairIcon,
-	MapPinIcon,
-	PlusIcon,
-} from "@phosphor-icons/react";
+import { ArrowLeftIcon, CrosshairIcon, PlusIcon } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,6 +6,8 @@ import {
 	type ScreenshotDraft,
 } from "@/components/editor/location-screenshot-editor";
 import { MapCanvas } from "@/components/editor/map-canvas";
+import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
+import { PublicShell } from "@/components/public-shell";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -22,7 +19,6 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -44,14 +40,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
+} from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	deleteLocation,
@@ -59,13 +52,17 @@ import {
 	saveLocation,
 } from "@/functions/editor";
 import {
+	encodeDocumentFilters,
+	readSelectedDocumentIds,
+} from "@/lib/catalog-search";
+import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
 } from "@/lib/editor-validation";
-import { cn } from "@/lib/utils";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
 type EditorSearch = {
+	documents?: string;
 	map?: string;
 	image?: string;
 	location?: string;
@@ -103,11 +100,29 @@ export function LocalMapEditor({
 		(image) => image.mapId === selectedMap?.id,
 	);
 	const selectedImage =
-		images.find((image) => image.id === search.image) ?? images[0];
+		images.find((image) => image.id === search.image) ??
+		images.find((image) => image.viewKey === "main") ??
+		images[0];
 	const imageLocations = data.locations.filter(
 		(location) => location.mapImageId === selectedImage?.id,
 	);
-	const selectedLocation = imageLocations.find(
+	const documentIds = new Set(data.documents.map((document) => document.id));
+	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
+		(documentId) => documentIds.has(documentId),
+	);
+	const selectedDocumentIdSet = new Set(selectedDocumentIds);
+	const locationDocumentIds = new Map(
+		data.locationDocuments.map((item) => [item.locationId, item.documentId]),
+	);
+	const visibleLocations = imageLocations.filter((location) => {
+		const documentId = locationDocumentIds.get(location.id);
+
+		return (
+			selectedDocumentIdSet.size === 0 ||
+			(documentId !== undefined && selectedDocumentIdSet.has(documentId))
+		);
+	});
+	const selectedLocation = visibleLocations.find(
 		(location) => location.id === search.location,
 	);
 	const [newDraftVersion, setNewDraftVersion] = useState(0);
@@ -117,7 +132,9 @@ export function LocalMapEditor({
 			return;
 		}
 
-		const firstImage = data.mapImages.find((image) => image.mapId === mapId);
+		const mapImages = data.mapImages.filter((image) => image.mapId === mapId);
+		const firstImage =
+			mapImages.find((image) => image.viewKey === "main") ?? mapImages[0];
 		void onSearchChange(
 			{ map: mapId, image: firstImage?.id, location: undefined },
 			true,
@@ -139,148 +156,97 @@ export function LocalMapEditor({
 		await router.invalidate({ sync: true });
 		await onSearchChange({ location: locationId }, true);
 	};
+	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
+	const sidebarLocations = visibleLocations.map((location) => {
+		const documentId = locationDocumentIds.get(location.id);
+		const document = data.documents.find((item) => item.id === documentId);
 
+		return {
+			documentName: document?.name ?? "Unassigned document",
+			id: location.id,
+			name: location.name,
+		};
+	});
+	const editorCatalog = {
+		maps: data.maps,
+		documents: data.documents.map((document) => ({
+			...document,
+			isFilterable: true,
+		})),
+		editorAvailable: false,
+	};
 	return (
-		<div className="isolate flex h-svh min-h-0 flex-col overflow-hidden bg-background">
-			<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
-				<Link
-					to="/"
-					aria-label="Return to the map index"
-					className="flex size-11 shrink-0 items-center justify-center text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-				>
-					<ArrowLeftIcon aria-hidden="true" />
-				</Link>
-				<Separator orientation="vertical" className="h-4" />
-				<div className="min-w-0">
-					<h1 className="truncate font-heading font-medium text-base">
-						Location editor
-					</h1>
-				</div>
-				<Badge variant="secondary" className="ml-auto">
-					Local only
-				</Badge>
-			</header>
-
-			<div className="grid shrink-0 grid-cols-1 gap-4 border-border border-b px-4 py-3 sm:grid-cols-2 sm:px-6 lg:grid-cols-[minmax(12rem,18rem)_minmax(12rem,18rem)_1fr]">
-				<Field>
-					<FieldLabel htmlFor="editor-map">Map</FieldLabel>
-					<Select value={selectedMap?.id ?? null} onValueChange={selectMap}>
-						<SelectTrigger id="editor-map" className="w-full">
-							<SelectValue placeholder="Select a map" />
-						</SelectTrigger>
-						<SelectContent alignItemWithTrigger={false}>
-							<SelectGroup>
-								{data.maps.map((map) => (
-									<SelectItem key={map.id} value={map.id}>
-										{map.name}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</Field>
-
-				<Field>
-					<FieldLabel htmlFor="editor-map-image">Map view</FieldLabel>
-					<Select
-						value={selectedImage?.id ?? null}
-						onValueChange={selectImage}
-						disabled={images.length === 0}
-					>
-						<SelectTrigger id="editor-map-image" className="w-full">
-							<SelectValue placeholder="No image available" />
-						</SelectTrigger>
-						<SelectContent alignItemWithTrigger={false}>
-							<SelectGroup>
-								{images.map((image) => (
-									<SelectItem key={image.id} value={image.id}>
-										{image.name}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</Field>
-
-				<div className="hidden min-w-0 items-end justify-end lg:flex">
-					<p className="truncate text-muted-foreground text-sm">
-						{imageLocations.length} location
-						{imageLocations.length === 1 ? "" : "s"} on this view
-					</p>
-				</div>
-			</div>
-
-			<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[17rem_minmax(0,1fr)_22rem] lg:overflow-hidden">
-				<aside className="flex min-h-48 flex-col border-border border-b bg-card lg:min-h-0 lg:border-r lg:border-b-0">
-					<div className="flex h-19 shrink-0 items-center gap-3 border-border border-b px-4">
-						<div className="min-w-0 flex-1">
-							<h2 className="font-heading font-medium text-sm">Locations</h2>
-							<p className="text-muted-foreground text-sm">
-								Select one to edit
-							</p>
-						</div>
-						<Button
-							type="button"
-							size="sm"
-							onClick={beginNewLocation}
-							disabled={!selectedImage}
+		<PublicShell
+			catalog={editorCatalog}
+			selectedDocumentIds={selectedDocumentIds}
+			currentMapId={selectedMap?.id}
+			headerTitle="Location editor"
+			headerMeta="Local only"
+			onMapNavigate={selectMap}
+			onOverviewNavigate={() =>
+				void router.navigate({
+					to: "/",
+					search: { documents: documentSearch },
+				})
+			}
+			onSelectedDocumentsChange={(documentIds) =>
+				void onSearchChange(
+					{
+						documents: encodeDocumentFilters(documentIds),
+						location: undefined,
+					},
+					true,
+				)
+			}
+			sidebarFooter={
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							render={
+								selectedMap?.isActive ? (
+									<Link
+										to="/maps/$mapId"
+										params={{ mapId: selectedMap.id }}
+										search={{
+											documents: documentSearch,
+											location: selectedLocation?.id,
+											view: selectedImage?.viewKey,
+										}}
+									/>
+								) : (
+									<Link to="/" search={{ documents: documentSearch }} />
+								)
+							}
 						>
-							<PlusIcon data-icon="inline-start" />
-							New
-						</Button>
-					</div>
-					{imageLocations.length > 0 ? (
-						<ul className="min-h-0 flex-1 overflow-auto py-2">
-							{imageLocations.map((location) => (
-								<li key={location.id}>
-									<button
-										type="button"
-										aria-pressed={selectedLocation?.id === location.id}
-										onClick={() =>
-											void onSearchChange({ location: location.id }, true)
-										}
-										className={cn(
-											"flex min-h-12 w-full items-center gap-3 border-transparent border-l-2 px-4 py-2 text-left text-card-foreground outline-none transition-[color,background-color,border-color] duration-150 ease-out hover:border-primary hover:bg-accent/60 hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset motion-reduce:transition-none",
-											selectedLocation?.id === location.id &&
-												"border-primary bg-accent/80 text-accent-foreground hover:bg-accent/80",
-										)}
-									>
-										<MapPinIcon
-											aria-hidden="true"
-											className="shrink-0"
-											weight={
-												selectedLocation?.id === location.id
-													? "fill"
-													: "regular"
-											}
-										/>
-										<span className="min-w-0 flex-1 truncate text-sm">
-											{location.name}
-										</span>
-										{!location.isActive && (
-											<Badge variant="secondary" className="text-current">
-												Inactive
-											</Badge>
-										)}
-									</button>
-								</li>
-							))}
-						</ul>
-					) : (
-						<Empty className="min-h-48 p-6">
-							<EmptyHeader>
-								<EmptyMedia variant="icon">
-									<MapPinIcon aria-hidden="true" />
-								</EmptyMedia>
-								<EmptyTitle>No locations</EmptyTitle>
-								<EmptyDescription>
-									Create the first location for this map view.
-								</EmptyDescription>
-							</EmptyHeader>
-						</Empty>
-					)}
-				</aside>
-
+							<ArrowLeftIcon aria-hidden="true" />
+							<span>Exit editor</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			}
+			sidebarPanel={(closePanel) => (
+				<EditorMapSidebarPanel
+					canCreateLocation={Boolean(selectedImage)}
+					locations={sidebarLocations}
+					maps={data.maps}
+					mapViews={images.map((image) => ({
+						id: image.id,
+						name: image.name,
+					}))}
+					selectedLocationId={selectedLocation?.id}
+					selectedMapId={selectedMap?.id ?? ""}
+					selectedMapViewId={selectedImage?.id}
+					onBack={closePanel}
+					onCreateLocation={beginNewLocation}
+					onLocationSelect={(locationId) =>
+						void onSearchChange({ location: locationId }, true)
+					}
+					onMapChange={selectMap}
+					onMapViewChange={selectImage}
+				/>
+			)}
+		>
+			<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[minmax(0,1fr)_26rem] lg:overflow-hidden">
 				{selectedMap && selectedImage ? (
 					<LocationWorkspace
 						key={selectedImage.id}
@@ -288,7 +254,7 @@ export function LocalMapEditor({
 						draftVersion={newDraftVersion}
 						mapId={selectedMap.id}
 						image={selectedImage}
-						locations={imageLocations}
+						locations={visibleLocations}
 						selectedLocation={selectedLocation}
 						onSelectLocation={(locationId) =>
 							void onSearchChange({ location: locationId }, true)
@@ -310,7 +276,56 @@ export function LocalMapEditor({
 					</Empty>
 				)}
 			</div>
-		</div>
+		</PublicShell>
+	);
+}
+
+type EditorMapSidebarPanelProps = Omit<
+	React.ComponentProps<typeof MapSidebarPanel>,
+	"action"
+> & {
+	canCreateLocation: boolean;
+	onCreateLocation: () => void;
+};
+
+function EditorMapSidebarPanel({
+	canCreateLocation,
+	onCreateLocation,
+	...props
+}: EditorMapSidebarPanelProps) {
+	const { isMobile, setOpenMobile } = useSidebar();
+
+	function runNavigation(action: () => void) {
+		action();
+
+		if (isMobile) {
+			setOpenMobile(false);
+		}
+	}
+
+	return (
+		<MapSidebarPanel
+			{...props}
+			action={
+				<Button
+					type="button"
+					size="sm"
+					onClick={() => runNavigation(onCreateLocation)}
+					disabled={!canCreateLocation}
+				>
+					<PlusIcon data-icon="inline-start" />
+					New
+				</Button>
+			}
+			onBack={props.onBack}
+			onLocationSelect={(locationId) =>
+				runNavigation(() => props.onLocationSelect(locationId))
+			}
+			onMapChange={(mapId) => runNavigation(() => props.onMapChange(mapId))}
+			onMapViewChange={(mapViewId) =>
+				runNavigation(() => props.onMapViewChange(mapViewId))
+			}
+		/>
 	);
 }
 
