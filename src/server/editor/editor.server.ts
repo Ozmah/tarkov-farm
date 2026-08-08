@@ -5,7 +5,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 
 import type {
 	DeleteLocationInput,
-	SaveLocationInput,
+	SaveLocationFormInput,
 } from "@/lib/editor-validation";
 import { getDatabase } from "@/server/db/client.server";
 import {
@@ -15,8 +15,17 @@ import {
 	locations,
 	mapImages,
 	maps,
+	screenshots,
 } from "@/server/db/schema";
 import { assertLocalEditorAccess } from "./access.server";
+import {
+	discardPublishedFiles,
+	processScreenshotFiles,
+	removeLocationScreenshotDirectories,
+	removeScreenshotFiles,
+} from "./screenshot-files.server";
+
+const editorMutationLocks = new Map<string, Promise<void>>();
 
 export async function readEditorData() {
 	assertLocalEditorAccess();
@@ -71,6 +80,24 @@ export async function readEditorData() {
 		})
 		.from(locationDocuments)
 		.all();
+	const screenshotRows = await db
+		.select({
+			id: screenshots.id,
+			locationId: screenshots.locationId,
+			path: screenshots.path,
+			previewPath: screenshots.previewPath,
+			altText: screenshots.altText,
+			caption: screenshots.caption,
+			width: screenshots.width,
+			height: screenshots.height,
+			previewWidth: screenshots.previewWidth,
+			previewHeight: screenshots.previewHeight,
+			contentHash: screenshots.contentHash,
+			sortOrder: screenshots.sortOrder,
+		})
+		.from(screenshots)
+		.orderBy(asc(screenshots.locationId), asc(screenshots.sortOrder))
+		.all();
 	const documentRows = await db
 		.select({ id: documents.id, name: documents.name })
 		.from(documents)
@@ -90,96 +117,213 @@ export async function readEditorData() {
 		mapImages: imageRows,
 		locations: locationRows,
 		locationDocuments: locationDocumentRows,
+		screenshots: screenshotRows,
 		documents: documentRows,
 		documentMaps: documentMapRows,
 	};
 }
 
-export async function saveEditorLocation(input: SaveLocationInput) {
+export async function saveEditorLocation(input: SaveLocationFormInput) {
 	assertLocalEditorAccess({ mutation: true });
+	const locationId = input.location.id ?? randomUUID();
 
+	return withLocationMutationLock(locationId, () =>
+		saveEditorLocationLocked(input, locationId),
+	);
+}
+
+async function saveEditorLocationLocked(
+	input: SaveLocationFormInput,
+	locationId: string,
+) {
 	const { db } = await getDatabase();
-	const locationId = input.id ?? randomUUID();
+	const { location } = input;
+	const image = await db
+		.select({ mapId: mapImages.mapId })
+		.from(mapImages)
+		.where(
+			and(eq(mapImages.id, location.mapImageId), eq(mapImages.isCurrent, true)),
+		)
+		.get();
 
-	await db.transaction(async (transaction) => {
-		const image = await transaction
-			.select({ mapId: mapImages.mapId })
-			.from(mapImages)
-			.where(
-				and(eq(mapImages.id, input.mapImageId), eq(mapImages.isCurrent, true)),
-			)
+	if (!image) {
+		throw new Error("The selected map image does not exist");
+	}
+
+	const allowedDocument = await db
+		.select({ id: documentMaps.documentId })
+		.from(documentMaps)
+		.innerJoin(documents, eq(documents.id, documentMaps.documentId))
+		.where(
+			and(
+				eq(documentMaps.documentId, location.documentId),
+				eq(documentMaps.mapId, image.mapId),
+				eq(documents.isActive, true),
+				eq(documents.isFilterable, true),
+			),
+		)
+		.get();
+
+	if (!allowedDocument) {
+		throw new Error("The selected document does not belong to this map");
+	}
+
+	if (location.id) {
+		const existingLocation = await db
+			.select({ id: locations.id })
+			.from(locations)
+			.where(eq(locations.id, location.id))
 			.get();
 
-		if (!image) {
-			throw new Error("The selected map image does not exist");
+		if (!existingLocation) {
+			throw new Error("The selected location no longer exists");
+		}
+	}
+
+	const existingScreenshotRows = location.id
+		? await db
+				.select({
+					id: screenshots.id,
+					path: screenshots.path,
+					previewPath: screenshots.previewPath,
+					altText: screenshots.altText,
+					caption: screenshots.caption,
+					width: screenshots.width,
+					height: screenshots.height,
+					previewWidth: screenshots.previewWidth,
+					previewHeight: screenshots.previewHeight,
+					contentHash: screenshots.contentHash,
+				})
+				.from(screenshots)
+				.where(eq(screenshots.locationId, locationId))
+				.all()
+		: [];
+	const existingById = new Map(
+		existingScreenshotRows.map((screenshot) => [screenshot.id, screenshot]),
+	);
+
+	for (const screenshot of input.screenshots) {
+		if (screenshot.id && !existingById.has(screenshot.id)) {
+			throw new Error(
+				"An existing screenshot does not belong to this location",
+			);
+		}
+	}
+
+	const processedBatch = await processScreenshotFiles(locationId, input.files);
+
+	try {
+		const finalScreenshots = input.screenshots.map((screenshot, sortOrder) => {
+			if (screenshot.id) {
+				const existing = existingById.get(screenshot.id);
+
+				if (!existing) {
+					throw new Error("An existing screenshot is unavailable");
+				}
+
+				return {
+					...existing,
+					locationId,
+					altText: screenshot.altText,
+					caption: screenshot.caption,
+					sortOrder,
+					isActive: true,
+				};
+			}
+
+			const processed =
+				processedBatch.screenshots[screenshot.uploadIndex ?? -1];
+
+			if (!processed) {
+				throw new Error("A processed screenshot is unavailable");
+			}
+
+			return {
+				id: randomUUID(),
+				locationId,
+				...processed,
+				altText: screenshot.altText,
+				caption: screenshot.caption,
+				sortOrder,
+				isActive: true,
+			};
+		});
+		const contentHashes = finalScreenshots.flatMap(({ contentHash }) =>
+			contentHash ? [contentHash] : [],
+		);
+
+		if (new Set(contentHashes).size !== contentHashes.length) {
+			throw new Error("The same screenshot cannot be attached twice");
 		}
 
-		const allowedDocument = await transaction
-			.select({ id: documentMaps.documentId })
-			.from(documentMaps)
-			.innerJoin(documents, eq(documents.id, documentMaps.documentId))
-			.where(
-				and(
-					eq(documentMaps.documentId, input.documentId),
-					eq(documentMaps.mapId, image.mapId),
-					eq(documents.isActive, true),
-					eq(documents.isFilterable, true),
-				),
-			)
-			.get();
-
-		if (!allowedDocument) {
-			throw new Error("The selected document does not belong to this map");
-		}
-
-		if (input.id) {
-			const existingLocation = await transaction
-				.select({ id: locations.id })
-				.from(locations)
-				.where(eq(locations.id, input.id))
-				.get();
-
-			if (!existingLocation) {
-				throw new Error("The selected location no longer exists");
+		await db.transaction(async (transaction) => {
+			if (location.id) {
+				await transaction
+					.update(locations)
+					.set({
+						mapImageId: location.mapImageId,
+						name: location.name,
+						description: location.description,
+						xBasisPoints: location.xBasisPoints,
+						yBasisPoints: location.yBasisPoints,
+						isActive: location.isActive,
+					})
+					.where(eq(locations.id, location.id))
+					.run();
+			} else {
+				await transaction
+					.insert(locations)
+					.values({
+						id: locationId,
+						mapImageId: location.mapImageId,
+						name: location.name,
+						description: location.description,
+						xBasisPoints: location.xBasisPoints,
+						yBasisPoints: location.yBasisPoints,
+						isActive: location.isActive,
+					})
+					.run();
 			}
 
 			await transaction
-				.update(locations)
-				.set({
-					mapImageId: input.mapImageId,
-					name: input.name,
-					description: input.description,
-					xBasisPoints: input.xBasisPoints,
-					yBasisPoints: input.yBasisPoints,
-					isActive: input.isActive,
-				})
-				.where(eq(locations.id, input.id))
+				.delete(locationDocuments)
+				.where(eq(locationDocuments.locationId, locationId))
 				.run();
-		} else {
 			await transaction
-				.insert(locations)
-				.values({
-					id: locationId,
-					mapImageId: input.mapImageId,
-					name: input.name,
-					description: input.description,
-					xBasisPoints: input.xBasisPoints,
-					yBasisPoints: input.yBasisPoints,
-					isActive: input.isActive,
-				})
+				.insert(locationDocuments)
+				.values({ locationId, documentId: location.documentId })
 				.run();
+			await transaction
+				.delete(screenshots)
+				.where(eq(screenshots.locationId, locationId))
+				.run();
+			await transaction.insert(screenshots).values(finalScreenshots).run();
+		});
+
+		const retainedIds = new Set(
+			input.screenshots.flatMap(({ id }) => (id ? [id] : [])),
+		);
+		const retainedPaths = new Set(
+			finalScreenshots.flatMap(({ path, previewPath }) =>
+				previewPath ? [path, previewPath] : [path],
+			),
+		);
+		const removedScreenshots = existingScreenshotRows.filter(
+			({ id, path, previewPath }) =>
+				!retainedIds.has(id) &&
+				!retainedPaths.has(path) &&
+				(!previewPath || !retainedPaths.has(previewPath)),
+		);
+
+		try {
+			await removeScreenshotFiles(locationId, removedScreenshots);
+		} catch (error) {
+			console.error("Failed to remove obsolete screenshot files", error);
 		}
-
-		await transaction
-			.delete(locationDocuments)
-			.where(eq(locationDocuments.locationId, locationId))
-			.run();
-
-		await transaction
-			.insert(locationDocuments)
-			.values({ locationId, documentId: input.documentId })
-			.run();
-	});
+	} catch (error) {
+		await discardPublishedFiles(processedBatch.createdFiles);
+		throw error;
+	}
 
 	return { id: locationId };
 }
@@ -187,6 +331,12 @@ export async function saveEditorLocation(input: SaveLocationInput) {
 export async function deleteEditorLocation(input: DeleteLocationInput) {
 	assertLocalEditorAccess({ mutation: true });
 
+	return withLocationMutationLock(input.id, () =>
+		deleteEditorLocationLocked(input),
+	);
+}
+
+async function deleteEditorLocationLocked(input: DeleteLocationInput) {
 	const { db } = await getDatabase();
 	const deleted = await db
 		.delete(locations)
@@ -198,5 +348,36 @@ export async function deleteEditorLocation(input: DeleteLocationInput) {
 		throw new Error("The selected location no longer exists");
 	}
 
+	try {
+		await removeLocationScreenshotDirectories(input.id);
+	} catch (error) {
+		console.error("Failed to remove location screenshot files", error);
+	}
+
 	return { id: deleted.id };
+}
+
+async function withLocationMutationLock<Result>(
+	locationId: string,
+	operation: () => Promise<Result>,
+) {
+	const previous = editorMutationLocks.get(locationId) ?? Promise.resolve();
+	let release = () => {};
+	const current = new Promise<void>((resolve) => {
+		release = resolve;
+	});
+	const tail = previous.then(() => current);
+	editorMutationLocks.set(locationId, tail);
+
+	await previous;
+
+	try {
+		return await operation();
+	} finally {
+		release();
+
+		if (editorMutationLocks.get(locationId) === tail) {
+			editorMutationLocks.delete(locationId);
+		}
+	}
 }

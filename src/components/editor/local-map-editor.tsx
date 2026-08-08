@@ -5,7 +5,11 @@ import {
 	PlusIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+	LocationScreenshotEditor,
+	type ScreenshotDraft,
+} from "@/components/editor/location-screenshot-editor";
 import { MapCanvas } from "@/components/editor/map-canvas";
 import {
 	AlertDialog,
@@ -54,6 +58,10 @@ import {
 	type getEditorData,
 	saveLocation,
 } from "@/functions/editor";
+import {
+	MAX_SCREENSHOT_BYTES,
+	MAX_SCREENSHOTS_PER_LOCATION,
+} from "@/lib/editor-validation";
 import { cn } from "@/lib/utils";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
@@ -63,6 +71,7 @@ type EditorSearch = {
 	location?: string;
 };
 type EditorLocation = EditorData["locations"][number];
+type EditorScreenshot = EditorData["screenshots"][number];
 type MapImage = EditorData["mapImages"][number];
 type Draft = {
 	name: string;
@@ -127,7 +136,7 @@ export function LocalMapEditor({
 	};
 
 	const refreshAndSelect = async (locationId?: string) => {
-		await router.invalidate();
+		await router.invalidate({ sync: true });
 		await onSearchChange({ location: locationId }, true);
 	};
 
@@ -274,8 +283,9 @@ export function LocalMapEditor({
 
 				{selectedMap && selectedImage ? (
 					<LocationWorkspace
-						key={`${selectedImage.id}:${selectedLocation?.id ?? `new-${newDraftVersion}`}`}
+						key={selectedImage.id}
 						data={data}
+						draftVersion={newDraftVersion}
 						mapId={selectedMap.id}
 						image={selectedImage}
 						locations={imageLocations}
@@ -306,6 +316,7 @@ export function LocalMapEditor({
 
 type LocationWorkspaceProps = {
 	data: EditorData;
+	draftVersion: number;
 	mapId: string;
 	image: MapImage;
 	locations: EditorLocation[];
@@ -316,6 +327,7 @@ type LocationWorkspaceProps = {
 
 function LocationWorkspace({
 	data,
+	draftVersion,
 	mapId,
 	image,
 	locations,
@@ -328,17 +340,38 @@ function LocationWorkspace({
 				(item) => item.locationId === selectedLocation.id,
 			)?.documentId ?? "")
 		: "";
-	const [draft, setDraft] = useState<Draft>({
-		name: selectedLocation?.name ?? "",
-		description: selectedLocation?.description ?? "",
-		xBasisPoints: selectedLocation?.xBasisPoints ?? 5_000,
-		yBasisPoints: selectedLocation?.yBasisPoints ?? 5_000,
-		isActive: selectedLocation?.isActive ?? true,
-		documentId: selectedDocumentId,
-	});
+	const [draft, setDraft] = useState<Draft>(() =>
+		createLocationDraft(selectedLocation, selectedDocumentId),
+	);
+	const screenshotObjectUrlsRef = useRef(new Set<string>());
+	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
+		() => createScreenshotDrafts(data.screenshots, selectedLocation?.id),
+	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: draftVersion intentionally resets a new-location draft without remounting the map canvas.
+	useEffect(() => {
+		for (const objectUrl of screenshotObjectUrlsRef.current) {
+			URL.revokeObjectURL(objectUrl);
+		}
+
+		screenshotObjectUrlsRef.current.clear();
+		setDraft(createLocationDraft(selectedLocation, selectedDocumentId));
+		setScreenshotDrafts(
+			createScreenshotDrafts(data.screenshots, selectedLocation?.id),
+		);
+		setError(undefined);
+	}, [data.screenshots, draftVersion, selectedDocumentId, selectedLocation]);
+
+	useEffect(() => {
+		return () => {
+			for (const objectUrl of screenshotObjectUrlsRef.current) {
+				URL.revokeObjectURL(objectUrl);
+			}
+		};
+	}, []);
 	const allowedDocumentIds = new Set(
 		data.documentMaps
 			.filter((item) => item.mapId === mapId)
@@ -355,22 +388,136 @@ function LocationWorkspace({
 		setDraft((current) => ({ ...current, [key]: value }));
 	};
 
+	const addScreenshotFiles = (files: File[]) => {
+		setError(undefined);
+
+		if (screenshotDrafts.length + files.length > MAX_SCREENSHOTS_PER_LOCATION) {
+			setError(
+				`A location can contain at most ${MAX_SCREENSHOTS_PER_LOCATION} screenshots`,
+			);
+			return;
+		}
+
+		if (files.some((file) => !isAcceptedScreenshotFile(file))) {
+			setError("Screenshots must be JPEG, PNG, or WebP files under 20 MiB");
+			return;
+		}
+
+		const additions = files.map((file) => {
+			const previewUrl = URL.createObjectURL(file);
+			screenshotObjectUrlsRef.current.add(previewUrl);
+
+			return {
+				altText: "",
+				caption: "",
+				file,
+				key: crypto.randomUUID(),
+				previewUrl,
+			} satisfies ScreenshotDraft;
+		});
+
+		setScreenshotDrafts((current) => [...current, ...additions]);
+	};
+
+	const updateScreenshotDraft = (
+		key: string,
+		field: "altText" | "caption",
+		value: string,
+	) => {
+		setScreenshotDrafts((current) =>
+			current.map((screenshot) =>
+				screenshot.key === key ? { ...screenshot, [field]: value } : screenshot,
+			),
+		);
+	};
+
+	const moveScreenshotDraft = (index: number, offset: -1 | 1) => {
+		setScreenshotDrafts((current) => {
+			const nextIndex = index + offset;
+
+			if (nextIndex < 0 || nextIndex >= current.length) {
+				return current;
+			}
+
+			const next = [...current];
+			const [moved] = next.splice(index, 1);
+
+			if (!moved) {
+				return current;
+			}
+
+			next.splice(nextIndex, 0, moved);
+			return next;
+		});
+	};
+
+	const removeScreenshotDraft = (key: string) => {
+		setScreenshotDrafts((current) => {
+			const removed = current.find((screenshot) => screenshot.key === key);
+
+			if (removed?.file) {
+				URL.revokeObjectURL(removed.previewUrl);
+				screenshotObjectUrlsRef.current.delete(removed.previewUrl);
+			}
+
+			return current.filter((screenshot) => screenshot.key !== key);
+		});
+	};
+
 	const submitLocation = async () => {
 		setError(undefined);
+
+		if (screenshotDrafts.length === 0) {
+			setError("Add at least one screenshot before saving this location");
+			return;
+		}
+
 		setIsSaving(true);
 
 		try {
+			const files: File[] = [];
+			const screenshotPayload = screenshotDrafts.map((screenshot) => {
+				const base = {
+					altText: screenshot.altText,
+					caption: screenshot.caption,
+				};
+
+				if (screenshot.id) {
+					return { ...base, id: screenshot.id };
+				}
+
+				if (!screenshot.file) {
+					throw new Error("A new screenshot file is unavailable");
+				}
+
+				const uploadIndex = files.push(screenshot.file) - 1;
+				return { ...base, uploadIndex };
+			});
+			const formData = new FormData();
+
+			formData.set(
+				"payload",
+				JSON.stringify({
+					location: {
+						id: selectedLocation?.id,
+						mapImageId: image.id,
+						name: draft.name,
+						description: draft.description,
+						xBasisPoints: draft.xBasisPoints,
+						yBasisPoints: draft.yBasisPoints,
+						isActive: draft.isActive,
+						documentId: draft.documentId,
+					},
+					screenshots: screenshotPayload,
+				}),
+			);
+
+			for (const file of files) {
+				formData.append("screenshots", file);
+			}
+
 			const result = await saveLocation({
-				data: {
-					id: selectedLocation?.id,
-					mapImageId: image.id,
-					name: draft.name,
-					description: draft.description,
-					xBasisPoints: draft.xBasisPoints,
-					yBasisPoints: draft.yBasisPoints,
-					isActive: draft.isActive,
-					documentId: draft.documentId,
-				},
+				data: formData,
 			});
 
 			await onSaved(result.id);
@@ -549,6 +696,15 @@ function LocationWorkspace({
 							)}
 						</FieldSet>
 
+						<LocationScreenshotEditor
+							disabled={isSaving || isDeleting}
+							screenshots={screenshotDrafts}
+							onFilesAdded={addScreenshotFiles}
+							onMove={moveScreenshotDraft}
+							onRemove={removeScreenshotDraft}
+							onUpdate={updateScreenshotDraft}
+						/>
+
 						<Field orientation="horizontal">
 							<Checkbox
 								id="location-active"
@@ -568,7 +724,7 @@ function LocationWorkspace({
 
 					<div className="flex flex-wrap items-center gap-3">
 						<Button type="submit" disabled={isSaving || isDeleting}>
-							{isSaving ? "Saving…" : "Save location"}
+							{isSaving ? "Processing…" : "Save location"}
 						</Button>
 
 						{selectedLocation && (
@@ -588,7 +744,8 @@ function LocationWorkspace({
 									<AlertDialogHeader>
 										<AlertDialogTitle>Delete this location?</AlertDialogTitle>
 										<AlertDialogDescription>
-											This permanently removes the marker and its document link.
+											This permanently removes the marker, screenshots, and its
+											document link.
 										</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
@@ -609,4 +766,47 @@ function LocationWorkspace({
 
 function readErrorMessage(error: unknown) {
 	return error instanceof Error ? error.message : "The editor request failed";
+}
+
+function createLocationDraft(
+	location: EditorLocation | undefined,
+	documentId: string,
+): Draft {
+	return {
+		name: location?.name ?? "",
+		description: location?.description ?? "",
+		xBasisPoints: location?.xBasisPoints ?? 5_000,
+		yBasisPoints: location?.yBasisPoints ?? 5_000,
+		isActive: location?.isActive ?? true,
+		documentId,
+	};
+}
+
+function createScreenshotDrafts(
+	screenshots: EditorScreenshot[],
+	locationId: string | undefined,
+): ScreenshotDraft[] {
+	if (!locationId) {
+		return [];
+	}
+
+	return screenshots
+		.filter((screenshot) => screenshot.locationId === locationId)
+		.map((screenshot) => ({
+			altText: screenshot.altText,
+			caption: screenshot.caption ?? "",
+			height: screenshot.previewHeight ?? screenshot.height,
+			id: screenshot.id,
+			key: screenshot.id,
+			previewUrl: screenshot.previewPath ?? screenshot.path,
+			width: screenshot.previewWidth ?? screenshot.width,
+		}));
+}
+
+function isAcceptedScreenshotFile(file: File) {
+	return (
+		file.size > 0 &&
+		file.size <= MAX_SCREENSHOT_BYTES &&
+		["image/jpeg", "image/png", "image/webp"].includes(file.type)
+	);
 }

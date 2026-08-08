@@ -15,7 +15,9 @@ export const Route = createFileRoute("/editor")({
 		image: readSearchValue(search.image),
 		location: readSearchValue(search.location),
 	}),
+	loaderDeps: () => ({}),
 	loader: () => getEditorData(),
+	staleTime: Number.POSITIVE_INFINITY,
 	notFoundComponent: EditorNotFound,
 	component: EditorRoute,
 });

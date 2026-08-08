@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import {
 	parseDeleteLocationInput,
-	parseSaveLocationInput,
+	parseSaveLocationFormData,
 } from "@/lib/editor-validation";
 
 export const getEditorData = createServerFn({ method: "GET" }).handler(
@@ -14,7 +14,7 @@ export const getEditorData = createServerFn({ method: "GET" }).handler(
 );
 
 export const saveLocation = createServerFn({ method: "POST" })
-	.validator(parseSaveLocationInput)
+	.validator(parseSaveLocationFormData)
 	.handler(async ({ data }) => {
 		const { saveEditorLocation } = await import(
 			"@/server/editor/editor.server"

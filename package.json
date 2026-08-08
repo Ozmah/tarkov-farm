@@ -6,9 +6,11 @@
 	"scripts": {
 		"check": "biome check --write .",
 		"glados": "biome check . && bun run typecheck && bun run build",
+		"release:check": "bun run glados && bun run screenshots:check",
 		"dev": "bun run db:setup && vite dev",
 		"build": "vite build",
 		"images:masters": "bun scripts/generate-map-masters.ts",
+		"screenshots:check": "bun scripts/check-location-screenshots.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "bun src/server/db/migrate.ts",
 		"db:seed": "bun src/server/db/seed.ts",

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { parseSaveLocationInput } from "./editor-validation";
+import {
+	parseSaveLocationFormData,
+	parseSaveLocationInput,
+} from "./editor-validation";
 
 const validLocation = {
 	mapImageId: "customs-main",
@@ -54,3 +57,96 @@ describe("parseSaveLocationInput", () => {
 		).toThrow("Map image is invalid");
 	});
 });
+
+describe("parseSaveLocationFormData", () => {
+	it("accepts one uploaded screenshot with metadata", () => {
+		const file = new File(["image"], "view.png", { type: "image/png" });
+		const formData = createLocationFormData(
+			[
+				{
+					uploadIndex: 0,
+					altText: "  Shelf beside the bed  ",
+					caption: "  Enter through the window  ",
+				},
+			],
+			[file],
+		);
+
+		expect(parseSaveLocationFormData(formData)).toEqual({
+			location: parseSaveLocationInput(validLocation),
+			screenshots: [
+				{
+					uploadIndex: 0,
+					altText: "Shelf beside the bed",
+					caption: "Enter through the window",
+				},
+			],
+			files: [file],
+		});
+	});
+
+	it("accepts retaining an existing screenshot without a new upload", () => {
+		const formData = createLocationFormData([
+			{
+				id: "existing-screenshot",
+				altText: "Shelf beside the bed",
+				caption: null,
+			},
+		]);
+
+		expect(parseSaveLocationFormData(formData).files).toEqual([]);
+	});
+
+	it("allows empty alt text when the location description is sufficient", () => {
+		const formData = createLocationFormData([
+			{
+				id: "existing-screenshot",
+				altText: "  ",
+				caption: null,
+			},
+		]);
+
+		expect(parseSaveLocationFormData(formData).screenshots[0]?.altText).toBe(
+			"",
+		);
+	});
+
+	it("rejects locations without screenshots", () => {
+		expect(() => parseSaveLocationFormData(createLocationFormData([]))).toThrow(
+			"A location requires between 1 and 10 screenshots",
+		);
+	});
+
+	it("rejects uploads whose metadata is missing", () => {
+		const file = new File(["image"], "view.png", { type: "image/png" });
+
+		expect(() =>
+			parseSaveLocationFormData(
+				createLocationFormData(
+					[
+						{
+							id: "existing-screenshot",
+							altText: "Shelf beside the bed",
+							caption: null,
+						},
+					],
+					[file],
+				),
+			),
+		).toThrow("Screenshot uploads do not match their metadata");
+	});
+});
+
+function createLocationFormData(screenshots: unknown[], files: File[] = []) {
+	const formData = new FormData();
+	formData.set(
+		"payload",
+		JSON.stringify({ location: validLocation, screenshots }),
+	);
+
+	for (const file of files) {
+		formData.append("screenshots", file);
+	}
+
+	return formData;
+}

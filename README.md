@@ -25,6 +25,18 @@ bun run images:masters
 
 The command processes each image in an isolated subprocess and atomically replaces `public/maps/masters` only after every image succeeds.
 
+### Location screenshots
+
+The local editor requires at least one screenshot per location. Uploaded JPEG, PNG, and WebP files are processed offline in isolated Bun subprocesses. The editor writes 1000px and 1920px WebP variants to `public/screenshots/<location-id>` and keeps source files under the ignored `assets/screenshots/originals` directory.
+
+Before publishing a database snapshot, verify that every location references complete static assets:
+
+```bash
+bun run screenshots:check
+```
+
+`bun run release:check` runs the complete code, build, and screenshot validation suite.
+
 ## Built with
 
 - [TanStack Start](https://tanstack.com/start/latest)
