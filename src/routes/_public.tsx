@@ -104,7 +104,7 @@ function PublicLayout() {
 					map: currentMap?.id,
 					...configuration?.editorSearch,
 				}}
-				headerTitle={currentMap?.name ?? "Overview"}
+				headerTitle={currentMap?.name ?? "Kord Breach Season Overview"}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}
 				onSelectedDocumentsChange={(documentIds) =>

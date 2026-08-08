@@ -15,7 +15,6 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { getPublicMapData } from "@/functions/catalog";
 import {
@@ -170,12 +169,9 @@ function MapPage() {
 							}))}
 							selectedMarkerId={selectedLocation?.id}
 							toolbarStart={
-								<>
-									<p className="max-w-36 truncate font-heading text-sm">
-										{selectedImage.name}
-									</p>
-									<Separator orientation="vertical" className="h-4" />
-								</>
+								<p className="max-w-36 truncate font-heading text-sm">
+									{selectedImage.name}
+								</p>
 							}
 							onSelectMarker={(locationId) =>
 								void navigate({

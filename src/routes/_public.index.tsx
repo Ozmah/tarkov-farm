@@ -1,4 +1,8 @@
-import { ArrowRightIcon, MapTrifoldIcon } from "@phosphor-icons/react";
+import {
+	ArrowRightIcon,
+	MapPinLineIcon,
+	MapTrifoldIcon,
+} from "@phosphor-icons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { usePreparePublicMapNavigation } from "@/components/public-layout-context";
@@ -81,9 +85,6 @@ function App() {
 				>
 					<div className="flex flex-wrap items-end justify-between gap-4">
 						<div className="flex min-w-0 flex-col gap-2">
-							<p className="font-heading text-primary text-sm uppercase tracking-wide sm:text-xs">
-								Season overview
-							</p>
 							<h1
 								id="overview-title"
 								className="text-balance font-heading font-medium text-3xl tracking-tight"
@@ -93,7 +94,7 @@ function App() {
 							<p className="max-w-[56ch] text-pretty text-base text-muted-foreground sm:text-sm">
 								{selectedDocuments.length > 0
 									? `Showing locations for ${selectedDocuments.map((document) => document.name).join(", ")}.`
-									: "Active document locations currently available in the public catalog."}
+									: "Current document locations."}
 							</p>
 						</div>
 						{selectedDocuments.length > 0 ? (
@@ -108,40 +109,37 @@ function App() {
 						) : null}
 					</div>
 
-					<div className="@container">
-						<dl className="grid @sm:grid-cols-2 @sm:divide-x @sm:divide-border border-border border-y">
-							<div className="flex flex-col gap-1 py-5 @sm:pr-6">
-								<dt className="truncate font-medium text-foreground text-sm sm:text-xs">
-									Document locations
-								</dt>
-								<dd className="font-heading text-3xl text-muted-foreground tabular-nums sm:text-2xl">
-									{visibleLocations.length}
-								</dd>
-							</div>
-							<div className="flex flex-col gap-1 border-border border-t @sm:border-t-0 py-5 @sm:pl-6">
-								<dt className="truncate font-medium text-foreground text-sm sm:text-xs">
-									Maps available
-								</dt>
-								<dd className="font-heading text-3xl text-muted-foreground tabular-nums sm:text-2xl">
-									{mapSummaries.length}
-								</dd>
-							</div>
-						</dl>
-					</div>
+					<dl className="flex flex-wrap items-center gap-8">
+						<div className="flex items-center gap-2">
+							<dt className="sr-only">Document locations</dt>
+							<MapPinLineIcon
+								aria-hidden="true"
+								className="size-6 text-primary"
+							/>
+							<dd className="font-heading text-2xl tabular-nums">
+								{visibleLocations.length}
+							</dd>
+						</div>
+						<div className="flex items-center gap-2">
+							<dt className="sr-only">Maps available</dt>
+							<MapTrifoldIcon
+								aria-hidden="true"
+								className="size-6 text-primary"
+							/>
+							<dd className="font-heading text-2xl tabular-nums">
+								{mapSummaries.length}
+							</dd>
+						</div>
+					</dl>
 				</section>
 
 				<section aria-labelledby="maps-title" className="flex flex-col gap-5">
-					<div className="flex flex-col gap-2">
-						<h2
-							id="maps-title"
-							className="text-balance font-heading font-medium text-2xl tracking-tight"
-						>
-							Available maps
-						</h2>
-						<p className="max-w-[56ch] text-pretty text-base text-muted-foreground sm:text-sm">
-							Each map is counted once, regardless of how many map views it has.
-						</p>
-					</div>
+					<h2
+						id="maps-title"
+						className="text-balance font-heading font-medium text-2xl tracking-tight"
+					>
+						Maps
+					</h2>
 
 					{mapSummaries.length > 0 ? (
 						<div className="@container">
