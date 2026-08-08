@@ -12,6 +12,7 @@ dist-ssr
 __unconfig*
 todos.json
 data/*.sqlite*
+assets/maps/originals/
 
 # typescript
 *.tsbuildinfo

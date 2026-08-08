@@ -16,168 +16,165 @@ const mapSeed = [
 	{ id: "woods", name: "Woods" },
 ] as const;
 
-const mapImageSeed = [
+const mapImageDefinitions = [
 	{
 		id: "customs-main",
 		mapId: "customs",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrCustoms2.png",
+		file: "re3mrCustoms2.webp",
 		altText: "Illustrated overview map of Customs",
-		width: 7832,
-		height: 5016,
 	},
 	{
 		id: "customs-dorms",
 		mapId: "customs",
 		viewKey: "dorms",
 		name: "Dorms",
-		path: "/maps/re3mrCustomsDorms.png",
+		file: "re3mrCustomsDorms.webp",
 		altText: "Detailed illustrated map of the Customs dorms",
-		width: 4301,
-		height: 4904,
 	},
 	{
 		id: "factory-main",
 		mapId: "factory",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/FactorybyRe3mr.png",
+		file: "FactorybyRe3mr.webp",
 		altText: "Illustrated overview map of Factory",
-		width: 13440,
-		height: 6656,
 	},
 	{
 		id: "ground-zero-main",
 		mapId: "ground-zero",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/GroundZero.png",
+		file: "GroundZero.webp",
 		altText: "Illustrated overview map of Ground Zero",
-		width: 2656,
-		height: 2160,
 	},
 	{
 		id: "icebreaker-main",
 		mapId: "icebreaker",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrIcebreaker.png",
+		file: "re3mrIcebreaker.webp",
 		altText: "Illustrated overview map of Icebreaker",
-		width: 7680,
-		height: 4320,
 	},
 	{
 		id: "interchange-main",
 		mapId: "interchange",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrInterchange.jpg",
+		file: "re3mrInterchange.webp",
 		altText: "Illustrated overview map of Interchange",
-		width: 9600,
-		height: 5400,
 	},
 	{
 		id: "interchange-ultra",
 		mapId: "interchange",
 		viewKey: "ultra",
 		name: "ULTRA interior",
-		path: "/maps/re3mrULTRA3Dmap.png",
+		file: "re3mrULTRA3Dmap.webp",
 		altText: "Detailed illustrated map of the ULTRA shopping mall",
-		width: 12241,
-		height: 8380,
 	},
 	{
 		id: "lighthouse-main",
 		mapId: "lighthouse",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrLighthouseVERT.png",
+		file: "re3mrLighthouseVERT.webp",
 		altText: "Illustrated overview map of Lighthouse",
-		width: 8259,
-		height: 7560,
 	},
 	{
 		id: "the-lab-main",
 		mapId: "the-lab",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/The_Lab_Interactive_Map_Base.webp",
+		file: "The_Lab_Interactive_Map_Base.webp",
 		altText: "Interactive map base of The Lab",
-		width: 3820,
-		height: 2189,
 	},
 	{
 		id: "reserve-main",
 		mapId: "reserve",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/Re3mrReserveLossless.png",
+		file: "Re3mrReserveLossless.webp",
 		altText: "Illustrated overview map of Reserve",
-		width: 5760,
-		height: 3240,
 	},
 	{
 		id: "reserve-tunnels",
 		mapId: "reserve",
 		viewKey: "tunnels",
 		name: "Tunnels",
-		path: "/maps/re3mrReserveTunnels.png",
+		file: "re3mrReserveTunnels.webp",
 		altText: "Detailed illustrated map of the Reserve tunnels",
-		width: 3240,
-		height: 5760,
 	},
 	{
 		id: "shoreline-main",
 		mapId: "shoreline",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrShoreline2.png",
+		file: "re3mrShoreline2.webp",
 		altText: "Illustrated overview map of Shoreline",
-		width: 5760,
-		height: 3240,
 	},
 	{
 		id: "shoreline-resort",
 		mapId: "shoreline",
 		viewKey: "resort",
 		name: "Health Resort",
-		path: "/maps/re3mrShorelineResort.png",
+		file: "re3mrShorelineResort.webp",
 		altText: "Detailed illustrated map of the Shoreline Health Resort",
-		width: 10694,
-		height: 6016,
 	},
 	{
 		id: "streets-of-tarkov-main",
 		mapId: "streets-of-tarkov",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrStreetsofTarkov.png",
+		file: "re3mrStreetsofTarkov.webp",
 		altText: "Illustrated overview map of Streets of Tarkov",
-		width: 7605,
-		height: 4841,
 	},
 	{
 		id: "the-labyrinth-main",
 		mapId: "the-labyrinth",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/re3mrLabyrinthPNG.png",
+		file: "re3mrLabyrinthPNG.webp",
 		altText: "Illustrated overview map of The Labyrinth",
-		width: 4800,
-		height: 4320,
 	},
 	{
 		id: "woods-main",
 		mapId: "woods",
 		viewKey: "main",
 		name: "Main map",
-		path: "/maps/WoodsRe3mrPNG.png",
+		file: "WoodsRe3mrPNG.webp",
 		altText: "Illustrated overview map of Woods",
-		width: 7680,
-		height: 5168,
 	},
 ] as const;
+
+type MapMaster = {
+	file: string;
+	height: number;
+	sha256: string;
+	width: number;
+};
+
+const masterManifest = (await Bun.file(
+	"public/maps/masters/manifest.json",
+).json()) as { images: MapMaster[] };
+const mastersByFile = new Map(
+	masterManifest.images.map((master) => [master.file, master]),
+);
+const mapImageSeed = mapImageDefinitions.map(({ file, ...image }) => {
+	const master = mastersByFile.get(file);
+
+	if (!master) {
+		throw new Error(`Missing generated map master: ${file}`);
+	}
+
+	return {
+		...image,
+		path: `/maps/masters/${file}`,
+		width: master.width,
+		height: master.height,
+		contentHash: master.sha256,
+	};
+});
 
 const documentSeed = [
 	{
@@ -237,11 +234,13 @@ try {
 			.values([...mapSeed])
 			.onConflictDoNothing()
 			.run();
-		await transaction
-			.insert(mapImages)
-			.values([...mapImageSeed])
-			.onConflictDoNothing()
-			.run();
+		for (const image of mapImageSeed) {
+			await transaction
+				.insert(mapImages)
+				.values(image)
+				.onConflictDoUpdate({ target: mapImages.id, set: image })
+				.run();
+		}
 		await transaction
 			.insert(documents)
 			.values([...documentSeed])

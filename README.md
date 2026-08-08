@@ -15,6 +15,16 @@ bun run dev
 
 The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server; it is unavailable outside a loopback environment.
 
+### Generate map masters
+
+Maintainers with access to the ignored source images can regenerate the optimized WebP masters with:
+
+```bash
+bun run images:masters
+```
+
+The command processes each image in an isolated subprocess and atomically replaces `public/maps/masters` only after every image succeeds.
+
 ## Built with
 
 - [TanStack Start](https://tanstack.com/start/latest)

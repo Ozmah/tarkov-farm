@@ -1,0 +1,155 @@
+{
+	"version": 1,
+	"settings": {
+		"backend": "bun",
+		"format": "webp",
+		"maxDimension": 6144,
+		"quality": 90
+	},
+	"images": [
+		{
+			"file": "FactorybyRe3mr.webp",
+			"height": 3043,
+			"original": "FactorybyRe3mr.png",
+			"passthrough": false,
+			"sha256": "05a1e8d9758ec67ef4a02d467c10ff3cbc5779f472ca742f6760d1aba7535787",
+			"size": 827208,
+			"width": 6144
+		},
+		{
+			"file": "GroundZero.webp",
+			"height": 2160,
+			"original": "GroundZero.png",
+			"passthrough": false,
+			"sha256": "338ba7dce693b315105f0169abd009c5c44bffc40a61e01afaa857838931a42f",
+			"size": 649118,
+			"width": 2656
+		},
+		{
+			"file": "re3mrCustoms2.webp",
+			"height": 3935,
+			"original": "re3mrCustoms2.png",
+			"passthrough": false,
+			"sha256": "c4684b9c33fda6a450e3cbd2f77aaaebe705a4ac9f2d0802f3674ddf77636c01",
+			"size": 6305876,
+			"width": 6144
+		},
+		{
+			"file": "re3mrCustomsDorms.webp",
+			"height": 4904,
+			"original": "re3mrCustomsDorms.png",
+			"passthrough": false,
+			"sha256": "d77e5b68834bb87e6449d47c263dea491df1c1610af3259ee14b0ad0e66ecbf0",
+			"size": 1783764,
+			"width": 4301
+		},
+		{
+			"file": "re3mrIcebreaker.webp",
+			"height": 3456,
+			"original": "re3mrIcebreaker.png",
+			"passthrough": false,
+			"sha256": "bf6a4767c8fc55a4f6d8a469e6cac109c290c02ddb2ad3a4d9a8a558358d3c42",
+			"size": 1343778,
+			"width": 6144
+		},
+		{
+			"file": "re3mrInterchange.webp",
+			"height": 3456,
+			"original": "re3mrInterchange.jpg",
+			"passthrough": false,
+			"sha256": "40913895f52c1afa6d4d2460c3621fef628a3aa54d106729999f74324954f065",
+			"size": 3979456,
+			"width": 6144
+		},
+		{
+			"file": "re3mrLabyrinthPNG.webp",
+			"height": 4320,
+			"original": "re3mrLabyrinthPNG.png",
+			"passthrough": false,
+			"sha256": "76b9c0ba5e88612160ef084a2cad566aec1ca0351006c016864e40b20c73ce14",
+			"size": 1323742,
+			"width": 4800
+		},
+		{
+			"file": "re3mrLighthouseVERT.webp",
+			"height": 5624,
+			"original": "re3mrLighthouseVERT.png",
+			"passthrough": false,
+			"sha256": "253388c241b3d427a08e9ae49f25747754212b810b200000f6fa2f53351d75d3",
+			"size": 9702630,
+			"width": 6144
+		},
+		{
+			"file": "Re3mrReserveLossless.webp",
+			"height": 3240,
+			"original": "Re3mrReserveLossless.png",
+			"passthrough": false,
+			"sha256": "288a4affb68c936ca339257a5f20fdf8a97e361f931917253918eb4d99311ea4",
+			"size": 2860050,
+			"width": 5760
+		},
+		{
+			"file": "re3mrReserveTunnels.webp",
+			"height": 5760,
+			"original": "re3mrReserveTunnels.png",
+			"passthrough": false,
+			"sha256": "f6e0066ba39cd43d3498821ba357a6b818ffb09ce54c74bfa068f228e069caea",
+			"size": 680728,
+			"width": 3240
+		},
+		{
+			"file": "re3mrShoreline2.webp",
+			"height": 3240,
+			"original": "re3mrShoreline2.png",
+			"passthrough": false,
+			"sha256": "8dc3e682ec8720f2cbc3df28b14b7ff06edde254497a4645812e5e1733320f39",
+			"size": 4417824,
+			"width": 5760
+		},
+		{
+			"file": "re3mrShorelineResort.webp",
+			"height": 3456,
+			"original": "re3mrShorelineResort.png",
+			"passthrough": false,
+			"sha256": "da6b0667bb969838794fb8751ed54a92ce90db9d3e1b6b20bd1b31fb802dcabd",
+			"size": 1116942,
+			"width": 6144
+		},
+		{
+			"file": "re3mrStreetsofTarkov.webp",
+			"height": 3911,
+			"original": "re3mrStreetsofTarkov.png",
+			"passthrough": false,
+			"sha256": "5f021cafe90864a1b2a11ff10f7baa15fedb5dcdb4a99bb1848beb7497be6f6f",
+			"size": 3240002,
+			"width": 6144
+		},
+		{
+			"file": "re3mrULTRA3Dmap.webp",
+			"height": 4206,
+			"original": "re3mrULTRA3Dmap.png",
+			"passthrough": false,
+			"sha256": "d718e7c6d9b502b4ba820665c4d2a598077af0157589dd21159e768261da092e",
+			"size": 6704678,
+			"width": 6144
+		},
+		{
+			"file": "The_Lab_Interactive_Map_Base.webp",
+			"height": 2189,
+			"original": "The_Lab_Interactive_Map_Base.webp",
+			"passthrough": true,
+			"sha256": "eddb0617c541b49337fab05dfa6e22b536746a35e787766bbb2f4e0d1e1555db",
+			"size": 441678,
+			"width": 3820
+		},
+		{
+			"file": "WoodsRe3mrPNG.webp",
+			"height": 4134,
+			"original": "WoodsRe3mrPNG.png",
+			"passthrough": false,
+			"sha256": "538f78e2bbb1c0a2aedbad9737b5207e3c9d436cc6faecb1ce726993e09c790a",
+			"size": 4696380,
+			"width": 6144
+		}
+	]
+}
