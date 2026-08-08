@@ -29,6 +29,8 @@ export const mapImages = sqliteTable(
 		mapId: text("map_id")
 			.notNull()
 			.references(() => maps.id, { onDelete: "cascade", onUpdate: "cascade" }),
+		viewKey: text("view_key").notNull().default("main"),
+		name: text("name").notNull().default("Main map"),
 		path: text("path").notNull(),
 		altText: text("alt_text").notNull(),
 		width: integer("width").notNull(),
@@ -40,9 +42,14 @@ export const mapImages = sqliteTable(
 	},
 	(table) => [
 		index("map_images_map_id_idx").on(table.mapId),
-		uniqueIndex("map_images_one_current_per_map_idx")
-			.on(table.mapId)
+		uniqueIndex("map_images_one_current_per_view_idx")
+			.on(table.mapId, table.viewKey)
 			.where(sql`${table.isCurrent} = 1`),
+		check(
+			"map_images_view_key_not_empty",
+			sql`length(trim(${table.viewKey})) > 0`,
+		),
+		check("map_images_name_not_empty", sql`length(trim(${table.name})) > 0`),
 		check("map_images_width_positive", sql`${table.width} > 0`),
 		check("map_images_height_positive", sql`${table.height} > 0`),
 		check("map_images_is_current_boolean", sql`${table.isCurrent} IN (0, 1)`),

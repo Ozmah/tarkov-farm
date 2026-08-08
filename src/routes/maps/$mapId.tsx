@@ -44,7 +44,7 @@ function MapPage() {
 			</div>
 
 			<footer className="text-center">
-				<MapAttribution />
+				<MapAttribution mapId={map.id} />
 			</footer>
 		</main>
 	);
