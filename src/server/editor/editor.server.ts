@@ -74,7 +74,7 @@ export async function readEditorData() {
 	const documentRows = await db
 		.select({ id: documents.id, name: documents.name })
 		.from(documents)
-		.where(eq(documents.isActive, true))
+		.where(and(eq(documents.isActive, true), eq(documents.isFilterable, true)))
 		.orderBy(asc(documents.name))
 		.all();
 	const documentMapRows = await db
@@ -114,24 +114,22 @@ export async function saveEditorLocation(input: SaveLocationInput) {
 			throw new Error("The selected map image does not exist");
 		}
 
-		if (input.documentIds.length > 0) {
-			const allowedDocuments = await transaction
-				.select({ id: documentMaps.documentId })
-				.from(documentMaps)
-				.innerJoin(documents, eq(documents.id, documentMaps.documentId))
-				.where(
-					and(
-						eq(documentMaps.mapId, image.mapId),
-						eq(documents.isActive, true),
-						eq(documents.isFilterable, true),
-					),
-				)
-				.all();
-			const allowedDocumentIds = new Set(allowedDocuments.map(({ id }) => id));
+		const allowedDocument = await transaction
+			.select({ id: documentMaps.documentId })
+			.from(documentMaps)
+			.innerJoin(documents, eq(documents.id, documentMaps.documentId))
+			.where(
+				and(
+					eq(documentMaps.documentId, input.documentId),
+					eq(documentMaps.mapId, image.mapId),
+					eq(documents.isActive, true),
+					eq(documents.isFilterable, true),
+				),
+			)
+			.get();
 
-			if (input.documentIds.some((id) => !allowedDocumentIds.has(id))) {
-				throw new Error("A selected document does not belong to this map");
-			}
+		if (!allowedDocument) {
+			throw new Error("The selected document does not belong to this map");
 		}
 
 		if (input.id) {
@@ -177,17 +175,10 @@ export async function saveEditorLocation(input: SaveLocationInput) {
 			.where(eq(locationDocuments.locationId, locationId))
 			.run();
 
-		if (input.documentIds.length > 0) {
-			await transaction
-				.insert(locationDocuments)
-				.values(
-					input.documentIds.map((documentId) => ({
-						locationId,
-						documentId,
-					})),
-				)
-				.run();
-		}
+		await transaction
+			.insert(locationDocuments)
+			.values({ locationId, documentId: input.documentId })
+			.run();
 	});
 
 	return { id: locationId };

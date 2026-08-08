@@ -164,6 +164,7 @@ export const locationDocuments = sqliteTable(
 	},
 	(table) => [
 		primaryKey({ columns: [table.locationId, table.documentId] }),
+		uniqueIndex("location_documents_location_id_unique").on(table.locationId),
 		index("location_documents_document_id_idx").on(table.documentId),
 	],
 );

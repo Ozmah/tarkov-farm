@@ -8,7 +8,7 @@ export type SaveLocationInput = {
 	xBasisPoints: number;
 	yBasisPoints: number;
 	isActive: boolean;
-	documentIds: string[];
+	documentId: string;
 };
 
 export type DeleteLocationInput = {
@@ -17,7 +17,6 @@ export type DeleteLocationInput = {
 
 export function parseSaveLocationInput(input: unknown): SaveLocationInput {
 	const value = readObject(input);
-	const documentIds = readDocumentIds(value.documentIds);
 
 	return {
 		id:
@@ -30,7 +29,7 @@ export function parseSaveLocationInput(input: unknown): SaveLocationInput {
 		xBasisPoints: readCoordinate(value.xBasisPoints, "X coordinate"),
 		yBasisPoints: readCoordinate(value.yBasisPoints, "Y coordinate"),
 		isActive: readBoolean(value.isActive, "Active state"),
-		documentIds,
+		documentId: readId(value.documentId, "Document identifier"),
 	};
 }
 
@@ -115,18 +114,4 @@ function readBoolean(value: unknown, label: string) {
 	}
 
 	return value;
-}
-
-function readDocumentIds(value: unknown) {
-	if (!Array.isArray(value) || value.length > 20) {
-		throw new Error("Document selection is invalid");
-	}
-
-	const documentIds = value.map((id) => readId(id, "Document identifier"));
-
-	if (new Set(documentIds).size !== documentIds.length) {
-		throw new Error("Document selection contains duplicates");
-	}
-
-	return documentIds;
 }

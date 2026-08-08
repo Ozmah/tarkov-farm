@@ -9,7 +9,7 @@ const validLocation = {
 	xBasisPoints: 2_500,
 	yBasisPoints: 7_500,
 	isActive: true,
-	documentIds: ["financial"],
+	documentId: "financial",
 };
 
 describe("parseSaveLocationInput", () => {
@@ -27,13 +27,22 @@ describe("parseSaveLocationInput", () => {
 		).toThrow("X coordinate must be an integer between 0 and 10000");
 	});
 
-	it("rejects duplicate document relationships", () => {
+	it("requires a document identifier", () => {
 		expect(() =>
 			parseSaveLocationInput({
 				...validLocation,
-				documentIds: ["financial", "financial"],
+				documentId: undefined,
 			}),
-		).toThrow("Document selection contains duplicates");
+		).toThrow("Document identifier is invalid");
+	});
+
+	it("rejects multiple document identifiers", () => {
+		expect(() =>
+			parseSaveLocationInput({
+				...validLocation,
+				documentId: ["financial", "journal"],
+			}),
+		).toThrow("Document identifier is invalid");
 	});
 
 	it("rejects unsafe identifiers", () => {

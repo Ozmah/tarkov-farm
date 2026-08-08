@@ -2,12 +2,11 @@ import {
 	ArrowLeftIcon,
 	CrosshairIcon,
 	MapPinIcon,
-	MinusIcon,
 	PlusIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
-
+import { MapCanvas } from "@/components/editor/map-canvas";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -39,6 +38,7 @@ import {
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
 	SelectContent,
@@ -54,7 +54,6 @@ import {
 	type getEditorData,
 	saveLocation,
 } from "@/functions/editor";
-import { pointerToBasisPoints } from "@/lib/editor-coordinates";
 import { cn } from "@/lib/utils";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
@@ -71,7 +70,7 @@ type Draft = {
 	xBasisPoints: number;
 	yBasisPoints: number;
 	isActive: boolean;
-	documentIds: string[];
+	documentId: string;
 };
 
 type LocalMapEditorProps = {
@@ -315,20 +314,19 @@ function LocationWorkspace({
 	onSelectLocation,
 	onSaved,
 }: LocationWorkspaceProps) {
-	const selectedDocumentIds = selectedLocation
-		? data.locationDocuments
-				.filter((item) => item.locationId === selectedLocation.id)
-				.map((item) => item.documentId)
-		: [];
+	const selectedDocumentId = selectedLocation
+		? (data.locationDocuments.find(
+				(item) => item.locationId === selectedLocation.id,
+			)?.documentId ?? "")
+		: "";
 	const [draft, setDraft] = useState<Draft>({
 		name: selectedLocation?.name ?? "",
 		description: selectedLocation?.description ?? "",
 		xBasisPoints: selectedLocation?.xBasisPoints ?? 5_000,
 		yBasisPoints: selectedLocation?.yBasisPoints ?? 5_000,
 		isActive: selectedLocation?.isActive ?? true,
-		documentIds: selectedDocumentIds,
+		documentId: selectedDocumentId,
 	});
-	const [zoom, setZoom] = useState(100);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
@@ -362,7 +360,7 @@ function LocationWorkspace({
 					xBasisPoints: draft.xBasisPoints,
 					yBasisPoints: draft.yBasisPoints,
 					isActive: draft.isActive,
-					documentIds: draft.documentIds,
+					documentId: draft.documentId,
 				},
 			});
 
@@ -394,105 +392,21 @@ function LocationWorkspace({
 
 	return (
 		<>
-			<section className="flex min-h-[50svh] min-w-0 flex-col border-border border-b lg:min-h-0 lg:border-r lg:border-b-0">
-				<div className="flex h-12 shrink-0 items-center gap-2 border-border border-b px-3">
-					<p className="min-w-0 flex-1 truncate text-muted-foreground text-sm">
-						Click the map to set the marker position
-					</p>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						aria-label="Zoom out"
-						onClick={() => setZoom((value) => Math.max(50, value - 25))}
-						disabled={zoom === 50}
-					>
-						<MinusIcon />
-					</Button>
-					<span className="w-12 text-center text-muted-foreground text-sm tabular-nums">
-						{zoom}%
-					</span>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						aria-label="Zoom in"
-						onClick={() => setZoom((value) => Math.min(250, value + 25))}
-						disabled={zoom === 250}
-					>
-						<PlusIcon />
-					</Button>
-				</div>
-
-				<div className="min-h-0 flex-1 overflow-auto bg-muted/20 p-4">
-					<div
-						className="relative isolate mx-auto"
-						style={{
-							width: `${zoom}%`,
-							aspectRatio: `${image.width} / ${image.height}`,
-						}}
-					>
-						<img
-							src={image.path}
-							alt={image.altText}
-							width={image.width}
-							height={image.height}
-							draggable={false}
-							className="block size-full select-none object-contain"
-						/>
-						<button
-							type="button"
-							aria-label="Set marker position"
-							tabIndex={-1}
-							className="absolute inset-0 cursor-crosshair outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-							onClick={(event) => {
-								if (event.detail === 0) {
-									return;
-								}
-
-								const bounds = event.currentTarget.getBoundingClientRect();
-								const coordinates = pointerToBasisPoints({
-									pointerX: event.clientX - bounds.left,
-									pointerY: event.clientY - bounds.top,
-									width: bounds.width,
-									height: bounds.height,
-								});
-
-								updateDraft("xBasisPoints", coordinates.xBasisPoints);
-								updateDraft("yBasisPoints", coordinates.yBasisPoints);
-							}}
-						/>
-
-						{locations.map((location) => {
-							const isSelected = location.id === selectedLocation?.id;
-							const x = isSelected ? draft.xBasisPoints : location.xBasisPoints;
-							const y = isSelected ? draft.yBasisPoints : location.yBasisPoints;
-
-							return (
-								<MarkerButton
-									key={location.id}
-									name={location.name}
-									xBasisPoints={x}
-									yBasisPoints={y}
-									isSelected={isSelected}
-									isActive={location.isActive}
-									onClick={() => onSelectLocation(location.id)}
-								/>
-							);
-						})}
-
-						{!selectedLocation && (
-							<MarkerButton
-								name={draft.name || "New location"}
-								xBasisPoints={draft.xBasisPoints}
-								yBasisPoints={draft.yBasisPoints}
-								isSelected
-								isActive
-							/>
-						)}
-					</div>
-				</div>
-			</section>
+			<MapCanvas
+				image={image}
+				locations={locations}
+				selectedLocationId={selectedLocation?.id}
+				draftMarker={{
+					name: draft.name,
+					xBasisPoints: draft.xBasisPoints,
+					yBasisPoints: draft.yBasisPoints,
+					isActive: draft.isActive,
+				}}
+				onPositionChange={(position) =>
+					setDraft((current) => ({ ...current, ...position }))
+				}
+				onSelectLocation={onSelectLocation}
+			/>
 
 			<aside className="min-h-0 overflow-auto p-5">
 				<form
@@ -590,38 +504,35 @@ function LocationWorkspace({
 						</FieldDescription>
 
 						<FieldSet>
-							<FieldLegend variant="label">Documents</FieldLegend>
+							<FieldLegend variant="label">Document</FieldLegend>
+							<FieldDescription>
+								Each location represents one document and keeps its own
+								description and screenshots.
+							</FieldDescription>
 							{availableDocuments.length > 0 ? (
-								<FieldGroup className="gap-3">
-									{availableDocuments.map((document) => {
-										const checked = draft.documentIds.includes(document.id);
-
-										return (
-											<Field key={document.id} orientation="horizontal">
-												<Checkbox
-													id={`document-${document.id}`}
-													checked={checked}
-													onCheckedChange={(nextChecked) =>
-														updateDraft(
-															"documentIds",
-															nextChecked
-																? [...draft.documentIds, document.id]
-																: draft.documentIds.filter(
-																		(id) => id !== document.id,
-																	),
-														)
-													}
-												/>
-												<FieldLabel
-													htmlFor={`document-${document.id}`}
-													className="cursor-pointer normal-case tracking-normal"
-												>
-													{document.name}
-												</FieldLabel>
-											</Field>
-										);
-									})}
-								</FieldGroup>
+								<RadioGroup
+									name="documentId"
+									value={draft.documentId}
+									onValueChange={(documentId) =>
+										updateDraft("documentId", documentId)
+									}
+									required
+								>
+									{availableDocuments.map((document) => (
+										<Field key={document.id} orientation="horizontal">
+											<RadioGroupItem
+												id={`document-${document.id}`}
+												value={document.id}
+											/>
+											<FieldLabel
+												htmlFor={`document-${document.id}`}
+												className="cursor-pointer normal-case tracking-normal"
+											>
+												{document.name}
+											</FieldLabel>
+										</Field>
+									))}
+								</RadioGroup>
 							) : (
 								<FieldDescription>
 									No farmable documents are assigned to this map.
@@ -668,8 +579,7 @@ function LocationWorkspace({
 									<AlertDialogHeader>
 										<AlertDialogTitle>Delete this location?</AlertDialogTitle>
 										<AlertDialogDescription>
-											This permanently removes the marker and its document
-											links.
+											This permanently removes the marker and its document link.
 										</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
@@ -685,45 +595,6 @@ function LocationWorkspace({
 				</form>
 			</aside>
 		</>
-	);
-}
-
-type MarkerButtonProps = {
-	name: string;
-	xBasisPoints: number;
-	yBasisPoints: number;
-	isSelected: boolean;
-	isActive: boolean;
-	onClick?: () => void;
-};
-
-function MarkerButton({
-	name,
-	xBasisPoints,
-	yBasisPoints,
-	isSelected,
-	isActive,
-	onClick,
-}: MarkerButtonProps) {
-	return (
-		<button
-			type="button"
-			aria-label={`Edit ${name}`}
-			aria-pressed={isSelected}
-			disabled={!onClick}
-			onClick={onClick}
-			className={cn(
-				"absolute z-10 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-background bg-cinnamon text-cinnamon-foreground outline-none hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-100",
-				isSelected && "size-9 bg-rowdy-orange text-rowdy-orange-foreground",
-				!isActive && "opacity-50",
-			)}
-			style={{
-				left: `${xBasisPoints / 100}%`,
-				top: `${yBasisPoints / 100}%`,
-			}}
-		>
-			<MapPinIcon aria-hidden="true" weight="fill" />
-		</button>
 	);
 }
 
