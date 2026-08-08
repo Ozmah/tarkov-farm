@@ -18,31 +18,31 @@
 
 	--milk-mustache-foreground: var(--cosmic-ink);
 	--rowdy-orange-foreground: var(--cosmic-ink);
-	--cinnamon-foreground: var(--milk-mustache);
-	--suez-canal-foreground: var(--rowdy-orange);
-	--blue-opal-foreground: var(--rowdy-orange);
-	--cosmic-ink-foreground: var(--rowdy-orange);
+	--cinnamon-foreground: var(--cosmic-ink);
+	--suez-canal-foreground: var(--milk-mustache);
+	--blue-opal-foreground: var(--milk-mustache);
+	--cosmic-ink-foreground: var(--milk-mustache);
 
-	/* Cinnamon/Milk and Suez/Rowdy are reserved for large text (3:1 minimum). */
+	/* Cinnamon is decorative; semantic danger colors below are contrast-safe derivatives. */
 	--background: var(--milk-mustache);
 	--foreground: var(--milk-mustache-foreground);
-	--card: var(--milk-mustache);
+	--card: #fffaf2;
 	--card-foreground: var(--milk-mustache-foreground);
-	--popover: var(--milk-mustache);
+	--popover: #fffaf2;
 	--popover-foreground: var(--milk-mustache-foreground);
-	--primary: var(--rowdy-orange);
-	--primary-foreground: var(--rowdy-orange-foreground);
-	--secondary: var(--blue-opal);
-	--secondary-foreground: var(--blue-opal-foreground);
-	--muted: var(--milk-mustache);
-	--muted-foreground: var(--cosmic-ink);
-	--accent: var(--cosmic-ink);
-	--accent-foreground: var(--cosmic-ink-foreground);
-	--destructive: var(--cinnamon);
-	--destructive-foreground: var(--cinnamon-foreground);
-	--border: #06254033;
-	--input: #06254052;
-	--ring: var(--suez-canal);
+	--primary: var(--blue-opal);
+	--primary-foreground: var(--blue-opal-foreground);
+	--secondary: var(--suez-canal);
+	--secondary-foreground: var(--suez-canal-foreground);
+	--muted: #dce5e4;
+	--muted-foreground: var(--blue-opal);
+	--accent: #d7e3e8;
+	--accent-foreground: var(--cosmic-ink);
+	--destructive: #a94f00;
+	--destructive-foreground: var(--milk-mustache);
+	--border: #b7c8cc;
+	--input: var(--suez-canal);
+	--ring: var(--blue-opal);
 	--chart-1: var(--rowdy-orange);
 	--chart-2: var(--cinnamon);
 	--chart-3: var(--suez-canal);
@@ -55,42 +55,42 @@
 	--sidebar-primary-foreground: var(--rowdy-orange-foreground);
 	--sidebar-accent: var(--blue-opal);
 	--sidebar-accent-foreground: var(--blue-opal-foreground);
-	--sidebar-border: #eaa00752;
+	--sidebar-border: var(--suez-canal);
 	--sidebar-ring: var(--rowdy-orange);
 }
 
 .dark {
 	--background: var(--cosmic-ink);
-	--foreground: var(--cosmic-ink-foreground);
-	--card: var(--blue-opal);
-	--card-foreground: var(--blue-opal-foreground);
+	--foreground: var(--milk-mustache);
+	--card: #0e365a;
+	--card-foreground: var(--milk-mustache);
 	--popover: var(--blue-opal);
-	--popover-foreground: var(--blue-opal-foreground);
+	--popover-foreground: var(--milk-mustache);
 	--primary: var(--rowdy-orange);
 	--primary-foreground: var(--rowdy-orange-foreground);
-	--secondary: var(--milk-mustache);
-	--secondary-foreground: var(--milk-mustache-foreground);
+	--secondary: var(--blue-opal);
+	--secondary-foreground: var(--milk-mustache);
 	--muted: var(--blue-opal);
-	--muted-foreground: var(--blue-opal-foreground);
-	--accent: var(--rowdy-orange);
-	--accent-foreground: var(--rowdy-orange-foreground);
-	--destructive: var(--cinnamon);
-	--destructive-foreground: var(--cinnamon-foreground);
-	--border: #eaa00740;
-	--input: #eaa00766;
+	--muted-foreground: #b8c5c9;
+	--accent: var(--suez-canal);
+	--accent-foreground: var(--milk-mustache);
+	--destructive: #f29443;
+	--destructive-foreground: var(--cosmic-ink);
+	--border: #1b4f70;
+	--input: #5c8498;
 	--ring: var(--rowdy-orange);
 	--chart-1: var(--rowdy-orange);
 	--chart-2: var(--cinnamon);
 	--chart-3: var(--suez-canal);
 	--chart-4: var(--blue-opal);
 	--chart-5: var(--milk-mustache);
-	--sidebar: var(--cosmic-ink);
-	--sidebar-foreground: var(--cosmic-ink-foreground);
+	--sidebar: var(--card);
+	--sidebar-foreground: var(--milk-mustache);
 	--sidebar-primary: var(--rowdy-orange);
 	--sidebar-primary-foreground: var(--rowdy-orange-foreground);
-	--sidebar-accent: var(--blue-opal);
-	--sidebar-accent-foreground: var(--blue-opal-foreground);
-	--sidebar-border: #eaa00740;
+	--sidebar-accent: var(--suez-canal);
+	--sidebar-accent-foreground: var(--milk-mustache);
+	--sidebar-border: #1b4f70;
 	--sidebar-ring: var(--rowdy-orange);
 }
 
@@ -160,6 +160,13 @@
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
 		cursor: pointer;
+	}
+	button,
+	a,
+	input,
+	textarea,
+	select {
+		touch-action: manipulation;
 	}
 	html {
 		@apply font-sans;

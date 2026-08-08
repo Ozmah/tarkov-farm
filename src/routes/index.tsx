@@ -31,10 +31,10 @@ function App() {
 				documents={documents}
 			/>
 			<SidebarInset className="min-w-0">
-				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b px-4 sm:px-6">
+				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
 					<SidebarTrigger />
 					<Separator orientation="vertical" className="h-4" />
-					<p className="font-heading text-sm uppercase tracking-wide">
+					<p className="font-heading text-primary text-sm uppercase tracking-wide">
 						Map index
 					</p>
 					<p
@@ -59,7 +59,7 @@ function App() {
 										<Link
 											to="/maps/$mapId"
 											params={{ mapId: map.id }}
-											className="inline-flex max-w-full justify-center text-balance font-heading font-medium text-3xl text-foreground tracking-tight outline-none hover:underline hover:decoration-2 hover:decoration-cinnamon hover:underline-offset-8 focus-visible:ring-2 focus-visible:ring-ring sm:text-5xl lg:text-6xl"
+											className="inline-flex max-w-full justify-center text-balance font-heading font-medium text-3xl text-foreground tracking-tight outline-none transition-colors duration-150 ease-out hover:text-primary hover:underline hover:decoration-2 hover:decoration-cinnamon hover:underline-offset-8 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none sm:text-5xl lg:text-6xl"
 										>
 											{map.name}
 										</Link>

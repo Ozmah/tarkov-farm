@@ -23,7 +23,7 @@ import {
 } from "@/lib/editor-viewport";
 import { cn } from "@/lib/utils";
 
-const MIN_ZOOM_RATIO = 0.5;
+const MIN_ZOOM_RATIO = 1;
 const MAX_ZOOM_RATIO = 4;
 const ZOOM_BUTTON_STEP = 0.25;
 const WHEEL_SENSITIVITY = 0.0015;
@@ -389,8 +389,8 @@ export function MapCanvas({
 	};
 
 	return (
-		<section className="flex min-h-[50svh] min-w-0 flex-col border-border border-b lg:min-h-0 lg:border-r lg:border-b-0">
-			<div className="flex h-12 shrink-0 items-center gap-2 border-border border-b px-3">
+		<section className="flex min-h-[50svh] min-w-0 flex-col border-border border-b bg-background lg:min-h-0 lg:border-r lg:border-b-0">
+			<div className="flex h-19 shrink-0 items-center gap-2 border-border border-b bg-card px-3">
 				<p className="min-w-0 flex-1 truncate text-muted-foreground text-sm">
 					Wheel to zoom · Click to place · Middle or right drag to move
 				</p>
@@ -518,7 +518,7 @@ function MapMarker({
 	onClick,
 }: MapMarkerProps) {
 	const className = cn(
-		"absolute z-10 flex size-7 items-center justify-center rounded-full border-2 border-background bg-cinnamon text-cinnamon-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
+		"absolute z-10 flex size-7 items-center justify-center rounded-full border-2 border-background bg-cinnamon text-cinnamon-foreground outline-none after:absolute after:-inset-2 focus-visible:ring-2 focus-visible:ring-ring",
 		isSelected && "size-9 bg-rowdy-orange text-rowdy-orange-foreground",
 		!isActive && "opacity-50",
 	);

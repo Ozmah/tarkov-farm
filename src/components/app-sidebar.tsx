@@ -49,10 +49,10 @@ export function AppSidebar({
 					aria-label="Tarkov Season Documents homepage"
 					className="flex min-w-0 flex-col gap-1 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 				>
-					<span className="font-heading font-semibold text-base uppercase tracking-wide">
+					<span className="font-heading font-semibold text-base text-sidebar-primary uppercase tracking-wide">
 						Tarkov
 					</span>
-					<span className="text-sidebar-foreground text-sm">
+					<span className="text-sidebar-foreground/75 text-sm">
 						Season Documents
 					</span>
 				</Link>
@@ -68,14 +68,14 @@ export function AppSidebar({
 								>
 									<FileTextIcon />
 									<span>Documents</span>
-									<CaretRightIcon className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+									<CaretRightIcon className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90 motion-reduce:transition-none" />
 								</CollapsibleTrigger>
 								<CollapsibleContent>
 									<SidebarMenuSub>
 										{documents.map((document) => (
 											<SidebarMenuSubItem key={document.id}>
 												<p
-													className="min-w-0 px-3 py-1.5 text-sidebar-foreground text-sm"
+													className="min-w-0 px-3 py-1.5 text-sidebar-foreground/80 text-sm"
 													title={
 														document.isFilterable
 															? undefined

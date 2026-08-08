@@ -133,7 +133,7 @@ export function LocalMapEditor({
 
 	return (
 		<div className="isolate flex h-svh min-h-0 flex-col overflow-hidden bg-background">
-			<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b px-4 sm:px-6">
+			<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
 				<Link
 					to="/"
 					aria-label="Return to the map index"
@@ -202,8 +202,8 @@ export function LocalMapEditor({
 			</div>
 
 			<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[17rem_minmax(0,1fr)_22rem] lg:overflow-hidden">
-				<aside className="flex min-h-48 flex-col border-border border-b lg:min-h-0 lg:border-r lg:border-b-0">
-					<div className="flex items-center gap-3 p-4">
+				<aside className="flex min-h-48 flex-col border-border border-b bg-card lg:min-h-0 lg:border-r lg:border-b-0">
+					<div className="flex h-19 shrink-0 items-center gap-3 border-border border-b px-4">
 						<div className="min-w-0 flex-1">
 							<h2 className="font-heading font-medium text-sm">Locations</h2>
 							<p className="text-muted-foreground text-sm">
@@ -220,29 +220,38 @@ export function LocalMapEditor({
 							New
 						</Button>
 					</div>
-					<Separator />
-
 					{imageLocations.length > 0 ? (
 						<ul className="min-h-0 flex-1 overflow-auto py-2">
 							{imageLocations.map((location) => (
 								<li key={location.id}>
 									<button
 										type="button"
+										aria-pressed={selectedLocation?.id === location.id}
 										onClick={() =>
 											void onSearchChange({ location: location.id }, true)
 										}
 										className={cn(
-											"flex min-h-12 w-full items-center gap-3 px-4 py-2 text-left outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+											"flex min-h-12 w-full items-center gap-3 border-transparent border-l-2 px-4 py-2 text-left text-card-foreground outline-none transition-[color,background-color,border-color] duration-150 ease-out hover:border-primary hover:bg-accent/60 hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset motion-reduce:transition-none",
 											selectedLocation?.id === location.id &&
-												"bg-accent text-accent-foreground",
+												"border-primary bg-accent/80 text-accent-foreground hover:bg-accent/80",
 										)}
 									>
-										<MapPinIcon aria-hidden="true" className="shrink-0" />
+										<MapPinIcon
+											aria-hidden="true"
+											className="shrink-0"
+											weight={
+												selectedLocation?.id === location.id
+													? "fill"
+													: "regular"
+											}
+										/>
 										<span className="min-w-0 flex-1 truncate text-sm">
 											{location.name}
 										</span>
 										{!location.isActive && (
-											<Badge variant="secondary">Inactive</Badge>
+											<Badge variant="secondary" className="text-current">
+												Inactive
+											</Badge>
 										)}
 									</button>
 								</li>
@@ -408,7 +417,7 @@ function LocationWorkspace({
 				onSelectLocation={onSelectLocation}
 			/>
 
-			<aside className="min-h-0 overflow-auto p-5">
+			<aside className="min-h-0 overflow-auto bg-card p-5">
 				<form
 					onSubmit={(event) => {
 						event.preventDefault();
