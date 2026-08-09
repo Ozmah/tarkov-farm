@@ -16,18 +16,11 @@ export async function verifyPublicationAssets(
 	options: {
 		projectRoot: string;
 		rejectOrphans: boolean;
-		requireOriginals: boolean;
 	},
 ) {
 	const data = parsePublicationData(input);
 	const publicRoot = resolve(options.projectRoot, "public");
 	const screenshotRoot = resolve(publicRoot, "screenshots");
-	const originalRoot = resolve(
-		options.projectRoot,
-		"assets",
-		"screenshots",
-		"originals",
-	);
 	const expectedPaths = new Set<string>();
 
 	for (const location of data.locations) {
@@ -38,14 +31,6 @@ export async function verifyPublicationAssets(
 			]);
 			expectedPaths.add(screenshot.full.path);
 			expectedPaths.add(screenshot.preview.path);
-
-			if (options.requireOriginals) {
-				await verifyOriginal(
-					originalRoot,
-					location.id,
-					screenshot.sourceSha256,
-				);
-			}
 		}
 	}
 
@@ -173,44 +158,6 @@ async function verifyVariant(
 
 	if ((await hashFile(absolutePath)) !== asset.sha256) {
 		throw new Error(`Screenshot hash does not match ${asset.path}`);
-	}
-}
-
-async function verifyOriginal(
-	originalRoot: string,
-	locationId: string,
-	sourceSha256: string,
-) {
-	const directory = resolve(originalRoot, locationId);
-	await assertContainedPath(
-		directory,
-		originalRoot,
-		"Original screenshot directory",
-	);
-	const allowed = new Set([
-		`${sourceSha256}.jpg`,
-		`${sourceSha256}.png`,
-		`${sourceSha256}.webp`,
-	]);
-	const matches = (await readdir(directory)).filter((entry) =>
-		allowed.has(entry),
-	);
-
-	if (matches.length !== 1) {
-		throw new Error(
-			`Original screenshot ${sourceSha256} is missing or duplicated`,
-		);
-	}
-
-	const originalPath = resolve(directory, matches[0]);
-	await assertRegularContainedFile(
-		originalPath,
-		originalRoot,
-		"Original screenshot",
-	);
-
-	if ((await hashFile(originalPath)) !== sourceSha256) {
-		throw new Error(`Original screenshot hash does not match ${matches[0]}`);
 	}
 }
 

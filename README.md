@@ -13,6 +13,8 @@ bun install
 bun run dev
 ```
 
+On first run, the project creates the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`. If the database already exists, startup leaves it untouched.
+
 The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server; it is unavailable outside a loopback environment.
 
 ### Generate map masters
@@ -27,9 +29,9 @@ The command processes each image in an isolated subprocess and atomically replac
 
 ### Location screenshots
 
-The local editor requires at least one screenshot per location. Uploaded JPEG, PNG, and WebP files are processed offline in isolated Bun subprocesses. The editor writes 1000px and 1920px WebP variants to `public/screenshots/<location-id>` and keeps source files under the ignored `assets/screenshots/originals` directory.
+The local editor requires at least one screenshot per location. Uploaded JPEG, PNG, and WebP files are processed offline in isolated Bun subprocesses. The editor writes versioned 1000px and 1920px WebP variants to `public/screenshots/<location-id>`. Original uploads are kept locally under the ignored `assets/screenshots/originals` directory but are not required to run or reconstruct the application.
 
-Before publishing a database snapshot, verify that every location references complete static assets:
+Verify the versioned publication manifest and its static assets with:
 
 ```bash
 bun run screenshots:check
@@ -39,13 +41,13 @@ bun run screenshots:check
 
 ### Publication data
 
-After editing locations, stop the development server and export the canonical, versioned publication data:
+After editing locations, stop the development server and replace the versioned publication manifest with the current local data:
 
 ```bash
-bun run db:export
+bun run db:manifest
 ```
 
-The command reads a consistent database snapshot, validates publication relationships and screenshot metadata, verifies the ignored originals, hashes both published WebP variants, and atomically updates `data/publication/locations.json`. SQLite remains the local authoring store; this JSON is the versioned location-content artifact that the clean baseline will import.
+Commit `data/publication/locations.json` together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
 
 ## Built with
 

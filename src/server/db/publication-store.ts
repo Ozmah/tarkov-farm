@@ -23,70 +23,8 @@ export async function importPublicationData(
 	input: PublicationData,
 ) {
 	const data = parsePublicationData(input);
+	await assertPublicationReferences(client, data);
 	const db = drizzle({ client });
-	const imageRows = await db
-		.select({
-			id: mapImages.id,
-			isCurrent: mapImages.isCurrent,
-			mapId: mapImages.mapId,
-		})
-		.from(mapImages)
-		.all();
-	const mapRows = await db
-		.select({ id: maps.id, isActive: maps.isActive })
-		.from(maps)
-		.all();
-	const documentRows = await db
-		.select({
-			id: documents.id,
-			isActive: documents.isActive,
-			isFilterable: documents.isFilterable,
-		})
-		.from(documents)
-		.all();
-	const documentMapRows = await db
-		.select({ documentId: documentMaps.documentId, mapId: documentMaps.mapId })
-		.from(documentMaps)
-		.all();
-	const imageById = new Map(imageRows.map((image) => [image.id, image]));
-	const activeMapIds = new Set(
-		mapRows.filter(({ isActive }) => isActive).map(({ id }) => id),
-	);
-	const documentById = new Map(
-		documentRows.map((document) => [document.id, document]),
-	);
-	const allowedDocumentMaps = new Set(
-		documentMapRows.map(({ documentId, mapId }) =>
-			relationKey(documentId, mapId),
-		),
-	);
-
-	for (const location of data.locations) {
-		const image = imageById.get(location.mapImageId);
-
-		if (!image?.isCurrent || !activeMapIds.has(image.mapId)) {
-			throw new Error(
-				`Location ${location.id} references an unpublished map image`,
-			);
-		}
-
-		const document = documentById.get(location.documentId);
-
-		if (!document?.isActive || !document.isFilterable) {
-			throw new Error(
-				`Location ${location.id} references an unpublished document`,
-			);
-		}
-
-		if (
-			!allowedDocumentMaps.has(relationKey(location.documentId, image.mapId))
-		) {
-			throw new Error(
-				`Location ${location.id} document is not available on map ${image.mapId}`,
-			);
-		}
-	}
-
 	const screenshotCount = data.locations.reduce(
 		(total, location) => total + location.screenshots.length,
 		0,
@@ -162,6 +100,76 @@ export async function importPublicationData(
 		locationDocuments: data.locations.length,
 		screenshots: screenshotCount,
 	};
+}
+
+export async function assertPublicationReferences(
+	client: Database,
+	input: PublicationData,
+) {
+	const data = parsePublicationData(input);
+	const db = drizzle({ client });
+	const imageRows = await db
+		.select({
+			id: mapImages.id,
+			isCurrent: mapImages.isCurrent,
+			mapId: mapImages.mapId,
+		})
+		.from(mapImages)
+		.all();
+	const mapRows = await db
+		.select({ id: maps.id, isActive: maps.isActive })
+		.from(maps)
+		.all();
+	const documentRows = await db
+		.select({
+			id: documents.id,
+			isActive: documents.isActive,
+			isFilterable: documents.isFilterable,
+		})
+		.from(documents)
+		.all();
+	const documentMapRows = await db
+		.select({ documentId: documentMaps.documentId, mapId: documentMaps.mapId })
+		.from(documentMaps)
+		.all();
+	const imageById = new Map(imageRows.map((image) => [image.id, image]));
+	const activeMapIds = new Set(
+		mapRows.filter(({ isActive }) => isActive).map(({ id }) => id),
+	);
+	const documentById = new Map(
+		documentRows.map((document) => [document.id, document]),
+	);
+	const allowedDocumentMaps = new Set(
+		documentMapRows.map(({ documentId, mapId }) =>
+			relationKey(documentId, mapId),
+		),
+	);
+
+	for (const location of data.locations) {
+		const image = imageById.get(location.mapImageId);
+
+		if (!image?.isCurrent || !activeMapIds.has(image.mapId)) {
+			throw new Error(
+				`Location ${location.id} references an unpublished map image`,
+			);
+		}
+
+		const document = documentById.get(location.documentId);
+
+		if (!document?.isActive || !document.isFilterable) {
+			throw new Error(
+				`Location ${location.id} references an unpublished document`,
+			);
+		}
+
+		if (
+			!allowedDocumentMaps.has(relationKey(location.documentId, image.mapId))
+		) {
+			throw new Error(
+				`Location ${location.id} document is not available on map ${image.mapId}`,
+			);
+		}
+	}
 }
 
 export async function assertPublicationImportCounts(
