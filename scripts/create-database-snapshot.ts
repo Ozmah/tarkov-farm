@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { Stats } from "node:fs";
+import { createReadStream, type Stats } from "node:fs";
 import {
 	lstat,
 	mkdir,
@@ -420,7 +420,7 @@ async function verifyPublicFile(
 async function hashFile(path: string) {
 	const hash = createHash("sha256");
 
-	for await (const chunk of Bun.file(path).stream()) {
+	for await (const chunk of createReadStream(path)) {
 		hash.update(chunk);
 	}
 

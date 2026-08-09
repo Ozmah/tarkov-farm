@@ -12,6 +12,7 @@
 		"images:masters": "bun scripts/generate-map-masters.ts",
 		"screenshots:check": "bun scripts/check-location-screenshots.ts",
 		"db:generate": "drizzle-kit generate",
+		"db:export": "bun scripts/export-publication-data.ts",
 		"db:migrate": "bun src/server/db/migrate.ts",
 		"db:seed": "bun src/server/db/seed.ts",
 		"db:snapshot": "bun scripts/create-database-snapshot.ts",

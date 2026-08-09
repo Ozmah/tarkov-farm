@@ -37,6 +37,16 @@ bun run screenshots:check
 
 `bun run release:check` runs the complete code, build, and screenshot validation suite.
 
+### Publication data
+
+After editing locations, stop the development server and export the canonical, versioned publication data:
+
+```bash
+bun run db:export
+```
+
+The command reads a consistent database snapshot, validates publication relationships and screenshot metadata, verifies the ignored originals, hashes both published WebP variants, and atomically updates `data/publication/locations.json`. SQLite remains the local authoring store; this JSON is the versioned location-content artifact that the clean baseline will import.
+
 ## Built with
 
 - [TanStack Start](https://tanstack.com/start/latest)

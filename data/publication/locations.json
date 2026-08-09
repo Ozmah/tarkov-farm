@@ -1,0 +1,353 @@
+{
+	"formatVersion": 1,
+	"locations": [
+		{
+			"description": "Second floor table beside the item box",
+			"documentId": "test",
+			"id": "28516dbe-5baf-452f-90f7-8dd35c54e943",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Two Floor Old Sawmill",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 801,
+						"path": "/screenshots/28516dbe-5baf-452f-90f7-8dd35c54e943/da25a6933ec410647801f098fa09e82d91086e1afee1c5af7afeaf241ded76f3-1920.webp",
+						"sha256": "445089f57d06855b42d1205652cc1c4e088c4656221480ca97362ff6b1d2aad5",
+						"width": 1920
+					},
+					"id": "6f1eb61b-0e0f-4cda-b728-a01467c1738a",
+					"isActive": true,
+					"preview": {
+						"height": 417,
+						"path": "/screenshots/28516dbe-5baf-452f-90f7-8dd35c54e943/da25a6933ec410647801f098fa09e82d91086e1afee1c5af7afeaf241ded76f3-1000.webp",
+						"sha256": "f55dd0470f6bdc5d6ca4e85db8977336e6a1d4bba29940f9257f2800bb88b4f0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "da25a6933ec410647801f098fa09e82d91086e1afee1c5af7afeaf241ded76f3"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1018,
+						"path": "/screenshots/28516dbe-5baf-452f-90f7-8dd35c54e943/7f6579130fce50533fc9be82722491883cf08f597cdabfa804233fc15505d6f5-1920.webp",
+						"sha256": "c457e4a63435821da4437f1fbbceb86b5d688eb880e916b9b98098990dce8c24",
+						"width": 1920
+					},
+					"id": "220edb6d-0c9b-4c0f-be8a-b0aaf790268e",
+					"isActive": true,
+					"preview": {
+						"height": 530,
+						"path": "/screenshots/28516dbe-5baf-452f-90f7-8dd35c54e943/7f6579130fce50533fc9be82722491883cf08f597cdabfa804233fc15505d6f5-1000.webp",
+						"sha256": "5097c9fdf8e9152339a064b0125ec468056f706491aa7bcaeff07ff343075f8c",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "7f6579130fce50533fc9be82722491883cf08f597cdabfa804233fc15505d6f5"
+				}
+			],
+			"xBasisPoints": 8291,
+			"yBasisPoints": 4166
+		},
+		{
+			"description": "Inside over the file cabinet",
+			"documentId": "test",
+			"id": "2d9a1b6f-15e0-4891-aefb-6b107c1c9bf0",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Usec checkpoint cabinet",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 911,
+						"path": "/screenshots/2d9a1b6f-15e0-4891-aefb-6b107c1c9bf0/25efe38986a55bce5386164ce8b624adcf5cd441f7ddf28dd8426ceffc94963f-1920.webp",
+						"sha256": "79d5880cbe5054975b9638a46c4605ab0f5989815ad1b31735c267565847ae99",
+						"width": 1920
+					},
+					"id": "d576a0f0-d058-40d1-b076-e6dc34f36d05",
+					"isActive": true,
+					"preview": {
+						"height": 475,
+						"path": "/screenshots/2d9a1b6f-15e0-4891-aefb-6b107c1c9bf0/25efe38986a55bce5386164ce8b624adcf5cd441f7ddf28dd8426ceffc94963f-1000.webp",
+						"sha256": "168f342be4efc146bd81f8d947146486f27560692528c2e59c9e8c1b85e71d96",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "25efe38986a55bce5386164ce8b624adcf5cd441f7ddf28dd8426ceffc94963f"
+				}
+			],
+			"xBasisPoints": 3143,
+			"yBasisPoints": 4983
+		},
+		{
+			"description": "Inside crackhouse on the floor near the bookshelves",
+			"documentId": "financial",
+			"id": "38a104fc-4286-4a4a-9d92-b43328010d38",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Bookshelves",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 562,
+						"path": "/screenshots/38a104fc-4286-4a4a-9d92-b43328010d38/7da2deb29fd85fb3b0c056947916e9d89e1a0cbba2fcc2f886cbac8ec4e2b754-1920.webp",
+						"sha256": "cac48f3611cfeb5e3a4ec9b424dc28f6d2a558900ce6e5280f353b7922bb1faf",
+						"width": 1000
+					},
+					"id": "dae85ad5-74bd-4cea-8f2e-c20bda931f08",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/38a104fc-4286-4a4a-9d92-b43328010d38/7da2deb29fd85fb3b0c056947916e9d89e1a0cbba2fcc2f886cbac8ec4e2b754-1000.webp",
+						"sha256": "9c59bc3c2fa7a3a241b54ef77ff8914d186ff76e9dd20579c52fda878dc4d727",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7da2deb29fd85fb3b0c056947916e9d89e1a0cbba2fcc2f886cbac8ec4e2b754"
+				}
+			],
+			"xBasisPoints": 5840,
+			"yBasisPoints": 3424
+		},
+		{
+			"description": "Inside 3 story dorms, in room 304 on the nightstand.",
+			"documentId": "financial",
+			"id": "3d162a75-0829-450e-a9cf-43a06fd39b2e",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "304",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 563,
+						"path": "/screenshots/3d162a75-0829-450e-a9cf-43a06fd39b2e/75405900a5a9e3ddafff163d5c2422bdb835206662b018b6818c1c84d358eb72-1920.webp",
+						"sha256": "1e10c7ec30ed13197e3b26c93a7bb41b16845422c597aa19f30d41a65242eb64",
+						"width": 1000
+					},
+					"id": "69aa1dc5-0255-45b0-b8d2-849643c841c5",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/3d162a75-0829-450e-a9cf-43a06fd39b2e/75405900a5a9e3ddafff163d5c2422bdb835206662b018b6818c1c84d358eb72-1000.webp",
+						"sha256": "b0bc17e5faa3fb1992aadf2661564a0e78b57241d45a616b1fa93ab2835e35f9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "75405900a5a9e3ddafff163d5c2422bdb835206662b018b6818c1c84d358eb72"
+				}
+			],
+			"xBasisPoints": 4954,
+			"yBasisPoints": 6677
+		},
+		{
+			"description": "Inside crackhouse on the backshelf upstairs.",
+			"documentId": "financial",
+			"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Bookshelves 2",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1129,
+						"path": "/screenshots/7f66d17a-a75f-48c1-b8d5-162c0fafc633/30c3a85915fbe71e99960951359f6b7c9a604787ae8d5383f7a7a419f6af9e4f-1920.webp",
+						"sha256": "9b630ce1943ee40181c81a95e8937d69c0f90ffbc5ae95e32df884e26d43ed74",
+						"width": 886
+					},
+					"id": "13c9ac1f-a626-4115-b168-5e008bc8c3ce",
+					"isActive": true,
+					"preview": {
+						"height": 1000,
+						"path": "/screenshots/7f66d17a-a75f-48c1-b8d5-162c0fafc633/30c3a85915fbe71e99960951359f6b7c9a604787ae8d5383f7a7a419f6af9e4f-1000.webp",
+						"sha256": "52f925974e6dd028962b773391cdbdbf1b0f53accab346f514f0265d71fdb439",
+						"width": 785
+					},
+					"sortOrder": 0,
+					"sourceSha256": "30c3a85915fbe71e99960951359f6b7c9a604787ae8d5383f7a7a419f6af9e4f"
+				}
+			],
+			"xBasisPoints": 5852,
+			"yBasisPoints": 3473
+		},
+		{
+			"description": "Near medical containers, over a box",
+			"documentId": "technical",
+			"id": "892da9b5-205d-4fc3-8fde-bce5afe39c31",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Emercon  box",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 889,
+						"path": "/screenshots/892da9b5-205d-4fc3-8fde-bce5afe39c31/a1d84a42a0efedda7afa8645df3b0eeae1dbef12482eb3a1a1a572c05623f6d0-1920.webp",
+						"sha256": "4ab592d5590def8ba6cdd8448bcaef42590121a7ceab0ce046602f4581b0ca1a",
+						"width": 1920
+					},
+					"id": "1036bc6b-c13b-4474-854e-b5b5a2aa8080",
+					"isActive": true,
+					"preview": {
+						"height": 463,
+						"path": "/screenshots/892da9b5-205d-4fc3-8fde-bce5afe39c31/a1d84a42a0efedda7afa8645df3b0eeae1dbef12482eb3a1a1a572c05623f6d0-1000.webp",
+						"sha256": "dd1f0c24f92679465e31163d4d582728ed9ceac1d3147b5d8fb178ccf5fc8f2e",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a1d84a42a0efedda7afa8645df3b0eeae1dbef12482eb3a1a1a572c05623f6d0"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 811,
+						"path": "/screenshots/892da9b5-205d-4fc3-8fde-bce5afe39c31/ee9dbe36faa9f7708533a35f6b91924d8a5d08687838d77b730693b071cecb4e-1920.webp",
+						"sha256": "9fd3dbeedbb9de97a1a41419ac986bc957f9451363cbd798a4796bd46662261c",
+						"width": 1920
+					},
+					"id": "f9c32ac5-cc1a-462d-b9dc-d03d842c53ab",
+					"isActive": true,
+					"preview": {
+						"height": 422,
+						"path": "/screenshots/892da9b5-205d-4fc3-8fde-bce5afe39c31/ee9dbe36faa9f7708533a35f6b91924d8a5d08687838d77b730693b071cecb4e-1000.webp",
+						"sha256": "c0ea3c38cbd5fea172abd6cdbc34e5e2cf5facaa3b85fed570c46ae6f8ff08e5",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "ee9dbe36faa9f7708533a35f6b91924d8a5d08687838d77b730693b071cecb4e"
+				}
+			],
+			"xBasisPoints": 6158,
+			"yBasisPoints": 6434
+		},
+		{
+			"description": "Inside the shack above the file cabinet",
+			"documentId": "financial",
+			"id": "bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Blue Shack",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 519,
+						"path": "/screenshots/bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f/619f51037fac289b00ea6c45d828016a9ec996e476ec851eb62a2425832e01db-1920.webp",
+						"sha256": "a392fc33fde612e6915fec6eba013d5fe16fe99ec40ff21dd9be5d3b6d9a4fac",
+						"width": 1000
+					},
+					"id": "a6b93b8e-a0ca-4c21-9ab5-1735e2016413",
+					"isActive": true,
+					"preview": {
+						"height": 519,
+						"path": "/screenshots/bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f/619f51037fac289b00ea6c45d828016a9ec996e476ec851eb62a2425832e01db-1000.webp",
+						"sha256": "38e609b16e5dfcfca8c597494228594695ffaa742b09d7807e9bd777c6b348fc",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "619f51037fac289b00ea6c45d828016a9ec996e476ec851eb62a2425832e01db"
+				}
+			],
+			"xBasisPoints": 8476,
+			"yBasisPoints": 4837
+		},
+		{
+			"description": "Inside the residential unit using the card, over the desk next to the laptop",
+			"documentId": "user",
+			"id": "cd3d600a-6ac8-4f94-9bc7-9cf8d95973c8",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Residential Unit Table",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 882,
+						"path": "/screenshots/cd3d600a-6ac8-4f94-9bc7-9cf8d95973c8/7e36e2e66d9a86c38a261ce2497bf4ae1b7dc2a69a36cd71ade548bbee71ebc6-1920.webp",
+						"sha256": "64543c9150f1c33bd07fb75fcaf29efae3044c29c3b088a19c1f581387ddb4c0",
+						"width": 1920
+					},
+					"id": "221bd08c-d0f5-4422-bc38-b1c656bead99",
+					"isActive": true,
+					"preview": {
+						"height": 459,
+						"path": "/screenshots/cd3d600a-6ac8-4f94-9bc7-9cf8d95973c8/7e36e2e66d9a86c38a261ce2497bf4ae1b7dc2a69a36cd71ade548bbee71ebc6-1000.webp",
+						"sha256": "208707621109fa5c410c9a81e3568459af819db59f41319e5af139bf8398e3cc",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7e36e2e66d9a86c38a261ce2497bf4ae1b7dc2a69a36cd71ade548bbee71ebc6"
+				}
+			],
+			"xBasisPoints": 2962,
+			"yBasisPoints": 8373
+		},
+		{
+			"description": "Desk at the end of the room outside red",
+			"documentId": "user",
+			"id": "da7c2f4a-1e5d-4987-b83f-f7a595b6297a",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Outside red table",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 932,
+						"path": "/screenshots/da7c2f4a-1e5d-4987-b83f-f7a595b6297a/dfe5ac7d2e76eb1beded32c51bd1b655132727de73c24c37f46ea54af83a28a0-1920.webp",
+						"sha256": "683157d2617292e6518b7e7dbf02a8248fe63eaf3e8b9257d8801e4e3d619add",
+						"width": 1920
+					},
+					"id": "9d070406-f800-41c2-a865-87267e3d4ca5",
+					"isActive": true,
+					"preview": {
+						"height": 485,
+						"path": "/screenshots/da7c2f4a-1e5d-4987-b83f-f7a595b6297a/dfe5ac7d2e76eb1beded32c51bd1b655132727de73c24c37f46ea54af83a28a0-1000.webp",
+						"sha256": "d7d42ccdba94279b5920d759fe9a5fc677e936f550d9d9767377d1f359e56d7f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "dfe5ac7d2e76eb1beded32c51bd1b655132727de73c24c37f46ea54af83a28a0"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 908,
+						"path": "/screenshots/da7c2f4a-1e5d-4987-b83f-f7a595b6297a/c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11-1920.webp",
+						"sha256": "ba80a4c7b36515e21f2642ce26d2efa215d92f7255285e0940b3692d909a3405",
+						"width": 1920
+					},
+					"id": "f2262043-a8e5-4e7a-ae93-0e0a67f48710",
+					"isActive": true,
+					"preview": {
+						"height": 473,
+						"path": "/screenshots/da7c2f4a-1e5d-4987-b83f-f7a595b6297a/c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11-1000.webp",
+						"sha256": "f5ad1d19f4ed7c7f7f29cfc70e6efb4f9a73a130342c45de8240a58b43db5c57",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11"
+				}
+			],
+			"xBasisPoints": 5000,
+			"yBasisPoints": 5000
+		}
+	]
+}
