@@ -13,6 +13,7 @@ __unconfig*
 todos.json
 data/*.sqlite*
 data/backups/
+data/rebuild/
 assets/maps/originals/
 assets/screenshots/originals/
 

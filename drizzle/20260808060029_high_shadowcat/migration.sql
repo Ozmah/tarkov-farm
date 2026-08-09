@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX `location_documents_location_id_unique` ON `location_documents` (`location_id`);

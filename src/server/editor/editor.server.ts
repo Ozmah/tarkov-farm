@@ -39,6 +39,7 @@ export async function readEditorData() {
 			isActive: maps.isActive,
 		})
 		.from(maps)
+		.where(eq(maps.isActive, true))
 		.orderBy(asc(maps.name))
 		.all();
 	const imageRows = await db
@@ -53,7 +54,8 @@ export async function readEditorData() {
 			height: mapImages.height,
 		})
 		.from(mapImages)
-		.where(eq(mapImages.isCurrent, true))
+		.innerJoin(maps, eq(maps.id, mapImages.mapId))
+		.where(and(eq(mapImages.isCurrent, true), eq(maps.isActive, true)))
 		.orderBy(
 			asc(mapImages.mapId),
 			desc(eq(mapImages.viewKey, "main")),
@@ -92,7 +94,6 @@ export async function readEditorData() {
 			height: screenshots.height,
 			previewWidth: screenshots.previewWidth,
 			previewHeight: screenshots.previewHeight,
-			contentHash: screenshots.contentHash,
 			sortOrder: screenshots.sortOrder,
 		})
 		.from(screenshots)
@@ -141,8 +142,13 @@ async function saveEditorLocationLocked(
 	const image = await db
 		.select({ mapId: mapImages.mapId })
 		.from(mapImages)
+		.innerJoin(maps, eq(maps.id, mapImages.mapId))
 		.where(
-			and(eq(mapImages.id, location.mapImageId), eq(mapImages.isCurrent, true)),
+			and(
+				eq(mapImages.id, location.mapImageId),
+				eq(mapImages.isCurrent, true),
+				eq(maps.isActive, true),
+			),
 		)
 		.get();
 
@@ -192,7 +198,10 @@ async function saveEditorLocationLocked(
 					height: screenshots.height,
 					previewWidth: screenshots.previewWidth,
 					previewHeight: screenshots.previewHeight,
-					contentHash: screenshots.contentHash,
+					fullHash: screenshots.fullHash,
+					isActive: screenshots.isActive,
+					previewHash: screenshots.previewHash,
+					sourceHash: screenshots.sourceHash,
 				})
 				.from(screenshots)
 				.where(eq(screenshots.locationId, locationId))
@@ -227,7 +236,6 @@ async function saveEditorLocationLocked(
 					altText: screenshot.altText,
 					caption: screenshot.caption,
 					sortOrder,
-					isActive: true,
 				};
 			}
 
@@ -248,11 +256,9 @@ async function saveEditorLocationLocked(
 				isActive: true,
 			};
 		});
-		const contentHashes = finalScreenshots.flatMap(({ contentHash }) =>
-			contentHash ? [contentHash] : [],
-		);
+		const sourceHashes = finalScreenshots.map(({ sourceHash }) => sourceHash);
 
-		if (new Set(contentHashes).size !== contentHashes.length) {
+		if (new Set(sourceHashes).size !== sourceHashes.length) {
 			throw new Error("The same screenshot cannot be attached twice");
 		}
 
@@ -304,15 +310,13 @@ async function saveEditorLocationLocked(
 			input.screenshots.flatMap(({ id }) => (id ? [id] : [])),
 		);
 		const retainedPaths = new Set(
-			finalScreenshots.flatMap(({ path, previewPath }) =>
-				previewPath ? [path, previewPath] : [path],
-			),
+			finalScreenshots.flatMap(({ path, previewPath }) => [path, previewPath]),
 		);
 		const removedScreenshots = existingScreenshotRows.filter(
 			({ id, path, previewPath }) =>
 				!retainedIds.has(id) &&
 				!retainedPaths.has(path) &&
-				(!previewPath || !retainedPaths.has(previewPath)),
+				!retainedPaths.has(previewPath),
 		);
 
 		try {

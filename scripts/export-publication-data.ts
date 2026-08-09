@@ -257,29 +257,24 @@ async function readPublicationData(client: Database): Promise<PublicationData> {
 		const publicationScreenshots = [];
 
 		for (const screenshot of locationScreenshots) {
-			if (
-				!screenshot.contentHash ||
-				!screenshot.previewPath ||
-				!screenshot.previewWidth ||
-				!screenshot.previewHeight
-			) {
-				throw new Error(
-					`Screenshot ${screenshot.id} has incomplete publication metadata`,
-				);
-			}
-
 			await verifyOriginalSourceAtRoot(
 				ORIGINAL_ROOT,
 				location.id,
-				screenshot.contentHash,
+				screenshot.sourceHash,
 			);
 
 			const [full, preview] = await Promise.all([
-				readAsset(screenshot.path, screenshot.width, screenshot.height),
+				readAsset(
+					screenshot.path,
+					screenshot.width,
+					screenshot.height,
+					screenshot.fullHash,
+				),
 				readAsset(
 					screenshot.previewPath,
 					screenshot.previewWidth,
 					screenshot.previewHeight,
+					screenshot.previewHash,
 				),
 			]);
 
@@ -291,7 +286,7 @@ async function readPublicationData(client: Database): Promise<PublicationData> {
 				isActive: screenshot.isActive,
 				preview,
 				sortOrder: screenshot.sortOrder,
-				sourceSha256: screenshot.contentHash,
+				sourceSha256: screenshot.sourceHash,
 			});
 		}
 
@@ -315,6 +310,7 @@ async function readAsset(
 	publicPath: string,
 	expectedWidth: number,
 	expectedHeight: number,
+	expectedHash: string,
 ): Promise<PublicationAsset> {
 	if (!publicPath.startsWith("/") || publicPath.includes("\\")) {
 		throw new Error(`Invalid public asset path: ${publicPath}`);
@@ -348,10 +344,16 @@ async function readAsset(
 		);
 	}
 
+	const actualHash = await hashFile(absolutePath);
+
+	if (actualHash !== expectedHash) {
+		throw new Error(`Asset hash does not match ${publicPath}`);
+	}
+
 	return {
 		height: expectedHeight,
 		path: publicPath,
-		sha256: await hashFile(absolutePath),
+		sha256: actualHash,
 		width: expectedWidth,
 	};
 }

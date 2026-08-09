@@ -1,8 +1,8 @@
 {
 	"version": "7",
 	"dialect": "sqlite",
-	"id": "8eed24db-abec-49d9-a9b4-1c29b18a8da3",
-	"prevIds": ["bce1eb53-79db-4c00-8487-0dfe858523d6"],
+	"id": "c0aeb8a5-e7f1-4220-bcfe-69254f7a8fd2",
+	"prevIds": ["00000000-0000-0000-0000-000000000000"],
 	"ddl": [
 		{
 			"name": "document_maps",
@@ -314,7 +314,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -404,7 +404,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -454,7 +454,7 @@
 		},
 		{
 			"type": "integer",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -464,7 +464,7 @@
 		},
 		{
 			"type": "integer",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -474,11 +474,31 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
-			"name": "content_hash",
+			"name": "source_hash",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "full_hash",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "preview_hash",
 			"entityType": "columns",
 			"table": "screenshots"
 		},
@@ -737,14 +757,14 @@
 					"isExpression": false
 				},
 				{
-					"value": "content_hash",
+					"value": "source_hash",
 					"isExpression": false
 				}
 			],
 			"isUnique": true,
 			"where": null,
 			"origin": "manual",
-			"name": "screenshots_location_content_hash_unique",
+			"name": "screenshots_location_source_hash_unique",
 			"entityType": "indexes",
 			"table": "screenshots"
 		},
@@ -761,6 +781,12 @@
 			"name": "maps_name_unique",
 			"entityType": "uniques",
 			"table": "maps"
+		},
+		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "documents_id_not_null",
+			"entityType": "checks",
+			"table": "documents"
 		},
 		{
 			"value": "\"acquisition_type\" IN ('raid', 'store')",
@@ -799,6 +825,12 @@
 			"table": "documents"
 		},
 		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "locations_id_not_null",
+			"entityType": "checks",
+			"table": "locations"
+		},
+		{
 			"value": "\"x_basis_points\" BETWEEN 0 AND 10000",
 			"name": "locations_x_basis_points_normalized",
 			"entityType": "checks",
@@ -815,6 +847,12 @@
 			"name": "locations_is_active_boolean",
 			"entityType": "checks",
 			"table": "locations"
+		},
+		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "map_images_id_not_null",
+			"entityType": "checks",
+			"table": "map_images"
 		},
 		{
 			"value": "length(trim(\"view_key\")) > 0",
@@ -841,16 +879,34 @@
 			"table": "map_images"
 		},
 		{
+			"value": "length(\"content_hash\") = 64 AND \"content_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "map_images_content_hash_sha256",
+			"entityType": "checks",
+			"table": "map_images"
+		},
+		{
 			"value": "\"is_current\" IN (0, 1)",
 			"name": "map_images_is_current_boolean",
 			"entityType": "checks",
 			"table": "map_images"
 		},
 		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "maps_id_not_null",
+			"entityType": "checks",
+			"table": "maps"
+		},
+		{
 			"value": "\"is_active\" IN (0, 1)",
 			"name": "maps_is_active_boolean",
 			"entityType": "checks",
 			"table": "maps"
+		},
+		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "screenshots_id_not_null",
+			"entityType": "checks",
+			"table": "screenshots"
 		},
 		{
 			"value": "\"width\" > 0",
@@ -865,20 +921,32 @@
 			"table": "screenshots"
 		},
 		{
-			"value": "\"preview_width\" IS NULL OR \"preview_width\" > 0",
+			"value": "\"preview_width\" > 0",
 			"name": "screenshots_preview_width_positive",
 			"entityType": "checks",
 			"table": "screenshots"
 		},
 		{
-			"value": "\"preview_height\" IS NULL OR \"preview_height\" > 0",
+			"value": "\"preview_height\" > 0",
 			"name": "screenshots_preview_height_positive",
 			"entityType": "checks",
 			"table": "screenshots"
 		},
 		{
-			"value": "(\"preview_path\" IS NULL AND \"preview_width\" IS NULL AND \"preview_height\" IS NULL) OR (\"preview_path\" IS NOT NULL AND \"preview_width\" IS NOT NULL AND \"preview_height\" IS NOT NULL)",
-			"name": "screenshots_preview_fields_complete",
+			"value": "length(\"source_hash\") = 64 AND \"source_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_source_hash_sha256",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "length(\"full_hash\") = 64 AND \"full_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_full_hash_sha256",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "length(\"preview_hash\") = 64 AND \"preview_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_preview_hash_sha256",
 			"entityType": "checks",
 			"table": "screenshots"
 		},

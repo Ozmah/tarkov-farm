@@ -810,11 +810,11 @@ function createScreenshotDrafts(
 		.map((screenshot) => ({
 			altText: screenshot.altText,
 			caption: screenshot.caption ?? "",
-			height: screenshot.previewHeight ?? screenshot.height,
+			height: screenshot.previewHeight,
 			id: screenshot.id,
 			key: screenshot.id,
-			previewUrl: screenshot.previewPath ?? screenshot.path,
-			width: screenshot.previewWidth ?? screenshot.width,
+			previewUrl: screenshot.previewPath,
+			width: screenshot.previewWidth,
 		}));
 }
 

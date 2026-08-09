@@ -18,9 +18,9 @@ type LocationScreenshot = {
 	height: number;
 	id: string;
 	path: string;
-	previewHeight: number | null;
-	previewPath: string | null;
-	previewWidth: number | null;
+	previewHeight: number;
+	previewPath: string;
+	previewWidth: number;
 	width: number;
 };
 
@@ -125,10 +125,10 @@ export function LocationDetailsPanel({
 										className="outline-none focus-visible:ring-2 focus-visible:ring-ring"
 									>
 										<img
-											src={screenshot.previewPath ?? screenshot.path}
+											src={screenshot.previewPath}
 											alt={screenshot.altText}
-											width={screenshot.previewWidth ?? screenshot.width}
-											height={screenshot.previewHeight ?? screenshot.height}
+											width={screenshot.previewWidth}
+											height={screenshot.previewHeight}
 											loading="lazy"
 											decoding="async"
 											className="aspect-video w-full object-cover outline-1 outline-foreground/10 -outline-offset-1"

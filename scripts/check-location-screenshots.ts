@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { createReadStream } from "node:fs";
+import { readdir } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { asc } from "drizzle-orm";
 
@@ -6,6 +9,7 @@ import { locations, screenshots } from "../src/server/db/schema";
 
 const PUBLIC_ROOT = resolve(process.cwd(), "public");
 const SCREENSHOT_ROOT = resolve(PUBLIC_ROOT, "screenshots");
+const ORIGINAL_ROOT = resolve(process.cwd(), "assets/screenshots/originals");
 const CONTENT_HASH_PATTERN = /^[a-f0-9]{64}$/;
 const MAX_INPUT_PIXELS = 40_000_000;
 const errors: string[] = [];
@@ -28,7 +32,9 @@ try {
 				height: screenshots.height,
 				previewWidth: screenshots.previewWidth,
 				previewHeight: screenshots.previewHeight,
-				contentHash: screenshots.contentHash,
+				fullHash: screenshots.fullHash,
+				previewHash: screenshots.previewHash,
+				sourceHash: screenshots.sourceHash,
 				isActive: screenshots.isActive,
 			})
 			.from(screenshots)
@@ -48,19 +54,23 @@ try {
 		}
 	}
 
-	for (const screenshot of screenshotRows.filter(({ isActive }) => isActive)) {
-		if (!screenshot.contentHash?.match(CONTENT_HASH_PATTERN)) {
-			errors.push(`${screenshot.id} has no valid SHA-256 content hash`);
-		}
-
+	for (const screenshot of screenshotRows) {
 		if (
-			!screenshot.previewPath ||
-			!screenshot.previewWidth ||
-			!screenshot.previewHeight
+			![
+				screenshot.sourceHash,
+				screenshot.fullHash,
+				screenshot.previewHash,
+			].every((hash) => hash.match(CONTENT_HASH_PATTERN))
 		) {
-			errors.push(`${screenshot.id} has no complete preview variant`);
+			errors.push(`${screenshot.id} has invalid SHA-256 metadata`);
 			continue;
 		}
+
+		await checkOriginal(
+			screenshot.id,
+			screenshot.locationId,
+			screenshot.sourceHash,
+		);
 
 		await checkVariant(
 			screenshot.id,
@@ -68,7 +78,8 @@ try {
 			screenshot.path,
 			screenshot.width,
 			screenshot.height,
-			`${screenshot.contentHash}-1920.webp`,
+			`${screenshot.sourceHash}-1920.webp`,
+			screenshot.fullHash,
 			1_920,
 		);
 		await checkVariant(
@@ -77,7 +88,8 @@ try {
 			screenshot.previewPath,
 			screenshot.previewWidth,
 			screenshot.previewHeight,
-			`${screenshot.contentHash}-1000.webp`,
+			`${screenshot.sourceHash}-1000.webp`,
+			screenshot.previewHash,
 			1_000,
 		);
 	}
@@ -102,6 +114,7 @@ async function checkVariant(
 	expectedWidth: number,
 	expectedHeight: number,
 	expectedFilename: string,
+	expectedHash: string,
 	maxDimension: number,
 ) {
 	const expectedRoot = resolve(SCREENSHOT_ROOT, locationId);
@@ -140,9 +153,54 @@ async function checkVariant(
 				`${screenshotId} metadata does not match ${publicPath} (${metadata.width}x${metadata.height})`,
 			);
 		}
+
+		if ((await hashFile(absolutePath)) !== expectedHash) {
+			errors.push(`${screenshotId} hash does not match ${publicPath}`);
+		}
 	} catch (error) {
 		errors.push(
 			`${screenshotId} could not decode ${publicPath}: ${error instanceof Error ? error.message : "unknown error"}`,
 		);
 	}
+}
+
+async function checkOriginal(
+	screenshotId: string,
+	locationId: string,
+	sourceHash: string,
+) {
+	const directory = resolve(ORIGINAL_ROOT, locationId);
+	let entries: string[];
+
+	try {
+		entries = await readdir(directory);
+	} catch {
+		errors.push(`${screenshotId} has no original source directory`);
+		return;
+	}
+
+	const matches = entries.filter((entry) =>
+		[`${sourceHash}.jpg`, `${sourceHash}.png`, `${sourceHash}.webp`].includes(
+			entry,
+		),
+	);
+
+	if (matches.length !== 1) {
+		errors.push(`${screenshotId} must have exactly one original source`);
+		return;
+	}
+
+	if ((await hashFile(resolve(directory, matches[0]))) !== sourceHash) {
+		errors.push(`${screenshotId} original source hash does not match`);
+	}
+}
+
+async function hashFile(path: string) {
+	const hash = createHash("sha256");
+
+	for await (const chunk of createReadStream(path)) {
+		hash.update(chunk);
+	}
+
+	return hash.digest("hex");
 }

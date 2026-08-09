@@ -2,6 +2,7 @@ import "@tanstack/react-start/server-only";
 
 import { spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
+import { createReadStream } from "node:fs";
 import {
 	access,
 	copyFile,
@@ -32,17 +33,20 @@ type WorkerResult = {
 
 type ImageVariant = {
 	height: number;
+	sha256: string;
 	size: number;
 	width: number;
 };
 
 export type ProcessedScreenshot = {
-	contentHash: string;
+	fullHash: string;
 	height: number;
 	path: string;
+	previewHash: string;
 	previewHeight: number;
 	previewPath: string;
 	previewWidth: number;
+	sourceHash: string;
 	width: number;
 };
 
@@ -61,7 +65,7 @@ export async function processScreenshotFiles(
 	try {
 		for (const [index, file] of files.entries()) {
 			const bytes = await file.arrayBuffer();
-			const contentHash = createHash("sha256")
+			const sourceHash = createHash("sha256")
 				.update(new Uint8Array(bytes))
 				.digest("hex");
 			const sourcePath = join(temporaryDirectory, `${index}.source`);
@@ -76,33 +80,35 @@ export async function processScreenshotFiles(
 				fullOutputPath,
 			);
 			const outputDirectory = resolve(SCREENSHOT_ROOT, locationId);
-			const previewFilename = `${contentHash}-1000.webp`;
-			const fullFilename = `${contentHash}-1920.webp`;
+			const previewFilename = `${sourceHash}-1000.webp`;
+			const fullFilename = `${sourceHash}-1920.webp`;
 			const previewDestination = resolve(outputDirectory, previewFilename);
 			const fullDestination = resolve(outputDirectory, fullFilename);
 			const originalDestination = resolve(
 				ORIGINAL_ROOT,
 				locationId,
-				`${contentHash}.${extensionForFormat(workerResult.format)}`,
+				`${sourceHash}.${extensionForFormat(workerResult.format)}`,
 			);
 
-			for (const [source, destination] of [
-				[previewOutputPath, previewDestination],
-				[fullOutputPath, fullDestination],
-				[sourcePath, originalDestination],
+			for (const [source, destination, expectedHash] of [
+				[previewOutputPath, previewDestination, workerResult.preview.sha256],
+				[fullOutputPath, fullDestination, workerResult.full.sha256],
+				[sourcePath, originalDestination, sourceHash],
 			] as const) {
-				if (await publishFile(source, destination)) {
+				if (await publishFile(source, destination, expectedHash)) {
 					createdFiles.push(destination);
 				}
 			}
 
 			screenshots.push({
-				contentHash,
+				fullHash: workerResult.full.sha256,
 				height: workerResult.full.height,
 				path: `/screenshots/${locationId}/${fullFilename}`,
+				previewHash: workerResult.preview.sha256,
 				previewHeight: workerResult.preview.height,
 				previewPath: `/screenshots/${locationId}/${previewFilename}`,
 				previewWidth: workerResult.preview.width,
+				sourceHash,
 				width: workerResult.full.width,
 			});
 		}
@@ -123,9 +129,9 @@ export async function discardPublishedFiles(paths: string[]) {
 export async function removeScreenshotFiles(
 	locationId: string,
 	records: ReadonlyArray<{
-		contentHash: string | null;
 		path: string;
-		previewPath: string | null;
+		previewPath: string;
+		sourceHash: string;
 	}>,
 ) {
 	assertSafeSegment(locationId);
@@ -133,13 +139,8 @@ export async function removeScreenshotFiles(
 	for (const record of records) {
 		await removePublicScreenshot(locationId, record.path);
 
-		if (record.previewPath) {
-			await removePublicScreenshot(locationId, record.previewPath);
-		}
-
-		if (record.contentHash) {
-			await removeOriginalByHash(locationId, record.contentHash);
-		}
+		await removePublicScreenshot(locationId, record.previewPath);
+		await removeOriginalByHash(locationId, record.sourceHash);
 	}
 }
 
@@ -165,7 +166,7 @@ async function runProcessor(
 	]);
 
 	try {
-		return JSON.parse(output) as WorkerResult;
+		return parseWorkerResult(JSON.parse(output));
 	} catch {
 		throw new Error("The screenshot processor returned invalid metadata");
 	}
@@ -212,9 +213,20 @@ function executeBunProcessor(arguments_: string[]) {
 	);
 }
 
-async function publishFile(sourcePath: string, destinationPath: string) {
+async function publishFile(
+	sourcePath: string,
+	destinationPath: string,
+	expectedHash: string,
+) {
 	try {
 		await access(destinationPath);
+
+		if ((await hashFile(destinationPath)) !== expectedHash) {
+			throw new Error(
+				`Existing screenshot asset does not match ${destinationPath}`,
+			);
+		}
+
 		return false;
 	} catch (error) {
 		if (!isNodeError(error) || error.code !== "ENOENT") {
@@ -233,6 +245,65 @@ async function publishFile(sourcePath: string, destinationPath: string) {
 	} finally {
 		await rm(temporaryPath, { force: true });
 	}
+}
+
+function parseWorkerResult(input: unknown): WorkerResult {
+	if (!input || typeof input !== "object" || Array.isArray(input)) {
+		throw new Error("The screenshot processor returned invalid metadata");
+	}
+
+	const value = input as Record<string, unknown>;
+	const format = value.format;
+
+	if (format !== "jpeg" && format !== "png" && format !== "webp") {
+		throw new Error("The screenshot processor returned an invalid format");
+	}
+
+	return {
+		format,
+		full: parseImageVariant(value.full),
+		preview: parseImageVariant(value.preview),
+	};
+}
+
+function parseImageVariant(input: unknown): ImageVariant {
+	if (!input || typeof input !== "object" || Array.isArray(input)) {
+		throw new Error(
+			"The screenshot processor returned an invalid image variant",
+		);
+	}
+
+	const value = input as Record<string, unknown>;
+
+	if (
+		!Number.isSafeInteger(value.width) ||
+		(value.width as number) <= 0 ||
+		!Number.isSafeInteger(value.height) ||
+		(value.height as number) <= 0 ||
+		!Number.isSafeInteger(value.size) ||
+		(value.size as number) <= 0 ||
+		typeof value.sha256 !== "string" ||
+		!/^[a-f0-9]{64}$/.test(value.sha256)
+	) {
+		throw new Error("The screenshot processor returned invalid image metadata");
+	}
+
+	return {
+		height: value.height as number,
+		sha256: value.sha256,
+		size: value.size as number,
+		width: value.width as number,
+	};
+}
+
+async function hashFile(path: string) {
+	const hash = createHash("sha256");
+
+	for await (const chunk of createReadStream(path)) {
+		hash.update(chunk);
+	}
+
+	return hash.digest("hex");
 }
 
 async function removePublicScreenshot(locationId: string, publicPath: string) {

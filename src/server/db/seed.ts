@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+
 import { getDatabase } from "./client.server";
 import { documentMaps, documents, mapImages, maps } from "./schema";
 
@@ -154,9 +157,12 @@ type MapMaster = {
 	width: number;
 };
 
-const masterManifest = (await Bun.file(
-	"public/maps/masters/manifest.json",
-).json()) as { images: MapMaster[] };
+const masterManifest = JSON.parse(
+	await readFile(
+		resolve(process.cwd(), "public/maps/masters/manifest.json"),
+		"utf8",
+	),
+) as { images: MapMaster[] };
 const mastersByFile = new Map(
 	masterManifest.images.map((master) => [master.file, master]),
 );
@@ -225,9 +231,9 @@ const documentMapSeed = [
 	["user", "the-lab"],
 ] as const;
 
-const { client, db } = await getDatabase();
+type CatalogDatabase = Awaited<ReturnType<typeof getDatabase>>["db"];
 
-try {
+export async function seedCatalog(db: CatalogDatabase) {
 	await db.transaction(async (transaction) => {
 		await transaction
 			.insert(maps)
@@ -258,9 +264,23 @@ try {
 			.run();
 	});
 
-	await client.exec("PRAGMA optimize;");
+	return {
+		documentMaps: documentMapSeed.length,
+		documents: documentSeed.length,
+		mapImages: mapImageSeed.length,
+		maps: mapSeed.length,
+	};
+}
 
-	console.info("Initial catalog seed applied");
-} finally {
-	client.close();
+if (import.meta.main) {
+	const { client, db } = await getDatabase();
+
+	try {
+		await seedCatalog(db);
+		await client.exec("PRAGMA optimize;");
+
+		console.info("Initial catalog seed applied");
+	} finally {
+		await client.close();
+	}
 }

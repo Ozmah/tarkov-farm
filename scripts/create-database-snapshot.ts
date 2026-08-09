@@ -328,12 +328,13 @@ async function readMigrations(database: Database): Promise<MigrationRecord[]> {
 
 async function verifyReferencedAssets(database: Database, errors: string[]) {
 	const mapImageRows = await database.all(`
-		SELECT id, path
+		SELECT id, path, content_hash AS contentHash
 		FROM map_images
 		ORDER BY id
 	`);
 	const screenshotRows = await database.all(`
-		SELECT id, path, preview_path AS previewPath, is_active AS isActive
+		SELECT id, path, preview_path AS previewPath,
+			full_hash AS fullHash, preview_hash AS previewHash
 		FROM screenshots
 		ORDER BY id
 	`);
@@ -342,6 +343,7 @@ async function verifyReferencedAssets(database: Database, errors: string[]) {
 	for (const row of mapImageRows) {
 		await verifyPublicFile(
 			readString(row, "path"),
+			readString(row, "contentHash"),
 			`Map image ${readString(row, "id")}`,
 			referencedFiles,
 			errors,
@@ -352,38 +354,31 @@ async function verifyReferencedAssets(database: Database, errors: string[]) {
 		const screenshotId = readString(row, "id");
 		await verifyPublicFile(
 			readString(row, "path"),
+			readString(row, "fullHash"),
 			`Screenshot ${screenshotId}`,
 			referencedFiles,
 			errors,
 		);
 
-		const previewPath = readNullableString(row, "previewPath");
-		const isActive = readNumber(row, "isActive") === 1;
-
-		if (previewPath) {
-			await verifyPublicFile(
-				previewPath,
-				`Screenshot preview ${screenshotId}`,
-				referencedFiles,
-				errors,
-			);
-		} else if (isActive) {
-			errors.push(`Active screenshot ${screenshotId} has no preview path`);
-		}
+		await verifyPublicFile(
+			readString(row, "previewPath"),
+			readString(row, "previewHash"),
+			`Screenshot preview ${screenshotId}`,
+			referencedFiles,
+			errors,
+		);
 	}
 
 	return {
 		mapFiles: mapImageRows.length,
 		referencedFiles: [...referencedFiles].sort(),
-		screenshotFiles: screenshotRows.reduce(
-			(count, row) => count + (readNullableString(row, "previewPath") ? 2 : 1),
-			0,
-		),
+		screenshotFiles: screenshotRows.length * 2,
 	};
 }
 
 async function verifyPublicFile(
 	publicPath: string,
+	expectedHash: string,
 	label: string,
 	referencedFiles: Set<string>,
 	errors: string[],
@@ -411,6 +406,11 @@ async function verifyPublicFile(
 		errors.push(
 			`${label} could not be read at ${publicPath}: ${toErrorMessage(error)}`,
 		);
+		return;
+	}
+
+	if ((await hashFile(absolutePath)) !== expectedHash) {
+		errors.push(`${label} hash does not match ${publicPath}`);
 		return;
 	}
 

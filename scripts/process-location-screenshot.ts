@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
@@ -88,7 +90,18 @@ async function readOutputMetadata(path: string) {
 
 	return {
 		height: metadata.height,
+		sha256: await hashFile(path),
 		size: Bun.file(path).size,
 		width: metadata.width,
 	};
+}
+
+async function hashFile(path: string) {
+	const hash = createHash("sha256");
+
+	for await (const chunk of createReadStream(path)) {
+		hash.update(chunk);
+	}
+
+	return hash.digest("hex");
 }
