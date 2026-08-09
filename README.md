@@ -6,12 +6,15 @@ I just wanted to have everything in the same page, not 10 wiki tabs.
 
 ## Development
 
-Copy `.env.example` to `.env`, then run:
+Copy the required environment configuration before starting the application:
 
 ```bash
+cp .env.example .env
 bun install
 bun run dev
 ```
+
+Startup fails immediately when `APP_ENV` or `DATABASE_PATH` is missing or invalid.
 
 On first run, the project creates the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`. If the database already exists, startup leaves it untouched.
 

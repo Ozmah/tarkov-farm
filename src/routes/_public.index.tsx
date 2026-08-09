@@ -89,12 +89,12 @@ function App() {
 								id="overview-title"
 								className="text-balance font-heading font-medium text-3xl tracking-tight"
 							>
-								Current documentation
+								Season Documentation
 							</h1>
 							<p className="max-w-[56ch] text-pretty text-base text-muted-foreground sm:text-sm">
 								{selectedDocuments.length > 0
 									? `Showing locations for ${selectedDocuments.map((document) => document.name).join(", ")}.`
-									: "Current document locations."}
+									: "Document locations."}
 							</p>
 						</div>
 						{selectedDocuments.length > 0 ? (

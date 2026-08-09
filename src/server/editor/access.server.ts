@@ -6,6 +6,7 @@ import {
 	getRequestIP,
 	getRequestUrl,
 } from "@tanstack/react-start/server";
+import { getServerEnvironment } from "../env";
 
 const LOOPBACK_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
 
@@ -48,10 +49,9 @@ export function assertLocalEditorAccess(options?: { mutation?: boolean }) {
 }
 
 export function canAccessLocalEditor() {
-	if (
-		process.env.APP_ENV?.trim().toLowerCase() !== "local" ||
-		process.env.NODE_ENV === "production"
-	) {
+	const { appEnvironment } = getServerEnvironment();
+
+	if (appEnvironment !== "local" || process.env.NODE_ENV === "production") {
 		return false;
 	}
 
