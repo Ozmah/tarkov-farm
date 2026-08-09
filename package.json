@@ -14,6 +14,7 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "bun src/server/db/migrate.ts",
 		"db:seed": "bun src/server/db/seed.ts",
+		"db:snapshot": "bun scripts/create-database-snapshot.ts",
 		"db:setup": "bun run db:migrate && bun run db:seed",
 		"preview": "vite preview",
 		"test": "vitest run",

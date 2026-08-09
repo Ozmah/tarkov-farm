@@ -12,6 +12,7 @@ dist-ssr
 __unconfig*
 todos.json
 data/*.sqlite*
+data/backups/
 assets/maps/originals/
 assets/screenshots/originals/
 
