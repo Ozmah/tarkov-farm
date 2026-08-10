@@ -1,0 +1,11 @@
+set -eu
+
+# Validate the exact snapshot being committed, not a working tree containing
+# unstaged fixes that would be absent from the commit.
+if ! git diff --quiet --ignore-submodules -- || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+	echo "Commit aborted: stage or stash every unstaged and untracked change first."
+	exit 1
+fi
+
+bun run env:check
+bun run release:check
