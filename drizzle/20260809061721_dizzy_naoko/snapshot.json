@@ -1,7 +1,7 @@
 {
 	"version": "7",
 	"dialect": "sqlite",
-	"id": "0d351524-99fa-4843-b10c-b4a5855c4722",
+	"id": "c0aeb8a5-e7f1-4220-bcfe-69254f7a8fd2",
 	"prevIds": ["00000000-0000-0000-0000-000000000000"],
 	"ddl": [
 		{
@@ -256,6 +256,26 @@
 			"type": "text",
 			"notNull": true,
 			"autoincrement": false,
+			"default": "'main'",
+			"generated": null,
+			"name": "view_key",
+			"entityType": "columns",
+			"table": "map_images"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": "'Main map'",
+			"generated": null,
+			"name": "name",
+			"entityType": "columns",
+			"table": "map_images"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
 			"default": null,
 			"generated": null,
 			"name": "path",
@@ -294,7 +314,7 @@
 		},
 		{
 			"type": "text",
-			"notNull": false,
+			"notNull": true,
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
@@ -388,6 +408,16 @@
 			"autoincrement": false,
 			"default": null,
 			"generated": null,
+			"name": "preview_path",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
 			"name": "alt_text",
 			"entityType": "columns",
 			"table": "screenshots"
@@ -419,6 +449,56 @@
 			"default": null,
 			"generated": null,
 			"name": "height",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "preview_width",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "integer",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "preview_height",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "source_hash",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "full_hash",
+			"entityType": "columns",
+			"table": "screenshots"
+		},
+		{
+			"type": "text",
+			"notNull": true,
+			"autoincrement": false,
+			"default": null,
+			"generated": null,
+			"name": "preview_hash",
 			"entityType": "columns",
 			"table": "screenshots"
 		},
@@ -585,6 +665,20 @@
 		{
 			"columns": [
 				{
+					"value": "location_id",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "location_documents_location_id_unique",
+			"entityType": "indexes",
+			"table": "location_documents"
+		},
+		{
+			"columns": [
+				{
 					"value": "document_id",
 					"isExpression": false
 				}
@@ -629,12 +723,16 @@
 				{
 					"value": "map_id",
 					"isExpression": false
+				},
+				{
+					"value": "view_key",
+					"isExpression": false
 				}
 			],
 			"isUnique": true,
 			"where": "\"map_images\".\"is_current\" = 1",
 			"origin": "manual",
-			"name": "map_images_one_current_per_map_idx",
+			"name": "map_images_one_current_per_view_idx",
 			"entityType": "indexes",
 			"table": "map_images"
 		},
@@ -653,6 +751,24 @@
 			"table": "screenshots"
 		},
 		{
+			"columns": [
+				{
+					"value": "location_id",
+					"isExpression": false
+				},
+				{
+					"value": "source_hash",
+					"isExpression": false
+				}
+			],
+			"isUnique": true,
+			"where": null,
+			"origin": "manual",
+			"name": "screenshots_location_source_hash_unique",
+			"entityType": "indexes",
+			"table": "screenshots"
+		},
+		{
 			"columns": ["name"],
 			"nameExplicit": false,
 			"name": "documents_name_unique",
@@ -665,6 +781,12 @@
 			"name": "maps_name_unique",
 			"entityType": "uniques",
 			"table": "maps"
+		},
+		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "documents_id_not_null",
+			"entityType": "checks",
+			"table": "documents"
 		},
 		{
 			"value": "\"acquisition_type\" IN ('raid', 'store')",
@@ -703,6 +825,12 @@
 			"table": "documents"
 		},
 		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "locations_id_not_null",
+			"entityType": "checks",
+			"table": "locations"
+		},
+		{
 			"value": "\"x_basis_points\" BETWEEN 0 AND 10000",
 			"name": "locations_x_basis_points_normalized",
 			"entityType": "checks",
@@ -721,6 +849,24 @@
 			"table": "locations"
 		},
 		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "map_images_id_not_null",
+			"entityType": "checks",
+			"table": "map_images"
+		},
+		{
+			"value": "length(trim(\"view_key\")) > 0",
+			"name": "map_images_view_key_not_empty",
+			"entityType": "checks",
+			"table": "map_images"
+		},
+		{
+			"value": "length(trim(\"name\")) > 0",
+			"name": "map_images_name_not_empty",
+			"entityType": "checks",
+			"table": "map_images"
+		},
+		{
 			"value": "\"width\" > 0",
 			"name": "map_images_width_positive",
 			"entityType": "checks",
@@ -733,16 +879,34 @@
 			"table": "map_images"
 		},
 		{
+			"value": "length(\"content_hash\") = 64 AND \"content_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "map_images_content_hash_sha256",
+			"entityType": "checks",
+			"table": "map_images"
+		},
+		{
 			"value": "\"is_current\" IN (0, 1)",
 			"name": "map_images_is_current_boolean",
 			"entityType": "checks",
 			"table": "map_images"
 		},
 		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "maps_id_not_null",
+			"entityType": "checks",
+			"table": "maps"
+		},
+		{
 			"value": "\"is_active\" IN (0, 1)",
 			"name": "maps_is_active_boolean",
 			"entityType": "checks",
 			"table": "maps"
+		},
+		{
+			"value": "\"id\" IS NOT NULL",
+			"name": "screenshots_id_not_null",
+			"entityType": "checks",
+			"table": "screenshots"
 		},
 		{
 			"value": "\"width\" > 0",
@@ -753,6 +917,36 @@
 		{
 			"value": "\"height\" > 0",
 			"name": "screenshots_height_positive",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "\"preview_width\" > 0",
+			"name": "screenshots_preview_width_positive",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "\"preview_height\" > 0",
+			"name": "screenshots_preview_height_positive",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "length(\"source_hash\") = 64 AND \"source_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_source_hash_sha256",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "length(\"full_hash\") = 64 AND \"full_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_full_hash_sha256",
+			"entityType": "checks",
+			"table": "screenshots"
+		},
+		{
+			"value": "length(\"preview_hash\") = 64 AND \"preview_hash\" NOT GLOB '*[^0-9a-f]*'",
+			"name": "screenshots_preview_hash_sha256",
 			"entityType": "checks",
 			"table": "screenshots"
 		},

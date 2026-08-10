@@ -1,9 +1,17 @@
 import "@tanstack/react-start/server-only";
 
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 import { getDatabase } from "./db/client.server";
-import { documentMaps, documents, maps } from "./db/schema";
+import {
+	documentMaps,
+	documents,
+	locationDocuments,
+	locations,
+	mapImages,
+	maps,
+	screenshots,
+} from "./db/schema";
 
 export async function readCatalog() {
 	const { db } = await getDatabase();
@@ -28,12 +36,156 @@ export async function readCatalog() {
 			.where(eq(documents.isActive, true))
 			.orderBy(asc(documents.name))
 			.all(),
-		documentMaps: await db
+		documentLocations: await db
 			.select({
-				documentId: documentMaps.documentId,
-				mapId: documentMaps.mapId,
+				id: locations.id,
+				documentId: locationDocuments.documentId,
+				mapId: mapImages.mapId,
 			})
-			.from(documentMaps)
+			.from(locations)
+			.innerJoin(
+				mapImages,
+				and(
+					eq(locations.mapImageId, mapImages.id),
+					eq(mapImages.isCurrent, true),
+				),
+			)
+			.innerJoin(
+				locationDocuments,
+				eq(locationDocuments.locationId, locations.id),
+			)
+			.innerJoin(
+				documents,
+				and(
+					eq(locationDocuments.documentId, documents.id),
+					eq(documents.isActive, true),
+					eq(documents.isFilterable, true),
+				),
+			)
+			.innerJoin(
+				documentMaps,
+				and(
+					eq(documentMaps.documentId, locationDocuments.documentId),
+					eq(documentMaps.mapId, mapImages.mapId),
+				),
+			)
+			.innerJoin(
+				maps,
+				and(eq(mapImages.mapId, maps.id), eq(maps.isActive, true)),
+			)
+			.where(eq(locations.isActive, true))
+			.orderBy(asc(mapImages.mapId), asc(locations.name))
 			.all(),
+	};
+}
+
+export async function readPublicMap(mapId: string) {
+	const { db } = await getDatabase();
+	const map = await db
+		.select({
+			id: maps.id,
+			name: maps.name,
+			description: maps.description,
+		})
+		.from(maps)
+		.where(and(eq(maps.id, mapId), eq(maps.isActive, true)))
+		.get();
+
+	if (!map) {
+		return undefined;
+	}
+
+	const images = await db
+		.select({
+			id: mapImages.id,
+			viewKey: mapImages.viewKey,
+			name: mapImages.name,
+			path: mapImages.path,
+			altText: mapImages.altText,
+			width: mapImages.width,
+			height: mapImages.height,
+		})
+		.from(mapImages)
+		.where(and(eq(mapImages.mapId, mapId), eq(mapImages.isCurrent, true)))
+		.orderBy(asc(mapImages.name))
+		.all();
+	const locationRows = await db
+		.select({
+			id: locations.id,
+			mapImageId: locations.mapImageId,
+			documentId: locationDocuments.documentId,
+			documentName: documents.name,
+			name: locations.name,
+			description: locations.description,
+			xBasisPoints: locations.xBasisPoints,
+			yBasisPoints: locations.yBasisPoints,
+		})
+		.from(locations)
+		.innerJoin(
+			mapImages,
+			and(
+				eq(locations.mapImageId, mapImages.id),
+				eq(mapImages.mapId, mapId),
+				eq(mapImages.isCurrent, true),
+			),
+		)
+		.innerJoin(
+			locationDocuments,
+			eq(locationDocuments.locationId, locations.id),
+		)
+		.innerJoin(
+			documents,
+			and(
+				eq(locationDocuments.documentId, documents.id),
+				eq(documents.isActive, true),
+				eq(documents.isFilterable, true),
+			),
+		)
+		.innerJoin(
+			documentMaps,
+			and(
+				eq(documentMaps.documentId, locationDocuments.documentId),
+				eq(documentMaps.mapId, mapImages.mapId),
+			),
+		)
+		.where(eq(locations.isActive, true))
+		.orderBy(asc(locations.name))
+		.all();
+	const locationIds = new Set(locationRows.map((location) => location.id));
+	const screenshotRows = await db
+		.select({
+			id: screenshots.id,
+			locationId: screenshots.locationId,
+			path: screenshots.path,
+			previewPath: screenshots.previewPath,
+			altText: screenshots.altText,
+			caption: screenshots.caption,
+			width: screenshots.width,
+			height: screenshots.height,
+			previewWidth: screenshots.previewWidth,
+			previewHeight: screenshots.previewHeight,
+			sortOrder: screenshots.sortOrder,
+		})
+		.from(screenshots)
+		.innerJoin(locations, eq(screenshots.locationId, locations.id))
+		.innerJoin(
+			mapImages,
+			and(
+				eq(locations.mapImageId, mapImages.id),
+				eq(mapImages.mapId, mapId),
+				eq(mapImages.isCurrent, true),
+			),
+		)
+		.where(and(eq(screenshots.isActive, true), eq(locations.isActive, true)))
+		.orderBy(asc(screenshots.locationId), asc(screenshots.sortOrder))
+		.all();
+
+	return {
+		map,
+		images,
+		locations: locationRows,
+		screenshots: screenshotRows.filter((screenshot) =>
+			locationIds.has(screenshot.locationId),
+		),
 	};
 }

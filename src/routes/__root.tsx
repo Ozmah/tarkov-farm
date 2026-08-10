@@ -1,3 +1,4 @@
+import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
@@ -75,6 +76,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body className="antialiased">
 				<TooltipProvider>{children}</TooltipProvider>
 				<Scripts />
+				<TanStackDevtools
+					config={{ inspectHotkey: ["Shift", "Alt", "CtrlOrMeta"] }}
+				/>
 			</body>
 		</html>
 	);

@@ -1,10 +1,9 @@
 import "@tanstack/react-start/server-only";
 
-import { mkdirSync } from "node:fs";
-import { dirname } from "node:path";
-import { connect, type Database } from "@tursodatabase/database";
-import { drizzle } from "drizzle-orm/tursodatabase/database";
+import type { Database } from "@tursodatabase/database";
+import type { drizzle } from "drizzle-orm/tursodatabase/database";
 
+import { openDatabase } from "./open";
 import { getDatabasePath } from "./path";
 
 type DatabaseState = {
@@ -35,23 +34,5 @@ export function getDatabase() {
 
 async function initializeDatabase() {
 	const databasePath = getDatabasePath();
-	mkdirSync(dirname(databasePath), { recursive: true });
-
-	const client = await connect(databasePath);
-
-	try {
-		await client.exec(`
-			PRAGMA foreign_keys = ON;
-			PRAGMA synchronous = NORMAL;
-			PRAGMA busy_timeout = 5000;
-		`);
-
-		return {
-			client,
-			db: drizzle({ client }),
-		};
-	} catch (error) {
-		client.close();
-		throw error;
-	}
+	return openDatabase(databasePath, { create: false });
 }

@@ -9,68 +9,134 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as MapsMapIdRouteImport } from './routes/maps/$mapId'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as EditorRouteImport } from './routes/editor'
+import { Route as HealthRouteImport } from './routes/health'
+import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as PublicMapsMapIdRouteImport } from './routes/_public.maps.$mapId'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MapsMapIdRoute = MapsMapIdRouteImport.update({
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthRoute = HealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicMapsMapIdRoute = PublicMapsMapIdRouteImport.update({
   id: '/maps/$mapId',
   path: '/maps/$mapId',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/maps/$mapId': typeof MapsMapIdRoute
+  '/': typeof PublicIndexRoute
+  '/editor': typeof EditorRoute
+  '/health': typeof HealthRoute
+  '/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/maps/$mapId': typeof MapsMapIdRoute
+  '/editor': typeof EditorRoute
+  '/health': typeof HealthRoute
+  '/': typeof PublicIndexRoute
+  '/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/maps/$mapId': typeof MapsMapIdRoute
+  '/_public': typeof PublicRouteWithChildren
+  '/editor': typeof EditorRoute
+  '/health': typeof HealthRoute
+  '/_public/': typeof PublicIndexRoute
+  '/_public/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/maps/$mapId'
+  fullPaths: '/' | '/editor' | '/health' | '/maps/$mapId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/maps/$mapId'
-  id: '__root__' | '/' | '/maps/$mapId'
+  to: '/editor' | '/health' | '/' | '/maps/$mapId'
+  id:
+    | '__root__'
+    | '/_public'
+    | '/editor'
+    | '/health'
+    | '/_public/'
+    | '/_public/maps/$mapId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  MapsMapIdRoute: typeof MapsMapIdRoute
+  PublicRoute: typeof PublicRouteWithChildren
+  EditorRoute: typeof EditorRoute
+  HealthRoute: typeof HealthRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/maps/$mapId': {
-      id: '/maps/$mapId'
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health': {
+      id: '/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/maps/$mapId': {
+      id: '/_public/maps/$mapId'
       path: '/maps/$mapId'
       fullPath: '/maps/$mapId'
-      preLoaderRoute: typeof MapsMapIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicMapsMapIdRouteImport
+      parentRoute: typeof PublicRoute
     }
   }
 }
 
+interface PublicRouteChildren {
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicMapsMapIdRoute: typeof PublicMapsMapIdRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicIndexRoute: PublicIndexRoute,
+  PublicMapsMapIdRoute: PublicMapsMapIdRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  MapsMapIdRoute: MapsMapIdRoute,
+  PublicRoute: PublicRouteWithChildren,
+  EditorRoute: EditorRoute,
+  HealthRoute: HealthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

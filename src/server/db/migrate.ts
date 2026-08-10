@@ -2,18 +2,28 @@ import { migrate } from "drizzle-orm/tursodatabase/migrator";
 
 import { getDatabase } from "./client.server";
 
-const { client, db } = await getDatabase();
+type MigrationDatabase = Awaited<ReturnType<typeof getDatabase>>["db"];
 
-try {
-	const result = await migrate(db, { migrationsFolder: "./drizzle" });
+export async function migrateDatabase(
+	db: MigrationDatabase,
+	migrationsFolder = "./drizzle",
+) {
+	const result = await migrate(db, { migrationsFolder });
 
 	if (result && "error" in result) {
 		throw result.error;
 	}
+}
 
-	await client.exec("PRAGMA optimize;");
+if (import.meta.main) {
+	const { client, db } = await getDatabase();
 
-	console.info("Database migrations applied");
-} finally {
-	client.close();
+	try {
+		await migrateDatabase(db);
+		await client.exec("PRAGMA optimize;");
+
+		console.info("Database migrations applied");
+	} finally {
+		await client.close();
+	}
 }
