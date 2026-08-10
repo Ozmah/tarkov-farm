@@ -30,6 +30,9 @@ export function MapCanvas({
 	onPositionChange,
 	onSelectLocation,
 }: MapCanvasProps) {
+	const selectedLocation = selectedLocationId
+		? locations.find((location) => location.id === selectedLocationId)
+		: undefined;
 	const markers = locations.map((location, index) => {
 		const marker = location.id === selectedLocationId ? draftMarker : location;
 
@@ -57,6 +60,7 @@ export function MapCanvas({
 			instructions="Click to place · Drag to move · Wheel to zoom"
 			markers={markers}
 			selectedMarkerId={selectedLocationId ?? "new-location"}
+			selectedMarkerPosition={selectedLocation}
 			onMapPress={onPositionChange}
 			onSelectMarker={(markerId) => {
 				if (markerId !== "new-location") {

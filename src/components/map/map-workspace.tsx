@@ -14,6 +14,7 @@ import { pointerToBasisPoints } from "@/lib/map-coordinates";
 import {
 	constrainView,
 	fitView,
+	focusViewOnImagePoint,
 	isPointInsideImage,
 	type Point,
 	panView,
@@ -56,6 +57,10 @@ type MapWorkspaceProps = {
 	markers: MapWorkspaceMarker[];
 	panWithPrimaryButton?: boolean;
 	selectedMarkerId?: string;
+	selectedMarkerPosition?: {
+		xBasisPoints: number;
+		yBasisPoints: number;
+	};
 	toolbarStart?: ReactNode;
 	onMapPress?: (position: {
 		xBasisPoints: number;
@@ -81,6 +86,7 @@ export function MapWorkspace({
 	markers,
 	panWithPrimaryButton = true,
 	selectedMarkerId,
+	selectedMarkerPosition,
 	toolbarStart,
 	onMapPress,
 	onSelectMarker,
@@ -94,12 +100,35 @@ export function MapWorkspace({
 	const pointerSessionRef = useRef<PointerSession | undefined>(undefined);
 	const suppressContextMenuRef = useRef(false);
 	const centeredMarkerIdRef = useRef<string | undefined>(undefined);
+	const selectedMarkerFocusRef = useRef<
+		| {
+				xBasisPoints: number;
+				yBasisPoints: number;
+			}
+		| undefined
+	>(undefined);
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
 	const [imageStatus, setImageStatus] = useState<"loading" | "ready" | "error">(
 		"loading",
 	);
 	const isImageReady = imageStatus === "ready";
+	const selectedMarkerX = selectedMarkerPosition?.xBasisPoints;
+	const selectedMarkerY = selectedMarkerPosition?.yBasisPoints;
+	const selectedMarker = selectedMarkerId
+		? markers.find((marker) => marker.id === selectedMarkerId)
+		: undefined;
+	const selectedFocusX = selectedMarkerX ?? selectedMarker?.xBasisPoints;
+	const selectedFocusY = selectedMarkerY ?? selectedMarker?.yBasisPoints;
+	selectedMarkerFocusRef.current =
+		selectedMarkerId &&
+		selectedFocusX !== undefined &&
+		selectedFocusY !== undefined
+		? {
+				xBasisPoints: selectedFocusX,
+				yBasisPoints: selectedFocusY,
+			}
+		: undefined;
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
@@ -180,16 +209,27 @@ export function MapWorkspace({
 					MAX_ZOOM_RATIO,
 				);
 				const nextScale = nextFitView.scale * preservedZoomRatio;
+				const selectedFocus = selectedMarkerFocusRef.current;
 
-				nextView = constrainView(
-					{
-						scale: nextScale,
-						x: nextViewportSize.width / 2 - previousCenter.x * nextScale,
-						y: nextViewportSize.height / 2 - previousCenter.y * nextScale,
-					},
-					nextViewportSize,
-					imageSize,
-				);
+				nextView = selectedFocus
+					? focusViewOnImagePoint({
+							image: imageSize,
+							point: {
+								x: (selectedFocus.xBasisPoints / 10_000) * image.width,
+								y: (selectedFocus.yBasisPoints / 10_000) * image.height,
+							},
+							scale: nextScale,
+							viewport: nextViewportSize,
+						})
+					: constrainView(
+							{
+								scale: nextScale,
+								x: nextViewportSize.width / 2 - previousCenter.x * nextScale,
+								y: nextViewportSize.height / 2 - previousCenter.y * nextScale,
+							},
+							nextViewportSize,
+							imageSize,
+						);
 			}
 
 			fitScaleRef.current = nextFitView.scale;
@@ -292,22 +332,23 @@ export function MapWorkspace({
 
 		const nextScale =
 			fitScaleRef.current * Math.max(zoomRatio, SELECTED_MARKER_ZOOM_RATIO);
+		const centerPosition =
+			selectedMarkerX !== undefined && selectedMarkerY !== undefined
+				? { xBasisPoints: selectedMarkerX, yBasisPoints: selectedMarkerY }
+				: marker;
 		const markerPoint = {
-			x: (marker.xBasisPoints / 10_000) * image.width,
-			y: (marker.yBasisPoints / 10_000) * image.height,
+			x: (centerPosition.xBasisPoints / 10_000) * image.width,
+			y: (centerPosition.yBasisPoints / 10_000) * image.height,
 		};
 
 		centeredMarkerIdRef.current = selectedMarkerId;
 		scheduleView(
-			constrainView(
-				{
-					scale: nextScale,
-					x: viewportSize.width / 2 - markerPoint.x * nextScale,
-					y: viewportSize.height / 2 - markerPoint.y * nextScale,
-				},
-				viewportSize,
-				imageSize,
-			),
+			focusViewOnImagePoint({
+				image: imageSize,
+				point: markerPoint,
+				scale: nextScale,
+				viewport: viewportSize,
+			}),
 		);
 	}, [
 		image.height,
@@ -316,6 +357,8 @@ export function MapWorkspace({
 		markers,
 		scheduleView,
 		selectedMarkerId,
+		selectedMarkerX,
+		selectedMarkerY,
 		view,
 		zoomRatio,
 	]);

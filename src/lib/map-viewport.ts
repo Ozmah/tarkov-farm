@@ -30,6 +30,34 @@ export function fitView(viewport: Size, image: Size): ViewTransform {
 	};
 }
 
+export function focusViewOnImagePoint(input: {
+	image: Size;
+	point: Point;
+	scale: number;
+	viewport: Size;
+}): ViewTransform {
+	assertPositiveSize(input.viewport, "Viewport");
+	assertPositiveSize(input.image, "Image");
+
+	if (!Number.isFinite(input.scale) || input.scale <= 0) {
+		throw new Error("View scale must be positive");
+	}
+
+	if (!Number.isFinite(input.point.x) || !Number.isFinite(input.point.y)) {
+		throw new Error("Image point must be finite");
+	}
+
+	return constrainView(
+		{
+			scale: input.scale,
+			x: input.viewport.width / 2 - input.point.x * input.scale,
+			y: input.viewport.height / 2 - input.point.y * input.scale,
+		},
+		input.viewport,
+		input.image,
+	);
+}
+
 export function zoomViewAtPoint(input: {
 	image: Size;
 	nextScale: number;
