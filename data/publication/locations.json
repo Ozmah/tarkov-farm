@@ -2,6 +2,70 @@
 	"formatVersion": 1,
 	"locations": [
 		{
+			"description": "On the desk inside old gas station building.",
+			"documentId": "financial",
+			"id": "1d392969-77cb-488a-837a-86e01d4043af",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Old Gas Desk",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 526,
+						"path": "/screenshots/1d392969-77cb-488a-837a-86e01d4043af/2dbd1944b160f17af38b25acfb51167917ebd1390b1a8a272b4c9cc3c7a52084-1920.webp",
+						"sha256": "f50b4c23c56948821fb9b866421996478638635a50114125936756a955e6e0d5",
+						"width": 1000
+					},
+					"id": "e333a383-5a3b-4ff6-8d45-41776130159a",
+					"isActive": true,
+					"preview": {
+						"height": 526,
+						"path": "/screenshots/1d392969-77cb-488a-837a-86e01d4043af/2dbd1944b160f17af38b25acfb51167917ebd1390b1a8a272b4c9cc3c7a52084-1000.webp",
+						"sha256": "4fa1be595dd4fc503be5e44cd33441fbebc799f658a40678c2740312ca78f4ae",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2dbd1944b160f17af38b25acfb51167917ebd1390b1a8a272b4c9cc3c7a52084"
+				}
+			],
+			"xBasisPoints": 3635,
+			"yBasisPoints": 3356
+		},
+		{
+			"description": "Inside 3 story dorms in room 212 on the shelf above the desk.",
+			"documentId": "financial",
+			"id": "271d0456-62c0-4789-a3c0-4e62f3ecfea3",
+			"isActive": true,
+			"mapImageId": "customs-dorms",
+			"name": "212",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 562,
+						"path": "/screenshots/271d0456-62c0-4789-a3c0-4e62f3ecfea3/a5fcf2cbf654118eb0fff5220e00f2686a6f704b49b8a99a520b8826933bcc4d-1920.webp",
+						"sha256": "80af636f42fcf6b253665912a81b2f7763ba4986e2923e051bd0e6a86a91ced4",
+						"width": 1000
+					},
+					"id": "1b1bbe4f-ab90-4977-a401-ca011d1a22be",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/271d0456-62c0-4789-a3c0-4e62f3ecfea3/a5fcf2cbf654118eb0fff5220e00f2686a6f704b49b8a99a520b8826933bcc4d-1000.webp",
+						"sha256": "037e35ebc4d02d9039cd463ff4788d8df77706a76422d677cd231de47ad790d0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a5fcf2cbf654118eb0fff5220e00f2686a6f704b49b8a99a520b8826933bcc4d"
+				}
+			],
+			"xBasisPoints": 6373,
+			"yBasisPoints": 4512
+		},
+		{
 			"description": "Second floor table beside the item box",
 			"documentId": "test",
 			"id": "28516dbe-5baf-452f-90f7-8dd35c54e943",
@@ -118,11 +182,43 @@
 			"yBasisPoints": 3424
 		},
 		{
+			"description": "Inside the 2 story dorms behind dorm guard desk key door.",
+			"documentId": "financial",
+			"id": "38b522b0-7133-4211-b079-1ae058a8df39",
+			"isActive": true,
+			"mapImageId": "customs-dorms",
+			"name": "Dorm Guard",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 563,
+						"path": "/screenshots/38b522b0-7133-4211-b079-1ae058a8df39/2eff26695b8fb3b4880179d3e972ee6d0fbc9ff6325d094fde234b2c75858114-1920.webp",
+						"sha256": "456ecf38681c97d7b9e3a22a2952181338d36ed9f7f4de5e12ed69bcde364b0a",
+						"width": 1000
+					},
+					"id": "94e7aecf-cde9-499d-bda2-09385576a177",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/38b522b0-7133-4211-b079-1ae058a8df39/2eff26695b8fb3b4880179d3e972ee6d0fbc9ff6325d094fde234b2c75858114-1000.webp",
+						"sha256": "4f9fd2538f315680106f842e33291a2181b357410c9a68b0f830126f36aeaa14",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2eff26695b8fb3b4880179d3e972ee6d0fbc9ff6325d094fde234b2c75858114"
+				}
+			],
+			"xBasisPoints": 7366,
+			"yBasisPoints": 7011
+		},
+		{
 			"description": "Inside 3 story dorms, in room 304 on the nightstand.",
 			"documentId": "financial",
 			"id": "3d162a75-0829-450e-a9cf-43a06fd39b2e",
 			"isActive": true,
-			"mapImageId": "customs-main",
+			"mapImageId": "customs-dorms",
 			"name": "304",
 			"screenshots": [
 				{
@@ -146,8 +242,8 @@
 					"sourceSha256": "75405900a5a9e3ddafff163d5c2422bdb835206662b018b6818c1c84d358eb72"
 				}
 			],
-			"xBasisPoints": 4954,
-			"yBasisPoints": 6677
+			"xBasisPoints": 9219,
+			"yBasisPoints": 1888
 		},
 		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
@@ -232,6 +328,70 @@
 			],
 			"xBasisPoints": 6158,
 			"yBasisPoints": 6434
+		},
+		{
+			"description": "On top of the safe in the corner of the company director's room",
+			"documentId": "financial",
+			"id": "922ccd7b-814c-4501-8e76-be0216f08aa8",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Over safe",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 563,
+						"path": "/screenshots/922ccd7b-814c-4501-8e76-be0216f08aa8/32d020be645b1504e3f18b21094e132cdac24d3e0be5ec491eab5dd2fda4adf3-1920.webp",
+						"sha256": "9001752cff351c35c7e09eec08e040874079aef08b687b7be0a1286e06f48ff6",
+						"width": 1000
+					},
+					"id": "0f9d5659-ce1c-47fb-aa4a-0c74f133fd57",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/922ccd7b-814c-4501-8e76-be0216f08aa8/32d020be645b1504e3f18b21094e132cdac24d3e0be5ec491eab5dd2fda4adf3-1000.webp",
+						"sha256": "2658c43848215097b36ebfcf53a8109b35c31cc134099cfb53b0f096aafdf2b4",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "32d020be645b1504e3f18b21094e132cdac24d3e0be5ec491eab5dd2fda4adf3"
+				}
+			],
+			"xBasisPoints": 5746,
+			"yBasisPoints": 4508
+		},
+		{
+			"description": "In the computer room behind Tarcone Director's office key door.",
+			"documentId": "financial",
+			"id": "aa91565a-8dbd-4365-9072-df24a234b7a1",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Computer Room",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 563,
+						"path": "/screenshots/aa91565a-8dbd-4365-9072-df24a234b7a1/eb4ab2984802f7b065f70413531cb78715b644e8f3adbaac4b1e2b5649578534-1920.webp",
+						"sha256": "cd5b3e953d982344b79ac6c5843affec279c6113ab7fcd58299fce0214c41595",
+						"width": 1000
+					},
+					"id": "325213ac-e34e-4159-ac22-6f53e5783f5b",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/aa91565a-8dbd-4365-9072-df24a234b7a1/eb4ab2984802f7b065f70413531cb78715b644e8f3adbaac4b1e2b5649578534-1000.webp",
+						"sha256": "2418c3fbeda8da45b202ecab2921eb9e04ac12d8b7eef8427ee83a355cb36f2b",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "eb4ab2984802f7b065f70413531cb78715b644e8f3adbaac4b1e2b5649578534"
+				}
+			],
+			"xBasisPoints": 8478,
+			"yBasisPoints": 3979
 		},
 		{
 			"description": "Inside the shack above the file cabinet",
@@ -346,8 +506,8 @@
 					"sourceSha256": "c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11"
 				}
 			],
-			"xBasisPoints": 5000,
-			"yBasisPoints": 5000
+			"xBasisPoints": 4999,
+			"yBasisPoints": 4320
 		}
 	]
 }

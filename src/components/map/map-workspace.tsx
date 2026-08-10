@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon } from "@phosphor-icons/react";
+import { MapTrifoldIcon, MinusIcon, PlusIcon } from "@phosphor-icons/react";
 import {
 	type ReactNode,
 	type PointerEvent as ReactPointerEvent,
@@ -14,6 +14,7 @@ import { pointerToBasisPoints } from "@/lib/map-coordinates";
 import {
 	constrainView,
 	fitView,
+	focusViewOnImagePoint,
 	isPointInsideImage,
 	type Point,
 	panView,
@@ -41,6 +42,7 @@ export type MapWorkspaceImage = {
 export type MapWorkspaceMarker = {
 	id: string;
 	isActive?: boolean;
+	kind?: "location" | "submap";
 	label?: string;
 	name: string;
 	xBasisPoints: number;
@@ -53,7 +55,12 @@ type MapWorkspaceProps = {
 	image: MapWorkspaceImage;
 	instructions: string;
 	markers: MapWorkspaceMarker[];
+	panWithPrimaryButton?: boolean;
 	selectedMarkerId?: string;
+	selectedMarkerPosition?: {
+		xBasisPoints: number;
+		yBasisPoints: number;
+	};
 	toolbarStart?: ReactNode;
 	onMapPress?: (position: {
 		xBasisPoints: number;
@@ -77,7 +84,9 @@ export function MapWorkspace({
 	image,
 	instructions,
 	markers,
+	panWithPrimaryButton = true,
 	selectedMarkerId,
+	selectedMarkerPosition,
 	toolbarStart,
 	onMapPress,
 	onSelectMarker,
@@ -91,12 +100,35 @@ export function MapWorkspace({
 	const pointerSessionRef = useRef<PointerSession | undefined>(undefined);
 	const suppressContextMenuRef = useRef(false);
 	const centeredMarkerIdRef = useRef<string | undefined>(undefined);
+	const selectedMarkerFocusRef = useRef<
+		| {
+				xBasisPoints: number;
+				yBasisPoints: number;
+		  }
+		| undefined
+	>(undefined);
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
 	const [imageStatus, setImageStatus] = useState<"loading" | "ready" | "error">(
 		"loading",
 	);
 	const isImageReady = imageStatus === "ready";
+	const selectedMarkerX = selectedMarkerPosition?.xBasisPoints;
+	const selectedMarkerY = selectedMarkerPosition?.yBasisPoints;
+	const selectedMarker = selectedMarkerId
+		? markers.find((marker) => marker.id === selectedMarkerId)
+		: undefined;
+	const selectedFocusX = selectedMarkerX ?? selectedMarker?.xBasisPoints;
+	const selectedFocusY = selectedMarkerY ?? selectedMarker?.yBasisPoints;
+	selectedMarkerFocusRef.current =
+		selectedMarkerId &&
+		selectedFocusX !== undefined &&
+		selectedFocusY !== undefined
+			? {
+					xBasisPoints: selectedFocusX,
+					yBasisPoints: selectedFocusY,
+				}
+			: undefined;
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
@@ -177,16 +209,27 @@ export function MapWorkspace({
 					MAX_ZOOM_RATIO,
 				);
 				const nextScale = nextFitView.scale * preservedZoomRatio;
+				const selectedFocus = selectedMarkerFocusRef.current;
 
-				nextView = constrainView(
-					{
-						scale: nextScale,
-						x: nextViewportSize.width / 2 - previousCenter.x * nextScale,
-						y: nextViewportSize.height / 2 - previousCenter.y * nextScale,
-					},
-					nextViewportSize,
-					imageSize,
-				);
+				nextView = selectedFocus
+					? focusViewOnImagePoint({
+							image: imageSize,
+							point: {
+								x: (selectedFocus.xBasisPoints / 10_000) * imageSize.width,
+								y: (selectedFocus.yBasisPoints / 10_000) * imageSize.height,
+							},
+							scale: nextScale,
+							viewport: nextViewportSize,
+						})
+					: constrainView(
+							{
+								scale: nextScale,
+								x: nextViewportSize.width / 2 - previousCenter.x * nextScale,
+								y: nextViewportSize.height / 2 - previousCenter.y * nextScale,
+							},
+							nextViewportSize,
+							imageSize,
+						);
 			}
 
 			fitScaleRef.current = nextFitView.scale;
@@ -289,22 +332,23 @@ export function MapWorkspace({
 
 		const nextScale =
 			fitScaleRef.current * Math.max(zoomRatio, SELECTED_MARKER_ZOOM_RATIO);
+		const centerPosition =
+			selectedMarkerX !== undefined && selectedMarkerY !== undefined
+				? { xBasisPoints: selectedMarkerX, yBasisPoints: selectedMarkerY }
+				: marker;
 		const markerPoint = {
-			x: (marker.xBasisPoints / 10_000) * image.width,
-			y: (marker.yBasisPoints / 10_000) * image.height,
+			x: (centerPosition.xBasisPoints / 10_000) * image.width,
+			y: (centerPosition.yBasisPoints / 10_000) * image.height,
 		};
 
 		centeredMarkerIdRef.current = selectedMarkerId;
 		scheduleView(
-			constrainView(
-				{
-					scale: nextScale,
-					x: viewportSize.width / 2 - markerPoint.x * nextScale,
-					y: viewportSize.height / 2 - markerPoint.y * nextScale,
-				},
-				viewportSize,
-				imageSize,
-			),
+			focusViewOnImagePoint({
+				image: imageSize,
+				point: markerPoint,
+				scale: nextScale,
+				viewport: viewportSize,
+			}),
 		);
 	}, [
 		image.height,
@@ -313,6 +357,8 @@ export function MapWorkspace({
 		markers,
 		scheduleView,
 		selectedMarkerId,
+		selectedMarkerX,
+		selectedMarkerY,
 		view,
 		zoomRatio,
 	]);
@@ -383,6 +429,10 @@ export function MapWorkspace({
 
 		if (distance >= DRAG_THRESHOLD) {
 			session.moved = true;
+		}
+
+		if (session.mode === "press" && session.moved && panWithPrimaryButton) {
+			session.mode = "pan";
 		}
 
 		if (session.mode !== "pan" || !session.moved) {
@@ -618,9 +668,13 @@ function MapMarker({
 	marker,
 	onClick,
 }: MapMarkerProps) {
+	const isSubmap = marker.kind === "submap";
 	const className = cn(
 		"absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+		isSubmap &&
+			"h-11 w-auto min-w-14 gap-1.5 rounded-none bg-rowdy-orange px-2 text-rowdy-orange-foreground ring-rowdy-orange after:bg-rowdy-orange [&_svg]:size-5",
 		isSelected &&
+			!isSubmap &&
 			"z-20 size-11 bg-rowdy-orange text-rowdy-orange-foreground ring-4 after:bg-rowdy-orange",
 		marker.isActive === false && "opacity-60",
 	);
@@ -648,13 +702,14 @@ function MapMarker({
 			type="button"
 			data-map-marker
 			aria-label={`Open ${marker.name}`}
-			aria-pressed={isSelected}
+			aria-pressed={isSubmap ? undefined : isSelected}
 			onPointerDown={(event) => event.stopPropagation()}
 			onClick={onClick}
 			className={className}
 			style={style}
 		>
-			{marker.label}
+			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
+			<span className="tabular-nums">{marker.label}</span>
 		</button>
 	);
 }

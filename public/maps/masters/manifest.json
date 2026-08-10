@@ -125,15 +125,6 @@
 			"width": 6144
 		},
 		{
-			"file": "re3mrULTRA3Dmap.webp",
-			"height": 4206,
-			"original": "re3mrULTRA3Dmap.png",
-			"passthrough": false,
-			"sha256": "d718e7c6d9b502b4ba820665c4d2a598077af0157589dd21159e768261da092e",
-			"size": 6704678,
-			"width": 6144
-		},
-		{
 			"file": "The_Lab_Interactive_Map_Base.webp",
 			"height": 2189,
 			"original": "The_Lab_Interactive_Map_Base.webp",

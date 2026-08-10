@@ -40,6 +40,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
@@ -70,9 +78,15 @@ type EditorSearch = {
 type EditorLocation = EditorData["locations"][number];
 type EditorScreenshot = EditorData["screenshots"][number];
 type MapImage = EditorData["mapImages"][number];
+type SavedLocationTarget = {
+	id: string;
+	mapId: string;
+	mapImageId: string;
+};
 type Draft = {
 	name: string;
 	description: string;
+	mapImageId: string;
 	xBasisPoints: number;
 	yBasisPoints: number;
 	isActive: boolean;
@@ -152,9 +166,15 @@ export function LocalMapEditor({
 		void onSearchChange({ location: undefined }, true);
 	};
 
-	const refreshAndSelect = async (locationId?: string) => {
+	const refreshAndSelect = async (target?: SavedLocationTarget) => {
+		await onSearchChange(
+			{
+				...(target ? { map: target.mapId, image: target.mapImageId } : {}),
+				location: target?.id,
+			},
+			true,
+		);
 		await router.invalidate({ sync: true });
-		await onSearchChange({ location: locationId }, true);
 	};
 	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
 	const sidebarLocations = visibleLocations.map((location) => {
@@ -252,7 +272,6 @@ export function LocalMapEditor({
 						key={selectedImage.id}
 						data={data}
 						draftVersion={newDraftVersion}
-						mapId={selectedMap.id}
 						image={selectedImage}
 						locations={visibleLocations}
 						selectedLocation={selectedLocation}
@@ -332,18 +351,16 @@ function EditorMapSidebarPanel({
 type LocationWorkspaceProps = {
 	data: EditorData;
 	draftVersion: number;
-	mapId: string;
 	image: MapImage;
 	locations: EditorLocation[];
 	selectedLocation?: EditorLocation;
 	onSelectLocation: (locationId: string) => void;
-	onSaved: (locationId?: string) => Promise<void>;
+	onSaved: (target?: SavedLocationTarget) => Promise<void>;
 };
 
 function LocationWorkspace({
 	data,
 	draftVersion,
-	mapId,
 	image,
 	locations,
 	selectedLocation,
@@ -356,7 +373,7 @@ function LocationWorkspace({
 			)?.documentId ?? "")
 		: "";
 	const [draft, setDraft] = useState<Draft>(() =>
-		createLocationDraft(selectedLocation, selectedDocumentId),
+		createLocationDraft(selectedLocation, selectedDocumentId, image.id),
 	);
 	const screenshotObjectUrlsRef = useRef(new Set<string>());
 	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
@@ -373,12 +390,20 @@ function LocationWorkspace({
 		}
 
 		screenshotObjectUrlsRef.current.clear();
-		setDraft(createLocationDraft(selectedLocation, selectedDocumentId));
+		setDraft(
+			createLocationDraft(selectedLocation, selectedDocumentId, image.id),
+		);
 		setScreenshotDrafts(
 			createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 		);
 		setError(undefined);
-	}, [data.screenshots, draftVersion, selectedDocumentId, selectedLocation]);
+	}, [
+		data.screenshots,
+		draftVersion,
+		image.id,
+		selectedDocumentId,
+		selectedLocation,
+	]);
 
 	useEffect(() => {
 		return () => {
@@ -387,20 +412,61 @@ function LocationWorkspace({
 			}
 		};
 	}, []);
+	const draftImage =
+		data.mapImages.find((item) => item.id === draft.mapImageId) ?? image;
+	const draftMapImages = data.mapImages.filter(
+		(item) => item.mapId === draftImage.mapId,
+	);
+	const editableMaps = data.maps.filter((map) =>
+		data.mapImages.some((item) => item.mapId === map.id),
+	);
 	const allowedDocumentIds = new Set(
 		data.documentMaps
-			.filter((item) => item.mapId === mapId)
+			.filter((item) => item.mapId === draftImage.mapId)
 			.map((item) => item.documentId),
 	);
 	const availableDocuments = data.documents.filter((document) =>
 		allowedDocumentIds.has(document.id),
 	);
+	const canvasLocations =
+		draftImage.id === image.id
+			? locations
+			: selectedLocation
+				? [selectedLocation]
+				: [];
 
 	const updateDraft = <Key extends keyof Draft>(
 		key: Key,
 		value: Draft[Key],
 	) => {
 		setDraft((current) => ({ ...current, [key]: value }));
+	};
+
+	const updateDraftMap = (nextMapId: string) => {
+		const nextImages = data.mapImages.filter(
+			(item) => item.mapId === nextMapId,
+		);
+		const nextImage =
+			nextImages.find((item) => item.viewKey === "main") ?? nextImages[0];
+
+		if (!nextImage) return;
+
+		const nextDocumentIds = new Set(
+			data.documentMaps
+				.filter((item) => item.mapId === nextMapId)
+				.map((item) => item.documentId),
+		);
+		const firstDocument = data.documents.find((document) =>
+			nextDocumentIds.has(document.id),
+		);
+
+		setDraft((current) => ({
+			...current,
+			mapImageId: nextImage.id,
+			documentId: nextDocumentIds.has(current.documentId)
+				? current.documentId
+				: (firstDocument?.id ?? ""),
+		}));
 	};
 
 	const addScreenshotFiles = (files: File[]) => {
@@ -515,7 +581,7 @@ function LocationWorkspace({
 				JSON.stringify({
 					location: {
 						id: selectedLocation?.id,
-						mapImageId: image.id,
+						mapImageId: draft.mapImageId,
 						name: draft.name,
 						description: draft.description,
 						xBasisPoints: draft.xBasisPoints,
@@ -535,7 +601,7 @@ function LocationWorkspace({
 				data: formData,
 			});
 
-			await onSaved(result.id);
+			await onSaved(result);
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
@@ -564,8 +630,9 @@ function LocationWorkspace({
 	return (
 		<>
 			<MapCanvas
-				image={image}
-				locations={locations}
+				key={draftImage.id}
+				image={draftImage}
+				locations={canvasLocations}
 				selectedLocationId={selectedLocation?.id}
 				draftMarker={{
 					name: draft.name,
@@ -602,6 +669,63 @@ function LocationWorkspace({
 					</div>
 
 					<FieldGroup>
+						<div className="grid gap-4 sm:grid-cols-2">
+							<Field>
+								<FieldLabel htmlFor="location-map">Map</FieldLabel>
+								<Select
+									items={editableMaps.map((map) => ({
+										value: map.id,
+										label: map.name,
+									}))}
+									value={draftImage.mapId}
+									onValueChange={(nextMapId) => {
+										if (nextMapId) updateDraftMap(nextMapId);
+									}}
+								>
+									<SelectTrigger id="location-map" className="w-full">
+										<SelectValue placeholder="Select a map" />
+									</SelectTrigger>
+									<SelectContent alignItemWithTrigger={false}>
+										<SelectGroup>
+											{editableMaps.map((map) => (
+												<SelectItem key={map.id} value={map.id}>
+													{map.name}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+							</Field>
+
+							{draftMapImages.length > 1 ? (
+								<Field>
+									<FieldLabel htmlFor="location-map-view">Map view</FieldLabel>
+									<Select
+										items={draftMapImages.map((item) => ({
+											value: item.id,
+											label: item.name,
+										}))}
+										value={draft.mapImageId}
+										onValueChange={(nextImageId) => {
+											if (nextImageId) updateDraft("mapImageId", nextImageId);
+										}}
+									>
+										<SelectTrigger id="location-map-view" className="w-full">
+											<SelectValue placeholder="Select a map view" />
+										</SelectTrigger>
+										<SelectContent alignItemWithTrigger={false}>
+											<SelectGroup>
+												{draftMapImages.map((item) => (
+													<SelectItem key={item.id} value={item.id}>
+														{item.name}
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+								</Field>
+							) : null}
+						</div>
 						<Field>
 							<FieldLabel htmlFor="location-name">Name</FieldLabel>
 							<Input
@@ -786,10 +910,12 @@ function readErrorMessage(error: unknown) {
 function createLocationDraft(
 	location: EditorLocation | undefined,
 	documentId: string,
+	defaultMapImageId: string,
 ): Draft {
 	return {
 		name: location?.name ?? "",
 		description: location?.description ?? "",
+		mapImageId: location?.mapImageId ?? defaultMapImageId,
 		xBasisPoints: location?.xBasisPoints ?? 5_000,
 		yBasisPoints: location?.yBasisPoints ?? 5_000,
 		isActive: location?.isActive ?? true,

@@ -20,6 +20,7 @@
 		"db:seed": "bun src/server/db/seed.ts",
 		"db:setup": "bun src/server/db/setup.ts",
 		"preview": "bun run env:check && vite preview",
+		"prepare": "husky || true",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit"
 	},
@@ -58,6 +59,7 @@
 		"@types/react-dom": "^19",
 		"@vitejs/plugin-react": "^6",
 		"drizzle-kit": "1.0.0-rc.4",
+		"husky": "^9.1.7",
 		"jsdom": "^28",
 		"typescript": "^6",
 		"vite": "^8",

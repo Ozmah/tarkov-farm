@@ -34,6 +34,9 @@ function PublicLayout() {
 	const isRouterLoading = useRouterState({
 		select: (state) => state.isLoading,
 	});
+	const isAboutRoute = useRouterState({
+		select: (state) => state.location.pathname === "/about",
+	});
 	const navigationStartedRef = useRef(false);
 	const [pendingMapId, setPendingMapId] = useState<string>();
 	const [committedConfiguration, setCommittedConfiguration] =
@@ -104,7 +107,11 @@ function PublicLayout() {
 					map: currentMap?.id,
 					...configuration?.editorSearch,
 				}}
-				headerTitle={currentMap?.name ?? "Kord Breach Season Overview"}
+				headerTitle={
+					isAboutRoute
+						? "About"
+						: (currentMap?.name ?? "Kord Breach Season Overview")
+				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}
 				onSelectedDocumentsChange={(documentIds) =>

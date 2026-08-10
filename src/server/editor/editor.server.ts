@@ -1,6 +1,7 @@
 import "@tanstack/react-start/server-only";
 
 import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { and, asc, desc, eq } from "drizzle-orm";
 
@@ -8,6 +9,10 @@ import type {
 	DeleteLocationInput,
 	SaveLocationFormInput,
 } from "@/lib/editor-validation";
+import {
+	type PublicationData,
+	serializePublicationData,
+} from "@/lib/publication-data";
 import { getDatabase } from "@/server/db/client.server";
 import { writePublicationManifest } from "@/server/db/publication-manifest";
 import {
@@ -23,7 +28,6 @@ import {
 	maps,
 	screenshots,
 } from "@/server/db/schema";
-import { verifyPublicationAssets } from "../../../scripts/lib/publication-assets";
 import { assertLocalEditorAccess } from "./access.server";
 import {
 	discardPublishedFiles,
@@ -32,10 +36,25 @@ import {
 	removeScreenshotFiles,
 } from "./screenshot-files.server";
 
-const editorMutationLocks = new Map<string, Promise<void>>();
 const projectRoot = resolve(process.cwd());
 const publicationPath = resolve(projectRoot, "data/publication/locations.json");
-let publicationWriteTail = Promise.resolve();
+type EditorRuntimeState = {
+	mutationLocks: Map<string, Promise<void>>;
+	publicationWriteTail: Promise<void>;
+};
+const globalEditorRuntime = globalThis as typeof globalThis & {
+	__tarkovEditorRuntime?: EditorRuntimeState;
+};
+const editorRuntime = globalEditorRuntime.__tarkovEditorRuntime ?? {
+	mutationLocks: new Map(),
+	publicationWriteTail: Promise.resolve(),
+};
+globalEditorRuntime.__tarkovEditorRuntime = editorRuntime;
+const editorMutationLocks = editorRuntime.mutationLocks;
+
+type PublicationExpectation =
+	| { type: "saved"; locationId: string; mapImageId: string }
+	| { type: "deleted"; locationId: string };
 
 export async function readEditorData() {
 	assertLocalEditorAccess();
@@ -339,8 +358,16 @@ async function saveEditorLocationLocked(
 		throw error;
 	}
 
-	await publishEditorManifest();
-	return { id: locationId };
+	await publishEditorManifest({
+		type: "saved",
+		locationId,
+		mapImageId: location.mapImageId,
+	});
+	return {
+		id: locationId,
+		mapId: image.mapId,
+		mapImageId: location.mapImageId,
+	};
 }
 
 export async function deleteEditorLocation(input: DeleteLocationInput) {
@@ -369,31 +396,54 @@ async function deleteEditorLocationLocked(input: DeleteLocationInput) {
 		console.error("Failed to remove location screenshot files", error);
 	}
 
-	await publishEditorManifest();
+	await publishEditorManifest({ type: "deleted", locationId: deleted.id });
 	return { id: deleted.id };
 }
 
-async function publishEditorManifest() {
-	const write = publicationWriteTail
+async function publishEditorManifest(expectation: PublicationExpectation) {
+	const write = editorRuntime.publicationWriteTail
 		.catch(() => undefined)
 		.then(async () => {
 			const { client } = await getDatabase();
 			const data = await readPublicationDataFromDatabase(client);
 
+			assertPublicationExpectation(data, expectation);
 			await assertPublicationReferences(client, data);
-			await verifyPublicationAssets(data, {
-				projectRoot,
-				rejectOrphans: false,
-			});
 			await writePublicationManifest(data, publicationPath);
+
+			const expectedManifest = serializePublicationData(data);
+			const writtenManifest = await readFile(publicationPath, "utf8");
+			if (writtenManifest !== expectedManifest) {
+				throw new Error("Published manifest does not match the saved database");
+			}
 		});
 
-	publicationWriteTail = write.then(
+	editorRuntime.publicationWriteTail = write.then(
 		() => undefined,
 		() => undefined,
 	);
 
 	return write;
+}
+
+function assertPublicationExpectation(
+	data: PublicationData,
+	expectation: PublicationExpectation,
+) {
+	const location = data.locations.find(
+		(item) => item.id === expectation.locationId,
+	);
+
+	if (expectation.type === "deleted") {
+		if (location) {
+			throw new Error("Deleted location remains in the publication manifest");
+		}
+		return;
+	}
+
+	if (!location || location.mapImageId !== expectation.mapImageId) {
+		throw new Error("Saved location is missing from the publication manifest");
+	}
 }
 
 async function withLocationMutationLock<Result>(

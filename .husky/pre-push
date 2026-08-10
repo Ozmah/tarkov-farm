@@ -1,0 +1,4 @@
+set -eu
+
+bun run env:check
+bun run release:check

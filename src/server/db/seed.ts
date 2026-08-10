@@ -69,14 +69,6 @@ const mapImageDefinitions = [
 		altText: "Illustrated overview map of Interchange",
 	},
 	{
-		id: "interchange-ultra",
-		mapId: "interchange",
-		viewKey: "ultra",
-		name: "ULTRA interior",
-		file: "re3mrULTRA3Dmap.webp",
-		altText: "Detailed illustrated map of the ULTRA shopping mall",
-	},
-	{
 		id: "lighthouse-main",
 		mapId: "lighthouse",
 		viewKey: "main",
@@ -240,11 +232,13 @@ export async function seedCatalog(db: CatalogDatabase) {
 			.values([...mapSeed])
 			.onConflictDoNothing()
 			.run();
+		await transaction.update(mapImages).set({ isCurrent: false }).run();
 		for (const image of mapImageSeed) {
+			const currentImage = { ...image, isCurrent: true };
 			await transaction
 				.insert(mapImages)
-				.values(image)
-				.onConflictDoUpdate({ target: mapImages.id, set: image })
+				.values(currentImage)
+				.onConflictDoUpdate({ target: mapImages.id, set: currentImage })
 				.run();
 		}
 		await transaction

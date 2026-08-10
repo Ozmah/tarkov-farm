@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
 	constrainView,
 	fitView,
+	focusViewOnImagePoint,
 	viewportPointToImagePoint,
 	zoomViewAtPoint,
 } from "./map-viewport";
@@ -60,6 +61,27 @@ describe("map viewport transforms", () => {
 				{ width: 1_000, height: 1_000 },
 			),
 		).toEqual({ scale: 0.5, x: 250, y: 150 });
+	});
+
+	it("keeps a selected point visible when the image edge prevents centering", () => {
+		const point = { x: 1_850, y: 100 };
+		const viewport = { width: 1_000, height: 600 };
+		const view = focusViewOnImagePoint({
+			image: { width: 2_000, height: 1_000 },
+			point,
+			scale: 1,
+			viewport,
+		});
+		const visiblePoint = {
+			x: point.x * view.scale + view.x,
+			y: point.y * view.scale + view.y,
+		};
+
+		expect(visiblePoint.x).toBeGreaterThanOrEqual(0);
+		expect(visiblePoint.x).toBeLessThanOrEqual(viewport.width);
+		expect(visiblePoint.y).toBeGreaterThanOrEqual(0);
+		expect(visiblePoint.y).toBeLessThanOrEqual(viewport.height);
+		expect(visiblePoint.x).not.toBe(viewport.width / 2);
 	});
 
 	it("prevents a zoomed image from being panned beyond its edges", () => {
