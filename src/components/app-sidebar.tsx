@@ -1,14 +1,8 @@
-import {
-	FileTextIcon,
-	HouseIcon,
-	InfoIcon,
-	MapTrifoldIcon,
-} from "@phosphor-icons/react";
+import { HouseIcon, InfoIcon, MapTrifoldIcon } from "@phosphor-icons/react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { FieldLegend, FieldSet } from "@/components/ui/field";
+import { DocumentFilter } from "@/components/document-filter";
 import {
 	Sidebar,
 	SidebarContent,
@@ -34,8 +28,14 @@ type AppSidebarProps = {
 		name: string;
 		isFilterable: boolean;
 	}>;
+	documentLocations: ReadonlyArray<{
+		documentId: string;
+		mapId: string;
+		mapImageId: string;
+	}>;
 	selectedDocumentIds: string[];
 	currentMapId?: string;
+	currentMapImageId?: string;
 	footer?: ReactNode;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
@@ -47,8 +47,10 @@ type AppSidebarProps = {
 export function AppSidebar({
 	maps,
 	documents,
+	documentLocations,
 	selectedDocumentIds,
 	currentMapId,
+	currentMapImageId,
 	footer,
 	onMapNavigate,
 	onMapNavigationStart,
@@ -61,10 +63,6 @@ export function AppSidebar({
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
-	const filterableDocuments = documents.filter(
-		(document) => document.isFilterable,
-	);
-	const selectedDocuments = new Set(selectedDocumentIds);
 	const search = {
 		documents: encodeDocumentFilters(selectedDocumentIds),
 	};
@@ -75,14 +73,6 @@ export function AppSidebar({
 			setIsSidebarPanelOpen(true);
 		}
 	}, [hasSidebarPanel]);
-
-	function toggleDocument(documentId: string, checked: boolean) {
-		const nextSelection = checked
-			? [...selectedDocumentIds, documentId]
-			: selectedDocumentIds.filter((id) => id !== documentId);
-
-		onSelectedDocumentsChange(nextSelection);
-	}
 
 	function closeMobileSidebar() {
 		if (isMobile) {
@@ -120,6 +110,14 @@ export function AppSidebar({
 					</span>
 				</Link>
 			</SidebarHeader>
+			<DocumentFilter
+				currentMapId={currentMapId}
+				currentMapImageId={currentMapImageId}
+				documents={documents}
+				documentLocations={documentLocations}
+				selectedDocumentIds={selectedDocumentIds}
+				onSelectedDocumentsChange={onSelectedDocumentsChange}
+			/>
 
 			<div className="relative min-h-0 flex-1 overflow-hidden">
 				<div
@@ -130,44 +128,6 @@ export function AppSidebar({
 					)}
 				>
 					<SidebarContent>
-						<SidebarGroup>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<FieldSet className="gap-0">
-										<FieldLegend className="mb-0 flex h-9 w-full items-center gap-2 px-3 font-medium text-sidebar-foreground text-sm normal-case tracking-normal">
-											<FileTextIcon aria-hidden="true" className="size-4" />
-											Documents
-										</FieldLegend>
-										<SidebarMenuSub>
-											{filterableDocuments.map((document) => {
-												const checked = selectedDocuments.has(document.id);
-
-												return (
-													<SidebarMenuSubItem key={document.id}>
-														<label
-															htmlFor={`document-filter-${document.id}`}
-															className="flex min-h-11 cursor-pointer items-center gap-3 px-3 text-sidebar-foreground text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground md:min-h-8"
-														>
-															<Checkbox
-																id={`document-filter-${document.id}`}
-																checked={checked}
-																onCheckedChange={(nextChecked) =>
-																	toggleDocument(document.id, nextChecked)
-																}
-															/>
-															<span className="min-w-0 truncate">
-																{document.name}
-															</span>
-														</label>
-													</SidebarMenuSubItem>
-												);
-											})}
-										</SidebarMenuSub>
-									</FieldSet>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarGroup>
-
 						<SidebarGroup>
 							<SidebarMenu>
 								<SidebarMenuItem>

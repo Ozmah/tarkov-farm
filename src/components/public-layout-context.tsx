@@ -7,6 +7,7 @@ import {
 } from "react";
 
 export type PublicLayoutConfiguration = {
+	currentMapImageId?: string;
 	editorSearch?: {
 		documents?: string;
 		image?: string;

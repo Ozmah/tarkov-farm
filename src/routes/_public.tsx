@@ -93,6 +93,30 @@ function PublicLayout() {
 		}
 	}, [currentMap?.id, isRouterLoading, pendingMapId]);
 
+	function updateSelectedDocuments(documentIds: string[]) {
+		const nextSearch = {
+			...search,
+			documents: encodeDocumentFilters(documentIds),
+			location: undefined,
+		};
+
+		if (currentMap) {
+			void navigate({
+				to: "/maps/$mapId",
+				params: { mapId: currentMap.id },
+				search: nextSearch,
+				replace: true,
+			});
+			return;
+		}
+
+		void navigate({
+			to: isAboutRoute ? "/about" : "/",
+			search: nextSearch,
+			replace: true,
+		});
+	}
+
 	return (
 		<PublicLayoutConfigurationProvider
 			prepareMapNavigation={prepareMapNavigation}
@@ -102,6 +126,7 @@ function PublicLayout() {
 				catalog={catalog}
 				selectedDocumentIds={selectedDocumentIds}
 				currentMapId={currentMap?.id}
+				currentMapImageId={configuration?.currentMapImageId}
 				editorSearch={{
 					documents: encodeDocumentFilters(selectedDocumentIds),
 					map: currentMap?.id,
@@ -114,16 +139,7 @@ function PublicLayout() {
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}
-				onSelectedDocumentsChange={(documentIds) =>
-					void navigate({
-						search: (previous) => ({
-							...previous,
-							documents: encodeDocumentFilters(documentIds),
-							location: undefined,
-						}),
-						replace: true,
-					})
-				}
+				onSelectedDocumentsChange={updateSelectedDocuments}
 				sidebarPanel={configuration?.sidebarPanel}
 			>
 				<Outlet />
