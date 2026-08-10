@@ -104,7 +104,7 @@ export function MapWorkspace({
 		| {
 				xBasisPoints: number;
 				yBasisPoints: number;
-			}
+		  }
 		| undefined
 	>(undefined);
 	const [view, setView] = useState<ViewTransform>();
@@ -124,11 +124,11 @@ export function MapWorkspace({
 		selectedMarkerId &&
 		selectedFocusX !== undefined &&
 		selectedFocusY !== undefined
-		? {
-				xBasisPoints: selectedFocusX,
-				yBasisPoints: selectedFocusY,
-			}
-		: undefined;
+			? {
+					xBasisPoints: selectedFocusX,
+					yBasisPoints: selectedFocusY,
+				}
+			: undefined;
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
@@ -215,8 +215,8 @@ export function MapWorkspace({
 					? focusViewOnImagePoint({
 							image: imageSize,
 							point: {
-								x: (selectedFocus.xBasisPoints / 10_000) * image.width,
-								y: (selectedFocus.yBasisPoints / 10_000) * image.height,
+								x: (selectedFocus.xBasisPoints / 10_000) * imageSize.width,
+								y: (selectedFocus.yBasisPoints / 10_000) * imageSize.height,
 							},
 							scale: nextScale,
 							viewport: nextViewportSize,
