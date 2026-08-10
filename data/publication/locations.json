@@ -66,6 +66,58 @@
 			"yBasisPoints": 2320
 		},
 		{
+			"description": "On a lab surface next to the blue key card entrance room",
+			"documentId": "medical",
+			"id": "19d67714-3eb1-4d02-be7e-da8aed91a87f",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Infirmary Next to Blue",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 881,
+						"path": "/screenshots/19d67714-3eb1-4d02-be7e-da8aed91a87f/1c3c910acd462aff5770fe638ebb3d81c95ad74cc1761b3517cfaa3acc7f21b2-1920.webp",
+						"sha256": "2c7d82fd57ba169712f87d9b70b793e630d0ce5f146c83663ec7dbfb44d90a81",
+						"width": 1920
+					},
+					"id": "1266c011-7387-4c1d-8cf4-3bd91691c879",
+					"isActive": true,
+					"preview": {
+						"height": 459,
+						"path": "/screenshots/19d67714-3eb1-4d02-be7e-da8aed91a87f/1c3c910acd462aff5770fe638ebb3d81c95ad74cc1761b3517cfaa3acc7f21b2-1000.webp",
+						"sha256": "c44e2ccf77f1ee92a95a6171234143bd79e6c34d34bd40b06471b62297b21df9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "1c3c910acd462aff5770fe638ebb3d81c95ad74cc1761b3517cfaa3acc7f21b2"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 888,
+						"path": "/screenshots/19d67714-3eb1-4d02-be7e-da8aed91a87f/6f3469f9b6c62e057f8c869524c84ca5cd44cce5b9d5e5f094a647e9888b64c9-1920.webp",
+						"sha256": "4ae96a62c835a1a25fa7bf536713dd2835eac4341b0e295235150588334741c0",
+						"width": 1920
+					},
+					"id": "0dd6cbcc-dd58-440e-b2ee-afa466af2921",
+					"isActive": true,
+					"preview": {
+						"height": 462,
+						"path": "/screenshots/19d67714-3eb1-4d02-be7e-da8aed91a87f/6f3469f9b6c62e057f8c869524c84ca5cd44cce5b9d5e5f094a647e9888b64c9-1000.webp",
+						"sha256": "b645b05888d3e2f9d736a39895f80b9e4b71f10aae90c10d91608afe2f26511d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "6f3469f9b6c62e057f8c869524c84ca5cd44cce5b9d5e5f094a647e9888b64c9"
+				}
+			],
+			"xBasisPoints": 3575,
+			"yBasisPoints": 8033
+		},
+		{
 			"description": "On a bench in the ground floor of the medical building",
 			"documentId": "blueprints-technical",
 			"id": "1bd1c771-bbc4-4eef-87f9-030b8fc9750f",
@@ -816,6 +868,58 @@
 			],
 			"xBasisPoints": 4999,
 			"yBasisPoints": 4320
+		},
+		{
+			"description": "On a desk in the other room next to blue key card",
+			"documentId": "medical",
+			"id": "ed36daf1-4750-4f76-bb18-dc8d7549063b",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Infirmary Desk",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 880,
+						"path": "/screenshots/ed36daf1-4750-4f76-bb18-dc8d7549063b/9636aa20c27209b3e736c3540a43907a940df7ec0f8bf73c98a32febfb40e7db-1920.webp",
+						"sha256": "50aa2e54b6dc2a535876cc7a5af4aa7a54ff81091d911f4cc3c5f21cd90df00c",
+						"width": 1920
+					},
+					"id": "743f7b20-8e5a-42d4-a09b-e1a94e1ab4fa",
+					"isActive": true,
+					"preview": {
+						"height": 458,
+						"path": "/screenshots/ed36daf1-4750-4f76-bb18-dc8d7549063b/9636aa20c27209b3e736c3540a43907a940df7ec0f8bf73c98a32febfb40e7db-1000.webp",
+						"sha256": "cb8ea92efba6f06781687329c5f5914d2f752fcbaecca2d77f19409781bce7e0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9636aa20c27209b3e736c3540a43907a940df7ec0f8bf73c98a32febfb40e7db"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 958,
+						"path": "/screenshots/ed36daf1-4750-4f76-bb18-dc8d7549063b/25dddcf67da50fae870eadecc12b847f657641e3b8e4ab6127f5163de7c09ed4-1920.webp",
+						"sha256": "8e27a94be2dfb82c9bb9c1cdd7279ef76be7916667514e9e76563902f17f0fd9",
+						"width": 1920
+					},
+					"id": "486e2abc-4ec2-4c95-99aa-b2a5c10cc202",
+					"isActive": true,
+					"preview": {
+						"height": 499,
+						"path": "/screenshots/ed36daf1-4750-4f76-bb18-dc8d7549063b/25dddcf67da50fae870eadecc12b847f657641e3b8e4ab6127f5163de7c09ed4-1000.webp",
+						"sha256": "0f96c2f885b951670b10bcda78b091df242a8de0cd7ce7d6d127d54efafe559b",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "25dddcf67da50fae870eadecc12b847f657641e3b8e4ab6127f5163de7c09ed4"
+				}
+			],
+			"xBasisPoints": 3884,
+			"yBasisPoints": 8169
 		}
 	]
 }
