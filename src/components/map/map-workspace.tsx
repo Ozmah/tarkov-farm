@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon } from "@phosphor-icons/react";
+import { MapTrifoldIcon, MinusIcon, PlusIcon } from "@phosphor-icons/react";
 import {
 	type ReactNode,
 	type PointerEvent as ReactPointerEvent,
@@ -41,6 +41,7 @@ export type MapWorkspaceImage = {
 export type MapWorkspaceMarker = {
 	id: string;
 	isActive?: boolean;
+	kind?: "location" | "submap";
 	label?: string;
 	name: string;
 	xBasisPoints: number;
@@ -53,6 +54,7 @@ type MapWorkspaceProps = {
 	image: MapWorkspaceImage;
 	instructions: string;
 	markers: MapWorkspaceMarker[];
+	panWithPrimaryButton?: boolean;
 	selectedMarkerId?: string;
 	toolbarStart?: ReactNode;
 	onMapPress?: (position: {
@@ -77,6 +79,7 @@ export function MapWorkspace({
 	image,
 	instructions,
 	markers,
+	panWithPrimaryButton = true,
 	selectedMarkerId,
 	toolbarStart,
 	onMapPress,
@@ -385,6 +388,10 @@ export function MapWorkspace({
 			session.moved = true;
 		}
 
+		if (session.mode === "press" && session.moved && panWithPrimaryButton) {
+			session.mode = "pan";
+		}
+
 		if (session.mode !== "pan" || !session.moved) {
 			session.last = point;
 			return;
@@ -618,9 +625,13 @@ function MapMarker({
 	marker,
 	onClick,
 }: MapMarkerProps) {
+	const isSubmap = marker.kind === "submap";
 	const className = cn(
 		"absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+		isSubmap &&
+			"h-11 w-auto min-w-14 gap-1.5 rounded-none bg-rowdy-orange px-2 text-rowdy-orange-foreground ring-rowdy-orange after:bg-rowdy-orange [&_svg]:size-5",
 		isSelected &&
+			!isSubmap &&
 			"z-20 size-11 bg-rowdy-orange text-rowdy-orange-foreground ring-4 after:bg-rowdy-orange",
 		marker.isActive === false && "opacity-60",
 	);
@@ -648,13 +659,14 @@ function MapMarker({
 			type="button"
 			data-map-marker
 			aria-label={`Open ${marker.name}`}
-			aria-pressed={isSelected}
+			aria-pressed={isSubmap ? undefined : isSelected}
 			onPointerDown={(event) => event.stopPropagation()}
 			onClick={onClick}
 			className={className}
 			style={style}
 		>
-			{marker.label}
+			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
+			<span className="tabular-nums">{marker.label}</span>
 		</button>
 	);
 }

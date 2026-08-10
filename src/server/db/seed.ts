@@ -69,14 +69,6 @@ const mapImageDefinitions = [
 		altText: "Illustrated overview map of Interchange",
 	},
 	{
-		id: "interchange-ultra",
-		mapId: "interchange",
-		viewKey: "ultra",
-		name: "ULTRA interior",
-		file: "re3mrULTRA3Dmap.webp",
-		altText: "Detailed illustrated map of the ULTRA shopping mall",
-	},
-	{
 		id: "lighthouse-main",
 		mapId: "lighthouse",
 		viewKey: "main",

@@ -22,6 +22,7 @@ import {
 	readCatalogId,
 	readSelectedDocumentIds,
 } from "@/lib/catalog-search";
+import { SUBMAP_LINKS } from "@/lib/submap-links";
 import { Route as PublicLayoutRoute } from "./_public";
 
 export const Route = createFileRoute("/_public/maps/$mapId")({
@@ -76,6 +77,42 @@ function MapPage() {
 				(screenshot) => screenshot.locationId === selectedLocation.id,
 			)
 		: [];
+	const submapMarkers =
+		selectedImage?.viewKey === "main"
+			? SUBMAP_LINKS.filter((link) => link.mapId === mapData.map.id).flatMap(
+					(link) => {
+						const targetImage = mapData.images.find(
+							(image) => image.viewKey === link.targetViewKey,
+						);
+
+						if (!targetImage) return [];
+
+						const locationCount = mapData.locations.filter(
+							(location) =>
+								location.mapImageId === targetImage.id &&
+								(selectedDocumentIdSet.size === 0 ||
+									selectedDocumentIdSet.has(location.documentId)),
+						).length;
+						const locationLabel =
+							locationCount === 1 ? "location" : "locations";
+
+						return [
+							{
+								id: `submap:${link.targetViewKey}`,
+								kind: "submap" as const,
+								label: String(locationCount),
+								name: `${link.name} submap with ${locationCount} ${locationLabel}`,
+								targetViewKey: link.targetViewKey,
+								xBasisPoints: link.xBasisPoints,
+								yBasisPoints: link.yBasisPoints,
+							},
+						];
+					},
+				)
+			: [];
+	const submapViewByMarkerId = new Map(
+		submapMarkers.map((marker) => [marker.id, marker.targetViewKey]),
+	);
 	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
 
 	const sidebarPanel = (closePanel: () => void) => (
@@ -153,37 +190,42 @@ function MapPage() {
 		<div className="flex min-h-0 flex-1 flex-col">
 			{selectedImage ? (
 				<div className="relative min-h-0 flex-1">
-					<div inert={selectedLocation ? true : undefined} className="h-full">
+					<div className="h-full">
 						<MapWorkspace
 							key={selectedImage.id}
 							ariaLabel={`${mapData.map.name} map`}
 							className="h-full"
 							image={selectedImage}
 							instructions="Drag to move · Wheel or controls to zoom"
-							markers={visibleLocations.map((location, index) => ({
-								id: location.id,
-								label: String(index + 1),
-								name: location.name,
-								xBasisPoints: location.xBasisPoints,
-								yBasisPoints: location.yBasisPoints,
-							}))}
+							markers={[
+								...visibleLocations.map((location, index) => ({
+									id: location.id,
+									label: String(index + 1),
+									name: location.name,
+									xBasisPoints: location.xBasisPoints,
+									yBasisPoints: location.yBasisPoints,
+								})),
+								...submapMarkers,
+							]}
 							selectedMarkerId={selectedLocation?.id}
 							toolbarStart={
 								<p className="max-w-36 truncate font-heading text-sm">
 									{selectedImage.name}
 								</p>
 							}
-							onSelectMarker={(locationId) =>
+							onSelectMarker={(markerId) => {
+								const targetView = submapViewByMarkerId.get(markerId);
+
 								void navigate({
 									to: "/maps/$mapId",
 									params: { mapId: mapData.map.id },
 									search: {
 										documents: documentSearch,
-										location: locationId,
-										view: selectedImage.viewKey,
+										location: targetView ? undefined : markerId,
+										view: targetView ?? selectedImage.viewKey,
 									},
-								})
-							}
+								});
+							}}
 						/>
 					</div>
 

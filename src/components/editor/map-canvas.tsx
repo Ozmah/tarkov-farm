@@ -54,7 +54,7 @@ export function MapCanvas({
 			ariaLabel="Location editor map"
 			className="border-border border-b lg:border-r lg:border-b-0"
 			image={image}
-			instructions="Wheel to zoom · Click to place · Middle or right drag to move"
+			instructions="Click to place · Drag to move · Wheel to zoom"
 			markers={markers}
 			selectedMarkerId={selectedLocationId ?? "new-location"}
 			onMapPress={onPositionChange}
