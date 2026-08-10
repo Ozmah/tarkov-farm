@@ -60,7 +60,7 @@ export function PublicShell({
 	return (
 		<SidebarProvider
 			open
-			className="isolate"
+			className="isolate h-svh overflow-hidden"
 			style={{ "--sidebar-width": "21.875rem" } as CSSProperties}
 		>
 			<AppSidebar
@@ -94,7 +94,7 @@ export function PublicShell({
 				onSelectedDocumentsChange={onSelectedDocumentsChange}
 				sidebarPanel={sidebarPanel}
 			/>
-			<SidebarInset className="min-w-0">
+			<SidebarInset className="min-h-0 min-w-0 overflow-hidden">
 				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
 					<SidebarTrigger className="md:hidden" />
 					<Separator orientation="vertical" className="h-4 md:hidden" />

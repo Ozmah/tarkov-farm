@@ -49,12 +49,16 @@ describe("publication store", () => {
 			);
 			const publication = parsePublicationData(JSON.parse(source));
 			const counts = await importPublicationData(client, publication);
+			const expectedCounts = {
+				locationDocuments: publication.locations.length,
+				locations: publication.locations.length,
+				screenshots: publication.locations.reduce(
+					(total, location) => total + location.screenshots.length,
+					0,
+				),
+			};
 
-			expect(counts).toEqual({
-				locationDocuments: 9,
-				locations: 9,
-				screenshots: 12,
-			});
+			expect(counts).toEqual(expectedCounts);
 			await assertPublicationImportCounts(client, counts);
 			expect(
 				serializePublicationData(await readPublicationDataFromDatabase(client)),

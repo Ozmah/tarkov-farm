@@ -1,9 +1,20 @@
-import { lstat, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
+import {
+	lstat,
+	mkdtemp,
+	readFile,
+	rm,
+	symlink,
+	writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
+import {
+	parsePublicationData,
+	serializePublicationData,
+} from "../../lib/publication-data";
 import { openDatabase } from "./open";
 import { readPublicationDataFromDatabase } from "./publication-store";
 import { setupDatabase } from "./setup";
@@ -13,6 +24,16 @@ const projectRoot = resolve(process.cwd());
 const setupOptions = {
 	migrationsPath: resolve(projectRoot, "drizzle"),
 	publicationPath: resolve(projectRoot, "data/publication/locations.json"),
+};
+const publicationSource = await readFile(setupOptions.publicationPath, "utf8");
+const publication = parsePublicationData(JSON.parse(publicationSource));
+const expectedCounts = {
+	locationDocuments: publication.locations.length,
+	locations: publication.locations.length,
+	screenshots: publication.locations.reduce(
+		(total, location) => total + location.screenshots.length,
+		0,
+	),
 };
 
 afterEach(async () => {
@@ -29,17 +50,15 @@ describe("database setup", () => {
 		const databasePath = resolve(directory, "database.sqlite");
 		const result = await setupDatabase(databasePath, setupOptions);
 
-		expect(result).toMatchObject({
-			counts: { locationDocuments: 9, locations: 9, screenshots: 12 },
+		expect(result).toEqual({
+			counts: expectedCounts,
 			status: "created",
 		});
 
 		const { client } = await openDatabase(databasePath, { create: false });
 
 		try {
-			expect(
-				(await readPublicationDataFromDatabase(client)).locations,
-			).toHaveLength(9);
+			await expectDatabaseToMatchManifest(client);
 		} finally {
 			await client.close();
 		}
@@ -51,19 +70,15 @@ describe("database setup", () => {
 		const sentinel = "existing local database";
 		await writeFile(databasePath, sentinel);
 
-		await expect(
-			setupDatabase(databasePath, setupOptions),
-		).resolves.toMatchObject({
-			counts: { locationDocuments: 9, locations: 9, screenshots: 12 },
+		await expect(setupDatabase(databasePath, setupOptions)).resolves.toEqual({
+			counts: expectedCounts,
 			status: "created",
 		});
 
 		const { client } = await openDatabase(databasePath, { create: false });
 
 		try {
-			expect(
-				await client.get("SELECT COUNT(*) AS count FROM locations"),
-			).toMatchObject({ count: 9 });
+			await expectDatabaseToMatchManifest(client);
 		} finally {
 			await client.close();
 		}
@@ -87,9 +102,7 @@ describe("database setup", () => {
 		const { client } = await openDatabase(databasePath, { create: false });
 
 		try {
-			expect(
-				await client.get("SELECT COUNT(*) AS count FROM locations"),
-			).toMatchObject({ count: 9 });
+			await expectDatabaseToMatchManifest(client);
 		} finally {
 			await client.close();
 		}
@@ -117,4 +130,12 @@ async function createTemporaryDirectory() {
 	const directory = await mkdtemp(resolve(tmpdir(), "tarkov-db-setup-"));
 	temporaryDirectories.push(directory);
 	return directory;
+}
+
+async function expectDatabaseToMatchManifest(
+	client: Parameters<typeof readPublicationDataFromDatabase>[0],
+) {
+	expect(
+		serializePublicationData(await readPublicationDataFromDatabase(client)),
+	).toBe(publicationSource);
 }
