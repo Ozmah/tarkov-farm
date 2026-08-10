@@ -232,11 +232,13 @@ export async function seedCatalog(db: CatalogDatabase) {
 			.values([...mapSeed])
 			.onConflictDoNothing()
 			.run();
+		await transaction.update(mapImages).set({ isCurrent: false }).run();
 		for (const image of mapImageSeed) {
+			const currentImage = { ...image, isCurrent: true };
 			await transaction
 				.insert(mapImages)
-				.values(image)
-				.onConflictDoUpdate({ target: mapImages.id, set: image })
+				.values(currentImage)
+				.onConflictDoUpdate({ target: mapImages.id, set: currentImage })
 				.run();
 		}
 		await transaction
