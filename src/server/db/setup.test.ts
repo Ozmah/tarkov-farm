@@ -84,6 +84,25 @@ describe("database setup", () => {
 		}
 	});
 
+	it("preserves an existing database when the manifest is invalid", async () => {
+		const directory = await createTemporaryDirectory();
+		const databasePath = resolve(directory, "database.sqlite");
+		const invalidPublicationPath = resolve(directory, "locations.json");
+		const sentinel = "existing local database";
+		await Promise.all([
+			writeFile(databasePath, sentinel),
+			writeFile(invalidPublicationPath, "<<<<<<< unresolved conflict"),
+		]);
+
+		await expect(
+			setupDatabase(databasePath, {
+				...setupOptions,
+				publicationPath: invalidPublicationPath,
+			}),
+		).rejects.toThrow();
+		expect(await readFile(databasePath, "utf8")).toBe(sentinel);
+	});
+
 	it("does not delete the database when setup is started concurrently", async () => {
 		const directory = await createTemporaryDirectory();
 		const databasePath = resolve(directory, "database.sqlite");

@@ -8,6 +8,8 @@ COPY --link package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 FROM dependencies AS builder
+ARG VITE_DATABUDDY_CLIENT_ID
+ENV VITE_DATABUDDY_CLIENT_ID=${VITE_DATABUDDY_CLIENT_ID}
 COPY --link . .
 ENV NODE_ENV=production
 RUN bun run build

@@ -35,16 +35,16 @@ export async function setupDatabase(
 	let databaseWasCleared = false;
 
 	try {
-		await assertReplaceableDatabasePath(databasePath);
-		await removeDatabaseFiles(databasePath);
-		databaseWasCleared = true;
-
 		const source = await readFile(options.publicationPath, "utf8");
 		const publication = parsePublicationData(JSON.parse(source));
 
 		if (serializePublicationData(publication) !== source) {
 			throw new Error("Publication manifest is not canonical");
 		}
+
+		await assertReplaceableDatabasePath(databasePath);
+		await removeDatabaseFiles(databasePath);
+		databaseWasCleared = true;
 
 		database = await openDatabase(databasePath, { create: true });
 		await migrateDatabase(database.db, options.migrationsPath);

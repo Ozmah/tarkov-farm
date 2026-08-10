@@ -1,3 +1,4 @@
+import { Databuddy } from "@databuddy/sdk/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
@@ -75,6 +76,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="antialiased">
 				<TooltipProvider>{children}</TooltipProvider>
+				{import.meta.env.PROD && import.meta.env.VITE_DATABUDDY_CLIENT_ID ? (
+					<Databuddy
+						clientId={import.meta.env.VITE_DATABUDDY_CLIENT_ID}
+						trackHashChanges
+						trackInteractions
+						trackWebVitals
+						trackErrors
+					/>
+				) : null}
 				<Scripts />
 				<TanStackDevtools
 					config={{ inspectHotkey: ["Shift", "Alt", "CtrlOrMeta"] }}
