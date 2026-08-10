@@ -41,6 +41,7 @@ export async function readCatalog() {
 				id: locations.id,
 				documentId: locationDocuments.documentId,
 				mapId: mapImages.mapId,
+				mapImageId: locations.mapImageId,
 			})
 			.from(locations)
 			.innerJoin(

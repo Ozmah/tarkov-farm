@@ -173,7 +173,7 @@ function App() {
 												</p>
 												<p className="truncate text-base text-muted-foreground sm:text-sm">
 													{documents
-														.map((document) => document.name)
+														.map((document) => getDocumentShortName(document))
 														.join(", ")}
 												</p>
 											</div>
@@ -210,6 +210,21 @@ function App() {
 			</div>
 		</div>
 	);
+}
+
+const DOCUMENT_SHORT_NAMES: Readonly<Record<string, string>> = {
+	"blueprints-technical": "Blueprints",
+	financial: "Financial",
+	medical: "Medical",
+	"pmc-personnel": "PMC personnel",
+	project: "Project",
+	technical: "Technical",
+	test: "Test",
+	user: "User",
+};
+
+function getDocumentShortName(document: { id: string; name: string }) {
+	return DOCUMENT_SHORT_NAMES[document.id] ?? document.name;
 }
 
 function getMapMonogram(name: string) {
