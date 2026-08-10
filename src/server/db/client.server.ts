@@ -34,5 +34,5 @@ export function getDatabase() {
 
 async function initializeDatabase() {
 	const databasePath = getDatabasePath();
-	return openDatabase(databasePath, { create: true });
+	return openDatabase(databasePath, { create: false });
 }

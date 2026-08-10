@@ -1,6 +1,7 @@
 import "@tanstack/react-start/server-only";
 
 import { randomUUID } from "node:crypto";
+import { resolve } from "node:path";
 import { and, asc, desc, eq } from "drizzle-orm";
 
 import type {
@@ -8,6 +9,11 @@ import type {
 	SaveLocationFormInput,
 } from "@/lib/editor-validation";
 import { getDatabase } from "@/server/db/client.server";
+import { writePublicationManifest } from "@/server/db/publication-manifest";
+import {
+	assertPublicationReferences,
+	readPublicationDataFromDatabase,
+} from "@/server/db/publication-store";
 import {
 	documentMaps,
 	documents,
@@ -17,6 +23,7 @@ import {
 	maps,
 	screenshots,
 } from "@/server/db/schema";
+import { verifyPublicationAssets } from "../../../scripts/lib/publication-assets";
 import { assertLocalEditorAccess } from "./access.server";
 import {
 	discardPublishedFiles,
@@ -26,6 +33,9 @@ import {
 } from "./screenshot-files.server";
 
 const editorMutationLocks = new Map<string, Promise<void>>();
+const projectRoot = resolve(process.cwd());
+const publicationPath = resolve(projectRoot, "data/publication/locations.json");
+let publicationWriteTail = Promise.resolve();
 
 export async function readEditorData() {
 	assertLocalEditorAccess();
@@ -329,6 +339,7 @@ async function saveEditorLocationLocked(
 		throw error;
 	}
 
+	await publishEditorManifest();
 	return { id: locationId };
 }
 
@@ -358,7 +369,31 @@ async function deleteEditorLocationLocked(input: DeleteLocationInput) {
 		console.error("Failed to remove location screenshot files", error);
 	}
 
+	await publishEditorManifest();
 	return { id: deleted.id };
+}
+
+async function publishEditorManifest() {
+	const write = publicationWriteTail
+		.catch(() => undefined)
+		.then(async () => {
+			const { client } = await getDatabase();
+			const data = await readPublicationDataFromDatabase(client);
+
+			await assertPublicationReferences(client, data);
+			await verifyPublicationAssets(data, {
+				projectRoot,
+				rejectOrphans: false,
+			});
+			await writePublicationManifest(data, publicationPath);
+		});
+
+	publicationWriteTail = write.then(
+		() => undefined,
+		() => undefined,
+	);
+
+	return write;
 }
 
 async function withLocationMutationLock<Result>(

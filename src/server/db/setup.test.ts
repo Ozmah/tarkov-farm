@@ -1,11 +1,4 @@
-import {
-	lstat,
-	mkdtemp,
-	readFile,
-	rm,
-	symlink,
-	writeFile,
-} from "node:fs/promises";
+import { lstat, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
@@ -52,16 +45,28 @@ describe("database setup", () => {
 		}
 	});
 
-	it("does not open or modify an existing database file", async () => {
+	it("replaces an existing database from versioned files", async () => {
 		const directory = await createTemporaryDirectory();
 		const databasePath = resolve(directory, "database.sqlite");
 		const sentinel = "existing local database";
 		await writeFile(databasePath, sentinel);
 
-		await expect(setupDatabase(databasePath, setupOptions)).resolves.toEqual({
-			status: "existing",
+		await expect(
+			setupDatabase(databasePath, setupOptions),
+		).resolves.toMatchObject({
+			counts: { locationDocuments: 9, locations: 9, screenshots: 12 },
+			status: "created",
 		});
-		expect(await readFile(databasePath, "utf8")).toBe(sentinel);
+
+		const { client } = await openDatabase(databasePath, { create: false });
+
+		try {
+			expect(
+				await client.get("SELECT COUNT(*) AS count FROM locations"),
+			).toMatchObject({ count: 9 });
+		} finally {
+			await client.close();
+		}
 	});
 
 	it("does not delete the database when setup is started concurrently", async () => {

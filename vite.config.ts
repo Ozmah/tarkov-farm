@@ -2,9 +2,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
-const config = defineConfig({
+const config = defineConfig(({ mode }) => ({
 	resolve: { tsconfigPaths: true },
 	server: {
 		host: "127.0.0.1",
@@ -39,8 +40,32 @@ const config = defineConfig({
 		}),
 		tailwindcss(),
 		tanstackStart(),
+		...(mode === "test"
+			? []
+			: [
+					nitro({
+						preset: "bun",
+						routeRules: {
+							"/assets/**": {
+								headers: {
+									"cache-control": "public, max-age=31536000, immutable",
+								},
+							},
+							"/screenshots/**": {
+								headers: {
+									"cache-control": "public, max-age=31536000, immutable",
+								},
+							},
+							"/maps/masters/**": {
+								headers: {
+									"cache-control": "public, max-age=86400",
+								},
+							},
+						},
+					}),
+				]),
 		viteReact(),
 	],
-});
+}));
 
 export default config;

@@ -1,11 +1,10 @@
-import { randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { connect } from "@tursodatabase/database";
 
-import { serializePublicationData } from "../src/lib/publication-data";
 import { getDatabasePath } from "../src/server/db/path";
+import { writePublicationManifest } from "../src/server/db/publication-manifest";
 import {
 	assertPublicationReferences,
 	readPublicationDataFromDatabase,
@@ -34,23 +33,7 @@ try {
 		}),
 		verifyMapMasterAssets(projectRoot),
 	]);
-	const serialized = serializePublicationData(data);
-	const temporaryPath = resolve(
-		outputDirectory,
-		`.locations-${randomUUID()}.tmp`,
-	);
-
-	await mkdir(outputDirectory, { recursive: true });
-
-	try {
-		await writeFile(temporaryPath, serialized, {
-			encoding: "utf8",
-			flag: "wx",
-		});
-		await rename(temporaryPath, outputPath);
-	} finally {
-		await rm(temporaryPath, { force: true });
-	}
+	await writePublicationManifest(data, outputPath);
 
 	const screenshotCount = data.locations.reduce(
 		(count, location) => count + location.screenshots.length,

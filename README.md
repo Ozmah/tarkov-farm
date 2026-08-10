@@ -16,7 +16,7 @@ bun run dev
 
 Startup fails immediately when `APP_ENV` or `DATABASE_PATH` is missing or invalid.
 
-On first run, the project creates the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`. If the database already exists, startup leaves it untouched.
+Every server start replaces the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`.
 
 The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server; it is unavailable outside a loopback environment.
 
@@ -44,13 +44,24 @@ bun run screenshots:check
 
 ### Publication data
 
-After editing locations, stop the development server and replace the versioned publication manifest with the current local data:
+Every successful location save or deletion atomically updates `data/publication/locations.json`. To verify or regenerate it manually, stop the development server and run:
 
 ```bash
 bun run db:manifest
 ```
 
 Commit `data/publication/locations.json` together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
+
+## Railway deployment
+
+The production image rebuilds the database before starting the HTTP server. Configure one service with:
+
+- `APP_ENV=production`
+- `DATABASE_PATH=/data/tarkov-season-docs.sqlite`
+- A persistent volume mounted at `/data`
+- Exactly one replica while SQLite remains the database
+
+Railway supplies `PORT`; the image binds Nitro to `0.0.0.0`. The deployment health check at `/health` verifies that the SQLite catalog is readable. Enable automated volume backups before publishing the service.
 
 ## Built with
 

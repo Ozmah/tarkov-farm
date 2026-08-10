@@ -27,30 +27,17 @@ export async function setupDatabase(
 	databasePath: string,
 	options: { migrationsPath: string; publicationPath: string },
 ) {
-	if (await databaseExists(databasePath)) {
-		return { status: "existing" as const };
-	}
-
 	await mkdir(dirname(databasePath), { recursive: true });
 	const setupLockPath = `${databasePath}.setup.lock`;
 	const setupLock = await acquireSetupLock(setupLockPath);
 
 	let database: Awaited<ReturnType<typeof openDatabase>> | undefined;
-	let ownsDatabase = false;
+	let databaseWasCleared = false;
 
 	try {
-		if (await databaseExists(databasePath)) {
-			return { status: "existing" as const };
-		}
-
-		if (
-			(await pathExists(`${databasePath}-wal`)) ||
-			(await pathExists(`${databasePath}-shm`))
-		) {
-			throw new Error(
-				"Database sidecars exist without their main database file",
-			);
-		}
+		await assertReplaceableDatabasePath(databasePath);
+		await removeDatabaseFiles(databasePath);
+		databaseWasCleared = true;
 
 		const source = await readFile(options.publicationPath, "utf8");
 		const publication = parsePublicationData(JSON.parse(source));
@@ -59,7 +46,6 @@ export async function setupDatabase(
 			throw new Error("Publication manifest is not canonical");
 		}
 
-		ownsDatabase = true;
 		database = await openDatabase(databasePath, { create: true });
 		await migrateDatabase(database.db, options.migrationsPath);
 		await seedCatalog(database.db);
@@ -91,12 +77,8 @@ export async function setupDatabase(
 	} catch (error) {
 		await database?.client.close().catch(() => undefined);
 
-		if (ownsDatabase) {
-			await Promise.all(
-				[databasePath, `${databasePath}-wal`, `${databasePath}-shm`].map(
-					(path) => rm(path, { force: true }),
-				),
-			);
+		if (databaseWasCleared) {
+			await removeDatabaseFiles(databasePath);
 		}
 
 		throw error;
@@ -118,29 +100,25 @@ async function acquireSetupLock(path: string) {
 	}
 }
 
-async function databaseExists(path: string) {
+async function assertReplaceableDatabasePath(path: string) {
 	try {
 		const stats = await lstat(path);
 
 		if (!stats.isFile() || stats.isSymbolicLink()) {
 			throw new Error("Configured database path is not a regular file");
 		}
-
-		return true;
 	} catch (error) {
-		if (isNodeError(error) && error.code === "ENOENT") return false;
+		if (isNodeError(error) && error.code === "ENOENT") return;
 		throw error;
 	}
 }
 
-async function pathExists(path: string) {
-	try {
-		await lstat(path);
-		return true;
-	} catch (error) {
-		if (isNodeError(error) && error.code === "ENOENT") return false;
-		throw error;
-	}
+async function removeDatabaseFiles(path: string) {
+	await Promise.all(
+		[path, `${path}-wal`, `${path}-shm`].map((file) =>
+			rm(file, { force: true }),
+		),
+	);
 }
 
 function isNodeError(error: unknown): error is NodeJS.ErrnoException {
@@ -153,11 +131,7 @@ if (import.meta.main) {
 		publicationPath: PUBLICATION_PATH,
 	});
 
-	if (result.status === "existing") {
-		console.info("Database already exists; leaving it untouched.");
-	} else {
-		console.info(
-			`Created database with ${result.counts.locations} locations and ${result.counts.screenshots} screenshots.`,
-		);
-	}
+	console.info(
+		`Rebuilt database with ${result.counts.locations} locations and ${result.counts.screenshots} screenshots.`,
+	);
 }
