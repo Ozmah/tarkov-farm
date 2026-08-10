@@ -16,7 +16,7 @@ Startup fails immediately when `APP_ENV` or `DATABASE_PATH` is missing or invali
 
 Every server start replaces the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`.
 
-The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server; it is unavailable outside a loopback environment.
+The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server, just works on local.
 
 ### Generate map masters
 
@@ -26,7 +26,7 @@ Maintainers with access to the ignored source images can regenerate the optimize
 bun run images:masters
 ```
 
-The command processes each image in an isolated subprocess and atomically replaces `public/maps/masters` only after every image succeeds.
+The command processes each image in an isolated subprocess and replaces `public/maps/masters` only after every image succeeds.
 
 ### Location screenshots
 
@@ -42,7 +42,7 @@ bun run screenshots:check
 
 ### Publication data
 
-Every successful location save or deletion atomically updates `data/publication/locations.json`. To verify or regenerate it manually, stop the development server and run:
+Every successful location save or deletion updates `data/publication/locations.json`. To verify or regenerate it manually, stop the development server and run:
 
 ```bash
 bun run db:manifest
@@ -50,16 +50,17 @@ bun run db:manifest
 
 Commit `data/publication/locations.json` together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
 
-## Railway deployment
+## Deployment
 
 The production image rebuilds the database before starting the HTTP server. Configure one service with:
 
 - `APP_ENV=production`
 - `DATABASE_PATH=/data/tarkov-season-docs.sqlite`
 - A persistent volume mounted at `/data`
-- Exactly one replica while SQLite remains the database
 
-Railway supplies `PORT`; the image binds Nitro to `0.0.0.0`. The deployment health check at `/health` verifies that the SQLite catalog is readable. Enable automated volume backups before publishing the service.
+## Analytics
+
+Production builds initialize the Databuddy React SDK when `VITE_DATABUDDY_CLIENT_ID` is configured. Development does not initialize analytics. Page navigation, hash changes, interactions, Web Vitals, and application errors are tracked; event payloads must not contain PII.
 
 ## Built with
 
