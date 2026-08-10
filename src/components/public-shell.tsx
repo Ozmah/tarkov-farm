@@ -21,10 +21,16 @@ type PublicShellProps = {
 			name: string;
 			isFilterable: boolean;
 		}>;
+		documentLocations: ReadonlyArray<{
+			documentId: string;
+			mapId: string;
+			mapImageId: string;
+		}>;
 		editorAvailable: boolean;
 	};
 	selectedDocumentIds: string[];
 	currentMapId?: string;
+	currentMapImageId?: string;
 	editorSearch?: {
 		documents?: string;
 		image?: string;
@@ -46,6 +52,7 @@ export function PublicShell({
 	catalog,
 	selectedDocumentIds,
 	currentMapId,
+	currentMapImageId,
 	editorSearch,
 	headerTitle,
 	headerMeta,
@@ -66,8 +73,10 @@ export function PublicShell({
 			<AppSidebar
 				maps={catalog.maps}
 				documents={catalog.documents}
+				documentLocations={catalog.documentLocations}
 				selectedDocumentIds={selectedDocumentIds}
 				currentMapId={currentMapId}
+				currentMapImageId={currentMapImageId}
 				footer={
 					sidebarFooter ??
 					(catalog.editorAvailable ? (

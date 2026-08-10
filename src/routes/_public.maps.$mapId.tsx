@@ -168,6 +168,7 @@ function MapPage() {
 
 	usePublicLayoutConfiguration(
 		{
+			currentMapImageId: selectedImage?.id,
 			editorSearch: {
 				documents: documentSearch,
 				image: selectedImage?.id,

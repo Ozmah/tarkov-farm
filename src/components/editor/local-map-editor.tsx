@@ -187,12 +187,36 @@ export function LocalMapEditor({
 			name: location.name,
 		};
 	});
+	const mapImagesById = new Map(
+		data.mapImages.map((image) => [image.id, image]),
+	);
+	const locationsById = new Map(
+		data.locations.map((location) => [location.id, location]),
+	);
 	const editorCatalog = {
 		maps: data.maps,
 		documents: data.documents.map((document) => ({
 			...document,
 			isFilterable: true,
 		})),
+		documentLocations: data.locationDocuments.flatMap(
+			({ documentId, locationId }) => {
+				const location = locationsById.get(locationId);
+				const image = location
+					? mapImagesById.get(location.mapImageId)
+					: undefined;
+
+				return location && image
+					? [
+							{
+								documentId,
+								mapId: image.mapId,
+								mapImageId: image.id,
+							},
+						]
+					: [];
+			},
+		),
 		editorAvailable: false,
 	};
 	return (
@@ -200,6 +224,7 @@ export function LocalMapEditor({
 			catalog={editorCatalog}
 			selectedDocumentIds={selectedDocumentIds}
 			currentMapId={selectedMap?.id}
+			currentMapImageId={selectedImage?.id}
 			headerTitle="Location editor"
 			headerMeta="Local only"
 			onMapNavigate={selectMap}
