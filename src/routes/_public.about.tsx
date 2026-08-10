@@ -94,8 +94,135 @@ function AboutPage() {
 					</nav>
 				</section>
 
+				<section
+					aria-labelledby="credits-title"
+					className="flex flex-col gap-6 border-border border-t pt-8"
+				>
+					<div className="flex flex-col gap-2">
+						<p className="text-muted-foreground text-sm uppercase tracking-wide">
+							Credits
+						</p>
+						<h2
+							id="credits-title"
+							className="font-heading font-medium text-2xl tracking-tight"
+						>
+							Visual attribution
+						</h2>
+					</div>
+
+					<ul className="grid gap-6 text-pretty text-muted-foreground text-sm leading-relaxed">
+						<li>
+							<h3 className="font-medium text-foreground">Map artwork</h3>
+							<p>
+								Most map artwork was created by{" "}
+								<a
+									href="https://reemr.se/"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									re3mr
+								</a>{" "}
+								and is used under the{" "}
+								<a
+									href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									CC BY-NC-SA 4.0
+								</a>{" "}
+								license.
+							</p>
+						</li>
+
+						<li>
+							<h3 className="font-medium text-foreground">
+								Escape from Tarkov Wiki
+							</h3>
+							<p>
+								The Lab map was sourced from{" "}
+								<a
+									href="https://escapefromtarkov.fandom.com/wiki/Map:The_Lab"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									Map: The Lab
+								</a>
+								. Several location screenshots were sourced from the{" "}
+								<a
+									href="https://escapefromtarkov.fandom.com/"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									Escape from Tarkov Wiki
+								</a>
+								.
+							</p>
+						</li>
+
+						<li>
+							<h3 className="font-medium text-foreground">
+								Screenshot contributions
+							</h3>
+							<p>
+								My friends{" "}
+								<a
+									href="https://www.twitch.tv/dravencrow_3110"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									DravenCrow_3110
+								</a>
+								, Emiliano, and DrJack are helping collect and capture location
+								screenshots.
+							</p>
+						</li>
+
+						<li>
+							<h3 className="font-medium text-foreground">Color palette</h3>
+							<p>
+								The interface uses{" "}
+								<a
+									href="https://alexcristache.gumroad.com/"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									Mindful Palette 013
+								</a>{" "}
+								by{" "}
+								<a
+									href="https://x.com/AlexCristache"
+									target="_blank"
+									rel="noreferrer"
+									className="underline underline-offset-4 hover:text-foreground"
+								>
+									Alex Cristache
+								</a>
+								.
+							</p>
+						</li>
+					</ul>
+				</section>
+
 				<p className="max-w-[60ch] text-pretty text-muted-foreground text-sm">
 					Tarkov Farm is not affiliated with or endorsed by Battlestate Games.
+				</p>
+				<p className="text-muted-foreground text-sm">
+					Powered by{" "}
+					<a
+						href="https://tanstack.com/start"
+						target="_blank"
+						rel="noreferrer"
+						className="underline underline-offset-4 hover:text-foreground"
+					>
+						TanStack Start
+					</a>
+					.
 				</p>
 			</main>
 		</div>
