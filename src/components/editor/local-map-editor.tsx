@@ -78,6 +78,11 @@ type EditorSearch = {
 type EditorLocation = EditorData["locations"][number];
 type EditorScreenshot = EditorData["screenshots"][number];
 type MapImage = EditorData["mapImages"][number];
+type SavedLocationTarget = {
+	id: string;
+	mapId: string;
+	mapImageId: string;
+};
 type Draft = {
 	name: string;
 	description: string;
@@ -161,20 +166,15 @@ export function LocalMapEditor({
 		void onSearchChange({ location: undefined }, true);
 	};
 
-	const refreshAndSelect = async (locationId?: string, imageId?: string) => {
-		const targetImage = imageId
-			? data.mapImages.find((item) => item.id === imageId)
-			: undefined;
-		await router.invalidate({ sync: true });
+	const refreshAndSelect = async (target?: SavedLocationTarget) => {
 		await onSearchChange(
 			{
-				...(targetImage
-					? { map: targetImage.mapId, image: targetImage.id }
-					: {}),
-				location: locationId,
+				...(target ? { map: target.mapId, image: target.mapImageId } : {}),
+				location: target?.id,
 			},
 			true,
 		);
+		await router.invalidate({ sync: true });
 	};
 	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
 	const sidebarLocations = visibleLocations.map((location) => {
@@ -355,7 +355,7 @@ type LocationWorkspaceProps = {
 	locations: EditorLocation[];
 	selectedLocation?: EditorLocation;
 	onSelectLocation: (locationId: string) => void;
-	onSaved: (locationId?: string, imageId?: string) => Promise<void>;
+	onSaved: (target?: SavedLocationTarget) => Promise<void>;
 };
 
 function LocationWorkspace({
@@ -601,7 +601,7 @@ function LocationWorkspace({
 				data: formData,
 			});
 
-			await onSaved(result.id, draft.mapImageId);
+			await onSaved(result);
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {

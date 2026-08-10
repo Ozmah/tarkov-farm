@@ -346,8 +346,8 @@
 					"sourceSha256": "c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11"
 				}
 			],
-			"xBasisPoints": 5000,
-			"yBasisPoints": 5000
+			"xBasisPoints": 4999,
+			"yBasisPoints": 4320
 		}
 	]
 }
