@@ -1,5 +1,10 @@
-import { FileTextIcon, HouseIcon, MapTrifoldIcon } from "@phosphor-icons/react";
-import { Link } from "@tanstack/react-router";
+import {
+	FileTextIcon,
+	HouseIcon,
+	InfoIcon,
+	MapTrifoldIcon,
+} from "@phosphor-icons/react";
+import { Link, useMatchRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,6 +16,7 @@ import {
 	SidebarGroup,
 	SidebarHeader,
 	SidebarMenu,
+	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
 	SidebarMenuSubButton,
@@ -51,7 +57,9 @@ export function AppSidebar({
 	sidebarPanel,
 }: AppSidebarProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
+	const matchRoute = useMatchRoute();
 	const hasSidebarPanel = Boolean(sidebarPanel);
+	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
 	const filterableDocuments = documents.filter(
 		(document) => document.isFilterable,
@@ -188,7 +196,7 @@ export function AppSidebar({
 														/>
 													)
 												}
-												isActive={currentMapId === undefined}
+												isActive={!isAboutRoute && currentMapId === undefined}
 												className="h-11 md:h-8"
 											>
 												<HouseIcon aria-hidden="true" />
@@ -242,11 +250,29 @@ export function AppSidebar({
 					</div>
 				) : null}
 			</div>
-			{footer ? (
-				<SidebarFooter className="border-sidebar-border border-t">
-					{footer}
-				</SidebarFooter>
-			) : null}
+			<SidebarFooter className="border-sidebar-border border-t">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							render={
+								<Link
+									to="/about"
+									search={search}
+									onClick={() => {
+										setIsSidebarPanelOpen(false);
+										closeMobileSidebar();
+									}}
+								/>
+							}
+							isActive={isAboutRoute}
+						>
+							<InfoIcon aria-hidden="true" />
+							<span>About</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+				{footer}
+			</SidebarFooter>
 		</Sidebar>
 	);
 }

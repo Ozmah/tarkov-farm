@@ -1,8 +1,6 @@
-# Tarkov Season Documents
+# Tarko-Farm for Season Documents
 
-An unofficial route-planning reference for farming seasonal documents in Escape from Tarkov.
-
-I just wanted to have everything in the same page, not 10 wiki tabs.
+Why? I just wanted to have everything in the same page, not 10 wiki tabs.
 
 ## Development
 
