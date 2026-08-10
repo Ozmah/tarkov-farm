@@ -2,6 +2,102 @@
 	"formatVersion": 1,
 	"locations": [
 		{
+			"description": "Behind the desk, between the cabinet and the shelf",
+			"documentId": "project",
+			"id": "0525efef-cd92-4d21-aaba-b16fe0a6b10e",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Crackhouse Library",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 916,
+						"path": "/screenshots/0525efef-cd92-4d21-aaba-b16fe0a6b10e/01b25325cda2ecea99158a55960852deab77dbeb9cd2958af8fcf3bcee6f46c3-1920.webp",
+						"sha256": "e62795e64f98823bba32cb5d920e4f172c095a6276e13c4794f19e36018fe378",
+						"width": 1920
+					},
+					"id": "e909e295-47ef-4993-9755-a54498b9c2f5",
+					"isActive": true,
+					"preview": {
+						"height": 477,
+						"path": "/screenshots/0525efef-cd92-4d21-aaba-b16fe0a6b10e/01b25325cda2ecea99158a55960852deab77dbeb9cd2958af8fcf3bcee6f46c3-1000.webp",
+						"sha256": "bff4fddd06d6bd0b5ccd933e1ee390aad5cc7f564940b649165aa7c31c98960d",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "01b25325cda2ecea99158a55960852deab77dbeb9cd2958af8fcf3bcee6f46c3"
+				}
+			],
+			"xBasisPoints": 5811,
+			"yBasisPoints": 3451
+		},
+		{
+			"description": "In a shelf near the entrance of Gate 2 room",
+			"documentId": "blueprints-technical",
+			"id": "1039fb6f-456f-486a-8030-ceb7b6b2b842",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Gate 2 Shelf",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 950,
+						"path": "/screenshots/1039fb6f-456f-486a-8030-ceb7b6b2b842/b9d8077a6d5462be1a5b8b221d3b7a6fb7e2597d8aa773adaa6e49179a8ba551-1920.webp",
+						"sha256": "2a45be214099c889f6a1d4d200b87c739e4628384b0ea702342206b6ab2a567c",
+						"width": 1920
+					},
+					"id": "61d78b92-de3a-4fc2-bb7e-ced9014198e9",
+					"isActive": true,
+					"preview": {
+						"height": 495,
+						"path": "/screenshots/1039fb6f-456f-486a-8030-ceb7b6b2b842/b9d8077a6d5462be1a5b8b221d3b7a6fb7e2597d8aa773adaa6e49179a8ba551-1000.webp",
+						"sha256": "321398957364258f609833dfcfbfb60d60807f983603f7088a1ef2521eb16d81",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "b9d8077a6d5462be1a5b8b221d3b7a6fb7e2597d8aa773adaa6e49179a8ba551"
+				}
+			],
+			"xBasisPoints": 6958,
+			"yBasisPoints": 2320
+		},
+		{
+			"description": "On a bench in the ground floor of the medical building",
+			"documentId": "blueprints-technical",
+			"id": "1bd1c771-bbc4-4eef-87f9-030b8fc9750f",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Medical Bench",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1092,
+						"path": "/screenshots/1bd1c771-bbc4-4eef-87f9-030b8fc9750f/2a7a681659fe1526b662ec049a1a97521dba3e36907ea1ab139c20d0b69bac82-1920.webp",
+						"sha256": "5dc592f965d4733d59079f7add63760c2c05e6ca9fadb4a730ad27038b715825",
+						"width": 1920
+					},
+					"id": "245ce7f9-60ec-4e60-b673-33b7d689f694",
+					"isActive": true,
+					"preview": {
+						"height": 569,
+						"path": "/screenshots/1bd1c771-bbc4-4eef-87f9-030b8fc9750f/2a7a681659fe1526b662ec049a1a97521dba3e36907ea1ab139c20d0b69bac82-1000.webp",
+						"sha256": "d4af5f0fa18ecdb26b98badba33ed45457ba2fabdcec29bfd2f12d62cb1e7840",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2a7a681659fe1526b662ec049a1a97521dba3e36907ea1ab139c20d0b69bac82"
+				}
+			],
+			"xBasisPoints": 6773,
+			"yBasisPoints": 3056
+		},
+		{
 			"description": "On the desk inside old gas station building.",
 			"documentId": "financial",
 			"id": "1d392969-77cb-488a-837a-86e01d4043af",
@@ -60,6 +156,26 @@
 					},
 					"sortOrder": 0,
 					"sourceSha256": "a5fcf2cbf654118eb0fff5220e00f2686a6f704b49b8a99a520b8826933bcc4d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 932,
+						"path": "/screenshots/271d0456-62c0-4789-a3c0-4e62f3ecfea3/0f006a3462ff846df09c1502fbf3e9173cf6c144272886fd850fa030a15017cd-1920.webp",
+						"sha256": "8911646095c8790783ea439a6307e9180b6b7f624f727b0e2fc8ac1a36fec86e",
+						"width": 1920
+					},
+					"id": "c0fc3e31-d374-4f56-aa31-cd9da76f407e",
+					"isActive": true,
+					"preview": {
+						"height": 486,
+						"path": "/screenshots/271d0456-62c0-4789-a3c0-4e62f3ecfea3/0f006a3462ff846df09c1502fbf3e9173cf6c144272886fd850fa030a15017cd-1000.webp",
+						"sha256": "fdd269937a3231c4525f0eeec63ad64f9ddedc11f479fc473c772a44cf65a56b",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "0f006a3462ff846df09c1502fbf3e9173cf6c144272886fd850fa030a15017cd"
 				}
 			],
 			"xBasisPoints": 6373,
@@ -148,6 +264,38 @@
 			],
 			"xBasisPoints": 3143,
 			"yBasisPoints": 4983
+		},
+		{
+			"description": "Inside a locker in the ground floor of the medical building",
+			"documentId": "project",
+			"id": "2fc2a199-bce1-4170-be8f-cd7a356c15d5",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Medical Locker",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1081,
+						"path": "/screenshots/2fc2a199-bce1-4170-be8f-cd7a356c15d5/0ddec84f54d36de333a2dd2d3580b6fc6625bf91a65546862b1d007f29353a54-1920.webp",
+						"sha256": "bba6bea49155ae026a7dc2e338b4b7b2e30dfe2c3c31bd6026fa37204facebd8",
+						"width": 1920
+					},
+					"id": "9a61abf9-f2c5-4976-8ddc-ec04b698067a",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/2fc2a199-bce1-4170-be8f-cd7a356c15d5/0ddec84f54d36de333a2dd2d3580b6fc6625bf91a65546862b1d007f29353a54-1000.webp",
+						"sha256": "f271d0cd24b4e58dbbec4953c9a6c554455baa1adb148932bf5861a3f02951eb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0ddec84f54d36de333a2dd2d3580b6fc6625bf91a65546862b1d007f29353a54"
+				}
+			],
+			"xBasisPoints": 6773,
+			"yBasisPoints": 2936
 		},
 		{
 			"description": "Inside crackhouse on the floor near the bookshelves",
@@ -246,6 +394,70 @@
 			"yBasisPoints": 1888
 		},
 		{
+			"description": "In an open drawer in the office main desk",
+			"documentId": "blueprints-technical",
+			"id": "48d6dfc3-a72e-42b4-97bd-b9ba1ab1f8a4",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Office Desk",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 999,
+						"path": "/screenshots/48d6dfc3-a72e-42b4-97bd-b9ba1ab1f8a4/a612940dc7af9521f9ec2290e15b4d7c7280bb53b3600354e3c0f535a0510df0-1920.webp",
+						"sha256": "b73cbea6109f872f0018cee4768f8a35a8940806bf15c0974f81956d74593adc",
+						"width": 1920
+					},
+					"id": "83d292c5-9256-48d3-8f2d-c4a01c629ee0",
+					"isActive": true,
+					"preview": {
+						"height": 520,
+						"path": "/screenshots/48d6dfc3-a72e-42b4-97bd-b9ba1ab1f8a4/a612940dc7af9521f9ec2290e15b4d7c7280bb53b3600354e3c0f535a0510df0-1000.webp",
+						"sha256": "d8ac069836c1c48875fc9f666dd271f88cc7488bb8df03f8035c1859d8825aa7",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a612940dc7af9521f9ec2290e15b4d7c7280bb53b3600354e3c0f535a0510df0"
+				}
+			],
+			"xBasisPoints": 559,
+			"yBasisPoints": 3250
+		},
+		{
+			"description": "Inside the cabinet in the workshop in front of gate 3 exit",
+			"documentId": "project",
+			"id": "5ea6cd9d-2b74-4344-9e53-61447ccf2af9",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Cabinet",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 973,
+						"path": "/screenshots/5ea6cd9d-2b74-4344-9e53-61447ccf2af9/4848e837035223d3a69dfcaf25d825f93a5e93ff8781d2b0275e145189b3f9c3-1920.webp",
+						"sha256": "4be2ea8822c898d9940d14772317346e6164e0a6f230489533fbde924b67c6d6",
+						"width": 1920
+					},
+					"id": "e4369ed7-1ee6-4d11-8514-61e8626e1d3c",
+					"isActive": true,
+					"preview": {
+						"height": 507,
+						"path": "/screenshots/5ea6cd9d-2b74-4344-9e53-61447ccf2af9/4848e837035223d3a69dfcaf25d825f93a5e93ff8781d2b0275e145189b3f9c3-1000.webp",
+						"sha256": "72795b56b7db99512dd2db730206995be006841f4eefe9c0b0deab0cca4288c9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "4848e837035223d3a69dfcaf25d825f93a5e93ff8781d2b0275e145189b3f9c3"
+				}
+			],
+			"xBasisPoints": 5702,
+			"yBasisPoints": 2005
+		},
+		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
 			"documentId": "financial",
 			"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
@@ -276,6 +488,38 @@
 			],
 			"xBasisPoints": 5852,
 			"yBasisPoints": 3473
+		},
+		{
+			"description": "In a pile of books in the corner open office, next to the open window",
+			"documentId": "project",
+			"id": "84145aa6-0f27-48da-aeda-7123b8090e0d",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Pile of Books",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/84145aa6-0f27-48da-aeda-7123b8090e0d/eaa825b80c99c9cca620774b104bfd21cbcf4f4f79bdedbbbe7809c777f4c1a8-1920.webp",
+						"sha256": "27bb747f1e797aea5d2693c0f730cb38c0d4bf5cc00d464d79e326ec2832ddf4",
+						"width": 1920
+					},
+					"id": "896244a5-9c27-44c1-9922-2eaed68fd2a6",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/84145aa6-0f27-48da-aeda-7123b8090e0d/eaa825b80c99c9cca620774b104bfd21cbcf4f4f79bdedbbbe7809c777f4c1a8-1000.webp",
+						"sha256": "c4236df4b143c478390165f8160dd989b5cb833c9358c320d9b247826c95d377",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "eaa825b80c99c9cca620774b104bfd21cbcf4f4f79bdedbbbe7809c777f4c1a8"
+				}
+			],
+			"xBasisPoints": 5363,
+			"yBasisPoints": 3584
 		},
 		{
 			"description": "Near medical containers, over a box",
@@ -328,6 +572,70 @@
 			],
 			"xBasisPoints": 6158,
 			"yBasisPoints": 6434
+		},
+		{
+			"description": "Inside the locked office in the office building ground floor",
+			"documentId": "blueprints-technical",
+			"id": "89c22b91-7db1-47b5-b400-d746f449195f",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Locked Office Desk",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/89c22b91-7db1-47b5-b400-d746f449195f/ab127d91fee35e8986368f3db87f7a249b8678c5c7dcc95477725dc6e4f9a749-1920.webp",
+						"sha256": "08546a053da256051e71455970a7388a16c08b7d787fd41cc3c2c1294cbf2855",
+						"width": 1920
+					},
+					"id": "afadd63a-3b8a-4eee-897b-840e7e78ffce",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/89c22b91-7db1-47b5-b400-d746f449195f/ab127d91fee35e8986368f3db87f7a249b8678c5c7dcc95477725dc6e4f9a749-1000.webp",
+						"sha256": "2e962717852a888df5eedee2189e3946d0b8ad6492cf79b7f690b99becedc35f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ab127d91fee35e8986368f3db87f7a249b8678c5c7dcc95477725dc6e4f9a749"
+				}
+			],
+			"xBasisPoints": 5364,
+			"yBasisPoints": 3018
+		},
+		{
+			"description": "In the arm of the two person sofa",
+			"documentId": "financial",
+			"id": "8dfe76b1-4c64-495b-913e-c2981f965d52",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Scav Base Living Area",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 904,
+						"path": "/screenshots/8dfe76b1-4c64-495b-913e-c2981f965d52/7d34f1c4e146a5303e4e69a37e3dc3e453fcba5131d052368ed2b70497c67075-1920.webp",
+						"sha256": "5adcfd80f8c63a1d9478d02b6b70ca292bfcaafd1176a1efb982a8e13744117d",
+						"width": 1920
+					},
+					"id": "50c7d4b4-1d1e-47d4-89e4-0cafee22c4a9",
+					"isActive": true,
+					"preview": {
+						"height": 471,
+						"path": "/screenshots/8dfe76b1-4c64-495b-913e-c2981f965d52/7d34f1c4e146a5303e4e69a37e3dc3e453fcba5131d052368ed2b70497c67075-1000.webp",
+						"sha256": "746f7ab93979e73c203fb92b303783b2f980a371981632310e3af45a38afd1c9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7d34f1c4e146a5303e4e69a37e3dc3e453fcba5131d052368ed2b70497c67075"
+				}
+			],
+			"xBasisPoints": 4687,
+			"yBasisPoints": 3679
 		},
 		{
 			"description": "On top of the safe in the corner of the company director's room",
