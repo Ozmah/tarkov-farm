@@ -66,6 +66,78 @@
 			"yBasisPoints": 2320
 		},
 		{
+			"description": "On second floor, follow the hallway to the end, on a bench",
+			"documentId": "user",
+			"id": "16c63ea0-aeb1-4237-8bcf-4f27a18b75e4",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "End Hallway",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 903,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/f1be7dcabe12b5b477576012aec7142109fe019bf1ada0d250e6ce74c024e717-1920.webp",
+						"sha256": "8b519c57d353ace930a3c2a934b6c910616bb15f79f503dbbfe59598bdc8cee9",
+						"width": 1920
+					},
+					"id": "e86455bc-eb76-4c3c-bac8-dafbbfa1bc3a",
+					"isActive": true,
+					"preview": {
+						"height": 470,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/f1be7dcabe12b5b477576012aec7142109fe019bf1ada0d250e6ce74c024e717-1000.webp",
+						"sha256": "c5b6d70b7e92c3744bace78844ca387db66a8751f8c64d591b88c49b01076cad",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f1be7dcabe12b5b477576012aec7142109fe019bf1ada0d250e6ce74c024e717"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 900,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/e17bf5397a69a567bf45f8e24cb0fb12a674b621960213d850b76949de6eec0b-1920.webp",
+						"sha256": "6cf863156a9b42ed1d41edd98a687a219ba049897bd56293f543948d68a94bbf",
+						"width": 1920
+					},
+					"id": "6985b819-0046-4d00-b5c0-ad5fc99de13f",
+					"isActive": true,
+					"preview": {
+						"height": 469,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/e17bf5397a69a567bf45f8e24cb0fb12a674b621960213d850b76949de6eec0b-1000.webp",
+						"sha256": "1d0d316dbcb3fd2c97e2f232cb716fea4b323a554d9616bbc3f6604f3c7b8ee7",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "e17bf5397a69a567bf45f8e24cb0fb12a674b621960213d850b76949de6eec0b"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 857,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/e688bc1fda15f6db4c0ae731f1c83cf46928bcd6f83bde90f2a7e0d9f87cf243-1920.webp",
+						"sha256": "4ad749c2a66169ba785bf3ab7584e6c54ef2887b91ff73f55e5b8589ea24c220",
+						"width": 1920
+					},
+					"id": "8938a165-066f-40a9-8a60-c7cee75e04f5",
+					"isActive": true,
+					"preview": {
+						"height": 446,
+						"path": "/screenshots/16c63ea0-aeb1-4237-8bcf-4f27a18b75e4/e688bc1fda15f6db4c0ae731f1c83cf46928bcd6f83bde90f2a7e0d9f87cf243-1000.webp",
+						"sha256": "9c5fcdcf6b6e557ba2261e4e1471d5a04630b2c361ffa467ceeee44c0a83dd6d",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "e688bc1fda15f6db4c0ae731f1c83cf46928bcd6f83bde90f2a7e0d9f87cf243"
+				}
+			],
+			"xBasisPoints": 8679,
+			"yBasisPoints": 4424
+		},
+		{
 			"description": "On a lab surface next to the blue key card entrance room",
 			"documentId": "medical",
 			"id": "19d67714-3eb1-4d02-be7e-da8aed91a87f",
@@ -234,6 +306,58 @@
 			"yBasisPoints": 4512
 		},
 		{
+			"description": "Oasis building upstairs, on table facing V-Ex next to laptop.",
+			"documentId": "medical",
+			"id": "28335c67-b078-436c-8685-1f151ac65fb8",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Oasis Building",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 917,
+						"path": "/screenshots/28335c67-b078-436c-8685-1f151ac65fb8/beec252c1a65702bc19962ec2824aeadea0e4e5aa9a3d4d1d477e381da231964-1920.webp",
+						"sha256": "6c9193568f650ac5cf80ff47d4e2c71dc71d456ed4415f75bb568d8a2c0b168c",
+						"width": 1550
+					},
+					"id": "284961ff-2d13-4a7c-bf3a-eff944796438",
+					"isActive": true,
+					"preview": {
+						"height": 592,
+						"path": "/screenshots/28335c67-b078-436c-8685-1f151ac65fb8/beec252c1a65702bc19962ec2824aeadea0e4e5aa9a3d4d1d477e381da231964-1000.webp",
+						"sha256": "f634c1fefc2f7d6eacbc3a44cc0d4f96b78f3a6e15a6d446738d371f2fd29689",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "beec252c1a65702bc19962ec2824aeadea0e4e5aa9a3d4d1d477e381da231964"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 812,
+						"path": "/screenshots/28335c67-b078-436c-8685-1f151ac65fb8/1263277eb38c0acf6d38fd7431a489e74600865daea71f1d68fdbb3661239879-1920.webp",
+						"sha256": "5fc6c52afeb8b8961debd8e500bb2806ee9158a5c766a086f74619dfef71a1b3",
+						"width": 1920
+					},
+					"id": "f49a7713-7084-423b-b4ce-8b52d7c5b224",
+					"isActive": true,
+					"preview": {
+						"height": 423,
+						"path": "/screenshots/28335c67-b078-436c-8685-1f151ac65fb8/1263277eb38c0acf6d38fd7431a489e74600865daea71f1d68fdbb3661239879-1000.webp",
+						"sha256": "cab4bdf61f0b80691b5b9207627d3797b42d815717be255a969901f60021bc63",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "1263277eb38c0acf6d38fd7431a489e74600865daea71f1d68fdbb3661239879"
+				}
+			],
+			"xBasisPoints": 6511,
+			"yBasisPoints": 4993
+		},
+		{
 			"description": "Second floor table beside the item box",
 			"documentId": "test",
 			"id": "28516dbe-5baf-452f-90f7-8dd35c54e943",
@@ -286,6 +410,38 @@
 			"yBasisPoints": 4166
 		},
 		{
+			"description": "In a coffe table next to a sofa facing the windows in the back of the room",
+			"documentId": "user",
+			"id": "2b265006-97e8-49ad-b097-57da80c85e51",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Office 3",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 842,
+						"path": "/screenshots/2b265006-97e8-49ad-b097-57da80c85e51/81fac3e140760e00959091c7def64914606beb6f03ad0117b8dccd5e5811d0e6-1920.webp",
+						"sha256": "69fd0436aeb30f431cba0a0c2105a30daee0791cc450586024355cc9214e5ba4",
+						"width": 1721
+					},
+					"id": "34509383-0dca-4146-9f0f-1a8f1448d827",
+					"isActive": true,
+					"preview": {
+						"height": 489,
+						"path": "/screenshots/2b265006-97e8-49ad-b097-57da80c85e51/81fac3e140760e00959091c7def64914606beb6f03ad0117b8dccd5e5811d0e6-1000.webp",
+						"sha256": "0400fd34cf642e237d5adabe5fde6b51eee5dfc0165230f62814d2162e0fa48e",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "81fac3e140760e00959091c7def64914606beb6f03ad0117b8dccd5e5811d0e6"
+				}
+			],
+			"xBasisPoints": 8647,
+			"yBasisPoints": 3966
+		},
+		{
 			"description": "Inside over the file cabinet",
 			"documentId": "test",
 			"id": "2d9a1b6f-15e0-4891-aefb-6b107c1c9bf0",
@@ -316,6 +472,78 @@
 			],
 			"xBasisPoints": 3143,
 			"yBasisPoints": 4983
+		},
+		{
+			"description": "Science room in Terragroup 2nd Desk on right wall.",
+			"documentId": "medical",
+			"id": "2f3e8856-e084-4678-8d47-9d12220c7a74",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Magazine File Holder",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1005,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/1d876f374d6f1483ddbfd5ec75d98af614f6b9e0b4fbcf4901510cf4a6a362f6-1920.webp",
+						"sha256": "af1f0890f53137b9c504aca1edf77f1b658233b23f55d577d9b124c2eb6eb65c",
+						"width": 1570
+					},
+					"id": "cdb2df19-8655-4e37-b3ad-395f95369130",
+					"isActive": true,
+					"preview": {
+						"height": 640,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/1d876f374d6f1483ddbfd5ec75d98af614f6b9e0b4fbcf4901510cf4a6a362f6-1000.webp",
+						"sha256": "8417df1f362fa3e7519137d630f420cb0f0e9fc64ac7bb53c198fd67a86892da",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "1d876f374d6f1483ddbfd5ec75d98af614f6b9e0b4fbcf4901510cf4a6a362f6"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 829,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/7f59c74a6912cb767225c07b27a9d1e33ecf681024b90b5105378137f372969e-1920.webp",
+						"sha256": "29465520a49abfdce28775686524df22252521e6e2ddeffec0e24e5d67a07f2c",
+						"width": 1920
+					},
+					"id": "8ce4184e-d2eb-46be-8b91-1e0c1cf5559b",
+					"isActive": true,
+					"preview": {
+						"height": 432,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/7f59c74a6912cb767225c07b27a9d1e33ecf681024b90b5105378137f372969e-1000.webp",
+						"sha256": "cce264ef9f24edb3bb4c57b12d302a9beeded02571d2479d7e6e79bd8abfbc8d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "7f59c74a6912cb767225c07b27a9d1e33ecf681024b90b5105378137f372969e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 877,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/5d18b299b5f736659df4fa1d47b0fd397b7acc7b271c3ec915726a628dbca8fe-1920.webp",
+						"sha256": "b40a93273026026c6d2999ba0606970cc00d69a24c92abcb9c24858b989e7769",
+						"width": 1920
+					},
+					"id": "1658d0ee-ffb2-4811-a267-8493397cd5b5",
+					"isActive": true,
+					"preview": {
+						"height": 457,
+						"path": "/screenshots/2f3e8856-e084-4678-8d47-9d12220c7a74/5d18b299b5f736659df4fa1d47b0fd397b7acc7b271c3ec915726a628dbca8fe-1000.webp",
+						"sha256": "4d8d97ee1a4f8d138e8947620cbb2ed20a7103e45c257060fd6b4dc537b71777",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "5d18b299b5f736659df4fa1d47b0fd397b7acc7b271c3ec915726a628dbca8fe"
+				}
+			],
+			"xBasisPoints": 8748,
+			"yBasisPoints": 3484
 		},
 		{
 			"description": "Inside a locker in the ground floor of the medical building",
@@ -688,6 +916,78 @@
 			],
 			"xBasisPoints": 5580,
 			"yBasisPoints": 4160
+		},
+		{
+			"description": "Terragroup building, front facing office, on a sofa near the entrance",
+			"documentId": "medical",
+			"id": "796d1122-6f17-4780-adca-aad59658962e",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Office 3",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 833,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/ec7efca635fdc45a4e19d1c479a77dd4ccd82a34fe19e8d779ca8b658bd7f827-1920.webp",
+						"sha256": "4e3aa161f37ac88027288c84f8b46cc8cf2ef2608425f7c2bacd8c4a15c018a8",
+						"width": 1920
+					},
+					"id": "56e6a181-a188-4f74-a07f-9d9fdc67e3ad",
+					"isActive": true,
+					"preview": {
+						"height": 434,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/ec7efca635fdc45a4e19d1c479a77dd4ccd82a34fe19e8d779ca8b658bd7f827-1000.webp",
+						"sha256": "a1fd08328b23e96e36282583baa49087a5126002f9ecb3d428bb8842aa30e886",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ec7efca635fdc45a4e19d1c479a77dd4ccd82a34fe19e8d779ca8b658bd7f827"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 890,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/09023868feccfad06af1d77bce7bbfae17c2b7191c7f25ebc47c190adf2e5a75-1920.webp",
+						"sha256": "171486722746cba459caaeae49dd5e9e1b2fc80cd3fc1e171635c620ebeae06c",
+						"width": 1920
+					},
+					"id": "6aeacd37-8f3f-45f0-9a5d-88710d35479b",
+					"isActive": true,
+					"preview": {
+						"height": 464,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/09023868feccfad06af1d77bce7bbfae17c2b7191c7f25ebc47c190adf2e5a75-1000.webp",
+						"sha256": "53c1dd16a59e16be6791f25251084da66285f1e9c6db828a292cff8f2e978935",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "09023868feccfad06af1d77bce7bbfae17c2b7191c7f25ebc47c190adf2e5a75"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 746,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/fb222e5343352e48a7219115960f3c67a01d7cf01896b35ca7f017bd1ba16d87-1920.webp",
+						"sha256": "39804d384863533531eaea6f675e744657a5bfb5edaf0ae409ab128f2f7503e4",
+						"width": 1920
+					},
+					"id": "c30322ca-9332-466c-a07a-4436042a8f84",
+					"isActive": true,
+					"preview": {
+						"height": 388,
+						"path": "/screenshots/796d1122-6f17-4780-adca-aad59658962e/fb222e5343352e48a7219115960f3c67a01d7cf01896b35ca7f017bd1ba16d87-1000.webp",
+						"sha256": "f5d1ca95f014306990636786cc423560cf8e59e20a3018f73af2557a44ee0158",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "fb222e5343352e48a7219115960f3c67a01d7cf01896b35ca7f017bd1ba16d87"
+				}
+			],
+			"xBasisPoints": 8559,
+			"yBasisPoints": 3796
 		},
 		{
 			"description": "In the shelf near the exit of the medical kitchen in the ground floor",
@@ -1324,6 +1624,38 @@
 			],
 			"xBasisPoints": 3884,
 			"yBasisPoints": 8169
+		},
+		{
+			"description": "On a bookshelf on the opposite side of the safe in company director's room",
+			"documentId": "project",
+			"id": "f66af357-a23d-4d82-86a2-e2ec073b1cdd",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "On Bookshelf",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 964,
+						"path": "/screenshots/f66af357-a23d-4d82-86a2-e2ec073b1cdd/a8baf94e11b4e250e2382f2897638708effd1164d5c0340914aa1cf93da912d1-1920.webp",
+						"sha256": "4cfe5f99717764e8af93fac1fa765d9fa0798b4a4af71dd55b7ef5907acf78da",
+						"width": 1920
+					},
+					"id": "3199c184-02d7-4ab6-bafd-39f780411704",
+					"isActive": true,
+					"preview": {
+						"height": 502,
+						"path": "/screenshots/f66af357-a23d-4d82-86a2-e2ec073b1cdd/a8baf94e11b4e250e2382f2897638708effd1164d5c0340914aa1cf93da912d1-1000.webp",
+						"sha256": "18e732f2c5f24f63486aaf19de57fab328b668bf9b6d51d2fce37cf38b61a648",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a8baf94e11b4e250e2382f2897638708effd1164d5c0340914aa1cf93da912d1"
+				}
+			],
+			"xBasisPoints": 5730,
+			"yBasisPoints": 4450
 		}
 	]
 }
