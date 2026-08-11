@@ -177,8 +177,8 @@ function AboutPage() {
 								>
 									DravenCrow_3110
 								</a>
-								, Emiliano, and DrJack are helping collect and capture location
-								screenshots.
+								, Emiliano, DrJack, Crash and Rammsiris are helping collect and
+								capture location screenshots.
 							</p>
 						</li>
 
