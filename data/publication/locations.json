@@ -350,6 +350,58 @@
 			"yBasisPoints": 2936
 		},
 		{
+			"description": "On the desk at the end, next to a locker",
+			"documentId": "financial",
+			"id": "36094ccb-73d3-4217-8373-faf4dcba389a",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Top Floor Office",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 810,
+						"path": "/screenshots/36094ccb-73d3-4217-8373-faf4dcba389a/d5f0417ac08d84cf7f75efed6b4d308ece32dd1a32aba1faeeb9c358f75d8538-1920.webp",
+						"sha256": "c71de8b07117df90d9502f944101c592f70c491bc8a10ca6dfa6b51601f51259",
+						"width": 1920
+					},
+					"id": "6364f55a-da72-4678-b2a2-c9c2582bce13",
+					"isActive": true,
+					"preview": {
+						"height": 422,
+						"path": "/screenshots/36094ccb-73d3-4217-8373-faf4dcba389a/d5f0417ac08d84cf7f75efed6b4d308ece32dd1a32aba1faeeb9c358f75d8538-1000.webp",
+						"sha256": "30fe1327b644395f282dae934b7cd887a1962f74916555ed0afd600c06d9fadd",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "d5f0417ac08d84cf7f75efed6b4d308ece32dd1a32aba1faeeb9c358f75d8538"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 918,
+						"path": "/screenshots/36094ccb-73d3-4217-8373-faf4dcba389a/2a66d4a7ed63442454310364d8171f359dcfed50d0644c64f5194e909d832cb1-1920.webp",
+						"sha256": "452a90c2353199fd48378270d7ed90d7fbcb64ba35976cb8bdd6f895329143a0",
+						"width": 1920
+					},
+					"id": "1086f598-3337-4319-bf75-fcaca51838a6",
+					"isActive": true,
+					"preview": {
+						"height": 478,
+						"path": "/screenshots/36094ccb-73d3-4217-8373-faf4dcba389a/2a66d4a7ed63442454310364d8171f359dcfed50d0644c64f5194e909d832cb1-1000.webp",
+						"sha256": "33a74befc82a8cf87df979c43fd72bfd2361e0864eb8b9cfc648f68564be7fa9",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "2a66d4a7ed63442454310364d8171f359dcfed50d0644c64f5194e909d832cb1"
+				}
+			],
+			"xBasisPoints": 5982,
+			"yBasisPoints": 4422
+		},
+		{
 			"description": "Inside crackhouse on the floor near the bookshelves",
 			"documentId": "financial",
 			"id": "38a104fc-4286-4a4a-9d92-b43328010d38",
@@ -414,6 +466,38 @@
 			"yBasisPoints": 7011
 		},
 		{
+			"description": "On the top floor in on of the drawers in the file cabinet between the locked and the blocked room",
+			"documentId": "blueprints-technical",
+			"id": "3adb373d-a44f-4374-923a-779fee3b62fe",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Cabinet in Hallway",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/3adb373d-a44f-4374-923a-779fee3b62fe/4ead0eee5d18b4f3324d7e1f0bcef5b1c0824aeadbf924ad74eb3a338a82f8cd-1920.webp",
+						"sha256": "93e502236eaf25985846753cd7857b5c373bc5bdc193572a6e8e3873c68ca6ef",
+						"width": 1920
+					},
+					"id": "ed2ed8b4-4b96-4f1c-98c8-fd177180cadd",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/3adb373d-a44f-4374-923a-779fee3b62fe/4ead0eee5d18b4f3324d7e1f0bcef5b1c0824aeadbf924ad74eb3a338a82f8cd-1000.webp",
+						"sha256": "7250119ded440b044ee4f01f0c6b2aca1f5fa3c0fd4b2e4a9522893d65f5ffbf",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "4ead0eee5d18b4f3324d7e1f0bcef5b1c0824aeadbf924ad74eb3a338a82f8cd"
+				}
+			],
+			"xBasisPoints": 652,
+			"yBasisPoints": 3095
+		},
+		{
 			"description": "Inside 3 story dorms, in room 304 on the nightstand.",
 			"documentId": "financial",
 			"id": "3d162a75-0829-450e-a9cf-43a06fd39b2e",
@@ -476,6 +560,70 @@
 			],
 			"xBasisPoints": 559,
 			"yBasisPoints": 3250
+		},
+		{
+			"description": "On a table next to a med bag",
+			"documentId": "blueprints-technical",
+			"id": "4a15e686-8c08-438b-9d53-bc83b1fdee70",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "On the Table",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/4a15e686-8c08-438b-9d53-bc83b1fdee70/daffbc43bc1b51ef41dbfecf1459a51b8b68e0c0185cb6b9b27c498e65b20497-1920.webp",
+						"sha256": "b34b3153cdf48d91790f498dc2d30c21418b08fadb92ed9206bd0803e93b0e12",
+						"width": 1920
+					},
+					"id": "6d725c8d-674e-4d03-89c1-51a1a32c23e8",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/4a15e686-8c08-438b-9d53-bc83b1fdee70/daffbc43bc1b51ef41dbfecf1459a51b8b68e0c0185cb6b9b27c498e65b20497-1000.webp",
+						"sha256": "61d1cbc60c92006b8a5034316131dbb2197b0e9baf53854bb29810c12c9ba4d1",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "daffbc43bc1b51ef41dbfecf1459a51b8b68e0c0185cb6b9b27c498e65b20497"
+				}
+			],
+			"xBasisPoints": 6619,
+			"yBasisPoints": 4646
+		},
+		{
+			"description": "On the ground inside the power pump office between a locker and a shelf",
+			"documentId": "project",
+			"id": "5746b489-86a2-432d-bc7a-e09e5952b944",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Water Pump",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/5746b489-86a2-432d-bc7a-e09e5952b944/b4b53b05dab7666227688f11a2e67a18c46ee94782646367d81fc45f4147f5bb-1920.webp",
+						"sha256": "2954de1682befc5b882263b2b07cb8a2dc14e5e4bbeeae2958887f7fb664246f",
+						"width": 1920
+					},
+					"id": "37b9134a-5225-4991-b67a-983912c932db",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/5746b489-86a2-432d-bc7a-e09e5952b944/b4b53b05dab7666227688f11a2e67a18c46ee94782646367d81fc45f4147f5bb-1000.webp",
+						"sha256": "cabdb7dfa4d106fa0fbce3002a12ccf0138af095b6206b2c48f4de1cfc321021",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "b4b53b05dab7666227688f11a2e67a18c46ee94782646367d81fc45f4147f5bb"
+				}
+			],
+			"xBasisPoints": 6411,
+			"yBasisPoints": 2509
 		},
 		{
 			"description": "Inside the cabinet in the workshop in front of gate 3 exit",
@@ -786,6 +934,38 @@
 			"yBasisPoints": 4508
 		},
 		{
+			"description": "On top of a file cabinet right in front of the office safe in third floor",
+			"documentId": "project",
+			"id": "a2a4c0a8-6a82-4939-91d1-f557a708ccd7",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "On the File  Cabinet",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/a2a4c0a8-6a82-4939-91d1-f557a708ccd7/ee84836b2447b605508f5124a704552f1430c8d162b328a16e8e15f4f2b3795c-1920.webp",
+						"sha256": "05ed791480dfd973989b768fe368e8176e06d9ea7604db356eefe9b167c0f2a6",
+						"width": 1920
+					},
+					"id": "5b31416f-586a-4c67-ae56-af69fce11c9e",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/a2a4c0a8-6a82-4939-91d1-f557a708ccd7/ee84836b2447b605508f5124a704552f1430c8d162b328a16e8e15f4f2b3795c-1000.webp",
+						"sha256": "20620055025e6a884379a5ff2865e3559e282b7c671820c18769fd25d22be73f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ee84836b2447b605508f5124a704552f1430c8d162b328a16e8e15f4f2b3795c"
+				}
+			],
+			"xBasisPoints": 591,
+			"yBasisPoints": 3254
+		},
+		{
 			"description": "On a bench right next to the entrance of the Nakatani Building",
 			"documentId": "medical",
 			"id": "a352d080-5af0-4af0-81e8-f495bf22037a",
@@ -850,6 +1030,70 @@
 			"yBasisPoints": 3979
 		},
 		{
+			"description": "On a shelf in the workshop in front of gate 3 exit",
+			"documentId": "blueprints-technical",
+			"id": "b557a167-04f2-43ff-9aa5-fca31afcaac8",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Workshop Shelf",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/b557a167-04f2-43ff-9aa5-fca31afcaac8/394030f46d1e4c2ae68f0df9f79609c796a9aa070084589e6b95f9e4dce2167a-1920.webp",
+						"sha256": "ee350a5931655701992fb6eeb25a6e6ce33462fb3c6ff0b1a71f6d5d7cc1b961",
+						"width": 1920
+					},
+					"id": "396bb647-0a70-471d-8ab1-071e3a2512d3",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/b557a167-04f2-43ff-9aa5-fca31afcaac8/394030f46d1e4c2ae68f0df9f79609c796a9aa070084589e6b95f9e4dce2167a-1000.webp",
+						"sha256": "fb694be198688e55c938dd0821e994c432d25f16dbba72cf85fa7f7c6f683a4a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "394030f46d1e4c2ae68f0df9f79609c796a9aa070084589e6b95f9e4dce2167a"
+				}
+			],
+			"xBasisPoints": 5734,
+			"yBasisPoints": 2032
+		},
+		{
+			"description": "On the ground between a bookshelf and the utility cart",
+			"documentId": "project",
+			"id": "bca6ee0b-966f-465f-a467-905074f18ba5",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Kitchen Hallway",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/bca6ee0b-966f-465f-a467-905074f18ba5/2557db904d1211d51065d257c330ff752503a4023297f23cdbaeb47f84e194f2-1920.webp",
+						"sha256": "99af40125bd3438516a19a3d61444c3080cea427dab63982990772f63ba09c5f",
+						"width": 1920
+					},
+					"id": "e5d34316-2f8c-4a5f-9716-3b975371a8f6",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/bca6ee0b-966f-465f-a467-905074f18ba5/2557db904d1211d51065d257c330ff752503a4023297f23cdbaeb47f84e194f2-1000.webp",
+						"sha256": "d038ce4ea20f26ef3ea5d74b7d4a12e058bafbca72e9a47b1c3bbd5b0fbee953",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2557db904d1211d51065d257c330ff752503a4023297f23cdbaeb47f84e194f2"
+				}
+			],
+			"xBasisPoints": 6780,
+			"yBasisPoints": 2710
+		},
+		{
 			"description": "Inside the shack above the file cabinet",
 			"documentId": "financial",
 			"id": "bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f",
@@ -912,6 +1156,38 @@
 			],
 			"xBasisPoints": 2962,
 			"yBasisPoints": 8373
+		},
+		{
+			"description": "On the ground near the desk with no safe, next to a file cabinet",
+			"documentId": "blueprints-technical",
+			"id": "d7b99451-cb70-4fef-a800-3190af30ce2c",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Office Floor",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/d7b99451-cb70-4fef-a800-3190af30ce2c/7e6855f7fdaa246d6c5dbf18492a4a088feeb27a67c3df9535dcf70abf48d97f-1920.webp",
+						"sha256": "dfb11ed51dc49266ada0ecf5b1ac5c5a64117e580e35e3c39d8ebd1c21218bd8",
+						"width": 1920
+					},
+					"id": "0d060063-f478-4845-8572-bf559397c9b3",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/d7b99451-cb70-4fef-a800-3190af30ce2c/7e6855f7fdaa246d6c5dbf18492a4a088feeb27a67c3df9535dcf70abf48d97f-1000.webp",
+						"sha256": "7e2a8e37512410b3af05f88f1b4a5a310d0f3a05dbbdac0ffefa1cbf2147146d",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7e6855f7fdaa246d6c5dbf18492a4a088feeb27a67c3df9535dcf70abf48d97f"
+				}
+			],
+			"xBasisPoints": 566,
+			"yBasisPoints": 3576
 		},
 		{
 			"description": "Desk at the end of the room outside red",
