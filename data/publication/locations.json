@@ -510,6 +510,70 @@
 			"yBasisPoints": 2005
 		},
 		{
+			"description": "On a desk inside the mecanic",
+			"documentId": "project",
+			"id": "7376aa0a-24d6-4ef7-bbf2-b2705036eb75",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Workshop Desk",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 563,
+						"path": "/screenshots/7376aa0a-24d6-4ef7-bbf2-b2705036eb75/d65845dffbd4680afb32c324d74414c72fbb779f8987ba4b798511dd293a237d-1920.webp",
+						"sha256": "00acca909e8375db616850a50a5f80318ffa44b18dfe761b07348be4b58f5b31",
+						"width": 1000
+					},
+					"id": "b0ef52c3-5ab6-4a1e-8f3a-d7a52594ce15",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/7376aa0a-24d6-4ef7-bbf2-b2705036eb75/d65845dffbd4680afb32c324d74414c72fbb779f8987ba4b798511dd293a237d-1000.webp",
+						"sha256": "7bfa38d7f2bda9a95207efa236be4b6c19950630044c7a46597e24d01232268f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "d65845dffbd4680afb32c324d74414c72fbb779f8987ba4b798511dd293a237d"
+				}
+			],
+			"xBasisPoints": 5580,
+			"yBasisPoints": 4160
+		},
+		{
+			"description": "In the shelf near the exit of the medical kitchen in the ground floor",
+			"documentId": "blueprints-technical",
+			"id": "7c7da40c-9132-43fd-986c-46857a4ba106",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Medical Kitchen",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1014,
+						"path": "/screenshots/7c7da40c-9132-43fd-986c-46857a4ba106/0937b5d4df135dff69286077b7b1f4d541b07f13f24fb79915053a2b23cfb255-1920.webp",
+						"sha256": "3b11d1771d366e523e7eac2feb03a6204a5c6fafd6c0dac20dca72acf8da676f",
+						"width": 1920
+					},
+					"id": "2dab2ed7-2734-4a9f-9faa-79e237d72f6f",
+					"isActive": true,
+					"preview": {
+						"height": 528,
+						"path": "/screenshots/7c7da40c-9132-43fd-986c-46857a4ba106/0937b5d4df135dff69286077b7b1f4d541b07f13f24fb79915053a2b23cfb255-1000.webp",
+						"sha256": "f2fa3545bc90753323ed6c6b8fddf79fdc39b07f9ac090e9b8b691536fedcfb3",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0937b5d4df135dff69286077b7b1f4d541b07f13f24fb79915053a2b23cfb255"
+				}
+			],
+			"xBasisPoints": 6783,
+			"yBasisPoints": 2785
+		},
+		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
 			"documentId": "financial",
 			"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
@@ -722,6 +786,38 @@
 			"yBasisPoints": 4508
 		},
 		{
+			"description": "On a bench right next to the entrance of the Nakatani Building",
+			"documentId": "medical",
+			"id": "a352d080-5af0-4af0-81e8-f495bf22037a",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Bench next to Nakatani",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 897,
+						"path": "/screenshots/a352d080-5af0-4af0-81e8-f495bf22037a/3c448974d7520df4b3bf5f3cc82fb5af132724c2bcaf277f90486c9961a8ee6d-1920.webp",
+						"sha256": "878c2e836db6242c66e296e8745da7645df0412d8d1473c89a2636a1a4c0b198",
+						"width": 1920
+					},
+					"id": "693e68b6-3fc0-4f58-ad92-5321ef9f1d31",
+					"isActive": true,
+					"preview": {
+						"height": 467,
+						"path": "/screenshots/a352d080-5af0-4af0-81e8-f495bf22037a/3c448974d7520df4b3bf5f3cc82fb5af132724c2bcaf277f90486c9961a8ee6d-1000.webp",
+						"sha256": "98ec2859c96b138b60811c707e1b889270ba451f549fab9cbebc7d9a2c7eecc8",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "3c448974d7520df4b3bf5f3cc82fb5af132724c2bcaf277f90486c9961a8ee6d"
+				}
+			],
+			"xBasisPoints": 7418,
+			"yBasisPoints": 8631
+		},
+		{
 			"description": "In the computer room behind Tarcone Director's office key door.",
 			"documentId": "financial",
 			"id": "aa91565a-8dbd-4365-9072-df24a234b7a1",
@@ -868,6 +964,38 @@
 			],
 			"xBasisPoints": 4999,
 			"yBasisPoints": 4320
+		},
+		{
+			"description": "Behind electric panels, above the tunnel entrance",
+			"documentId": "project",
+			"id": "de1a22b5-add6-4cca-b222-f430dea6ca1f",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Above Tunnel Entrance",
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/de1a22b5-add6-4cca-b222-f430dea6ca1f/0a180ec67ee12bb8300efbbc84faad62155a280959259af1394463906f792fa5-1920.webp",
+						"sha256": "8636e62772efdbc04c67d0592a0d747acd5ead7c7ab9c013d9ec1d2b32ceee92",
+						"width": 1920
+					},
+					"id": "01593b01-6f6b-4968-8d43-af82157f99a3",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/de1a22b5-add6-4cca-b222-f430dea6ca1f/0a180ec67ee12bb8300efbbc84faad62155a280959259af1394463906f792fa5-1000.webp",
+						"sha256": "d2bf50e1c5b493a8d948f4a995b511a2a75fe3a4061c268ec1e63c7f3b3212e9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0a180ec67ee12bb8300efbbc84faad62155a280959259af1394463906f792fa5"
+				}
+			],
+			"xBasisPoints": 3154,
+			"yBasisPoints": 4841
 		},
 		{
 			"description": "On a desk in the other room next to blue key card",
