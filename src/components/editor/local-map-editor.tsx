@@ -1,6 +1,12 @@
-import { ArrowLeftIcon, CrosshairIcon, PlusIcon } from "@phosphor-icons/react";
+import {
+	ArrowLeftIcon,
+	CrosshairIcon,
+	NewspaperClippingIcon,
+	PlusIcon,
+} from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import {
 	LocationScreenshotEditor,
 	type ScreenshotDraft,
@@ -67,6 +73,8 @@ import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
 } from "@/lib/editor-validation";
+import type { PublicUpdate } from "@/lib/publication-updates";
+import type { ReleaseContext } from "@/lib/release-context";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
 type EditorSearch = {
@@ -74,6 +82,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
+	section?: "updates";
 };
 type EditorLocation = EditorData["locations"][number];
 type EditorScreenshot = EditorData["screenshots"][number];
@@ -95,6 +104,8 @@ type Draft = {
 
 type LocalMapEditorProps = {
 	data: EditorData;
+	releaseContext: ReleaseContext;
+	updates: PublicUpdate[];
 	search: EditorSearch;
 	onSearchChange: (
 		next: EditorSearch,
@@ -104,6 +115,8 @@ type LocalMapEditorProps = {
 
 export function LocalMapEditor({
 	data,
+	releaseContext,
+	updates,
 	search,
 	onSearchChange,
 }: LocalMapEditorProps) {
@@ -150,7 +163,12 @@ export function LocalMapEditor({
 		const firstImage =
 			mapImages.find((image) => image.viewKey === "main") ?? mapImages[0];
 		void onSearchChange(
-			{ map: mapId, image: firstImage?.id, location: undefined },
+			{
+				map: mapId,
+				image: firstImage?.id,
+				location: undefined,
+				section: undefined,
+			},
 			true,
 		);
 	};
@@ -225,10 +243,12 @@ export function LocalMapEditor({
 			selectedDocumentIds={selectedDocumentIds}
 			currentMapId={selectedMap?.id}
 			currentMapImageId={selectedImage?.id}
-			headerTitle="Location editor"
+			headerTitle={
+				search.section === "updates" ? "Updates editor" : "Location editor"
+			}
 			headerMeta="Local only"
 			onMapNavigate={selectMap}
-			onOverviewNavigate={() =>
+			onHomeNavigate={() =>
 				void router.navigate({
 					to: "/",
 					search: { documents: documentSearch },
@@ -244,83 +264,159 @@ export function LocalMapEditor({
 				)
 			}
 			sidebarFooter={
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							render={
-								selectedMap?.isActive ? (
-									<Link
-										to="/maps/$mapId"
-										params={{ mapId: selectedMap.id }}
-										search={{
-											documents: documentSearch,
-											location: selectedLocation?.id,
-											view: selectedImage?.viewKey,
-										}}
-									/>
-								) : (
-									<Link to="/" search={{ documents: documentSearch }} />
-								)
-							}
-						>
-							<ArrowLeftIcon aria-hidden="true" />
-							<span>Exit editor</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-			}
-			sidebarPanel={(closePanel) => (
-				<EditorMapSidebarPanel
-					canCreateLocation={Boolean(selectedImage)}
-					locations={sidebarLocations}
-					maps={data.maps}
-					mapViews={images.map((image) => ({
-						id: image.id,
-						name: image.name,
-					}))}
+				<EditorSidebarFooter
+					documentSearch={documentSearch}
+					isUpdatesSelected={search.section === "updates"}
 					selectedLocationId={selectedLocation?.id}
-					selectedMapId={selectedMap?.id ?? ""}
-					selectedMapViewId={selectedImage?.id}
-					onBack={closePanel}
-					onCreateLocation={beginNewLocation}
-					onLocationSelect={(locationId) =>
-						void onSearchChange({ location: locationId }, true)
+					selectedMap={selectedMap}
+					selectedViewKey={selectedImage?.viewKey}
+					onUpdatesSelect={() =>
+						void onSearchChange(
+							{ location: undefined, section: "updates" },
+							true,
+						)
 					}
-					onMapChange={selectMap}
-					onMapViewChange={selectImage}
 				/>
-			)}
+			}
+			sidebarPanel={
+				search.section === "updates"
+					? undefined
+					: (closePanel) => (
+							<EditorMapSidebarPanel
+								canCreateLocation={Boolean(selectedImage)}
+								locations={sidebarLocations}
+								maps={data.maps}
+								mapViews={images.map((image) => ({
+									id: image.id,
+									name: image.name,
+								}))}
+								selectedLocationId={selectedLocation?.id}
+								selectedMapId={selectedMap?.id ?? ""}
+								selectedMapViewId={selectedImage?.id}
+								onBack={closePanel}
+								onCreateLocation={beginNewLocation}
+								onLocationSelect={(locationId) =>
+									void onSearchChange({ location: locationId }, true)
+								}
+								onMapChange={selectMap}
+								onMapViewChange={selectImage}
+							/>
+						)
+			}
 		>
-			<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[minmax(0,1fr)_26rem] lg:overflow-hidden">
-				{selectedMap && selectedImage ? (
-					<LocationWorkspace
-						key={selectedImage.id}
-						data={data}
-						draftVersion={newDraftVersion}
-						image={selectedImage}
-						locations={visibleLocations}
-						selectedLocation={selectedLocation}
-						onSelectLocation={(locationId) =>
-							void onSearchChange({ location: locationId }, true)
-						}
-						onSaved={refreshAndSelect}
-					/>
-				) : (
-					<Empty className="min-h-[50svh] lg:col-span-2">
-						<EmptyHeader>
-							<EmptyMedia variant="icon">
-								<CrosshairIcon aria-hidden="true" />
-							</EmptyMedia>
-							<EmptyTitle>No map image</EmptyTitle>
-							<EmptyDescription>
-								Add a current image record before creating locations for this
-								map.
-							</EmptyDescription>
-						</EmptyHeader>
-					</Empty>
-				)}
-			</div>
+			{search.section === "updates" ? (
+				<LocalUpdatesEditor
+					releaseContext={releaseContext}
+					updates={updates}
+					onRefresh={async () => {
+						await router.invalidate({ sync: true });
+					}}
+				/>
+			) : (
+				<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[minmax(0,1fr)_26rem] lg:overflow-hidden">
+					{selectedMap && selectedImage ? (
+						<LocationWorkspace
+							key={selectedImage.id}
+							data={data}
+							draftVersion={newDraftVersion}
+							image={selectedImage}
+							locations={visibleLocations}
+							selectedLocation={selectedLocation}
+							onSelectLocation={(locationId) =>
+								void onSearchChange({ location: locationId }, true)
+							}
+							onSaved={refreshAndSelect}
+						/>
+					) : (
+						<Empty className="min-h-[50svh] lg:col-span-2">
+							<EmptyHeader>
+								<EmptyMedia variant="icon">
+									<CrosshairIcon aria-hidden="true" />
+								</EmptyMedia>
+								<EmptyTitle>No map image</EmptyTitle>
+								<EmptyDescription>
+									Add a current image record before creating locations for this
+									map.
+								</EmptyDescription>
+							</EmptyHeader>
+						</Empty>
+					)}
+				</div>
+			)}
 		</PublicShell>
+	);
+}
+
+type EditorSidebarFooterProps = {
+	documentSearch?: string;
+	isUpdatesSelected: boolean;
+	selectedLocationId?: string;
+	selectedMap?: EditorData["maps"][number];
+	selectedViewKey?: string;
+	onUpdatesSelect: () => void;
+};
+
+function EditorSidebarFooter({
+	documentSearch,
+	isUpdatesSelected,
+	selectedLocationId,
+	selectedMap,
+	selectedViewKey,
+	onUpdatesSelect,
+}: EditorSidebarFooterProps) {
+	const { isMobile, setOpenMobile } = useSidebar();
+
+	function closeMobileSidebar() {
+		if (isMobile) setOpenMobile(false);
+	}
+
+	return (
+		<SidebarMenu>
+			<SidebarMenuItem>
+				<SidebarMenuButton
+					render={
+						<button
+							type="button"
+							onClick={() => {
+								closeMobileSidebar();
+								onUpdatesSelect();
+							}}
+						/>
+					}
+					isActive={isUpdatesSelected}
+				>
+					<NewspaperClippingIcon aria-hidden="true" />
+					<span>Manage updates</span>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
+			<SidebarMenuItem>
+				<SidebarMenuButton
+					render={
+						selectedMap?.isActive ? (
+							<Link
+								to="/maps/$mapId"
+								params={{ mapId: selectedMap.id }}
+								search={{
+									documents: documentSearch,
+									location: selectedLocationId,
+									view: selectedViewKey,
+								}}
+								onClick={closeMobileSidebar}
+							/>
+						) : (
+							<Link
+								to="/"
+								search={{ documents: documentSearch }}
+								onClick={closeMobileSidebar}
+							/>
+						)
+					}
+				>
+					<ArrowLeftIcon aria-hidden="true" />
+					<span>Exit editor</span>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
+		</SidebarMenu>
 	);
 }
 

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LocalMapEditor } from "@/components/editor/local-map-editor";
 import { getEditorData } from "@/functions/editor";
+import { getEditorUpdates } from "@/functions/updates";
 import { validateCatalogSearch } from "@/lib/catalog-search";
 
 type EditorSearch = {
@@ -9,6 +10,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
+	section?: "updates";
 };
 
 export const Route = createFileRoute("/editor")({
@@ -20,23 +22,33 @@ export const Route = createFileRoute("/editor")({
 			map: readSearchValue(search.map),
 			image: readSearchValue(search.image),
 			location: readSearchValue(search.location),
+			section: search.section === "updates" ? "updates" : undefined,
 		};
 	},
 	loaderDeps: () => ({}),
-	loader: () => getEditorData(),
+	loader: async () => {
+		const [data, updates] = await Promise.all([
+			getEditorData(),
+			getEditorUpdates(),
+		]);
+
+		return { data, updates };
+	},
 	staleTime: Number.POSITIVE_INFINITY,
 	notFoundComponent: EditorNotFound,
 	component: EditorRoute,
 });
 
 function EditorRoute() {
-	const data = Route.useLoaderData();
+	const { data, updates } = Route.useLoaderData();
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 
 	return (
 		<LocalMapEditor
 			data={data}
+			releaseContext={updates.releaseContext}
+			updates={updates.updates}
 			search={search}
 			onSearchChange={(next, replace = false) =>
 				navigate({

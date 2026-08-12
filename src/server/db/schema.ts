@@ -231,3 +231,40 @@ export const screenshots = sqliteTable(
 		check("screenshots_is_active_boolean", sql`${table.isActive} IN (0, 1)`),
 	],
 );
+
+export const updates = sqliteTable(
+	"updates",
+	{
+		id: text("id").notNull().primaryKey(),
+		publishedAt: text("published_at").notNull(),
+		title: text("title").notNull(),
+		description: text("description").notNull(),
+		snapshot: text("snapshot").notNull(),
+	},
+	(table) => [
+		check(
+			"updates_id_safe",
+			sql`length(${table.id}) BETWEEN 1 AND 100 AND ${table.id} NOT GLOB '*[^a-zA-Z0-9_-]*'`,
+		),
+		check(
+			"updates_published_at_canonical_utc",
+			sql`length(${table.publishedAt}) = 24 AND strftime('%Y-%m-%dT%H:%M:%fZ', ${table.publishedAt}) = ${table.publishedAt}`,
+		),
+		check(
+			"updates_title_canonical",
+			sql`length(${table.title}) BETWEEN 1 AND 120 AND trim(${table.title}) = ${table.title}`,
+		),
+		check(
+			"updates_description_canonical",
+			sql`length(${table.description}) BETWEEN 1 AND 2000 AND trim(${table.description}) = ${table.description}`,
+		),
+		check(
+			"updates_snapshot_json",
+			sql`json_valid(${table.snapshot}) AND length(${table.snapshot}) BETWEEN 1 AND 1048576`,
+		),
+		index("updates_published_at_desc_id_idx").on(
+			sql`${table.publishedAt} DESC`,
+			table.id,
+		),
+	],
+);

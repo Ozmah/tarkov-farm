@@ -14,7 +14,7 @@ bun run dev
 
 Startup fails immediately when `APP_ENV` or `DATABASE_PATH` is missing or invalid.
 
-Every server start replaces the local SQLite database from the versioned migration, catalog seed, and `data/publication/locations.json`.
+Every server start replaces the local SQLite database from the versioned migrations, catalog seed, `data/publication/locations.json`, and `data/publication/updates.json`.
 
 The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server, just works on local.
 
@@ -42,13 +42,17 @@ bun run screenshots:check
 
 ### Publication data
 
-Every successful location save or deletion updates `data/publication/locations.json`. To verify or regenerate it manually, stop the development server and run:
+Every successful location or project-update mutation refreshes its corresponding manifest under `data/publication`. To verify or regenerate both manifests manually, stop the development server and run:
 
 ```bash
 bun run db:manifest
 ```
 
-Commit `data/publication/locations.json` together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
+Commit both publication manifests together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
+
+Each project update captures a canonical snapshot of the active public locations and screenshots. Before the first update, release context compares the current database with `data/publication/locations.json` from Git `HEAD`; later updates compare with the newest captured snapshot.
+
+Application date logic uses Temporal with `America/Mexico_City` as its display and authoring timezone. Publication timestamps remain canonical UTC instants in SQLite and JSON. Native `Date` is reserved for external library boundaries that explicitly require it.
 
 ## Deployment
 
