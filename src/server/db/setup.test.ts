@@ -15,8 +15,13 @@ import {
 	parsePublicationData,
 	serializePublicationData,
 } from "../../lib/publication-data";
+import {
+	parsePublicationUpdatesData,
+	serializePublicationUpdatesData,
+} from "../../lib/publication-updates";
 import { openDatabase } from "./open";
 import { readPublicationDataFromDatabase } from "./publication-store";
+import { readPublicationUpdatesFromDatabase } from "./publication-updates-store";
 import { setupDatabase } from "./setup";
 
 const temporaryDirectories: string[] = [];
@@ -24,9 +29,17 @@ const projectRoot = resolve(process.cwd());
 const setupOptions = {
 	migrationsPath: resolve(projectRoot, "drizzle"),
 	publicationPath: resolve(projectRoot, "data/publication/locations.json"),
+	updatesPublicationPath: resolve(projectRoot, "data/publication/updates.json"),
 };
 const publicationSource = await readFile(setupOptions.publicationPath, "utf8");
 const publication = parsePublicationData(JSON.parse(publicationSource));
+const updatesPublicationSource = await readFile(
+	setupOptions.updatesPublicationPath,
+	"utf8",
+);
+const updatesPublication = parsePublicationUpdatesData(
+	JSON.parse(updatesPublicationSource),
+);
 const expectedCounts = {
 	locationDocuments: publication.locations.length,
 	locations: publication.locations.length,
@@ -34,6 +47,7 @@ const expectedCounts = {
 		(total, location) => total + location.screenshots.length,
 		0,
 	),
+	updates: updatesPublication.updates.length,
 };
 
 afterEach(async () => {
@@ -103,6 +117,50 @@ describe("database setup", () => {
 		expect(await readFile(databasePath, "utf8")).toBe(sentinel);
 	});
 
+	it("preserves an existing database when the updates manifest is noncanonical", async () => {
+		const directory = await createTemporaryDirectory();
+		const databasePath = resolve(directory, "database.sqlite");
+		const invalidUpdatesPublicationPath = resolve(directory, "updates.json");
+		const sentinel = "existing local database";
+		await Promise.all([
+			writeFile(databasePath, sentinel),
+			writeFile(
+				invalidUpdatesPublicationPath,
+				'{"formatVersion":1,"updates":[]}\n',
+			),
+		]);
+
+		await expect(
+			setupDatabase(databasePath, {
+				...setupOptions,
+				updatesPublicationPath: invalidUpdatesPublicationPath,
+			}),
+		).rejects.toThrow("Updates publication manifest is not canonical");
+		expect(await readFile(databasePath, "utf8")).toBe(sentinel);
+	});
+
+	it("preserves an existing database when the updates manifest is invalid", async () => {
+		const directory = await createTemporaryDirectory();
+		const databasePath = resolve(directory, "database.sqlite");
+		const invalidUpdatesPublicationPath = resolve(directory, "updates.json");
+		const sentinel = "existing local database";
+		await Promise.all([
+			writeFile(databasePath, sentinel),
+			writeFile(
+				invalidUpdatesPublicationPath,
+				'{"formatVersion":1,"updates":[],"isPublished":true}\n',
+			),
+		]);
+
+		await expect(
+			setupDatabase(databasePath, {
+				...setupOptions,
+				updatesPublicationPath: invalidUpdatesPublicationPath,
+			}),
+		).rejects.toThrow("unexpected field isPublished");
+		expect(await readFile(databasePath, "utf8")).toBe(sentinel);
+	});
+
 	it("does not delete the database when setup is started concurrently", async () => {
 		const directory = await createTemporaryDirectory();
 		const databasePath = resolve(directory, "database.sqlite");
@@ -157,4 +215,9 @@ async function expectDatabaseToMatchManifest(
 	expect(
 		serializePublicationData(await readPublicationDataFromDatabase(client)),
 	).toBe(publicationSource);
+	expect(
+		serializePublicationUpdatesData(
+			await readPublicationUpdatesFromDatabase(client),
+		),
+	).toBe(updatesPublicationSource);
 }

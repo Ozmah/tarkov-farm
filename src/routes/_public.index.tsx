@@ -14,19 +14,26 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
+import { UpdateFeed } from "@/components/update-feed";
+import { getUpdates } from "@/functions/updates";
 import {
 	encodeDocumentFilters,
 	readSelectedDocumentIds,
 } from "@/lib/catalog-search";
+import { getDocumentShortName } from "@/lib/document-display";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
 import { Route as PublicLayoutRoute } from "./_public";
 
 export const Route = createFileRoute("/_public/")({
+	loader: () => getUpdates(),
+	staleTime: 30_000,
+	preloadStaleTime: 30_000,
 	component: App,
 });
 
 function App() {
 	const catalog = PublicLayoutRoute.useLoaderData();
+	const updates = Route.useLoaderData();
 	const prepareMapNavigation = usePreparePublicMapNavigation();
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
@@ -133,6 +140,39 @@ function App() {
 					</dl>
 				</section>
 
+				<section
+					aria-labelledby="updates-title"
+					className="flex flex-col gap-5"
+				>
+					<div className="flex flex-wrap items-center justify-between gap-4">
+						<h2
+							id="updates-title"
+							className="text-balance font-heading font-medium text-2xl tracking-tight"
+						>
+							Latest updates
+						</h2>
+						{updates.length > 3 ? (
+							<Button
+								render={
+									<Link to="/updates" search={{ documents: encodedFilters }} />
+								}
+								variant="ghost"
+								size="sm"
+							>
+								View all
+								<ArrowRightIcon data-icon="inline-end" aria-hidden="true" />
+							</Button>
+						) : null}
+					</div>
+					{updates.length > 0 ? (
+						<UpdateFeed updates={updates.slice(0, 3)} />
+					) : (
+						<p className="text-pretty text-base text-muted-foreground sm:text-sm">
+							The first project update will appear here.
+						</p>
+					)}
+				</section>
+
 				<section aria-labelledby="maps-title" className="flex flex-col gap-5">
 					<h2
 						id="maps-title"
@@ -210,21 +250,6 @@ function App() {
 			</div>
 		</div>
 	);
-}
-
-const DOCUMENT_SHORT_NAMES: Readonly<Record<string, string>> = {
-	"blueprints-technical": "Blueprints",
-	financial: "Financial",
-	medical: "Medical",
-	"pmc-personnel": "PMC personnel",
-	project: "Project",
-	technical: "Technical",
-	test: "Test",
-	user: "User",
-};
-
-function getDocumentShortName(document: { id: string; name: string }) {
-	return DOCUMENT_SHORT_NAMES[document.id] ?? document.name;
 }
 
 function getMapMonogram(name: string) {

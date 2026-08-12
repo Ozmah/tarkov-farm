@@ -13,7 +13,7 @@ import {
 	type PublicationData,
 	serializePublicationData,
 } from "@/lib/publication-data";
-import { getDatabase } from "@/server/db/client.server";
+import { getDatabase, runDatabaseTransaction } from "@/server/db/client.server";
 import { writePublicationManifest } from "@/server/db/publication-manifest";
 import {
 	assertPublicationReferences,
@@ -291,7 +291,7 @@ async function saveEditorLocationLocked(
 			throw new Error("The same screenshot cannot be attached twice");
 		}
 
-		await db.transaction(async (transaction) => {
+		await runDatabaseTransaction(async (transaction) => {
 			if (location.id) {
 				await transaction
 					.update(locations)
@@ -379,12 +379,13 @@ export async function deleteEditorLocation(input: DeleteLocationInput) {
 }
 
 async function deleteEditorLocationLocked(input: DeleteLocationInput) {
-	const { db } = await getDatabase();
-	const deleted = await db
-		.delete(locations)
-		.where(eq(locations.id, input.id))
-		.returning({ id: locations.id })
-		.get();
+	const deleted = await runDatabaseTransaction((transaction) =>
+		transaction
+			.delete(locations)
+			.where(eq(locations.id, input.id))
+			.returning({ id: locations.id })
+			.get(),
+	);
 
 	if (!deleted) {
 		throw new Error("The selected location no longer exists");

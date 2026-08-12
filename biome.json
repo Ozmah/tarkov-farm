@@ -13,7 +13,8 @@
 			"!**/.tanstack",
 			"!**/.zed",
 			"!**/.vscode",
-			"!**/routeTree.gen.ts"
+			"!**/routeTree.gen.ts",
+			"!data/publication"
 		]
 	},
 	"formatter": {

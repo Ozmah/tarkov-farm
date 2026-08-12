@@ -41,7 +41,7 @@ type PublicShellProps = {
 	headerMeta?: string;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
-	onOverviewNavigate?: () => void;
+	onHomeNavigate?: () => void;
 	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	sidebarFooter?: ReactNode;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
@@ -58,7 +58,7 @@ export function PublicShell({
 	headerMeta,
 	onMapNavigate,
 	onMapNavigationStart,
-	onOverviewNavigate,
+	onHomeNavigate,
 	onSelectedDocumentsChange,
 	sidebarFooter,
 	sidebarPanel,
@@ -99,7 +99,7 @@ export function PublicShell({
 				}
 				onMapNavigate={onMapNavigate}
 				onMapNavigationStart={onMapNavigationStart}
-				onOverviewNavigate={onOverviewNavigate}
+				onHomeNavigate={onHomeNavigate}
 				onSelectedDocumentsChange={onSelectedDocumentsChange}
 				sidebarPanel={sidebarPanel}
 			/>

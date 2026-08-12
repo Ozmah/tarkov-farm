@@ -39,7 +39,7 @@ type AppSidebarProps = {
 	footer?: ReactNode;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
-	onOverviewNavigate?: () => void;
+	onHomeNavigate?: () => void;
 	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
 };
@@ -54,7 +54,7 @@ export function AppSidebar({
 	footer,
 	onMapNavigate,
 	onMapNavigationStart,
-	onOverviewNavigate,
+	onHomeNavigate,
 	onSelectedDocumentsChange,
 	sidebarPanel,
 }: AppSidebarProps) {
@@ -62,6 +62,7 @@ export function AppSidebar({
 	const matchRoute = useMatchRoute();
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
+	const isHomeRoute = Boolean(matchRoute({ to: "/", fuzzy: false }));
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
 	const search = {
 		documents: encodeDocumentFilters(selectedDocumentIds),
@@ -139,13 +140,13 @@ export function AppSidebar({
 										<SidebarMenuSubItem>
 											<SidebarMenuSubButton
 												render={
-													onOverviewNavigate ? (
+													onHomeNavigate ? (
 														<button
 															type="button"
 															onClick={() => {
 																setIsSidebarPanelOpen(false);
 																closeMobileSidebar();
-																onOverviewNavigate();
+																onHomeNavigate();
 															}}
 														/>
 													) : (
@@ -156,11 +157,11 @@ export function AppSidebar({
 														/>
 													)
 												}
-												isActive={!isAboutRoute && currentMapId === undefined}
+												isActive={isHomeRoute && currentMapId === undefined}
 												className="h-11 md:h-8"
 											>
 												<HouseIcon aria-hidden="true" />
-												<span>Overview</span>
+												<span>Home</span>
 											</SidebarMenuSubButton>
 										</SidebarMenuSubItem>
 										{maps.map((map) => (

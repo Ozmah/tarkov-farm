@@ -5,6 +5,10 @@ import {
 	parsePublicationData,
 	serializePublicationData,
 } from "../../lib/publication-data";
+import {
+	parsePublicationUpdatesData,
+	serializePublicationUpdatesData,
+} from "../../lib/publication-updates";
 import { migrateDatabase } from "./migrate";
 import { openDatabase } from "./open";
 import { getDatabasePath } from "./path";
@@ -12,6 +16,10 @@ import {
 	importPublicationData,
 	readPublicationDataFromDatabase,
 } from "./publication-store";
+import {
+	importPublicationUpdates,
+	readPublicationUpdatesFromDatabase,
+} from "./publication-updates-store";
 import { seedCatalog } from "./seed";
 
 const PROJECT_ROOT = resolve(process.cwd());
@@ -21,11 +29,21 @@ const PUBLICATION_PATH = resolve(
 	"publication",
 	"locations.json",
 );
+const UPDATES_PUBLICATION_PATH = resolve(
+	PROJECT_ROOT,
+	"data",
+	"publication",
+	"updates.json",
+);
 const MIGRATIONS_PATH = resolve(PROJECT_ROOT, "drizzle");
 
 export async function setupDatabase(
 	databasePath: string,
-	options: { migrationsPath: string; publicationPath: string },
+	options: {
+		migrationsPath: string;
+		publicationPath: string;
+		updatesPublicationPath: string;
+	},
 ) {
 	await mkdir(dirname(databasePath), { recursive: true });
 	const setupLockPath = `${databasePath}.setup.lock`;
@@ -35,11 +53,21 @@ export async function setupDatabase(
 	let databaseWasCleared = false;
 
 	try {
-		const source = await readFile(options.publicationPath, "utf8");
+		const [source, updatesSource] = await Promise.all([
+			readFile(options.publicationPath, "utf8"),
+			readFile(options.updatesPublicationPath, "utf8"),
+		]);
 		const publication = parsePublicationData(JSON.parse(source));
+		const updatesPublication = parsePublicationUpdatesData(
+			JSON.parse(updatesSource),
+		);
 
 		if (serializePublicationData(publication) !== source) {
 			throw new Error("Publication manifest is not canonical");
+		}
+
+		if (serializePublicationUpdatesData(updatesPublication) !== updatesSource) {
+			throw new Error("Updates publication manifest is not canonical");
 		}
 
 		await assertReplaceableDatabasePath(databasePath);
@@ -49,14 +77,26 @@ export async function setupDatabase(
 		database = await openDatabase(databasePath, { create: true });
 		await migrateDatabase(database.db, options.migrationsPath);
 		await seedCatalog(database.db);
-		const counts = await importPublicationData(database.client, publication);
+		const counts = {
+			...(await importPublicationData(database.client, publication)),
+			...(await importPublicationUpdates(database.client, updatesPublication)),
+		};
 		const restored = serializePublicationData(
 			await readPublicationDataFromDatabase(database.client),
+		);
+		const restoredUpdates = serializePublicationUpdatesData(
+			await readPublicationUpdatesFromDatabase(database.client),
 		);
 
 		if (restored !== source) {
 			throw new Error(
 				"Created database does not match the publication manifest",
+			);
+		}
+
+		if (restoredUpdates !== updatesSource) {
+			throw new Error(
+				"Created database does not match the updates publication manifest",
 			);
 		}
 
@@ -129,9 +169,10 @@ if (import.meta.main) {
 	const result = await setupDatabase(getDatabasePath(), {
 		migrationsPath: MIGRATIONS_PATH,
 		publicationPath: PUBLICATION_PATH,
+		updatesPublicationPath: UPDATES_PUBLICATION_PATH,
 	});
 
 	console.info(
-		`Rebuilt database with ${result.counts.locations} locations and ${result.counts.screenshots} screenshots.`,
+		`Rebuilt database with ${result.counts.locations} locations, ${result.counts.screenshots} screenshots, and ${result.counts.updates} updates.`,
 	);
 }
