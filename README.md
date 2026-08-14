@@ -79,6 +79,8 @@ Production builds initialize the Databuddy React SDK when `VITE_DATABUDDY_CLIENT
 
 See [`public/maps/ATTRIBUTION.md`](public/maps/ATTRIBUTION.md) for complete attribution details.
 
+Key names and icon source references are derived from the [Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Keys_%26_Intel). The icons remain property of their respective rights holders and are not covered by this repository's MIT license.
+
 ## License
 
 The source code is licensed under the [MIT License](LICENSE).

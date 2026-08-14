@@ -51,6 +51,11 @@ const config = defineConfig(({ mode }) => ({
 									"cache-control": "public, max-age=31536000, immutable",
 								},
 							},
+							"/keys/**": {
+								headers: {
+									"cache-control": "public, max-age=31536000, immutable",
+								},
+							},
 							"/screenshots/**": {
 								headers: {
 									"cache-control": "public, max-age=31536000, immutable",

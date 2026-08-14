@@ -42,6 +42,10 @@ const updatesPublication = parsePublicationUpdatesData(
 );
 const expectedCounts = {
 	locationDocuments: publication.locations.length,
+	locationRequiredKeys: publication.locations.reduce(
+		(total, location) => total + location.requiredKeyIds.length,
+		0,
+	),
 	locations: publication.locations.length,
 	screenshots: publication.locations.reduce(
 		(total, location) => total + location.screenshots.length,

@@ -17,6 +17,7 @@ data/backups/
 data/rebuild/
 assets/maps/originals/
 assets/screenshots/originals/
+assets/keys/
 
 # typescript
 *.tsbuildinfo
