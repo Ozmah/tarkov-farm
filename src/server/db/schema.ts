@@ -123,6 +123,61 @@ export const documentMaps = sqliteTable(
 	],
 );
 
+export const keys = sqliteTable(
+	"keys",
+	{
+		id: text("id").notNull().primaryKey(),
+		name: text("name").notNull().unique(),
+		wikiUrl: text("wiki_url").notNull(),
+		imagePath: text("image_path").notNull().unique(),
+		imageWidth: integer("image_width").notNull(),
+		imageHeight: integer("image_height").notNull(),
+		imageHash: text("image_hash").notNull(),
+		usedInQuest: integer("used_in_quest", { mode: "boolean" })
+			.notNull()
+			.default(false),
+	},
+	(table) => [
+		check(
+			"keys_id_safe",
+			sql`length(${table.id}) BETWEEN 1 AND 100 AND ${table.id} NOT GLOB '*[^a-z0-9-]*'`,
+		),
+		check(
+			"keys_name_canonical",
+			sql`length(${table.name}) BETWEEN 1 AND 120 AND trim(${table.name}) = ${table.name}`,
+		),
+		check(
+			"keys_image_width_positive",
+			sql`${table.imageWidth} BETWEEN 1 AND 128`,
+		),
+		check(
+			"keys_image_height_positive",
+			sql`${table.imageHeight} BETWEEN 1 AND 128`,
+		),
+		check(
+			"keys_image_hash_sha256",
+			sql`length(${table.imageHash}) = 64 AND ${table.imageHash} NOT GLOB '*[^0-9a-f]*'`,
+		),
+		check("keys_used_in_quest_boolean", sql`${table.usedInQuest} IN (0, 1)`),
+	],
+);
+
+export const keyMaps = sqliteTable(
+	"key_maps",
+	{
+		keyId: text("key_id")
+			.notNull()
+			.references(() => keys.id, { onDelete: "cascade", onUpdate: "cascade" }),
+		mapId: text("map_id")
+			.notNull()
+			.references(() => maps.id, { onDelete: "cascade", onUpdate: "cascade" }),
+	},
+	(table) => [
+		primaryKey({ columns: [table.keyId, table.mapId] }),
+		index("key_maps_map_id_idx").on(table.mapId),
+	],
+);
+
 export const locations = sqliteTable(
 	"locations",
 	{
@@ -174,6 +229,25 @@ export const locationDocuments = sqliteTable(
 		primaryKey({ columns: [table.locationId, table.documentId] }),
 		uniqueIndex("location_documents_location_id_unique").on(table.locationId),
 		index("location_documents_document_id_idx").on(table.documentId),
+	],
+);
+
+export const locationRequiredKeys = sqliteTable(
+	"location_required_keys",
+	{
+		locationId: text("location_id")
+			.notNull()
+			.references(() => locations.id, {
+				onDelete: "cascade",
+				onUpdate: "cascade",
+			}),
+		keyId: text("key_id")
+			.notNull()
+			.references(() => keys.id, { onDelete: "restrict", onUpdate: "cascade" }),
+	},
+	(table) => [
+		primaryKey({ columns: [table.locationId, table.keyId] }),
+		index("location_required_keys_key_id_idx").on(table.keyId),
 	],
 );
 

@@ -22,7 +22,10 @@ import {
 import {
 	documentMaps,
 	documents,
+	keyMaps,
+	keys,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	mapImages,
 	maps,
@@ -141,6 +144,23 @@ export async function readEditorData() {
 		})
 		.from(documentMaps)
 		.all();
+	const keyRows = await db
+		.select({
+			id: keys.id,
+			name: keys.name,
+			imagePath: keys.imagePath,
+			imageWidth: keys.imageWidth,
+			imageHeight: keys.imageHeight,
+			usedInQuest: keys.usedInQuest,
+		})
+		.from(keys)
+		.orderBy(asc(keys.name))
+		.all();
+	const keyMapRows = await db.select().from(keyMaps).all();
+	const locationRequiredKeyRows = await db
+		.select()
+		.from(locationRequiredKeys)
+		.all();
 
 	return {
 		maps: mapRows,
@@ -150,6 +170,9 @@ export async function readEditorData() {
 		screenshots: screenshotRows,
 		documents: documentRows,
 		documentMaps: documentMapRows,
+		keys: keyRows,
+		keyMaps: keyMapRows,
+		locationRequiredKeys: locationRequiredKeyRows,
 	};
 }
 
@@ -201,6 +224,21 @@ async function saveEditorLocationLocked(
 
 	if (!allowedDocument) {
 		throw new Error("The selected document does not belong to this map");
+	}
+
+	if (location.requiredKeyIds.length > 0) {
+		const allowedKeys = await db
+			.select({ id: keys.id })
+			.from(keys)
+			.innerJoin(
+				keyMaps,
+				and(eq(keyMaps.keyId, keys.id), eq(keyMaps.mapId, image.mapId)),
+			)
+			.all();
+		const allowedKeyIds = new Set(allowedKeys.map(({ id }) => id));
+		if (location.requiredKeyIds.some((keyId) => !allowedKeyIds.has(keyId))) {
+			throw new Error("A selected key does not belong to this map");
+		}
 	}
 
 	if (location.id) {
@@ -328,6 +366,18 @@ async function saveEditorLocationLocked(
 				.insert(locationDocuments)
 				.values({ locationId, documentId: location.documentId })
 				.run();
+			await transaction
+				.delete(locationRequiredKeys)
+				.where(eq(locationRequiredKeys.locationId, locationId))
+				.run();
+			if (location.requiredKeyIds.length > 0) {
+				await transaction
+					.insert(locationRequiredKeys)
+					.values(
+						location.requiredKeyIds.map((keyId) => ({ keyId, locationId })),
+					)
+					.run();
+			}
 			await transaction
 				.delete(screenshots)
 				.where(eq(screenshots.locationId, locationId))

@@ -70,7 +70,7 @@ const screenshot = (id: string, sortOrder: number, active = true) => ({
 const publication = (
 	screenshots = [screenshot("one", 0)],
 ): PublicationData => ({
-	formatVersion: 1,
+	formatVersion: 2,
 	locations: [
 		{
 			description: "Visible description",
@@ -79,6 +79,7 @@ const publication = (
 			isActive: true,
 			mapImageId: "customs-main",
 			name: "Location",
+			requiredKeyIds: [],
 			screenshots,
 			xBasisPoints: 100,
 			yBasisPoints: 200,
@@ -90,6 +91,7 @@ const publication = (
 			isActive: false,
 			mapImageId: "customs-main",
 			name: "Inactive",
+			requiredKeyIds: [],
 			screenshots: [screenshot("inactive-screen", 0)],
 			xBasisPoints: 0,
 			yBasisPoints: 0,
@@ -141,9 +143,20 @@ describe("release snapshot builder", () => {
 			},
 			catalog,
 		).locations[0]?.fingerprint;
+		const keysChanged = buildReleaseSnapshotFromPublication(
+			{
+				...publication(),
+				locations: publication().locations.map((location) =>
+					location.id === "location"
+						? { ...location, requiredKeyIds: ["factory-emergency-exit-key"] }
+						: location,
+				),
+			},
+			catalog,
+		).locations[0]?.fingerprint;
 
-		expect(new Set([first, contentChanged, reordered, renamed])).toHaveLength(
-			4,
-		);
+		expect(
+			new Set([first, contentChanged, reordered, renamed, keysChanged]),
+		).toHaveLength(5);
 	});
 });

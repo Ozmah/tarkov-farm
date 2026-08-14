@@ -6,7 +6,9 @@ import { getDatabase } from "./db/client.server";
 import {
 	documentMaps,
 	documents,
+	keys,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	mapImages,
 	maps,
@@ -180,11 +182,47 @@ export async function readPublicMap(mapId: string) {
 		.where(and(eq(screenshots.isActive, true), eq(locations.isActive, true)))
 		.orderBy(asc(screenshots.locationId), asc(screenshots.sortOrder))
 		.all();
+	const requiredKeyRows = await db
+		.select({
+			locationId: locationRequiredKeys.locationId,
+			id: keys.id,
+			name: keys.name,
+			wikiUrl: keys.wikiUrl,
+			imagePath: keys.imagePath,
+			imageWidth: keys.imageWidth,
+			imageHeight: keys.imageHeight,
+		})
+		.from(locationRequiredKeys)
+		.innerJoin(keys, eq(keys.id, locationRequiredKeys.keyId))
+		.innerJoin(locations, eq(locations.id, locationRequiredKeys.locationId))
+		.innerJoin(
+			mapImages,
+			and(
+				eq(mapImages.id, locations.mapImageId),
+				eq(mapImages.mapId, mapId),
+				eq(mapImages.isCurrent, true),
+			),
+		)
+		.where(eq(locations.isActive, true))
+		.orderBy(asc(locationRequiredKeys.locationId), asc(keys.name))
+		.all();
+	const requiredKeysByLocation = new Map<
+		string,
+		Omit<(typeof requiredKeyRows)[number], "locationId">[]
+	>();
+	for (const { locationId, ...key } of requiredKeyRows) {
+		const rows = requiredKeysByLocation.get(locationId) ?? [];
+		rows.push(key);
+		requiredKeysByLocation.set(locationId, rows);
+	}
 
 	return {
 		map,
 		images,
-		locations: locationRows,
+		locations: locationRows.map((location) => ({
+			...location,
+			requiredKeys: requiredKeysByLocation.get(location.id) ?? [],
+		})),
 		screenshots: screenshotRows.filter((screenshot) =>
 			locationIds.has(screenshot.locationId),
 		),

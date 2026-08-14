@@ -100,6 +100,7 @@ type Draft = {
 	yBasisPoints: number;
 	isActive: boolean;
 	documentId: string;
+	requiredKeyIds: string[];
 };
 
 type LocalMapEditorProps = {
@@ -493,8 +494,19 @@ function LocationWorkspace({
 				(item) => item.locationId === selectedLocation.id,
 			)?.documentId ?? "")
 		: "";
+	const selectedRequiredKeyIds = selectedLocation
+		? data.locationRequiredKeys
+				.filter((item) => item.locationId === selectedLocation.id)
+				.map((item) => item.keyId)
+				.sort()
+		: [];
 	const [draft, setDraft] = useState<Draft>(() =>
-		createLocationDraft(selectedLocation, selectedDocumentId, image.id),
+		createLocationDraft(
+			selectedLocation,
+			selectedDocumentId,
+			selectedRequiredKeyIds,
+			image.id,
+		),
 	);
 	const screenshotObjectUrlsRef = useRef(new Set<string>());
 	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
@@ -512,7 +524,12 @@ function LocationWorkspace({
 
 		screenshotObjectUrlsRef.current.clear();
 		setDraft(
-			createLocationDraft(selectedLocation, selectedDocumentId, image.id),
+			createLocationDraft(
+				selectedLocation,
+				selectedDocumentId,
+				selectedRequiredKeyIds,
+				image.id,
+			),
 		);
 		setScreenshotDrafts(
 			createScreenshotDrafts(data.screenshots, selectedLocation?.id),
@@ -523,6 +540,7 @@ function LocationWorkspace({
 		draftVersion,
 		image.id,
 		selectedDocumentId,
+		selectedRequiredKeyIds.join("\u0000"),
 		selectedLocation,
 	]);
 
@@ -549,6 +567,12 @@ function LocationWorkspace({
 	const availableDocuments = data.documents.filter((document) =>
 		allowedDocumentIds.has(document.id),
 	);
+	const availableKeyIds = new Set(
+		data.keyMaps
+			.filter((item) => item.mapId === draftImage.mapId)
+			.map((item) => item.keyId),
+	);
+	const availableKeys = data.keys.filter((key) => availableKeyIds.has(key.id));
 	const canvasLocations =
 		draftImage.id === image.id
 			? locations
@@ -587,6 +611,11 @@ function LocationWorkspace({
 			documentId: nextDocumentIds.has(current.documentId)
 				? current.documentId
 				: (firstDocument?.id ?? ""),
+			requiredKeyIds: current.requiredKeyIds.filter((keyId) =>
+				data.keyMaps.some(
+					(item) => item.keyId === keyId && item.mapId === nextMapId,
+				),
+			),
 		}));
 	};
 
@@ -709,6 +738,7 @@ function LocationWorkspace({
 						yBasisPoints: draft.yBasisPoints,
 						isActive: draft.isActive,
 						documentId: draft.documentId,
+						requiredKeyIds: draft.requiredKeyIds,
 					},
 					screenshots: screenshotPayload,
 				}),
@@ -956,6 +986,60 @@ function LocationWorkspace({
 							)}
 						</FieldSet>
 
+						<FieldSet>
+							<FieldLegend variant="label">Required keys</FieldLegend>
+							<FieldDescription>
+								Select every key needed to access this location. Leave empty
+								when no key is required.
+							</FieldDescription>
+							{availableKeys.length > 0 ? (
+								<div className="grid max-h-72 gap-1 overflow-auto border p-2">
+									{availableKeys.map((key) => {
+										const checked = draft.requiredKeyIds.includes(key.id);
+										return (
+											<Field
+												key={key.id}
+												orientation="horizontal"
+												className="p-2"
+											>
+												<Checkbox
+													id={`required-key-${key.id}`}
+													checked={checked}
+													onCheckedChange={(nextChecked) =>
+														updateDraft(
+															"requiredKeyIds",
+															nextChecked
+																? [...draft.requiredKeyIds, key.id]
+																: draft.requiredKeyIds.filter(
+																		(id) => id !== key.id,
+																	),
+														)
+													}
+												/>
+												<img
+													src={key.imagePath}
+													alt=""
+													width={key.imageWidth}
+													height={key.imageHeight}
+													className="size-8 object-contain"
+												/>
+												<FieldLabel
+													htmlFor={`required-key-${key.id}`}
+													className="cursor-pointer normal-case tracking-normal"
+												>
+													{key.name}
+												</FieldLabel>
+											</Field>
+										);
+									})}
+								</div>
+							) : (
+								<FieldDescription>
+									No keys are cataloged for this map.
+								</FieldDescription>
+							)}
+						</FieldSet>
+
 						<LocationScreenshotEditor
 							disabled={isSaving || isDeleting}
 							screenshots={screenshotDrafts}
@@ -1031,6 +1115,7 @@ function readErrorMessage(error: unknown) {
 function createLocationDraft(
 	location: EditorLocation | undefined,
 	documentId: string,
+	requiredKeyIds: string[],
 	defaultMapImageId: string,
 ): Draft {
 	return {
@@ -1041,6 +1126,7 @@ function createLocationDraft(
 		yBasisPoints: location?.yBasisPoints ?? 5_000,
 		isActive: location?.isActive ?? true,
 		documentId,
+		requiredKeyIds,
 	};
 }
 

@@ -20,6 +20,14 @@ type LocationDetails = {
 	description: string | null;
 	documentName: string;
 	name: string;
+	requiredKeys: Array<{
+		id: string;
+		imageHeight: number;
+		imagePath: string;
+		imageWidth: number;
+		name: string;
+		wikiUrl: string;
+	}>;
 };
 
 type LocationScreenshot = {
@@ -77,6 +85,43 @@ export function LocationDetailsPanel({
 							<SheetDescription className="text-pretty text-base sm:text-sm">
 								{location.description}
 							</SheetDescription>
+						) : null}
+
+						{location.requiredKeys.length > 0 ? (
+							<section
+								aria-labelledby="location-required-keys"
+								className="flex flex-col gap-3"
+							>
+								<h3
+									id="location-required-keys"
+									className="font-heading font-medium"
+								>
+									Required {location.requiredKeys.length === 1 ? "key" : "keys"}
+								</h3>
+								<ul className="grid gap-2">
+									{location.requiredKeys.map((key) => (
+										<li key={key.id}>
+											<a
+												href={key.wikiUrl}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="flex items-center gap-3 border p-2 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+											>
+												<img
+													src={key.imagePath}
+													alt=""
+													width={key.imageWidth}
+													height={key.imageHeight}
+													loading="lazy"
+													decoding="async"
+													className="size-10 object-contain"
+												/>
+												<span className="text-sm">{key.name}</span>
+											</a>
+										</li>
+									))}
+								</ul>
+							</section>
 						) : null}
 
 						<section

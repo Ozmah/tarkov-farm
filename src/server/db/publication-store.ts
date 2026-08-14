@@ -1,5 +1,5 @@
 import type { Database } from "@tursodatabase/database";
-import { count } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/tursodatabase/database";
 
 import {
@@ -9,14 +9,22 @@ import {
 import {
 	documentMaps,
 	documents,
+	keyMaps,
+	keys,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	mapImages,
 	maps,
 	screenshots,
 } from "./schema";
 
-const DYNAMIC_TABLES = [locations, locationDocuments, screenshots] as const;
+const DYNAMIC_TABLES = [
+	locations,
+	locationDocuments,
+	locationRequiredKeys,
+	screenshots,
+] as const;
 
 export async function importPublicationData(
 	client: Database,
@@ -27,6 +35,10 @@ export async function importPublicationData(
 	const db = drizzle({ client });
 	const screenshotCount = data.locations.reduce(
 		(total, location) => total + location.screenshots.length,
+		0,
+	);
+	const requiredKeyCount = data.locations.reduce(
+		(total, location) => total + location.requiredKeyIds.length,
 		0,
 	);
 
@@ -93,11 +105,24 @@ export async function importPublicationData(
 				),
 			)
 			.run();
+		const requiredKeyValues = data.locations.flatMap((location) =>
+			location.requiredKeyIds.map((keyId) => ({
+				keyId,
+				locationId: location.id,
+			})),
+		);
+		if (requiredKeyValues.length > 0) {
+			await transaction
+				.insert(locationRequiredKeys)
+				.values(requiredKeyValues)
+				.run();
+		}
 	});
 
 	return {
 		locations: data.locations.length,
 		locationDocuments: data.locations.length,
+		locationRequiredKeys: requiredKeyCount,
 		screenshots: screenshotCount,
 	};
 }
@@ -132,6 +157,11 @@ export async function assertPublicationReferences(
 		.select({ documentId: documentMaps.documentId, mapId: documentMaps.mapId })
 		.from(documentMaps)
 		.all();
+	const keyRows = await db
+		.select({ id: keys.id, mapId: keyMaps.mapId })
+		.from(keys)
+		.leftJoin(keyMaps, eq(keyMaps.keyId, keys.id))
+		.all();
 	const imageById = new Map(imageRows.map((image) => [image.id, image]));
 	const activeMapIds = new Set(
 		mapRows.filter(({ isActive }) => isActive).map(({ id }) => id),
@@ -144,6 +174,12 @@ export async function assertPublicationReferences(
 			relationKey(documentId, mapId),
 		),
 	);
+	const keyMapIdsById = new Map<string, Set<string>>();
+	for (const key of keyRows) {
+		const mapIds = keyMapIdsById.get(key.id) ?? new Set<string>();
+		if (key.mapId) mapIds.add(key.mapId);
+		keyMapIdsById.set(key.id, mapIds);
+	}
 
 	for (const location of data.locations) {
 		const image = imageById.get(location.mapImageId);
@@ -169,6 +205,15 @@ export async function assertPublicationReferences(
 				`Location ${location.id} document is not available on map ${image.mapId}`,
 			);
 		}
+
+		for (const keyId of location.requiredKeyIds) {
+			const keyMapIds = keyMapIdsById.get(keyId);
+			if (!keyMapIds?.has(image.mapId)) {
+				throw new Error(
+					`Location ${location.id} references a key unavailable on map ${image.mapId}`,
+				);
+			}
+		}
 	}
 }
 
@@ -177,22 +222,27 @@ export async function assertPublicationImportCounts(
 	expected: {
 		locations: number;
 		locationDocuments: number;
+		locationRequiredKeys: number;
 		screenshots: number;
 	},
 ) {
 	const db = drizzle({ client });
-	const [locationCount, relationCount, screenshotCount] = await Promise.all([
-		db.select({ count: count() }).from(locations).get(),
-		db.select({ count: count() }).from(locationDocuments).get(),
-		db.select({ count: count() }).from(screenshots).get(),
-	]);
+	const [locationCount, relationCount, requiredKeyCount, screenshotCount] =
+		await Promise.all([
+			db.select({ count: count() }).from(locations).get(),
+			db.select({ count: count() }).from(locationDocuments).get(),
+			db.select({ count: count() }).from(locationRequiredKeys).get(),
+			db.select({ count: count() }).from(screenshots).get(),
+		]);
 
 	if (
 		!locationCount ||
 		!relationCount ||
+		!requiredKeyCount ||
 		!screenshotCount ||
 		locationCount.count !== expected.locations ||
 		relationCount.count !== expected.locationDocuments ||
+		requiredKeyCount.count !== expected.locationRequiredKeys ||
 		screenshotCount.count !== expected.screenshots
 	) {
 		throw new Error(
@@ -208,9 +258,11 @@ export async function readPublicationDataFromDatabase(
 	const locationRows = await db.select().from(locations).all();
 	const relationRows = await db.select().from(locationDocuments).all();
 	const screenshotRows = await db.select().from(screenshots).all();
+	const requiredKeyRows = await db.select().from(locationRequiredKeys).all();
 	const locationIds = new Set(locationRows.map(({ id }) => id));
 	const documentByLocation = new Map<string, string>();
 	const screenshotsByLocation = new Map<string, typeof screenshotRows>();
+	const requiredKeyIdsByLocation = new Map<string, string[]>();
 
 	for (const relation of relationRows) {
 		if (!locationIds.has(relation.locationId)) {
@@ -240,8 +292,19 @@ export async function readPublicationDataFromDatabase(
 		screenshotsByLocation.set(screenshot.locationId, rows);
 	}
 
+	for (const relation of requiredKeyRows) {
+		if (!locationIds.has(relation.locationId)) {
+			throw new Error(
+				`Required key relation references missing location ${relation.locationId}`,
+			);
+		}
+		const identifiers = requiredKeyIdsByLocation.get(relation.locationId) ?? [];
+		identifiers.push(relation.keyId);
+		requiredKeyIdsByLocation.set(relation.locationId, identifiers);
+	}
+
 	return parsePublicationData({
-		formatVersion: 1,
+		formatVersion: 2,
 		locations: locationRows.map((location) => {
 			const documentId = documentByLocation.get(location.id);
 
@@ -256,6 +319,7 @@ export async function readPublicationDataFromDatabase(
 				isActive: location.isActive,
 				mapImageId: location.mapImageId,
 				name: location.name,
+				requiredKeyIds: requiredKeyIdsByLocation.get(location.id) ?? [],
 				screenshots: (screenshotsByLocation.get(location.id) ?? []).map(
 					(screenshot) => ({
 						altText: screenshot.altText,
