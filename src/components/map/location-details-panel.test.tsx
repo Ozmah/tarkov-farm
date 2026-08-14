@@ -26,6 +26,37 @@ const screenshot = {
 afterEach(cleanup);
 
 describe("LocationDetailsPanel screenshot lightbox", () => {
+	it("shows every required key with a safe external wiki link", () => {
+		render(
+			<LocationDetailsPanel
+				location={{
+					description: null,
+					documentName: "Test document",
+					name: "Locked room",
+					requiredKeys: [
+						{
+							id: "factory-emergency-exit-key",
+							imageHeight: 64,
+							imagePath: "/keys/factory.webp",
+							imageWidth: 64,
+							name: "Factory emergency exit key",
+							wikiUrl:
+								"https://escapefromtarkov.fandom.com/wiki/Factory_emergency_exit_key",
+						},
+					],
+				}}
+				onClose={vi.fn()}
+				screenshots={[screenshot]}
+			/>,
+		);
+
+		const link = screen.getByRole("link", {
+			name: "Factory emergency exit key",
+		});
+		expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+		expect(link.getAttribute("target")).toBe("_blank");
+	});
+
 	it("closes the location from the sheet backdrop", async () => {
 		const onClose = vi.fn();
 		renderPanel(onClose);
@@ -116,6 +147,7 @@ function renderPanel(onClose = vi.fn()) {
 				description: "Near the stairs",
 				documentName: "Test document",
 				name: "Sawmill",
+				requiredKeys: [],
 			}}
 			onClose={onClose}
 			screenshots={[screenshot]}

@@ -1,6 +1,7 @@
 const ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const MAX_SCREENSHOTS_PER_LOCATION = 10;
+export const MAX_REQUIRED_KEYS_PER_LOCATION = 20;
 
 export type PublicationAsset = {
 	height: number;
@@ -27,13 +28,14 @@ export type PublicationLocation = {
 	isActive: boolean;
 	mapImageId: string;
 	name: string;
+	requiredKeyIds: string[];
 	screenshots: PublicationScreenshot[];
 	xBasisPoints: number;
 	yBasisPoints: number;
 };
 
 export type PublicationData = {
-	formatVersion: 1;
+	formatVersion: 1 | 2;
 	locations: PublicationLocation[];
 };
 
@@ -43,7 +45,7 @@ export function parsePublicationData(input: unknown): PublicationData {
 		"locations",
 	]);
 
-	if (value.formatVersion !== 1) {
+	if (value.formatVersion !== 1 && value.formatVersion !== 2) {
 		throw new Error("Publication format version is unsupported");
 	}
 
@@ -51,7 +53,10 @@ export function parsePublicationData(input: unknown): PublicationData {
 		throw new Error("Publication locations must be an array");
 	}
 
-	const locations = value.locations.map(parseLocation);
+	const formatVersion = value.formatVersion;
+	const locations = value.locations.map((location) =>
+		parseLocation(location, formatVersion),
+	);
 	assertUnique(
 		locations.map(({ id }) => id),
 		"Location identifiers",
@@ -67,14 +72,17 @@ export function parsePublicationData(input: unknown): PublicationData {
 		"Screenshot asset paths",
 	);
 
-	return canonicalizePublicationData({ formatVersion: 1, locations });
+	return canonicalizePublicationData({ formatVersion, locations });
 }
 
 export function serializePublicationData(input: PublicationData) {
 	return `${JSON.stringify(parsePublicationData(input), null, "\t")}\n`;
 }
 
-function parseLocation(input: unknown): PublicationLocation {
+function parseLocation(
+	input: unknown,
+	formatVersion: 1 | 2,
+): PublicationLocation {
 	const value = readObject(input, "Location", [
 		"description",
 		"documentId",
@@ -82,11 +90,20 @@ function parseLocation(input: unknown): PublicationLocation {
 		"isActive",
 		"mapImageId",
 		"name",
+		...(formatVersion === 2 ? ["requiredKeyIds"] : []),
 		"screenshots",
 		"xBasisPoints",
 		"yBasisPoints",
 	]);
 	const id = readId(value.id, "Location identifier");
+	const requiredKeyIds =
+		formatVersion === 2
+			? readIdArray(
+					value.requiredKeyIds,
+					`Location ${id} required key identifiers`,
+					MAX_REQUIRED_KEYS_PER_LOCATION,
+				)
+			: [];
 
 	if (
 		!Array.isArray(value.screenshots) ||
@@ -132,6 +149,7 @@ function parseLocation(input: unknown): PublicationLocation {
 		isActive: readBoolean(value.isActive, "Location active state"),
 		mapImageId: readId(value.mapImageId, "Map image identifier"),
 		name: readText(value.name, "Location name", 120, false),
+		requiredKeyIds,
 		screenshots: sortedScreenshots,
 		xBasisPoints: readInteger(value.xBasisPoints, "X coordinate", 0, 10_000),
 		yBasisPoints: readInteger(value.yBasisPoints, "Y coordinate", 0, 10_000),
@@ -197,7 +215,7 @@ function parseAsset(
 
 function canonicalizePublicationData(data: PublicationData): PublicationData {
 	return {
-		formatVersion: 1,
+		formatVersion: data.formatVersion,
 		locations: [...data.locations].sort((left, right) =>
 			compareCodePoints(left.id, right.id),
 		),
@@ -302,6 +320,18 @@ function assertUnique(values: string[], label: string) {
 	if (new Set(values).size !== values.length) {
 		throw new Error(`${label} contain duplicates`);
 	}
+}
+
+function readIdArray(value: unknown, label: string, maximum: number) {
+	if (!Array.isArray(value) || value.length > maximum) {
+		throw new Error(
+			`${label} must be an array with at most ${maximum} entries`,
+		);
+	}
+
+	const identifiers = value.map((identifier) => readId(identifier, label));
+	assertUnique(identifiers, label);
+	return identifiers.sort(compareCodePoints);
 }
 
 function compareCodePoints(left: string, right: string) {

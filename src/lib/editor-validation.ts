@@ -7,6 +7,7 @@ const SCREENSHOT_MIME_TYPES = new Set([
 
 export const MAX_SCREENSHOT_BYTES = 20 * 1_048_576;
 export const MAX_SCREENSHOTS_PER_LOCATION = 10;
+export const MAX_REQUIRED_KEYS_PER_LOCATION = 20;
 
 export type SaveLocationInput = {
 	id?: string;
@@ -17,6 +18,7 @@ export type SaveLocationInput = {
 	yBasisPoints: number;
 	isActive: boolean;
 	documentId: string;
+	requiredKeyIds: string[];
 };
 
 export type DeleteLocationInput = {
@@ -51,6 +53,11 @@ export function parseSaveLocationInput(input: unknown): SaveLocationInput {
 		yBasisPoints: readCoordinate(value.yBasisPoints, "Y coordinate"),
 		isActive: readBoolean(value.isActive, "Active state"),
 		documentId: readId(value.documentId, "Document identifier"),
+		requiredKeyIds: readIdArray(
+			value.requiredKeyIds,
+			"Required key identifiers",
+			MAX_REQUIRED_KEYS_PER_LOCATION,
+		),
 	};
 }
 
@@ -181,6 +188,26 @@ function readId(value: unknown, label: string) {
 	}
 
 	return value;
+}
+
+function readIdArray(value: unknown, label: string, maximum: number) {
+	if (!Array.isArray(value) || value.length > maximum) {
+		throw new Error(
+			`${label} must be an array with at most ${maximum} entries`,
+		);
+	}
+
+	const identifiers = value.map((identifier) => readId(identifier, label));
+	if (new Set(identifiers).size !== identifiers.length) {
+		throw new Error(`${label} contain duplicates`);
+	}
+	return identifiers.sort(compareCodePoints);
+}
+
+function compareCodePoints(left: string, right: string) {
+	if (left < right) return -1;
+	if (left > right) return 1;
+	return 0;
 }
 
 function readText(value: unknown, label: string, maxLength: number) {

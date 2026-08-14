@@ -13,6 +13,7 @@ const validLocation = {
 	yBasisPoints: 7_500,
 	isActive: true,
 	documentId: "financial",
+	requiredKeyIds: [],
 };
 
 describe("parseSaveLocationInput", () => {
@@ -55,6 +56,22 @@ describe("parseSaveLocationInput", () => {
 				mapImageId: "../../database",
 			}),
 		).toThrow("Map image is invalid");
+	});
+
+	it("accepts and sorts required key identifiers, then rejects duplicates", () => {
+		expect(
+			parseSaveLocationInput({
+				...validLocation,
+				requiredKeyIds: ["unknown-key", "factory-emergency-exit-key"],
+			}).requiredKeyIds,
+		).toEqual(["factory-emergency-exit-key", "unknown-key"]);
+
+		expect(() =>
+			parseSaveLocationInput({
+				...validLocation,
+				requiredKeyIds: ["unknown-key", "unknown-key"],
+			}),
+		).toThrow("Required key identifiers contain duplicates");
 	});
 });
 

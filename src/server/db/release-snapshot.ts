@@ -12,6 +12,7 @@ import {
 	documentMaps,
 	documents,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	mapImages,
 	maps,
@@ -45,7 +46,7 @@ export async function readSnapshotCatalog(transaction: SnapshotTransaction) {
 export async function readCurrentReleaseSnapshot(
 	transaction: SnapshotTransaction,
 ): Promise<ReleaseSnapshot> {
-	const [locationRows, screenshotRows] = await Promise.all([
+	const [locationRows, requiredKeyRows, screenshotRows] = await Promise.all([
 		transaction
 			.select({
 				description: locations.description,
@@ -102,6 +103,19 @@ export async function readCurrentReleaseSnapshot(
 			.all(),
 		transaction
 			.select({
+				keyId: locationRequiredKeys.keyId,
+				locationId: locationRequiredKeys.locationId,
+			})
+			.from(locationRequiredKeys)
+			.innerJoin(locations, eq(locations.id, locationRequiredKeys.locationId))
+			.where(eq(locations.isActive, true))
+			.orderBy(
+				asc(locationRequiredKeys.locationId),
+				asc(locationRequiredKeys.keyId),
+			)
+			.all(),
+		transaction
+			.select({
 				altText: screenshots.altText,
 				caption: screenshots.caption,
 				fullHash: screenshots.fullHash,
@@ -131,6 +145,12 @@ export async function readCurrentReleaseSnapshot(
 		string,
 		Array<(typeof screenshotRows)[number]>
 	>();
+	const requiredKeyIdsByLocation = new Map<string, string[]>();
+	for (const relation of requiredKeyRows) {
+		const identifiers = requiredKeyIdsByLocation.get(relation.locationId) ?? [];
+		identifiers.push(relation.keyId);
+		requiredKeyIdsByLocation.set(relation.locationId, identifiers);
+	}
 
 	for (const screenshot of screenshotRows) {
 		const rows = screenshotsByLocation.get(screenshot.locationId) ?? [];
@@ -141,6 +161,7 @@ export async function readCurrentReleaseSnapshot(
 	return buildSnapshot(
 		locationRows.map((location) => ({
 			...location,
+			requiredKeyIds: requiredKeyIdsByLocation.get(location.id) ?? [],
 			screenshots: screenshotsByLocation.get(location.id) ?? [],
 		})),
 	);
@@ -205,6 +226,7 @@ export function buildReleaseSnapshotFromPublication(
 					name: location.name,
 					xBasisPoints: location.xBasisPoints,
 					yBasisPoints: location.yBasisPoints,
+					requiredKeyIds: location.requiredKeyIds,
 					screenshots: location.screenshots
 						.filter(({ isActive }) => isActive)
 						.map((screenshot) => ({
@@ -248,6 +270,7 @@ function buildSnapshot(
 		mapImageContentHash: string;
 		documentId: string;
 		documentName: string;
+		requiredKeyIds: string[];
 		screenshots: Array<{
 			id: string;
 			locationId: string;
@@ -298,6 +321,13 @@ function buildSnapshot(
 					id: location.documentId,
 					name: location.documentName,
 				},
+				...(location.requiredKeyIds.length > 0
+					? {
+							requiredKeyIds: [...location.requiredKeyIds].sort(
+								compareCodePoints,
+							),
+						}
+					: {}),
 				screenshots: orderedScreenshots.map((screenshot) => ({
 					id: screenshot.id,
 					sortOrder: screenshot.sortOrder,

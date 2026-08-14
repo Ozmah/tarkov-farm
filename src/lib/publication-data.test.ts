@@ -11,7 +11,7 @@ const FULL_HASH = "b".repeat(64);
 const PREVIEW_HASH = "c".repeat(64);
 
 const validData: PublicationData = {
-	formatVersion: 1,
+	formatVersion: 2,
 	locations: [
 		{
 			description: "Near the extraction point",
@@ -20,6 +20,7 @@ const validData: PublicationData = {
 			isActive: true,
 			mapImageId: "woods-main",
 			name: "Test location",
+			requiredKeyIds: ["zb-014-key"],
 			screenshots: [
 				{
 					altText: "",

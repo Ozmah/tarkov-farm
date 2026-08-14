@@ -1,8 +1,15 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-
+import { parseKeyCatalog } from "../../lib/key-catalog";
 import { getDatabase } from "./client.server";
-import { documentMaps, documents, mapImages, maps } from "./schema";
+import {
+	documentMaps,
+	documents,
+	keyMaps,
+	keys,
+	mapImages,
+	maps,
+} from "./schema";
 
 const mapSeed = [
 	{ id: "customs", name: "Customs" },
@@ -223,6 +230,12 @@ const documentMapSeed = [
 	["user", "the-lab"],
 ] as const;
 
+const keyCatalog = parseKeyCatalog(
+	JSON.parse(
+		await readFile(resolve(process.cwd(), "data/catalog/keys.json"), "utf8"),
+	),
+);
+
 type CatalogDatabase = Awaited<ReturnType<typeof getDatabase>>["db"];
 
 export async function seedCatalog(db: CatalogDatabase) {
@@ -256,11 +269,38 @@ export async function seedCatalog(db: CatalogDatabase) {
 			)
 			.onConflictDoNothing()
 			.run();
+		await transaction
+			.insert(keys)
+			.values(
+				keyCatalog.keys.map((key) => ({
+					id: key.id,
+					imageHash: key.image.sha256,
+					imageHeight: key.image.height,
+					imagePath: key.image.path,
+					imageWidth: key.image.width,
+					name: key.name,
+					usedInQuest: key.usedInQuest,
+					wikiUrl: key.wikiUrl,
+				})),
+			)
+			.onConflictDoNothing()
+			.run();
+		const keyMapValues = keyCatalog.keys.flatMap((key) =>
+			key.mapIds.map((mapId) => ({ keyId: key.id, mapId })),
+		);
+		if (keyMapValues.length > 0) {
+			await transaction
+				.insert(keyMaps)
+				.values(keyMapValues)
+				.onConflictDoNothing()
+				.run();
+		}
 	});
 
 	return {
 		documentMaps: documentMapSeed.length,
 		documents: documentSeed.length,
+		keys: keyCatalog.keys.length,
 		mapImages: mapImageSeed.length,
 		maps: mapSeed.length,
 	};
