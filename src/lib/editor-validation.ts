@@ -7,7 +7,6 @@ const SCREENSHOT_MIME_TYPES = new Set([
 
 export const MAX_SCREENSHOT_BYTES = 20 * 1_048_576;
 export const MAX_SCREENSHOTS_PER_LOCATION = 10;
-export const MAX_REQUIRED_KEYS_PER_LOCATION = 20;
 
 export type SaveLocationInput = {
 	id?: string;
@@ -56,7 +55,6 @@ export function parseSaveLocationInput(input: unknown): SaveLocationInput {
 		requiredKeyIds: readIdArray(
 			value.requiredKeyIds,
 			"Required key identifiers",
-			MAX_REQUIRED_KEYS_PER_LOCATION,
 		),
 	};
 }
@@ -190,11 +188,9 @@ function readId(value: unknown, label: string) {
 	return value;
 }
 
-function readIdArray(value: unknown, label: string, maximum: number) {
-	if (!Array.isArray(value) || value.length > maximum) {
-		throw new Error(
-			`${label} must be an array with at most ${maximum} entries`,
-		);
+function readIdArray(value: unknown, label: string) {
+	if (!Array.isArray(value)) {
+		throw new Error(`${label} must be an array`);
 	}
 
 	const identifiers = value.map((identifier) => readId(identifier, label));

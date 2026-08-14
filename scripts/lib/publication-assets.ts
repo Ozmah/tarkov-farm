@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { lstat, readdir, readFile, realpath } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
-
+import { parseKeyCatalog } from "../../src/lib/key-catalog";
 import {
 	type PublicationAsset,
 	type PublicationData,
@@ -129,6 +129,61 @@ export async function verifyMapMasterAssets(projectRoot: string) {
 	}
 
 	return { mapFiles: images.length };
+}
+
+export async function verifyKeyAssets(projectRoot: string) {
+	const keyRoot = resolve(projectRoot, "public", "keys");
+	const catalogPath = resolve(projectRoot, "data", "catalog", "keys.json");
+	await assertRegularContainedFile(
+		catalogPath,
+		resolve(projectRoot, "data", "catalog"),
+		"Key catalog",
+	);
+	const catalog = parseKeyCatalog(
+		JSON.parse(await readFile(catalogPath, "utf8")),
+	);
+	const expectedFiles = new Set<string>();
+
+	for (const key of catalog.keys) {
+		const file = key.image.path.replace(/^\/keys\//, "");
+		if (!file || file.includes("/") || file.includes("\\")) {
+			throw new Error(`Key image path is invalid: ${key.image.path}`);
+		}
+		if (expectedFiles.has(file)) {
+			throw new Error(`Key catalog contains duplicate image ${file}`);
+		}
+		expectedFiles.add(file);
+
+		const imagePath = resolve(keyRoot, file);
+		await assertRegularContainedFile(imagePath, keyRoot, "Key image");
+		const metadata = await new Bun.Image(imagePath, {
+			maxPixels: 128 * 128,
+		}).metadata();
+
+		if (
+			metadata.format !== "webp" ||
+			metadata.width !== key.image.width ||
+			metadata.height !== key.image.height ||
+			(await hashFile(imagePath)) !== key.image.sha256
+		) {
+			throw new Error(`Key image does not match catalog: ${file}`);
+		}
+	}
+
+	const actualFiles = await readdir(keyRoot, { withFileTypes: true });
+	if (
+		actualFiles.some(
+			(entry) =>
+				!entry.isFile() ||
+				entry.isSymbolicLink() ||
+				!expectedFiles.has(entry.name),
+		) ||
+		actualFiles.length !== expectedFiles.size
+	) {
+		throw new Error("Key image inventory does not match its catalog");
+	}
+
+	return { keyFiles: catalog.keys.length };
 }
 
 async function verifyVariant(

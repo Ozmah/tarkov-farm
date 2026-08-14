@@ -1,7 +1,6 @@
 const ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const MAX_SCREENSHOTS_PER_LOCATION = 10;
-export const MAX_REQUIRED_KEYS_PER_LOCATION = 20;
 
 export type PublicationAsset = {
 	height: number;
@@ -35,7 +34,7 @@ export type PublicationLocation = {
 };
 
 export type PublicationData = {
-	formatVersion: 1 | 2;
+	formatVersion: 2;
 	locations: PublicationLocation[];
 };
 
@@ -45,7 +44,7 @@ export function parsePublicationData(input: unknown): PublicationData {
 		"locations",
 	]);
 
-	if (value.formatVersion !== 1 && value.formatVersion !== 2) {
+	if (value.formatVersion !== 2) {
 		throw new Error("Publication format version is unsupported");
 	}
 
@@ -53,10 +52,7 @@ export function parsePublicationData(input: unknown): PublicationData {
 		throw new Error("Publication locations must be an array");
 	}
 
-	const formatVersion = value.formatVersion;
-	const locations = value.locations.map((location) =>
-		parseLocation(location, formatVersion),
-	);
+	const locations = value.locations.map(parseLocation);
 	assertUnique(
 		locations.map(({ id }) => id),
 		"Location identifiers",
@@ -72,17 +68,14 @@ export function parsePublicationData(input: unknown): PublicationData {
 		"Screenshot asset paths",
 	);
 
-	return canonicalizePublicationData({ formatVersion, locations });
+	return canonicalizePublicationData({ formatVersion: 2, locations });
 }
 
 export function serializePublicationData(input: PublicationData) {
 	return `${JSON.stringify(parsePublicationData(input), null, "\t")}\n`;
 }
 
-function parseLocation(
-	input: unknown,
-	formatVersion: 1 | 2,
-): PublicationLocation {
+function parseLocation(input: unknown): PublicationLocation {
 	const value = readObject(input, "Location", [
 		"description",
 		"documentId",
@@ -90,20 +83,16 @@ function parseLocation(
 		"isActive",
 		"mapImageId",
 		"name",
-		...(formatVersion === 2 ? ["requiredKeyIds"] : []),
+		"requiredKeyIds",
 		"screenshots",
 		"xBasisPoints",
 		"yBasisPoints",
 	]);
 	const id = readId(value.id, "Location identifier");
-	const requiredKeyIds =
-		formatVersion === 2
-			? readIdArray(
-					value.requiredKeyIds,
-					`Location ${id} required key identifiers`,
-					MAX_REQUIRED_KEYS_PER_LOCATION,
-				)
-			: [];
+	const requiredKeyIds = readIdArray(
+		value.requiredKeyIds,
+		`Location ${id} required key identifiers`,
+	);
 
 	if (
 		!Array.isArray(value.screenshots) ||
@@ -322,11 +311,9 @@ function assertUnique(values: string[], label: string) {
 	}
 }
 
-function readIdArray(value: unknown, label: string, maximum: number) {
-	if (!Array.isArray(value) || value.length > maximum) {
-		throw new Error(
-			`${label} must be an array with at most ${maximum} entries`,
-		);
+function readIdArray(value: unknown, label: string) {
+	if (!Array.isArray(value)) {
+		throw new Error(`${label} must be an array`);
 	}
 
 	const identifiers = value.map((identifier) => readId(identifier, label));

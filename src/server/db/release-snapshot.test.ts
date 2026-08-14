@@ -46,6 +46,19 @@ const catalog = {
 			notes: null,
 		},
 	],
+	keys: [
+		{
+			id: "factory-emergency-exit-key",
+			name: "Factory emergency exit key",
+			wikiUrl:
+				"https://escapefromtarkov.fandom.com/wiki/Factory_emergency_exit_key",
+			imagePath: "/keys/factory-emergency-exit-key.webp",
+			imageWidth: 64,
+			imageHeight: 64,
+			imageHash: hash("9"),
+			usedInQuest: false,
+		},
+	],
 };
 const screenshot = (id: string, sortOrder: number, active = true) => ({
 	id,
@@ -154,9 +167,36 @@ describe("release snapshot builder", () => {
 			},
 			catalog,
 		).locations[0]?.fingerprint;
+		const keyMetadataChanged = buildReleaseSnapshotFromPublication(
+			{
+				...publication(),
+				locations: publication().locations.map((location) =>
+					location.id === "location"
+						? {
+								...location,
+								requiredKeyIds: ["factory-emergency-exit-key"],
+							}
+						: location,
+				),
+			},
+			{
+				...catalog,
+				keys: catalog.keys.map((key) => ({
+					...key,
+					imageHash: hash("8"),
+				})),
+			},
+		).locations[0]?.fingerprint;
 
 		expect(
-			new Set([first, contentChanged, reordered, renamed, keysChanged]),
-		).toHaveLength(5);
+			new Set([
+				first,
+				contentChanged,
+				reordered,
+				renamed,
+				keysChanged,
+				keyMetadataChanged,
+			]),
+		).toHaveLength(6);
 	});
 });

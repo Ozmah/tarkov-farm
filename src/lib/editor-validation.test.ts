@@ -73,6 +73,18 @@ describe("parseSaveLocationInput", () => {
 			}),
 		).toThrow("Required key identifiers contain duplicates");
 	});
+
+	it("does not impose an arbitrary limit on required keys", () => {
+		const requiredKeyIds = Array.from(
+			{ length: 30 },
+			(_, index) => `key-${index}`,
+		);
+
+		expect(
+			parseSaveLocationInput({ ...validLocation, requiredKeyIds })
+				.requiredKeyIds,
+		).toHaveLength(30);
+	});
 });
 
 describe("parseSaveLocationFormData", () => {

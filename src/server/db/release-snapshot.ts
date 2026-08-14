@@ -11,6 +11,7 @@ import {
 import {
 	documentMaps,
 	documents,
+	keys,
 	locationDocuments,
 	locationRequiredKeys,
 	locations,
@@ -26,20 +27,21 @@ type SnapshotTransaction = Parameters<
 type Catalog = Awaited<ReturnType<typeof readSnapshotCatalog>>;
 
 export async function readSnapshotCatalog(transaction: SnapshotTransaction) {
-	const [mapRows, imageRows, documentRows, documentMapRows] = await Promise.all(
-		[
+	const [mapRows, imageRows, documentRows, documentMapRows, keyRows] =
+		await Promise.all([
 			transaction.select().from(maps).all(),
 			transaction.select().from(mapImages).all(),
 			transaction.select().from(documents).all(),
 			transaction.select().from(documentMaps).all(),
-		],
-	);
+			transaction.select().from(keys).all(),
+		]);
 
 	return {
 		maps: mapRows,
 		mapImages: imageRows,
 		documents: documentRows,
 		documentMaps: documentMapRows,
+		keys: keyRows,
 	};
 }
 
@@ -103,11 +105,18 @@ export async function readCurrentReleaseSnapshot(
 			.all(),
 		transaction
 			.select({
+				imageHash: keys.imageHash,
+				imageHeight: keys.imageHeight,
+				imagePath: keys.imagePath,
+				imageWidth: keys.imageWidth,
 				keyId: locationRequiredKeys.keyId,
 				locationId: locationRequiredKeys.locationId,
+				name: keys.name,
+				wikiUrl: keys.wikiUrl,
 			})
 			.from(locationRequiredKeys)
 			.innerJoin(locations, eq(locations.id, locationRequiredKeys.locationId))
+			.innerJoin(keys, eq(keys.id, locationRequiredKeys.keyId))
 			.where(eq(locations.isActive, true))
 			.orderBy(
 				asc(locationRequiredKeys.locationId),
@@ -145,11 +154,15 @@ export async function readCurrentReleaseSnapshot(
 		string,
 		Array<(typeof screenshotRows)[number]>
 	>();
-	const requiredKeyIdsByLocation = new Map<string, string[]>();
+	const requiredKeysByLocation = new Map<
+		string,
+		Array<Omit<(typeof requiredKeyRows)[number], "locationId">>
+	>();
 	for (const relation of requiredKeyRows) {
-		const identifiers = requiredKeyIdsByLocation.get(relation.locationId) ?? [];
-		identifiers.push(relation.keyId);
-		requiredKeyIdsByLocation.set(relation.locationId, identifiers);
+		const { locationId, ...key } = relation;
+		const locationKeys = requiredKeysByLocation.get(locationId) ?? [];
+		locationKeys.push(key);
+		requiredKeysByLocation.set(locationId, locationKeys);
 	}
 
 	for (const screenshot of screenshotRows) {
@@ -161,7 +174,7 @@ export async function readCurrentReleaseSnapshot(
 	return buildSnapshot(
 		locationRows.map((location) => ({
 			...location,
-			requiredKeyIds: requiredKeyIdsByLocation.get(location.id) ?? [],
+			requiredKeys: requiredKeysByLocation.get(location.id) ?? [],
 			screenshots: screenshotsByLocation.get(location.id) ?? [],
 		})),
 	);
@@ -178,6 +191,7 @@ export function buildReleaseSnapshotFromPublication(
 	const documentById = new Map(
 		catalog.documents.map((document) => [document.id, document]),
 	);
+	const keyById = new Map(catalog.keys.map((key) => [key.id, key]));
 	const allowedDocumentMaps = new Set(
 		catalog.documentMaps.map(
 			({ documentId, mapId }) => `${documentId}\u0000${mapId}`,
@@ -190,6 +204,23 @@ export function buildReleaseSnapshotFromPublication(
 			const image = imageById.get(location.mapImageId);
 			const map = image ? mapById.get(image.mapId) : undefined;
 			const document = documentById.get(location.documentId);
+			const requiredKeys = location.requiredKeyIds.map((keyId) => {
+				const key = keyById.get(keyId);
+				if (!key) {
+					throw new Error(
+						`Git HEAD location ${location.id} references key ${keyId} unavailable in the current database`,
+					);
+				}
+				return {
+					imageHash: key.imageHash,
+					imageHeight: key.imageHeight,
+					imagePath: key.imagePath,
+					imageWidth: key.imageWidth,
+					keyId: key.id,
+					name: key.name,
+					wikiUrl: key.wikiUrl,
+				};
+			});
 
 			if (!image || !map || !document) {
 				throw new Error(
@@ -226,7 +257,7 @@ export function buildReleaseSnapshotFromPublication(
 					name: location.name,
 					xBasisPoints: location.xBasisPoints,
 					yBasisPoints: location.yBasisPoints,
-					requiredKeyIds: location.requiredKeyIds,
+					requiredKeys,
 					screenshots: location.screenshots
 						.filter(({ isActive }) => isActive)
 						.map((screenshot) => ({
@@ -270,7 +301,15 @@ function buildSnapshot(
 		mapImageContentHash: string;
 		documentId: string;
 		documentName: string;
-		requiredKeyIds: string[];
+		requiredKeys: Array<{
+			keyId: string;
+			name: string;
+			wikiUrl: string;
+			imagePath: string;
+			imageWidth: number;
+			imageHeight: number;
+			imageHash: string;
+		}>;
 		screenshots: Array<{
 			id: string;
 			locationId: string;
@@ -321,11 +360,23 @@ function buildSnapshot(
 					id: location.documentId,
 					name: location.documentName,
 				},
-				...(location.requiredKeyIds.length > 0
+				...(location.requiredKeys.length > 0
 					? {
-							requiredKeyIds: [...location.requiredKeyIds].sort(
-								compareCodePoints,
-							),
+							requiredKeys: [...location.requiredKeys]
+								.sort((left, right) =>
+									compareCodePoints(left.keyId, right.keyId),
+								)
+								.map((key) => ({
+									id: key.keyId,
+									name: key.name,
+									wikiUrl: key.wikiUrl,
+									image: {
+										path: key.imagePath,
+										width: key.imageWidth,
+										height: key.imageHeight,
+										hash: key.imageHash,
+									},
+								})),
 						}
 					: {}),
 				screenshots: orderedScreenshots.map((screenshot) => ({
