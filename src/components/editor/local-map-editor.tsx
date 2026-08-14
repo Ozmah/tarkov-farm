@@ -1021,6 +1021,8 @@ function LocationWorkspace({
 													alt=""
 													width={key.imageWidth}
 													height={key.imageHeight}
+													loading="lazy"
+													decoding="async"
 													className="size-8 object-contain"
 												/>
 												<FieldLabel

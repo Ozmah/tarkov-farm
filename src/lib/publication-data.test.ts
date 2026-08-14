@@ -111,4 +111,28 @@ describe("publication data", () => {
 			"location-1",
 		]);
 	});
+
+	it("rejects obsolete publication formats", () => {
+		const obsolete = structuredClone(validData) as unknown as Record<
+			string,
+			unknown
+		>;
+		obsolete.formatVersion = 1;
+
+		expect(() => parsePublicationData(obsolete)).toThrow(
+			"Publication format version is unsupported",
+		);
+	});
+
+	it("does not impose an arbitrary limit on required keys", () => {
+		const data = structuredClone(validData);
+		data.locations[0].requiredKeyIds = Array.from(
+			{ length: 30 },
+			(_, index) => `key-${index}`,
+		);
+
+		expect(
+			parsePublicationData(data).locations[0]?.requiredKeyIds,
+		).toHaveLength(30);
+	});
 });

@@ -38,8 +38,11 @@ COPY --from=builder --chown=tarkov:tarkov /app/src/lib ./src/lib
 COPY --from=builder --chown=tarkov:tarkov /app/src/server/db ./src/server/db
 COPY --from=builder --chown=tarkov:tarkov /app/src/server/env.ts ./src/server/env.ts
 COPY --from=builder --chown=tarkov:tarkov /app/drizzle ./drizzle
+COPY --from=builder --chown=tarkov:tarkov /app/data/catalog ./data/catalog
 COPY --from=builder --chown=tarkov:tarkov /app/data/publication ./data/publication
 COPY --from=builder --chown=tarkov:tarkov /app/public/maps/masters/manifest.json ./public/maps/masters/manifest.json
+RUN APP_ENV=production DATABASE_PATH=/tmp/tarkov-build-check.sqlite bun src/server/db/setup.ts \
+	&& rm -f /tmp/tarkov-build-check.sqlite*
 COPY --chown=root:root scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod 0555 /usr/local/bin/docker-entrypoint
 

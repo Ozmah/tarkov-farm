@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 
 import { parsePublicationData } from "../src/lib/publication-data";
 import {
+	verifyKeyAssets,
 	verifyMapMasterAssets,
 	verifyPublicationAssets,
 } from "./lib/publication-assets";
@@ -17,12 +18,13 @@ const publicationPath = resolve(
 const publication = parsePublicationData(
 	JSON.parse(await readFile(publicationPath, "utf8")),
 );
-const [screenshotAssets, mapAssets] = await Promise.all([
+const [screenshotAssets, mapAssets, keyAssets] = await Promise.all([
 	verifyPublicationAssets(publication, {
 		projectRoot,
 		rejectOrphans: true,
 	}),
 	verifyMapMasterAssets(projectRoot),
+	verifyKeyAssets(projectRoot),
 ]);
 const screenshotCount = publication.locations.reduce(
 	(count, location) => count + location.screenshots.length,
@@ -30,5 +32,5 @@ const screenshotCount = publication.locations.reduce(
 );
 
 console.info(
-	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, and ${mapAssets.mapFiles} map masters.`,
+	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, ${mapAssets.mapFiles} map masters, and ${keyAssets.keyFiles} key images.`,
 );
