@@ -123,7 +123,7 @@ export function DocumentFilter({
 							<label
 								key={document.id}
 								htmlFor={`document-filter-${document.id}`}
-								className="flex min-h-11 cursor-pointer items-center gap-3 px-4 text-sidebar-foreground text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground md:min-h-9"
+								className="flex min-h-11 cursor-pointer items-center gap-3 px-4 text-sidebar-foreground text-sm outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:min-h-9"
 							>
 								<Checkbox
 									id={`document-filter-${document.id}`}

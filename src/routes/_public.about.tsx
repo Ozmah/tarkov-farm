@@ -23,14 +23,11 @@ export const Route = createFileRoute("/_public/about")({
 function AboutPage() {
 	return (
 		<div className="min-h-0 flex-1 overflow-auto">
-			<main className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-10 sm:px-10 sm:py-12">
+			<div className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-6 py-10 sm:px-10 sm:py-14">
 				<section aria-labelledby="about-title" className="flex flex-col gap-4">
-					<p className="font-heading text-primary text-sm uppercase tracking-wide">
-						About
-					</p>
 					<h1
 						id="about-title"
-						className="text-balance font-heading font-medium text-3xl tracking-tight sm:text-4xl"
+						className="text-balance font-heading font-medium text-4xl tracking-[-0.035em] sm:text-5xl"
 					>
 						Tarkov Farm
 					</h1>
@@ -41,7 +38,7 @@ function AboutPage() {
 
 				<section
 					aria-labelledby="creator-title"
-					className="flex flex-col gap-6 border border-border bg-card p-6 sm:p-8"
+					className="flex flex-col gap-8 border border-border bg-card p-6 sm:p-8"
 				>
 					<div className="flex flex-col gap-2">
 						<p className="text-muted-foreground text-sm uppercase tracking-wide">
@@ -225,7 +222,7 @@ function AboutPage() {
 					</a>
 					.
 				</p>
-			</main>
+			</div>
 		</div>
 	);
 }

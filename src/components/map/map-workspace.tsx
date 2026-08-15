@@ -1,9 +1,11 @@
 import { MapTrifoldIcon, MinusIcon, PlusIcon } from "@phosphor-icons/react";
 import {
+	type KeyboardEvent as ReactKeyboardEvent,
 	type ReactNode,
 	type PointerEvent as ReactPointerEvent,
 	useCallback,
 	useEffect,
+	useId,
 	useMemo,
 	useRef,
 	useState,
@@ -92,6 +94,7 @@ export function MapWorkspace({
 	onSelectMarker,
 }: MapWorkspaceProps) {
 	const viewportRef = useRef<HTMLDivElement>(null);
+	const instructionsId = useId();
 	const imageElementRef = useRef<HTMLImageElement>(null);
 	const viewRef = useRef<ViewTransform | undefined>(undefined);
 	const viewportSizeRef = useRef<Size | undefined>(undefined);
@@ -382,6 +385,51 @@ export function MapWorkspace({
 		}
 	};
 
+	const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+		const currentView = viewRef.current;
+		const viewportSize = viewportSizeRef.current;
+
+		if (!currentView || !viewportSize) {
+			return;
+		}
+
+		const panStep = 48;
+		const panDelta =
+			event.key === "ArrowLeft"
+				? { x: panStep, y: 0 }
+				: event.key === "ArrowRight"
+					? { x: -panStep, y: 0 }
+					: event.key === "ArrowUp"
+						? { x: 0, y: panStep }
+						: event.key === "ArrowDown"
+							? { x: 0, y: -panStep }
+							: undefined;
+
+		if (panDelta) {
+			event.preventDefault();
+			scheduleView(
+				panView({
+					delta: panDelta,
+					image: imageSize,
+					view: currentView,
+					viewport: viewportSize,
+				}),
+			);
+			return;
+		}
+
+		if (["+", "="].includes(event.key)) {
+			event.preventDefault();
+			zoomFromCenter(zoomRatio + ZOOM_BUTTON_STEP);
+		} else if (event.key === "-") {
+			event.preventDefault();
+			zoomFromCenter(zoomRatio - ZOOM_BUTTON_STEP);
+		} else if (event.key === "0") {
+			event.preventDefault();
+			fitMap();
+		}
+	};
+
 	const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
 		if (![0, 1, 2].includes(event.button) || pointerSessionRef.current) {
 			return;
@@ -516,6 +564,7 @@ export function MapWorkspace({
 		setIsPanning(false);
 	};
 
+	// biome-ignore-start lint/a11y/noNoninteractiveTabindex: The map viewport is intentionally keyboard-focusable for panning and zooming.
 	return (
 		<section
 			aria-label={ariaLabel}
@@ -524,43 +573,52 @@ export function MapWorkspace({
 				className,
 			)}
 		>
-			<div className="flex min-h-14 shrink-0 flex-wrap items-center gap-2 border-border border-b bg-card px-3 py-2">
+			<div className="flex min-h-14 shrink-0 items-center gap-2 border-border border-b bg-card px-3 py-2">
 				{toolbarStart}
-				<p className="min-w-36 flex-1 truncate text-muted-foreground text-sm">
+				<p className="hidden min-w-0 flex-1 truncate text-muted-foreground text-sm xl:block">
 					{instructions}
 				</p>
-				<Button type="button" variant="ghost" size="sm" onClick={fitMap}>
-					Fit
-				</Button>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					aria-label="Zoom out"
-					onClick={() => zoomFromCenter(zoomRatio - ZOOM_BUTTON_STEP)}
-					disabled={zoomRatio <= MIN_ZOOM_RATIO}
-				>
-					<MinusIcon />
-				</Button>
-				<p className="w-12 text-center text-muted-foreground text-sm tabular-nums">
-					{zoomPercent}%
-				</p>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					aria-label="Zoom in"
-					onClick={() => zoomFromCenter(zoomRatio + ZOOM_BUTTON_STEP)}
-					disabled={zoomRatio >= MAX_ZOOM_RATIO}
-				>
-					<PlusIcon />
-				</Button>
+				<div className="ml-auto flex shrink-0 items-center gap-1">
+					<Button type="button" variant="ghost" size="sm" onClick={fitMap}>
+						Fit
+					</Button>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						aria-label="Zoom out"
+						onClick={() => zoomFromCenter(zoomRatio - ZOOM_BUTTON_STEP)}
+						disabled={zoomRatio <= MIN_ZOOM_RATIO}
+					>
+						<MinusIcon />
+					</Button>
+					<p className="w-12 text-center text-muted-foreground text-sm tabular-nums">
+						{zoomPercent}%
+					</p>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						aria-label="Zoom in"
+						onClick={() => zoomFromCenter(zoomRatio + ZOOM_BUTTON_STEP)}
+						disabled={zoomRatio >= MAX_ZOOM_RATIO}
+					>
+						<PlusIcon />
+					</Button>
+				</div>
 			</div>
+			<p id={instructionsId} className="sr-only">
+				{instructions}. Focus the map and use arrow keys to pan, plus and minus
+				to zoom, or zero to fit.
+			</p>
 
 			<div className="min-h-0 flex-1 bg-muted/20 p-2 sm:p-4">
-				{/* biome-ignore lint/a11y/noStaticElementInteractions: Pointer gestures supplement accessible marker and zoom controls. */}
 				<div
 					ref={viewportRef}
+					role="application"
+					aria-label={ariaLabel}
+					tabIndex={0}
+					aria-describedby={instructionsId}
 					className={cn(
 						"relative size-full touch-none select-none overflow-hidden overscroll-contain bg-background",
 						isPanning
@@ -570,6 +628,7 @@ export function MapWorkspace({
 								: "cursor-grab",
 					)}
 					onPointerDown={handlePointerDown}
+					onKeyDown={handleKeyDown}
 					onPointerMove={handlePointerMove}
 					onPointerUp={(event) => finishPointerInteraction(event)}
 					onPointerCancel={(event) => finishPointerInteraction(event, true)}
@@ -629,7 +688,10 @@ export function MapWorkspace({
 					</div>
 
 					{imageStatus === "loading" ? (
-						<div className="pointer-events-none absolute inset-0 grid place-items-center bg-background">
+						<div
+							role="status"
+							className="pointer-events-none absolute inset-0 grid place-items-center bg-background"
+						>
 							<p className="font-heading text-muted-foreground text-sm">
 								Loading map…
 							</p>
@@ -637,7 +699,10 @@ export function MapWorkspace({
 					) : null}
 
 					{imageStatus === "error" ? (
-						<div className="absolute inset-0 grid place-items-center bg-background p-6 text-center">
+						<div
+							role="alert"
+							className="absolute inset-0 grid place-items-center bg-background p-6 text-center"
+						>
 							<div className="flex max-w-sm flex-col gap-2">
 								<p className="font-heading font-medium">Map unavailable</p>
 								<p className="text-muted-foreground text-sm">
@@ -651,6 +716,7 @@ export function MapWorkspace({
 			</div>
 		</section>
 	);
+	// biome-ignore-end lint/a11y/noNoninteractiveTabindex: The map viewport is intentionally keyboard-focusable for panning and zooming.
 }
 
 type MapMarkerProps = {
@@ -670,7 +736,7 @@ function MapMarker({
 }: MapMarkerProps) {
 	const isSubmap = marker.kind === "submap";
 	const className = cn(
-		"absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+		"group/marker absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
 		isSubmap &&
 			"h-11 w-auto min-w-14 gap-1.5 rounded-none bg-rowdy-orange px-2 text-rowdy-orange-foreground ring-rowdy-orange after:bg-rowdy-orange [&_svg]:size-5",
 		isSelected &&
@@ -710,6 +776,9 @@ function MapMarker({
 		>
 			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
 			<span className="tabular-nums">{marker.label}</span>
+			<span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] left-1/2 w-max max-w-52 -translate-x-1/2 bg-cosmic-ink px-2.5 py-1.5 font-medium font-sans text-milk-mustache text-xs opacity-0 shadow-[0_4px_14px_rgb(0_0_0/0.45)] transition-opacity group-hover/marker:opacity-100 group-focus-visible/marker:opacity-100 motion-reduce:transition-none">
+				{marker.name}
+			</span>
 		</button>
 	);
 }

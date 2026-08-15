@@ -189,6 +189,7 @@ function MapPage() {
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
+			<h1 className="sr-only">{mapData.map.name} document locations</h1>
 			{selectedImage ? (
 				<div className="relative min-h-0 flex-1">
 					<div className="h-full">
@@ -210,7 +211,7 @@ function MapPage() {
 							]}
 							selectedMarkerId={selectedLocation?.id}
 							toolbarStart={
-								<p className="max-w-36 truncate font-heading text-sm">
+								<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
 									{selectedImage.name}
 								</p>
 							}
@@ -263,7 +264,7 @@ function MapPage() {
 				</Empty>
 			)}
 
-			<footer className="shrink-0 border-border border-t px-4 py-2 text-center">
+			<footer className="shrink-0 border-border border-t bg-card px-4 py-2 text-center">
 				<MapAttribution mapId={mapData.map.id} />
 			</footer>
 		</div>

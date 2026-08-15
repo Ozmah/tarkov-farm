@@ -139,7 +139,7 @@ function PublicLayout() {
 						? "About"
 						: isUpdatesRoute
 							? "Updates"
-							: (currentMap?.name ?? "Kord Breach Season Home")
+							: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}

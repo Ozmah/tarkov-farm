@@ -1,4 +1,9 @@
-import { HouseIcon, InfoIcon, MapTrifoldIcon } from "@phosphor-icons/react";
+import {
+	HouseIcon,
+	InfoIcon,
+	MapTrifoldIcon,
+	NewspaperClippingIcon,
+} from "@phosphor-icons/react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 
@@ -63,6 +68,7 @@ export function AppSidebar({
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const isHomeRoute = Boolean(matchRoute({ to: "/", fuzzy: false }));
+	const isUpdatesRoute = Boolean(matchRoute({ to: "/updates", fuzzy: false }));
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
 	const search = {
 		documents: encodeDocumentFilters(selectedDocumentIds),
@@ -111,14 +117,16 @@ export function AppSidebar({
 					</span>
 				</Link>
 			</SidebarHeader>
-			<DocumentFilter
-				currentMapId={currentMapId}
-				currentMapImageId={currentMapImageId}
-				documents={documents}
-				documentLocations={documentLocations}
-				selectedDocumentIds={selectedDocumentIds}
-				onSelectedDocumentsChange={onSelectedDocumentsChange}
-			/>
+			{isAboutRoute || isUpdatesRoute ? null : (
+				<DocumentFilter
+					currentMapId={currentMapId}
+					currentMapImageId={currentMapImageId}
+					documents={documents}
+					documentLocations={documentLocations}
+					selectedDocumentIds={selectedDocumentIds}
+					onSelectedDocumentsChange={onSelectedDocumentsChange}
+				/>
+			)}
 
 			<div className="relative min-h-0 flex-1 overflow-hidden">
 				<div
@@ -129,80 +137,90 @@ export function AppSidebar({
 					)}
 				>
 					<SidebarContent>
-						<SidebarGroup>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<div className="flex h-9 items-center gap-2 px-3 font-medium text-sm">
-										<MapTrifoldIcon aria-hidden="true" className="size-4" />
-										<span>Maps</span>
-									</div>
-									<SidebarMenuSub>
-										<SidebarMenuSubItem>
-											<SidebarMenuSubButton
-												render={
-													onHomeNavigate ? (
-														<button
-															type="button"
-															onClick={() => {
-																setIsSidebarPanelOpen(false);
-																closeMobileSidebar();
-																onHomeNavigate();
-															}}
-														/>
-													) : (
-														<Link
-															to="/"
-															search={search}
-															onClick={closeMobileSidebar}
-														/>
-													)
-												}
-												isActive={isHomeRoute && currentMapId === undefined}
-												className="h-11 md:h-8"
-											>
-												<HouseIcon aria-hidden="true" />
-												<span>Home</span>
-											</SidebarMenuSubButton>
-										</SidebarMenuSubItem>
-										{maps.map((map) => (
-											<SidebarMenuSubItem key={map.id}>
+						<nav aria-label="Map navigation">
+							<SidebarGroup>
+								<SidebarMenu>
+									<SidebarMenuItem>
+										<div className="flex h-9 items-center gap-2 px-3 font-medium text-sm">
+											<MapTrifoldIcon aria-hidden="true" className="size-4" />
+											<span>Maps</span>
+										</div>
+										<SidebarMenuSub>
+											<SidebarMenuSubItem>
 												<SidebarMenuSubButton
 													render={
-														onMapNavigate ? (
+														onHomeNavigate ? (
 															<button
 																type="button"
-																onClick={() => navigateToMap(map.id)}
+																onClick={() => {
+																	setIsSidebarPanelOpen(false);
+																	closeMobileSidebar();
+																	onHomeNavigate();
+																}}
 															/>
 														) : (
 															<Link
-																to="/maps/$mapId"
-																params={{ mapId: map.id }}
+																to="/"
 																search={search}
-																onClick={(event) => {
-																	if (!isPlainNavigationClick(event)) {
-																		return;
-																	}
-
-																	setIsSidebarPanelOpen(true);
-																	if (map.id !== currentMapId) {
-																		onMapNavigationStart?.(map);
-																	}
-																	closeMobileSidebar();
-																}}
+																onClick={closeMobileSidebar}
 															/>
 														)
 													}
-													isActive={currentMapId === map.id}
-													className="h-11 md:h-8"
+													isActive={isHomeRoute && currentMapId === undefined}
+													aria-current={
+														isHomeRoute && currentMapId === undefined
+															? "page"
+															: undefined
+													}
+													className="h-11 border-transparent border-l data-active:border-sidebar-primary lg:h-8"
 												>
-													<span>{map.name}</span>
+													<HouseIcon aria-hidden="true" />
+													<span>Home</span>
 												</SidebarMenuSubButton>
 											</SidebarMenuSubItem>
-										))}
-									</SidebarMenuSub>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarGroup>
+											{maps.map((map) => (
+												<SidebarMenuSubItem key={map.id}>
+													<SidebarMenuSubButton
+														render={
+															onMapNavigate ? (
+																<button
+																	type="button"
+																	onClick={() => navigateToMap(map.id)}
+																/>
+															) : (
+																<Link
+																	to="/maps/$mapId"
+																	params={{ mapId: map.id }}
+																	search={search}
+																	onClick={(event) => {
+																		if (!isPlainNavigationClick(event)) {
+																			return;
+																		}
+
+																		setIsSidebarPanelOpen(true);
+																		if (map.id !== currentMapId) {
+																			onMapNavigationStart?.(map);
+																		}
+																		closeMobileSidebar();
+																	}}
+																/>
+															)
+														}
+														isActive={currentMapId === map.id}
+														aria-current={
+															currentMapId === map.id ? "page" : undefined
+														}
+														className="h-11 border-transparent border-l data-active:border-sidebar-primary lg:h-8"
+													>
+														<span>{map.name}</span>
+													</SidebarMenuSubButton>
+												</SidebarMenuSubItem>
+											))}
+										</SidebarMenuSub>
+									</SidebarMenuItem>
+								</SidebarMenu>
+							</SidebarGroup>
+						</nav>
 					</SidebarContent>
 				</div>
 				{visibleSidebarPanel ? (
@@ -212,27 +230,51 @@ export function AppSidebar({
 				) : null}
 			</div>
 			<SidebarFooter className="border-sidebar-border border-t">
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							render={
-								<Link
-									to="/about"
-									search={search}
-									onClick={() => {
-										setIsSidebarPanelOpen(false);
-										closeMobileSidebar();
-									}}
-								/>
-							}
-							isActive={isAboutRoute}
-						>
-							<InfoIcon aria-hidden="true" />
-							<span>About</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-				{footer}
+				<nav aria-label="Project navigation" className="flex flex-col gap-2">
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/updates"
+										search={search}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isUpdatesRoute}
+								aria-current={isUpdatesRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<NewspaperClippingIcon aria-hidden="true" />
+								<span>Updates</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/about"
+										search={search}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isAboutRoute}
+								aria-current={isAboutRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<InfoIcon aria-hidden="true" />
+								<span>About</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+					{footer}
+				</nav>
 			</SidebarFooter>
 		</Sidebar>
 	);

@@ -1,12 +1,8 @@
-import {
-	ArrowRightIcon,
-	MapPinLineIcon,
-	MapTrifoldIcon,
-} from "@phosphor-icons/react";
+import { ArrowRightIcon, MapTrifoldIcon } from "@phosphor-icons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { usePreparePublicMapNavigation } from "@/components/public-layout-context";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Empty,
 	EmptyDescription,
@@ -85,168 +81,139 @@ function App() {
 
 	return (
 		<div className="min-h-0 flex-1 overflow-auto">
-			<div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-10 sm:px-10 sm:py-12">
-				<section
-					aria-labelledby="overview-title"
-					className="flex flex-col gap-6"
-				>
-					<div className="flex flex-wrap items-end justify-between gap-4">
-						<div className="flex min-w-0 flex-col gap-2">
-							<h1
-								id="overview-title"
-								className="text-balance font-heading font-medium text-3xl tracking-tight"
-							>
-								Season Documentation
-							</h1>
-							<p className="max-w-[56ch] text-pretty text-base text-muted-foreground sm:text-sm">
-								{selectedDocuments.length > 0
-									? `Showing locations for ${selectedDocuments.map((document) => document.name).join(", ")}.`
-									: "Document locations."}
-							</p>
-						</div>
-						{selectedDocuments.length > 0 ? (
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								onClick={() => updateSelectedDocuments([])}
-							>
-								Clear filters
-							</Button>
-						) : null}
+			<div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8 sm:px-10 sm:py-10">
+				<header className="flex flex-wrap items-end justify-between gap-4 border-border border-b pb-6">
+					<div className="flex min-w-0 flex-col gap-1.5">
+						<h1 className="text-balance font-heading font-medium text-3xl tracking-tight sm:text-4xl">
+							Kord Breach
+						</h1>
+						<p className="text-muted-foreground text-sm">
+							{selectedDocuments.length > 0
+								? `${visibleLocations.length} locations for ${selectedDocuments.map((document) => document.name).join(", ")}.`
+								: `${visibleLocations.length} locations across ${mapSummaries.length} maps.`}
+						</p>
 					</div>
+					{selectedDocuments.length > 0 ? (
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							onClick={() => updateSelectedDocuments([])}
+						>
+							Clear filters
+						</Button>
+					) : null}
+				</header>
 
-					<dl className="flex flex-wrap items-center gap-8">
-						<div className="flex items-center gap-2">
-							<dt className="sr-only">Document locations</dt>
-							<MapPinLineIcon
-								aria-hidden="true"
-								className="size-6 text-primary"
-							/>
-							<dd className="font-heading text-2xl tabular-nums">
-								{visibleLocations.length}
-							</dd>
+				<div className="grid items-start gap-10 xl:grid-cols-2 xl:gap-12">
+					<section
+						aria-labelledby="updates-title"
+						className="flex flex-col gap-5"
+					>
+						<div className="flex flex-wrap items-center justify-between gap-4">
+							<h2
+								id="updates-title"
+								className="text-balance font-heading font-medium text-2xl tracking-tight"
+							>
+								Latest updates
+							</h2>
+							{updates.length > 0 ? (
+								<Link
+									to="/updates"
+									search={{ documents: encodedFilters }}
+									className={buttonVariants({ variant: "ghost", size: "sm" })}
+								>
+									View all
+									<ArrowRightIcon data-icon="inline-end" aria-hidden="true" />
+								</Link>
+							) : null}
 						</div>
-						<div className="flex items-center gap-2">
-							<dt className="sr-only">Maps available</dt>
-							<MapTrifoldIcon
-								aria-hidden="true"
-								className="size-6 text-primary"
-							/>
-							<dd className="font-heading text-2xl tabular-nums">
-								{mapSummaries.length}
-							</dd>
-						</div>
-					</dl>
-				</section>
+						{updates.length > 0 ? (
+							<UpdateFeed mobileLimit={1} updates={updates.slice(0, 2)} />
+						) : (
+							<p className="text-muted-foreground text-sm">
+								The first project update will appear here.
+							</p>
+						)}
+					</section>
 
-				<section
-					aria-labelledby="updates-title"
-					className="flex flex-col gap-5"
-				>
-					<div className="flex flex-wrap items-center justify-between gap-4">
+					<section aria-labelledby="maps-title" className="flex flex-col gap-5">
 						<h2
-							id="updates-title"
+							id="maps-title"
 							className="text-balance font-heading font-medium text-2xl tracking-tight"
 						>
-							Latest updates
+							Maps
 						</h2>
-						{updates.length > 3 ? (
-							<Button
-								render={
-									<Link to="/updates" search={{ documents: encodedFilters }} />
-								}
-								variant="ghost"
-								size="sm"
-							>
-								View all
-								<ArrowRightIcon data-icon="inline-end" aria-hidden="true" />
-							</Button>
-						) : null}
-					</div>
-					{updates.length > 0 ? (
-						<UpdateFeed updates={updates.slice(0, 3)} />
-					) : (
-						<p className="text-pretty text-base text-muted-foreground sm:text-sm">
-							The first project update will appear here.
-						</p>
-					)}
-				</section>
 
-				<section aria-labelledby="maps-title" className="flex flex-col gap-5">
-					<h2
-						id="maps-title"
-						className="text-balance font-heading font-medium text-2xl tracking-tight"
-					>
-						Maps
-					</h2>
-
-					{mapSummaries.length > 0 ? (
-						<div className="@container">
-							<ul className="grid @2xl:grid-cols-2 gap-3">
-								{mapSummaries.map(({ map, documents, documentCount }) => (
-									<li key={map.id}>
-										<Link
-											to="/maps/$mapId"
-											params={{ mapId: map.id }}
-											search={{ documents: encodedFilters }}
-											onClick={(event) => {
-												if (isPlainNavigationClick(event)) {
-													prepareMapNavigation(map);
-												}
-											}}
-											className="group flex min-h-24 items-center gap-4 border border-border bg-card p-4 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-										>
-											<div
-												aria-hidden="true"
-												className="flex size-14 shrink-0 items-center justify-center bg-secondary font-heading font-medium text-secondary-foreground outline-1 outline-foreground/10 -outline-offset-1"
+						{mapSummaries.length > 0 ? (
+							<div className="@container">
+								<ul className="grid @md:grid-cols-2 gap-px overflow-hidden border border-border bg-border">
+									{mapSummaries.map(({ map, documents, documentCount }) => (
+										<li key={map.id}>
+											<Link
+												to="/maps/$mapId"
+												params={{ mapId: map.id }}
+												search={{ documents: encodedFilters }}
+												onClick={(event) => {
+													if (isPlainNavigationClick(event)) {
+														prepareMapNavigation(map);
+													}
+												}}
+												className="group flex min-h-20 items-center gap-3 bg-card p-3 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
 											>
-												{getMapMonogram(map.name)}
-											</div>
-											<div className="min-w-0 flex-1">
-												<h3 className="truncate font-heading font-medium text-lg">
-													{map.name}
-												</h3>
-												<p className="text-base text-muted-foreground tabular-nums sm:text-sm">
-													{documentCount}{" "}
-													{documentCount === 1 ? "location" : "locations"}
-												</p>
-												<p className="truncate text-base text-muted-foreground sm:text-sm">
-													{documents
-														.map((document) => getDocumentShortName(document))
-														.join(", ")}
-												</p>
-											</div>
-											<ArrowRightIcon
-												aria-hidden="true"
-												className="size-5 shrink-0 text-muted-foreground transition-transform duration-150 ease-out group-hover:translate-x-1 motion-reduce:transition-none sm:size-4"
-											/>
-										</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-					) : (
-						<Empty className="border border-border">
-							<EmptyHeader>
-								<EmptyMedia variant="icon">
-									<MapTrifoldIcon aria-hidden="true" />
-								</EmptyMedia>
-								<EmptyTitle>No maps available</EmptyTitle>
-								<EmptyDescription>
-									No active locations match the selected documents.
-								</EmptyDescription>
-							</EmptyHeader>
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() => updateSelectedDocuments([])}
-							>
-								Clear filters
-							</Button>
-						</Empty>
-					)}
-				</section>
+												<div
+													aria-hidden="true"
+													className="flex size-10 shrink-0 items-center justify-center border border-border bg-background font-heading font-medium text-primary transition-colors group-hover:border-primary"
+												>
+													{getMapMonogram(map.name)}
+												</div>
+												<div className="min-w-0 flex-1">
+													<h3 className="line-clamp-2 font-heading font-medium text-sm leading-tight transition-colors group-hover:text-primary">
+														{map.name}
+													</h3>
+													<p className="text-muted-foreground text-xs tabular-nums">
+														{documentCount}{" "}
+														{documentCount === 1 ? "location" : "locations"}
+													</p>
+													<p className="truncate text-muted-foreground text-xs">
+														{documents
+															.map((document) => getDocumentShortName(document))
+															.join(", ")}
+													</p>
+												</div>
+												<ArrowRightIcon
+													aria-hidden="true"
+													className="size-4 shrink-0 text-muted-foreground transition-[color,transform] duration-150 ease-out group-hover:translate-x-0.5 group-hover:text-primary motion-reduce:transition-none"
+												/>
+											</Link>
+										</li>
+									))}
+								</ul>
+							</div>
+						) : (
+							<Empty className="border border-border bg-card">
+								<EmptyHeader>
+									<EmptyMedia variant="icon">
+										<MapTrifoldIcon aria-hidden="true" />
+									</EmptyMedia>
+									<EmptyTitle>No maps available</EmptyTitle>
+									<EmptyDescription>
+										No active locations match the selected documents.
+									</EmptyDescription>
+								</EmptyHeader>
+								{selectedDocuments.length > 0 ? (
+									<Button
+										type="button"
+										variant="outline"
+										onClick={() => updateSelectedDocuments([])}
+									>
+										Clear filters
+									</Button>
+								) : null}
+							</Empty>
+						)}
+					</section>
+				</div>
 			</div>
 		</div>
 	);

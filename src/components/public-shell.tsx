@@ -70,6 +70,12 @@ export function PublicShell({
 			className="isolate h-svh overflow-hidden"
 			style={{ "--sidebar-width": "21.875rem" } as CSSProperties}
 		>
+			<a
+				href="#main-content"
+				className="fixed top-3 left-3 z-50 -translate-y-20 bg-primary px-4 py-3 font-semibold text-primary-foreground text-xs uppercase tracking-widest outline-none transition-transform focus:translate-y-0 focus:ring-2 focus:ring-ring"
+			>
+				Skip to content
+			</a>
 			<AppSidebar
 				maps={catalog.maps}
 				documents={catalog.documents}
@@ -103,10 +109,14 @@ export function PublicShell({
 				onSelectedDocumentsChange={onSelectedDocumentsChange}
 				sidebarPanel={sidebarPanel}
 			/>
-			<SidebarInset className="min-h-0 min-w-0 overflow-hidden">
+			<SidebarInset
+				id="main-content"
+				tabIndex={-1}
+				className="min-h-0 min-w-0 overflow-hidden outline-none"
+			>
 				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
-					<SidebarTrigger className="md:hidden" />
-					<Separator orientation="vertical" className="h-4 md:hidden" />
+					<SidebarTrigger className="lg:hidden" />
+					<Separator orientation="vertical" className="h-4 lg:hidden" />
 					<p className="truncate font-heading text-primary text-sm uppercase tracking-wide">
 						{headerTitle}
 					</p>
