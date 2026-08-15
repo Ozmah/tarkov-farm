@@ -28,6 +28,16 @@ bun run images:masters
 
 The command processes each image in an isolated subprocess and replaces `public/maps/masters` only after every image succeeds.
 
+### Document images
+
+Place one source PNG per document in the ignored `assets/documents/originals` directory. Each filename must match its document ID in `data/catalog/documents.json`. Generate content-addressed WebP assets and refresh their catalog metadata with:
+
+```bash
+bun run documents:images
+```
+
+The command rejects missing or unexpected sources and publishes to `public/documents` only after all nine images are valid.
+
 ### Location screenshots
 
 The local editor requires at least one screenshot per location. Uploaded JPEG, PNG, and WebP files are processed offline in isolated Bun subprocesses. The editor writes versioned 1000px and 1920px WebP variants to `public/screenshots/<location-id>`. Original uploads are kept locally under the ignored `assets/screenshots/originals` directory but are not required to run or reconstruct the application.
@@ -38,7 +48,7 @@ Verify the versioned publication manifest and its static assets with:
 bun run screenshots:check
 ```
 
-`bun run release:check` runs the complete code, build, and screenshot validation suite.
+`bun run release:check` runs the complete code, build, and static-asset validation suite.
 
 ### Publication data
 

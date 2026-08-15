@@ -2,6 +2,1211 @@
 	"formatVersion": 1,
 	"updates": [
 		{
+			"id": "2583c25f-91a1-4832-b6b2-b6f57c957830",
+			"publishedAt": "2026-08-15T12:44:00.000Z",
+			"title": "Locations and improvements",
+			"description": "Locations: 20 added, 1 updated across Customs, Factory, Ground Zero, Icebreaker, Lighthouse, Streets of Tarkov, The Lab, and Woods. Screenshots: 36 added. Documents: Blueprints, Medical, PMC personnel, Project, Technical, Test, and User.\n\nAlso added changes to menus, cleaned some ui elements and removed the old filters",
+			"snapshot": {
+				"formatVersion": 1,
+				"locations": [
+					{
+						"id": "00dddb58-ed2f-4f31-9053-4d4890a68c6a",
+						"name": "Garage Extraction Room",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "444a2f6dbbbc85eb492f2d2fb04ee64bff79de0b93a06e39c197b174cceed745",
+						"screenshotIds": [
+							"6f2e9de5-f462-4757-b68e-e9a6b9dddbdc",
+							"c13bf147-3650-424d-b5e0-b3953d9e9701"
+						]
+					},
+					{
+						"id": "0357b69c-4e8b-4a2a-bc4b-4ce5f935fdb8",
+						"name": "Science Office Under Desk",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "f8e3b1ca797ecb15f39e66d3863c113658448fd3a370163197d01c0308ba0e61",
+						"screenshotIds": [
+							"970f491f-4cae-4c26-bc0f-dd231cb62ac9"
+						]
+					},
+					{
+						"id": "05202be4-23fb-43e5-9638-48d41bbd227a",
+						"name": "Apartments Building",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "d1c4411be525a2607f8706b722aadfed93d8cbaaaa4496970393ce3d028417f4",
+						"screenshotIds": [
+							"02b88d1f-e330-484c-b8fa-dd76c6c58d85",
+							"36882279-f7c9-44c0-91fa-a2404c37558e"
+						]
+					},
+					{
+						"id": "0525efef-cd92-4d21-aaba-b16fe0a6b10e",
+						"name": "Crackhouse Library",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "d1b1b98113276d0bc8ec0beaf2e01fcff03399e4aecd6eda28a760750d2807d6",
+						"screenshotIds": [
+							"e909e295-47ef-4993-9755-a54498b9c2f5"
+						]
+					},
+					{
+						"id": "099038e1-e647-4b2f-ad41-17e961ae450e",
+						"name": "Bunker Main Office",
+						"mapId": "reserve",
+						"mapName": "Reserve",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "db9b0e3bca51026dcb51441a830188e5458244e25bec15c87d12be3848671292",
+						"screenshotIds": [
+							"3dfe0d3e-3fa5-4ee0-bc7f-9e28f4a324e8",
+							"a46d12cf-8c67-4372-ab9f-1e1f363909be"
+						]
+					},
+					{
+						"id": "0d15c53d-f73f-47ca-a7f2-93f6a8e932dd",
+						"name": "Infirmary Second Floor",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "13f57fe5291c8630f10c626d76a19775d12ac9456aeba0bdaecff53e2f2a4173",
+						"screenshotIds": [
+							"9a59028a-fbd1-4978-b1c7-a9d294ee3fce",
+							"efdf5df0-4133-400a-b7e5-f68afbd3836c"
+						]
+					},
+					{
+						"id": "1039fb6f-456f-486a-8030-ceb7b6b2b842",
+						"name": "Gate 2 Shelf",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "3589864d15053fd414730f456efcf94ef790272e462bc3ed10911c1b36844e73",
+						"screenshotIds": [
+							"61d78b92-de3a-4fc2-bb7e-ced9014198e9"
+						]
+					},
+					{
+						"id": "16c63ea0-aeb1-4237-8bcf-4f27a18b75e4",
+						"name": "End Hallway",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "b6c7f770c507da1ae96d09bebd3edbda3344ee2541ad8ad6ea82c9160cce5c7a",
+						"screenshotIds": [
+							"6985b819-0046-4d00-b5c0-ad5fc99de13f",
+							"8938a165-066f-40a9-8a60-c7cee75e04f5",
+							"e86455bc-eb76-4c3c-bac8-dafbbfa1bc3a"
+						]
+					},
+					{
+						"id": "19d67714-3eb1-4d02-be7e-da8aed91a87f",
+						"name": "Infirmary Next to Blue",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "8d759980301b1216ed94c70b2690e9c1e8c02256b54c3bc628b02774c4475995",
+						"screenshotIds": [
+							"0dd6cbcc-dd58-440e-b2ee-afa466af2921",
+							"1266c011-7387-4c1d-8cf4-3bd91691c879"
+						]
+					},
+					{
+						"id": "1b7d8d33-560a-487f-9ebb-9fb4dd60f53b",
+						"name": "Cardinal Apartment",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "adf2f046d39d5f4732a150d6686d44f90637d2f3f1badc3ad91780c82a51b4e0",
+						"screenshotIds": [
+							"f41c4236-95d0-4792-9945-f8a065706c0a"
+						]
+					},
+					{
+						"id": "1bd1c771-bbc4-4eef-87f9-030b8fc9750f",
+						"name": "Medical Bench",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "e67a25dd24bc2ef74e72e41618cddacbe4c9f40a5df10aebd8987ffa6a51326c",
+						"screenshotIds": [
+							"245ce7f9-60ec-4e60-b673-33b7d689f694"
+						]
+					},
+					{
+						"id": "1d392969-77cb-488a-837a-86e01d4043af",
+						"name": "Old Gas Desk",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "43b0b62a8848f01f065c75f965c2a83c13d0d6df31ea64ea5e8aa70bc643caeb",
+						"screenshotIds": [
+							"e333a383-5a3b-4ff6-8d45-41776130159a"
+						]
+					},
+					{
+						"id": "22eb0ba5-3d70-4f43-8247-f3882f8bfb73",
+						"name": "Resort",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "8d0798a5f91770c143c4b8b34c3a8c7f2471c7e3cf191e08fdd0d93a0469616b",
+						"screenshotIds": [
+							"3736c463-b743-4126-9208-9c53d6b726c9",
+							"9864e807-396e-4dfd-9eb9-6b7d126f80c3"
+						]
+					},
+					{
+						"id": "26670455-4c55-45bf-9365-7747dd5ff2fb",
+						"name": "Labrys Reseach Table",
+						"mapId": "the-labyrinth",
+						"mapName": "The Labyrinth",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "0efbadd14324ba2df546fe0b7c57d6e64d13c04cafc90b71c434f35beee70956",
+						"screenshotIds": [
+							"4cc3fe37-48af-4a7a-af39-07fa197cde52",
+							"a808fb59-b133-4819-a426-531a1cb5f097"
+						]
+					},
+					{
+						"id": "271d0456-62c0-4789-a3c0-4e62f3ecfea3",
+						"name": "212",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "fb79042365aaa292b5985ba8a5aa1c443d82d5b9cadb9c2bd22004b1cb5fb9ee",
+						"screenshotIds": [
+							"1b1bbe4f-ab90-4977-a401-ca011d1a22be",
+							"c0fc3e31-d374-4f56-aa31-cd9da76f407e"
+						]
+					},
+					{
+						"id": "28335c67-b078-436c-8685-1f151ac65fb8",
+						"name": "Oasis Building",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "fcdcf5ea1ec7a4cc623e4085cbc5117afdb9f7da4dd33a0afc258475d14a5726",
+						"screenshotIds": [
+							"284961ff-2d13-4a7c-bf3a-eff944796438",
+							"f49a7713-7084-423b-b4ce-8b52d7c5b224"
+						]
+					},
+					{
+						"id": "28516dbe-5baf-452f-90f7-8dd35c54e943",
+						"name": "Two Floor Old Sawmill",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "e9a2c7bff7c4a995d96d82fd50aeae91f0f408c125c3741d17356f4c12a29b66",
+						"screenshotIds": [
+							"220edb6d-0c9b-4c0f-be8a-b0aaf790268e",
+							"6f1eb61b-0e0f-4cda-b728-a01467c1738a"
+						]
+					},
+					{
+						"id": "28d1a996-13fc-4d36-923c-a9f70a51a4ca",
+						"name": "Office Floor",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "c68d0865ca5bbca37458c10c88aec3ffca0b03a62cb0a479d2c0c0e6f59dc5dc",
+						"screenshotIds": [
+							"431262eb-04a7-4972-bf6f-b1429f4f950c"
+						]
+					},
+					{
+						"id": "29428ded-1455-47eb-a4b7-3c06adddafc1",
+						"name": "Terragroup Café",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "8ada3c737b0147c2af098ce1355dc5cec437d9eb1c776fa8f8c124c24aa1d65b",
+						"screenshotIds": [
+							"dc9f7fe2-fcf9-4453-9cdb-595092b126ad"
+						]
+					},
+					{
+						"id": "2b265006-97e8-49ad-b097-57da80c85e51",
+						"name": "Office 3",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "e8748bcd83828b55fa12f3cfb88598bb9f92d80f54899eb05524c9dcf4d26644",
+						"screenshotIds": [
+							"34509383-0dca-4146-9f0f-1a8f1448d827"
+						]
+					},
+					{
+						"id": "2d9a1b6f-15e0-4891-aefb-6b107c1c9bf0",
+						"name": "Usec checkpoint cabinet",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "0c96c63cb95fbddf57bdb8001eccdfc586650f90d1eab6b620e38ce4c37dac73",
+						"screenshotIds": [
+							"d576a0f0-d058-40d1-b076-e6dc34f36d05",
+							"db0ba60e-ea85-42b2-bfd3-08abe21ff6dd"
+						]
+					},
+					{
+						"id": "2f3e8856-e084-4678-8d47-9d12220c7a74",
+						"name": "Science Office Magazine File Holder",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "3f6ca09fb10e2d0eaffff4aeef2fc7299323c440fa432586e0ecb634b1a01bb9",
+						"screenshotIds": [
+							"1658d0ee-ffb2-4811-a267-8493397cd5b5",
+							"8ce4184e-d2eb-46be-8b91-1e0c1cf5559b",
+							"cdb2df19-8655-4e37-b3ad-395f95369130"
+						]
+					},
+					{
+						"id": "2fc2a199-bce1-4170-be8f-cd7a356c15d5",
+						"name": "Medical Locker",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "09f45cd1d9bf89d197c683e7fe97e57783e8a474dda820de3afb7b71c42145dd",
+						"screenshotIds": [
+							"9a61abf9-f2c5-4976-8ddc-ec04b698067a"
+						]
+					},
+					{
+						"id": "36094ccb-73d3-4217-8373-faf4dcba389a",
+						"name": "Top Floor Office",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "012937851143116a3dc3ab1dcf386ec3642c8ca9993fe6e6e6790ae6588d9ab9",
+						"screenshotIds": [
+							"1086f598-3337-4319-bf75-fcaca51838a6",
+							"6364f55a-da72-4678-b2a2-c9c2582bce13"
+						]
+					},
+					{
+						"id": "38a104fc-4286-4a4a-9d92-b43328010d38",
+						"name": "Bookshelves",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "73bd71889fd2078fb9c093ec09a61f29dab2a2eab98ec8ee35f241a28d1df55b",
+						"screenshotIds": [
+							"dae85ad5-74bd-4cea-8f2e-c20bda931f08"
+						]
+					},
+					{
+						"id": "38b522b0-7133-4211-b079-1ae058a8df39",
+						"name": "Dorm Guard",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "e67474b216f9c733ccaad5827dad20dfdafdd97592dbfa56641f900f45c1dfb5",
+						"screenshotIds": [
+							"94e7aecf-cde9-499d-bda2-09385576a177"
+						]
+					},
+					{
+						"id": "3adb373d-a44f-4374-923a-779fee3b62fe",
+						"name": "Cabinet in Hallway",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "9d6d5c94188b8f12a7727066573255482467c484ddcd028cabf5b62b8055984d",
+						"screenshotIds": [
+							"ed2ed8b4-4b96-4f1c-98c8-fd177180cadd"
+						]
+					},
+					{
+						"id": "3d162a75-0829-450e-a9cf-43a06fd39b2e",
+						"name": "304",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "18d94db38de38e0d5bfc0f8211f7e25995ad0c441603378f127e0329c356e13c",
+						"screenshotIds": [
+							"69aa1dc5-0255-45b0-b8d2-849643c841c5"
+						]
+					},
+					{
+						"id": "40f75a60-5e42-4bba-8c03-e64b354b42b8",
+						"name": "Water Treatment Plant Building 2",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "3acd509abd3103782961f56a1a0a0336c03c6d7e7ab7b5f045d9233d8275abb8",
+						"screenshotIds": [
+							"839616f0-5ebf-468b-a882-0b43fee624df",
+							"f61c76a9-c8c2-43d3-95fc-765450849ddc"
+						]
+					},
+					{
+						"id": "418318f1-63dc-4c93-9ca1-d10156c2592e",
+						"name": "Beach Houses",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "f2515217eca9837fde9f236ff1311a02a999be63acff5a1c3df4921a579d22cd",
+						"screenshotIds": [
+							"bbb5d3fc-e17e-4b70-a0af-5569e53a97dd",
+							"c8a5df01-71fd-46e8-83ac-a9b1fdabfcad"
+						]
+					},
+					{
+						"id": "44344ee5-fe9e-4959-a391-64958f00c832",
+						"name": "Office 3",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "2d2e4b9443797898e751b91f42998b3270d8811eef62ff97df9abe7247ca7a60",
+						"screenshotIds": [
+							"ee0e0d83-3111-4e6e-991e-506ce60e5a3b"
+						]
+					},
+					{
+						"id": "47f4a784-0bf2-4631-baf8-a6a30ab4be4f",
+						"name": "Secondary Office",
+						"mapId": "reserve",
+						"mapName": "Reserve",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "ec5ef695b402421f2837018bfb985a6109d872c407189569a9a409c42cf7f759",
+						"screenshotIds": [
+							"02f8d8a7-2c6d-46ad-b1ec-f07a2ecc8776",
+							"0b81c13f-2c35-4b09-a912-3e81025812f4"
+						]
+					},
+					{
+						"id": "48d6dfc3-a72e-42b4-97bd-b9ba1ab1f8a4",
+						"name": "Office Desk",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "ef62fa10606c0a26e372f4c15e37878e87c2c08cf32b72ad94d5dcebe3b25f37",
+						"screenshotIds": [
+							"83d292c5-9256-48d3-8f2d-c4a01c629ee0"
+						]
+					},
+					{
+						"id": "4a15e686-8c08-438b-9d53-bc83b1fdee70",
+						"name": "On the Table",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "bbe5d561cbb5641c189f6d72582cf5357c223f75b86b745ce3a8fa4ca0131a14",
+						"screenshotIds": [
+							"6d725c8d-674e-4d03-89c1-51a1a32c23e8"
+						]
+					},
+					{
+						"id": "4a7ca3b9-a083-4a8c-a288-5d3530e9d827",
+						"name": "Landing Stage",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "b27e81d26e399050cf3d935b9347fcb1594f2b808b105002e8ecd49c9eb3f6c9",
+						"screenshotIds": [
+							"033ffc12-3699-4519-b4e7-68ae70d382ea",
+							"2ff515f2-9ef7-4496-8a96-e700510f826f",
+							"8f0cfabd-17f4-4385-bce8-f6c866a9d785"
+						]
+					},
+					{
+						"id": "4d8f0c7c-739d-4c67-bae4-e394154f14d8",
+						"name": "Crackhouse Library",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "1d367d7dd2fb4670dde3cfda2d56e15e922fe0be37e29751d24aaefe5a59bdb1",
+						"screenshotIds": [
+							"18d5b0b8-74fe-45e3-970d-31d2cf5db534"
+						]
+					},
+					{
+						"id": "530a247b-9e49-43f1-8ed6-45047d528513",
+						"name": "Medical East Room",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "b358616cdbb70e7f2a7988bf8aa7a93b8a47dbbdeb0f82af067190857b005ee4",
+						"screenshotIds": [
+							"8ca19319-153b-4afa-8ee7-4bc8d2716485",
+							"dcbbdf0b-8050-4a13-8a3b-879f629d7300",
+							"e725bf37-95aa-4f0b-8e45-e91bf02287ff"
+						]
+					},
+					{
+						"id": "53906937-d592-4a97-afa5-669c73c316e0",
+						"name": "Medical West Room",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "4180e6447a89b32fd4f145169af69b172b0a420cd32e24aceaa75e5f36cd7d4a",
+						"screenshotIds": [
+							"a510e3d6-7331-4622-a8e4-5b7de5e9f965"
+						]
+					},
+					{
+						"id": "5746b489-86a2-432d-bc7a-e09e5952b944",
+						"name": "Water Pump",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "357ab613f2012448c995cda620b0958eec10d3005f0fc2a0d6c9702cc1502cec",
+						"screenshotIds": [
+							"37b9134a-5225-4991-b67a-983912c932db"
+						]
+					},
+					{
+						"id": "59079e80-cf57-4554-8db2-7451c71cf5ae",
+						"name": "Hotel Bench",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "effc2b6dc39d07574206b8e425fb658a7cdafcbadb612e93fb7453ea981170f7",
+						"screenshotIds": [
+							"106c385b-0eed-49de-a515-78ba583da70f",
+							"b307ec31-aed6-47b7-ad9d-6cfefd54bc11"
+						]
+					},
+					{
+						"id": "59f30d77-28e2-4d9f-a5fb-263da02958c7",
+						"name": "Usec Camp",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "735f413e2922e1d4da3f168f8be31fceb6cf5abe80f77880baed3733c20e05e2",
+						"screenshotIds": [
+							"26c91bfa-6b57-4d36-b75b-8f865ad51b4b"
+						]
+					},
+					{
+						"id": "5ea6cd9d-2b74-4344-9e53-61447ccf2af9",
+						"name": "Cabinet",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "3a750c39fb92523dc88dcfa034cabc9f1e1c469234efa2d2df712353a5aa498b",
+						"screenshotIds": [
+							"e4369ed7-1ee6-4d11-8514-61e8626e1d3c"
+						]
+					},
+					{
+						"id": "610b6aa0-0b40-4d3c-8200-4bd507cd8c28",
+						"name": "Usec Checkpoint",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "59e66ab0611093f1e50d9741f4216dc07b133bcb70ed2a09911343cb6592299e",
+						"screenshotIds": [
+							"c481c03b-bf31-430f-9d35-42e17983b215",
+							"fa4d19bd-ca9f-432f-afac-72c306aa6add"
+						]
+					},
+					{
+						"id": "6233b7bb-a4bd-4ece-b3f4-0320f6f38209",
+						"name": "Factory Key Room",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "19195c75c3aeeb62052f9a9ebe2de5aba45889eba35a9dc82f439ce27542a8dc",
+						"screenshotIds": [
+							"1ce4bdb1-a3dc-4647-aa54-0e1f523082f9"
+						]
+					},
+					{
+						"id": "6f3cc1bc-9357-4577-b220-2688b67ce826",
+						"name": "Safe Window",
+						"mapId": "reserve",
+						"mapName": "Reserve",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "365e24a54be505721bfe94c7fbe547eff6a4fe0f385d74ef2925730aa4bb2a1a",
+						"screenshotIds": [
+							"dac5edc0-d9e3-40eb-93a0-2a06cd608d18"
+						]
+					},
+					{
+						"id": "721e66b4-7dd3-45ee-9528-f705e2f90c92",
+						"name": "Science Office Window",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "ed5f014fd99819e43e346ee2f7786216f01cc191ab22c460dedcb6cc4304c1ff",
+						"screenshotIds": [
+							"46f497b3-e3af-41f2-9ed4-061eb67f3565",
+							"929d3ee6-d605-4f95-8257-0287a8ab5a84"
+						]
+					},
+					{
+						"id": "7376aa0a-24d6-4ef7-bbf2-b2705036eb75",
+						"name": "Workshop Desk",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "dae7c527434428200f94c7a6204e7a811b4298a026bc3bb96e99ffa1a338c42a",
+						"screenshotIds": [
+							"b0ef52c3-5ab6-4a1e-8f3a-d7a52594ce15"
+						]
+					},
+					{
+						"id": "74440315-b5f4-417e-b217-925eb3a99abb",
+						"name": "Machinegun Room",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "ea897a21282213df6a0fc7f66d1e27857ae57a52a4407be4524f9961e1de7fed",
+						"screenshotIds": [
+							"f27532af-50e9-4876-800f-9a31084b5e63"
+						]
+					},
+					{
+						"id": "796d1122-6f17-4780-adca-aad59658962e",
+						"name": "Office 3",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "e52e61eef14063d8feee9d01244503009d8409ae2ccd54e1e742d8621092d75c",
+						"screenshotIds": [
+							"56e6a181-a188-4f74-a07f-9d9fdc67e3ad",
+							"6aeacd37-8f3f-45f0-9a5d-88710d35479b",
+							"c30322ca-9332-466c-a07a-4436042a8f84"
+						]
+					},
+					{
+						"id": "7c7da40c-9132-43fd-986c-46857a4ba106",
+						"name": "Medical Kitchen",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "d590f5e09398b584aa0817efa4ef3e6ce69c04770eff0fce89eb23ac6d2cf723",
+						"screenshotIds": [
+							"2dab2ed7-2734-4a9f-9faa-79e237d72f6f"
+						]
+					},
+					{
+						"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
+						"name": "Bookshelves 2",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "3000e98799a3205b56ba60c25230e67d9f90b8521c3920f595d9e04e776e4fd4",
+						"screenshotIds": [
+							"13c9ac1f-a626-4115-b168-5e008bc8c3ce"
+						]
+					},
+					{
+						"id": "8184effc-4d73-4582-9475-58ecf53696d7",
+						"name": "School Second Floor",
+						"mapId": "reserve",
+						"mapName": "Reserve",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "69d2899aad1af28ba5be8686170b33426fa5d1b803f1271119b2ad27ff8091b7",
+						"screenshotIds": [
+							"2953caf3-87d9-4bb5-8d58-6a6a4d4ad63e",
+							"96908232-7d80-4a61-8502-b94e504cf481"
+						]
+					},
+					{
+						"id": "84145aa6-0f27-48da-aeda-7123b8090e0d",
+						"name": "Pile of Books",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "efcbc0965ae43e78b805f2f03cbf63da8b9321d5bb8b62be8a4e4bfc84edd7d3",
+						"screenshotIds": [
+							"896244a5-9c27-44c1-9922-2eaed68fd2a6",
+							"d7d11a9a-c146-46cd-b85e-f898affa8da9"
+						]
+					},
+					{
+						"id": "85b2fe5c-e3a9-46da-8f03-5203708c6a87",
+						"name": "Admin Office",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "0e83d8c7b494f6f4f86ab6f9f47254ca683c86a50c6d0a0fb60aa19c29c524f4",
+						"screenshotIds": [
+							"1fcdb9de-4f8f-4c20-8727-b1b9b05d8f9d",
+							"6471dc20-0e86-49a8-96ad-b780f5630340"
+						]
+					},
+					{
+						"id": "864ef47e-51e6-4232-8655-73b23bd712ff",
+						"name": "Heliipad Utility Room",
+						"mapId": "icebreaker",
+						"mapName": "Icebreaker",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "e9ffc17ce34c9b8eb08a94913af1958c60ef000a702291bdeff150c2a6277393",
+						"screenshotIds": [
+							"5656878c-9e64-4594-a9eb-942eb7fdbb5a",
+							"95d1ebbd-c04a-42e7-b0c1-f0f412f98606"
+						]
+					},
+					{
+						"id": "887284d4-22e7-4d83-8ace-4047ece892fb",
+						"name": "Improvised Table",
+						"mapId": "the-labyrinth",
+						"mapName": "The Labyrinth",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "5af2fc01b1de05531df02ca0df28a8b8b703afd5c11065a00f29883efa0b341c",
+						"screenshotIds": [
+							"485c053b-2b89-42a6-8419-ad06df71370c",
+							"80fbed7f-52a2-4286-8ba4-1b33ad2afe4d",
+							"c81a05ab-39d3-4ee7-8f22-654c5b070f17"
+						]
+					},
+					{
+						"id": "8916bdb8-7eeb-426d-9688-698ea5089806",
+						"name": "Usec Camp",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "fe5f77bf8f46e67312604301686ab0e692f669430c7da24c9ea5c5f4dd75bb70",
+						"screenshotIds": [
+							"21c3edba-8be7-4adc-9327-0c3eeb562fa3"
+						]
+					},
+					{
+						"id": "892da9b5-205d-4fc3-8fde-bce5afe39c31",
+						"name": "Emercon  box",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "a4a3d9b0ea9fa8ce706a20f92c9df585897de367863c8905b0bd09d924d4369c",
+						"screenshotIds": [
+							"1036bc6b-c13b-4474-854e-b5b5a2aa8080",
+							"f9c32ac5-cc1a-462d-b9dc-d03d842c53ab"
+						]
+					},
+					{
+						"id": "89c22b91-7db1-47b5-b400-d746f449195f",
+						"name": "Locked Office Desk",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "60487ee847c3b0ded1616addbfac53a9d30a52872790ba63c239851b0b8cd035",
+						"screenshotIds": [
+							"afadd63a-3b8a-4eee-897b-840e7e78ffce"
+						]
+					},
+					{
+						"id": "8dfe76b1-4c64-495b-913e-c2981f965d52",
+						"name": "Scav Base Living Area",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "a1b66989180906a3030d344577ab2415a342c8dfaffea587904f69311fd0c2e0",
+						"screenshotIds": [
+							"50c7d4b4-1d1e-47d4-89e4-0cafee22c4a9"
+						]
+					},
+					{
+						"id": "8f6e93b0-6e75-46b9-b3c0-8c848951d7cd",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "eb7c799af64aa915e63c7187ccb550da559e96b5030e3e1d81ba758410aa0b87",
+						"screenshotIds": [
+							"bcf7e7a4-1cb8-4250-a38e-0ac58b8c0d5a",
+							"edde7c92-21d2-4076-8024-259f4805878d",
+							"f5c86235-907a-47e4-a9b3-e9eb0ca1a8c9"
+						]
+					},
+					{
+						"id": "922ccd7b-814c-4501-8e76-be0216f08aa8",
+						"name": "Over safe",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "d202e2c77f5f489ac5e92123aef4f0a45a3ac94c5d48849ca0a7cc71348a3774",
+						"screenshotIds": [
+							"0f9d5659-ce1c-47fb-aa4a-0c74f133fd57"
+						]
+					},
+					{
+						"id": "9bfe1c5c-841c-4a53-bad3-72f900d910e1",
+						"name": "Yellow Room",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "7122b8042abbbf25a05595590ca30d078b05afd9a888252581814169b121c678",
+						"screenshotIds": [
+							"714b2b24-97f9-4806-88f9-654a8d0d7ebf"
+						]
+					},
+					{
+						"id": "a22db3c4-73c9-4172-a281-b28bd0d8fdce",
+						"name": "Medical West Room",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "612cd5a65cf5eb1fca720b836de99e086f9b447319b682474a846be7b470a63b",
+						"screenshotIds": [
+							"11d60e93-f5cd-48c5-a482-e19edb236c36",
+							"274cd239-f09f-4c7c-ab70-0645bd643e6a"
+						]
+					},
+					{
+						"id": "a2a4c0a8-6a82-4939-91d1-f557a708ccd7",
+						"name": "On the File  Cabinet",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "7e6560b0ed817e63ae026c2ac52d16eb54d769ebfc3e9e87c8a7ca2ac03344f7",
+						"screenshotIds": [
+							"5b31416f-586a-4c67-ae56-af69fce11c9e"
+						]
+					},
+					{
+						"id": "a352d080-5af0-4af0-81e8-f495bf22037a",
+						"name": "Bench next to Nakatani",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "24f0788adeaae5d592662b11ec177ad620dca1662fef9f986a7b35e454b01de4",
+						"screenshotIds": [
+							"5e1a1ba2-f3ad-4c0a-b0b2-8f1e913c9157",
+							"693e68b6-3fc0-4f58-ad92-5321ef9f1d31"
+						]
+					},
+					{
+						"id": "a3592dc3-0b82-4eec-9af7-41a232ba4b47",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "2caa0bd5904a323922861082d65002e94702db8333ab6a24c10ea598fbc99766",
+						"screenshotIds": [
+							"6e633011-7195-4cf0-83f5-909342e66b2f",
+							"93b9d19a-1085-41ce-9bcf-c43d8de1f1fc"
+						]
+					},
+					{
+						"id": "a5122724-183b-4d43-9487-002900a5d662",
+						"name": "Med Office",
+						"mapId": "icebreaker",
+						"mapName": "Icebreaker",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "3c6f89b579afa9c7b5df03ae1812c74781866d8503c1f9a0c3a16f0a53858b55",
+						"screenshotIds": [
+							"9a5b0388-9a9e-43c7-9e3b-40e1f8b39125",
+							"f1d0be56-8704-43dd-a8e2-8b33abe8936b"
+						]
+					},
+					{
+						"id": "aa91565a-8dbd-4365-9072-df24a234b7a1",
+						"name": "Computer Room",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "42579351659d67bbe34c28831509787623f44fc48430f43031f2807735bc086f",
+						"screenshotIds": [
+							"325213ac-e34e-4159-ac22-6f53e5783f5b",
+							"eeb4d50a-a3ca-44b7-a6b9-8cf1db4b2ea7"
+						]
+					},
+					{
+						"id": "b557a167-04f2-43ff-9aa5-fca31afcaac8",
+						"name": "Workshop Shelf",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "5aaa218b6efb57874a45443e7aa414a5e409f9f709009282b7ca91e31414c9bd",
+						"screenshotIds": [
+							"396bb647-0a70-471d-8ab1-071e3a2512d3"
+						]
+					},
+					{
+						"id": "bca6ee0b-966f-465f-a467-905074f18ba5",
+						"name": "Kitchen Hallway",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "df8896c9226482ac817a18ac2edc1e49b85e8b72b32b323806e9e022426f11f3",
+						"screenshotIds": [
+							"e5d34316-2f8c-4a5f-9716-3b975371a8f6"
+						]
+					},
+					{
+						"id": "bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f",
+						"name": "Blue Shack",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "08e0a4017982895a510c384d8aa62ac104aaa877de34a83b5ea1b2fba425d156",
+						"screenshotIds": [
+							"a6b93b8e-a0ca-4c21-9ab5-1735e2016413"
+						]
+					},
+					{
+						"id": "be27e27e-582b-4645-8d9d-7412222807a1",
+						"name": "Finance Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "5bdf4b01cf5d8c6a6e9447f086460d213f5aa2edaa4c99175c0f7f9b0776d25f",
+						"screenshotIds": [
+							"c33d601a-6c8c-4ba7-8d4d-5a083e55a4a5",
+							"ca2bf488-99e8-4692-b8e1-5595b0272ae1"
+						]
+					},
+					{
+						"id": "bef77d3b-8c7e-44b7-9386-2382e4606b54",
+						"name": "Wounded Table",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "5ef54323ae9224c96edcf5c1d1ea74c7e1fbbd38ad931eb3642fa6d1b344ef82",
+						"screenshotIds": [
+							"9986d828-6682-47ef-9f73-9ef42f32eab6"
+						]
+					},
+					{
+						"id": "c125e310-5447-468f-8234-a0555280d5d7",
+						"name": "Water Treatment Plan Building 1",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "26911e2af0fcc644a4fb9c23337c55606e36cafc15238e1c78b436b0ab5488cb",
+						"screenshotIds": [
+							"503ffa3c-5055-420d-a760-ba98d9f084c5",
+							"b83fa537-645d-4d5d-954d-a228ef37c84c"
+						]
+					},
+					{
+						"id": "cd3d600a-6ac8-4f94-9bc7-9cf8d95973c8",
+						"name": "Residential Unit Table",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "b05a108e3082d2f23bd2f7231842eec300688e7bc7b541d7334906941c266650",
+						"screenshotIds": [
+							"221bd08c-d0f5-4422-bc38-b1c656bead99"
+						]
+					},
+					{
+						"id": "d4eac4a5-ccd3-4358-9d18-31497cc50151",
+						"name": "Top Office Industrial Plant",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "9cb9a2f4311c995ed9cccff2ee949cb408b4a715e21bd034fecb98e10e8bf35e",
+						"screenshotIds": [
+							"381f5d31-6225-473c-a2b0-7a180edad564",
+							"488d882b-b77b-4273-b184-9b9f76ef176d"
+						]
+					},
+					{
+						"id": "d7b99451-cb70-4fef-a800-3190af30ce2c",
+						"name": "Office Floor",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "bde0093695cf1162500b2153f9ba9ad1bdffe6ff9b0182dfcbf49256772fa4f0",
+						"screenshotIds": [
+							"0d060063-f478-4845-8572-bf559397c9b3"
+						]
+					},
+					{
+						"id": "d7c3f4da-449a-4def-8a20-b95623f2eb3b",
+						"name": "Science Office Monitor",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "19e8e0be68974c2b4b1f9e274e41998631a181fee97ea740df56c576549aa082",
+						"screenshotIds": [
+							"1a4c15a7-26ba-49b0-ac78-9062a9dfd982"
+						]
+					},
+					{
+						"id": "d8f717b2-e0c2-463a-b9a9-f65df8163da6",
+						"name": "Smuggler's Base",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "43cb86f8d6dceb0190811c3e8d36f3bc18d92bc8a2afb20ddda3aec203348efe",
+						"screenshotIds": [
+							"71437523-84dd-4161-bbc8-c33a5f1f646b",
+							"d0650422-edec-4f3b-8a82-1a8cf1046875"
+						]
+					},
+					{
+						"id": "da7c2f4a-1e5d-4987-b83f-f7a595b6297a",
+						"name": "Outside red table",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "730cc79851a6075c83233743f4c641cd3dbf8428d68dc3176af79008ab535f0d",
+						"screenshotIds": [
+							"9d070406-f800-41c2-a865-87267e3d4ca5",
+							"f2262043-a8e5-4e7a-ae93-0e0a67f48710"
+						]
+					},
+					{
+						"id": "ddb7e993-450c-435f-a631-11c43794dd22",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "67bf8fbe55ee2749aa07969ae2c622b65cfe9d35a1c7e6e28c19b5a5731357f9",
+						"screenshotIds": [
+							"3846c676-abe2-4c9f-ac74-e7d4a46d35b5",
+							"ad428f14-f01f-47a9-a561-352c58729f63"
+						]
+					},
+					{
+						"id": "de1a22b5-add6-4cca-b222-f430dea6ca1f",
+						"name": "Above Tunnel Entrance",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "3928fed519e498d85ef9940369c6f8fb50ba2efb3d9e24212fed6ff685af1a7b",
+						"screenshotIds": [
+							"01593b01-6f6b-4968-8d43-af82157f99a3"
+						]
+					},
+					{
+						"id": "e78fce7c-d0f5-4bda-ae04-ab216ede84ed",
+						"name": "IDEA Office",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "3b7f8eb63a5847f540c617e52b8a5f3ef6468ea0ff799d9e7def3851a16e6649",
+						"screenshotIds": [
+							"a04548c6-5f92-4f2e-85b5-6743030c77be"
+						]
+					},
+					{
+						"id": "e999716c-35ba-4201-a0d3-07abd62ec816",
+						"name": "Apartment Building",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "d421f8bd87c982c32d5b30d4fac8b5287af2ebbd6b70cce67f1e4006fd116908",
+						"screenshotIds": [
+							"1106ac2f-480e-4609-bcb5-6bc6621c2519",
+							"b6a42dba-dd99-4900-a90b-c3039d1b5f01"
+						]
+					},
+					{
+						"id": "eb362e2d-d7ff-4e4a-a731-66c71254d322",
+						"name": "Red Brick House",
+						"mapId": "woods",
+						"mapName": "Woods",
+						"documentId": "test",
+						"documentName": "Test documentation",
+						"fingerprint": "70d7720a820430c150d67e4e7287dfc41798440839b31bdc7a1669b38c3b3f71",
+						"screenshotIds": [
+							"f4c36633-a4f4-4dfe-97ab-c366a8b5d373"
+						]
+					},
+					{
+						"id": "ed36daf1-4750-4f76-bb18-dc8d7549063b",
+						"name": "Infirmary First Floor",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "6b86df3cadd8a89ed64c61ae170fd5601565de24fb5acc1f920488ff66963df0",
+						"screenshotIds": [
+							"486e2abc-4ec2-4c95-99aa-b2a5c10cc202",
+							"743f7b20-8e5a-42d4-a09b-e1a94e1ab4fa"
+						]
+					},
+					{
+						"id": "ee80e00f-81ed-4ed1-8947-20aaf1430414",
+						"name": "Restaurant Front Table",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "9c37480c25292905e55470c6f5ee7fcedd78d9d1ae7f523bd392b5586cddd598",
+						"screenshotIds": [
+							"65251761-c8fc-4096-9029-eafd4ffd7cce"
+						]
+					},
+					{
+						"id": "f29a0199-00b6-4284-abcb-6b6c29b5d377",
+						"name": "Soldier Body",
+						"mapId": "the-labyrinth",
+						"mapName": "The Labyrinth",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "789a1383814e32c94ff7e690ef8fc305c8d732ba42363c0cca6682872e4d24f5",
+						"screenshotIds": [
+							"ab84bccc-feac-4a7b-a4a7-61fea5525e0a"
+						]
+					},
+					{
+						"id": "f3678a07-b49c-43ca-b735-da2e243cb5f4",
+						"name": "Terragroup Parking lot",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "ca1964c4bb7e24b031f45ae8385bdc0cc742b7ce2e6c0f990ad1d6ff4059dbb8",
+						"screenshotIds": [
+							"69985a84-6a87-4367-81bb-4c068937d407"
+						]
+					},
+					{
+						"id": "f374a64e-d8c9-4001-8d20-45a3e78f81b3",
+						"name": "Bench",
+						"mapId": "factory",
+						"mapName": "Factory",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "7e5e6bbc350559cbde12317255a350390a9f4cc331fff76b0da6ec42b0a2d6a3",
+						"screenshotIds": [
+							"0ab1f3b6-e5c3-4ed4-b8b4-f21166cca4f4",
+							"0e434279-37e6-42ca-a262-7a1609334115"
+						]
+					},
+					{
+						"id": "f50461a8-1b51-46ce-80ab-6c265fc76afa",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "a941cf2acd881852b8bed49146ac55e4addbda949a533a9b9bf6c88a75e9d653",
+						"screenshotIds": [
+							"3422cbe9-248e-49be-96f8-beb8b022d0cb",
+							"983862f8-c938-48d8-8aeb-38e105619308"
+						]
+					},
+					{
+						"id": "f66af357-a23d-4d82-86a2-e2ec073b1cdd",
+						"name": "On Bookshelf",
+						"mapId": "customs",
+						"mapName": "Customs",
+						"documentId": "project",
+						"documentName": "Project documentation",
+						"fingerprint": "63a14738d06ef4c4f1ce3fe969fb7173a872479aab7438f633db11a1eecff970",
+						"screenshotIds": [
+							"3199c184-02d7-4ab6-bafd-39f780411704"
+						]
+					},
+					{
+						"id": "fbc96406-a1f5-44d8-a999-e3785ad7038f",
+						"name": "Infirmary First Floor",
+						"mapId": "the-lab",
+						"mapName": "The Lab",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "ab6279ede49bf7956a12ab072f97bc7c1e0d05611aeae0d0eed0bdf354a7da83",
+						"screenshotIds": [
+							"3f53d5d1-4698-4a2c-8f80-918f15d5778a",
+							"9e2427a8-50a0-4094-9588-5fc92fd45cf4"
+						]
+					},
+					{
+						"id": "ffb99ea3-def1-40bd-840e-4d891cd41fba",
+						"name": "OLI",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "f093ea2f88c0754635a2c2e5154668ea9db39938b1d98abdd019a55467da2d7d",
+						"screenshotIds": [
+							"01b86d37-7e0a-4cff-84e8-801a1301a361",
+							"42f66535-8ba0-454c-80a9-cdb58fe701a6"
+						]
+					}
+				]
+			}
+		},
+		{
 			"id": "439db27a-c0b9-4ffc-b1bd-539798fd7d8d",
 			"publishedAt": "2026-08-13T06:49:00.000Z",
 			"title": "Keys and new locations",
@@ -107,6 +1312,19 @@
 						"fingerprint": "43b0b62a8848f01f065c75f965c2a83c13d0d6df31ea64ea5e8aa70bc643caeb",
 						"screenshotIds": [
 							"e333a383-5a3b-4ff6-8d45-41776130159a"
+						]
+					},
+					{
+						"id": "22eb0ba5-3d70-4f43-8247-f3882f8bfb73",
+						"name": "Resort",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "8d0798a5f91770c143c4b8b34c3a8c7f2471c7e3cf191e08fdd0d93a0469616b",
+						"screenshotIds": [
+							"3736c463-b743-4126-9208-9c53d6b726c9",
+							"9864e807-396e-4dfd-9eb9-6b7d126f80c3"
 						]
 					},
 					{
@@ -286,6 +1504,19 @@
 						]
 					},
 					{
+						"id": "418318f1-63dc-4c93-9ca1-d10156c2592e",
+						"name": "Beach Houses",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "f2515217eca9837fde9f236ff1311a02a999be63acff5a1c3df4921a579d22cd",
+						"screenshotIds": [
+							"bbb5d3fc-e17e-4b70-a0af-5569e53a97dd",
+							"c8a5df01-71fd-46e8-83ac-a9b1fdabfcad"
+						]
+					},
+					{
 						"id": "44344ee5-fe9e-4959-a391-64958f00c832",
 						"name": "Office 3",
 						"mapId": "ground-zero",
@@ -359,6 +1590,19 @@
 						]
 					},
 					{
+						"id": "59079e80-cf57-4554-8db2-7451c71cf5ae",
+						"name": "Hotel Bench",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "effc2b6dc39d07574206b8e425fb658a7cdafcbadb612e93fb7453ea981170f7",
+						"screenshotIds": [
+							"106c385b-0eed-49de-a515-78ba583da70f",
+							"b307ec31-aed6-47b7-ad9d-6cfefd54bc11"
+						]
+					},
+					{
 						"id": "59f30d77-28e2-4d9f-a5fb-263da02958c7",
 						"name": "Usec Camp",
 						"mapId": "woods",
@@ -417,6 +1661,18 @@
 						"fingerprint": "dae7c527434428200f94c7a6204e7a811b4298a026bc3bb96e99ffa1a338c42a",
 						"screenshotIds": [
 							"b0ef52c3-5ab6-4a1e-8f3a-d7a52594ce15"
+						]
+					},
+					{
+						"id": "74440315-b5f4-417e-b217-925eb3a99abb",
+						"name": "Machinegun Room",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "ea897a21282213df6a0fc7f66d1e27857ae57a52a4407be4524f9961e1de7fed",
+						"screenshotIds": [
+							"f27532af-50e9-4876-800f-9a31084b5e63"
 						]
 					},
 					{
@@ -547,6 +1803,20 @@
 						]
 					},
 					{
+						"id": "8f6e93b0-6e75-46b9-b3c0-8c848951d7cd",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "eb7c799af64aa915e63c7187ccb550da559e96b5030e3e1d81ba758410aa0b87",
+						"screenshotIds": [
+							"bcf7e7a4-1cb8-4250-a38e-0ac58b8c0d5a",
+							"edde7c92-21d2-4076-8024-259f4805878d",
+							"f5c86235-907a-47e4-a9b3-e9eb0ca1a8c9"
+						]
+					},
+					{
 						"id": "922ccd7b-814c-4501-8e76-be0216f08aa8",
 						"name": "Over safe",
 						"mapId": "customs",
@@ -581,6 +1851,19 @@
 						"screenshotIds": [
 							"5e1a1ba2-f3ad-4c0a-b0b2-8f1e913c9157",
 							"693e68b6-3fc0-4f58-ad92-5321ef9f1d31"
+						]
+					},
+					{
+						"id": "a3592dc3-0b82-4eec-9af7-41a232ba4b47",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "2caa0bd5904a323922861082d65002e94702db8333ab6a24c10ea598fbc99766",
+						"screenshotIds": [
+							"6e633011-7195-4cf0-83f5-909342e66b2f",
+							"93b9d19a-1085-41ce-9bcf-c43d8de1f1fc"
 						]
 					},
 					{
@@ -630,6 +1913,19 @@
 						"fingerprint": "08e0a4017982895a510c384d8aa62ac104aaa877de34a83b5ea1b2fba425d156",
 						"screenshotIds": [
 							"a6b93b8e-a0ca-4c21-9ab5-1735e2016413"
+						]
+					},
+					{
+						"id": "be27e27e-582b-4645-8d9d-7412222807a1",
+						"name": "Finance Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "5bdf4b01cf5d8c6a6e9447f086460d213f5aa2edaa4c99175c0f7f9b0776d25f",
+						"screenshotIds": [
+							"c33d601a-6c8c-4ba7-8d4d-5a083e55a4a5",
+							"ca2bf488-99e8-4692-b8e1-5595b0272ae1"
 						]
 					},
 					{
@@ -694,6 +1990,19 @@
 						]
 					},
 					{
+						"id": "d8f717b2-e0c2-463a-b9a9-f65df8163da6",
+						"name": "Smuggler's Base",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "43cb86f8d6dceb0190811c3e8d36f3bc18d92bc8a2afb20ddda3aec203348efe",
+						"screenshotIds": [
+							"71437523-84dd-4161-bbc8-c33a5f1f646b",
+							"d0650422-edec-4f3b-8a82-1a8cf1046875"
+						]
+					},
+					{
 						"id": "da7c2f4a-1e5d-4987-b83f-f7a595b6297a",
 						"name": "Outside red table",
 						"mapId": "the-lab",
@@ -707,6 +2016,19 @@
 						]
 					},
 					{
+						"id": "ddb7e993-450c-435f-a631-11c43794dd22",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "67bf8fbe55ee2749aa07969ae2c622b65cfe9d35a1c7e6e28c19b5a5731357f9",
+						"screenshotIds": [
+							"3846c676-abe2-4c9f-ac74-e7d4a46d35b5",
+							"ad428f14-f01f-47a9-a561-352c58729f63"
+						]
+					},
+					{
 						"id": "de1a22b5-add6-4cca-b222-f430dea6ca1f",
 						"name": "Above Tunnel Entrance",
 						"mapId": "factory",
@@ -716,6 +2038,18 @@
 						"fingerprint": "3928fed519e498d85ef9940369c6f8fb50ba2efb3d9e24212fed6ff685af1a7b",
 						"screenshotIds": [
 							"01593b01-6f6b-4968-8d43-af82157f99a3"
+						]
+					},
+					{
+						"id": "e78fce7c-d0f5-4bda-ae04-ab216ede84ed",
+						"name": "IDEA Office",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "3b7f8eb63a5847f540c617e52b8a5f3ef6468ea0ff799d9e7def3851a16e6649",
+						"screenshotIds": [
+							"a04548c6-5f92-4f2e-85b5-6743030c77be"
 						]
 					},
 					{
@@ -781,6 +2115,19 @@
 						]
 					},
 					{
+						"id": "f50461a8-1b51-46ce-80ab-6c265fc76afa",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "a941cf2acd881852b8bed49146ac55e4addbda949a533a9b9bf6c88a75e9d653",
+						"screenshotIds": [
+							"3422cbe9-248e-49be-96f8-beb8b022d0cb",
+							"983862f8-c938-48d8-8aeb-38e105619308"
+						]
+					},
+					{
 						"id": "f66af357-a23d-4d82-86a2-e2ec073b1cdd",
 						"name": "On Bookshelf",
 						"mapId": "customs",
@@ -790,6 +2137,19 @@
 						"fingerprint": "63a14738d06ef4c4f1ce3fe969fb7173a872479aab7438f633db11a1eecff970",
 						"screenshotIds": [
 							"3199c184-02d7-4ab6-bafd-39f780411704"
+						]
+					},
+					{
+						"id": "ffb99ea3-def1-40bd-840e-4d891cd41fba",
+						"name": "OLI",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "f093ea2f88c0754635a2c2e5154668ea9db39938b1d98abdd019a55467da2d7d",
+						"screenshotIds": [
+							"01b86d37-7e0a-4cff-84e8-801a1301a361",
+							"42f66535-8ba0-454c-80a9-cdb58fe701a6"
 						]
 					}
 				]

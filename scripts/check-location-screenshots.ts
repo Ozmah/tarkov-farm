@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 
 import { parsePublicationData } from "../src/lib/publication-data";
 import {
+	verifyDocumentAssets,
 	verifyKeyAssets,
 	verifyMapMasterAssets,
 	verifyPublicationAssets,
@@ -18,19 +19,21 @@ const publicationPath = resolve(
 const publication = parsePublicationData(
 	JSON.parse(await readFile(publicationPath, "utf8")),
 );
-const [screenshotAssets, mapAssets, keyAssets] = await Promise.all([
-	verifyPublicationAssets(publication, {
-		projectRoot,
-		rejectOrphans: true,
-	}),
-	verifyMapMasterAssets(projectRoot),
-	verifyKeyAssets(projectRoot),
-]);
+const [screenshotAssets, mapAssets, keyAssets, documentAssets] =
+	await Promise.all([
+		verifyPublicationAssets(publication, {
+			projectRoot,
+			rejectOrphans: true,
+		}),
+		verifyMapMasterAssets(projectRoot),
+		verifyKeyAssets(projectRoot),
+		verifyDocumentAssets(projectRoot),
+	]);
 const screenshotCount = publication.locations.reduce(
 	(count, location) => count + location.screenshots.length,
 	0,
 );
 
 console.info(
-	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, ${mapAssets.mapFiles} map masters, and ${keyAssets.keyFiles} key images.`,
+	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, ${mapAssets.mapFiles} map masters, ${keyAssets.keyFiles} key images, and ${documentAssets.documentFiles} document images.`,
 );

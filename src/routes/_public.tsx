@@ -12,11 +12,7 @@ import {
 } from "@/components/public-layout-context";
 import { PublicShell } from "@/components/public-shell";
 import { getCatalog } from "@/functions/catalog";
-import {
-	encodeDocumentFilters,
-	readSelectedDocumentIds,
-	validateCatalogSearch,
-} from "@/lib/catalog-search";
+import { validateCatalogSearch } from "@/lib/catalog-search";
 
 export const Route = createFileRoute("/_public")({
 	validateSearch: validateCatalogSearch,
@@ -28,8 +24,6 @@ export const Route = createFileRoute("/_public")({
 
 function PublicLayout() {
 	const catalog = Route.useLoaderData();
-	const search = Route.useSearch();
-	const navigate = Route.useNavigate();
 	const params = useParams({ strict: false }) as { mapId?: string };
 	const isRouterLoading = useRouterState({
 		select: (state) => state.isLoading,
@@ -64,14 +58,6 @@ function PublicLayout() {
 		},
 		[],
 	);
-	const filterableDocumentIds = new Set(
-		catalog.documents
-			.filter((document) => document.isFilterable)
-			.map((document) => document.id),
-	);
-	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
-		(documentId) => filterableDocumentIds.has(documentId),
-	);
 	const currentMap = catalog.maps.find((map) => map.id === params.mapId);
 	const configuration = pendingConfiguration ?? committedConfiguration;
 
@@ -95,30 +81,6 @@ function PublicLayout() {
 		}
 	}, [currentMap?.id, isRouterLoading, pendingMapId]);
 
-	function updateSelectedDocuments(documentIds: string[]) {
-		const nextSearch = {
-			...search,
-			documents: encodeDocumentFilters(documentIds),
-			location: undefined,
-		};
-
-		if (currentMap) {
-			void navigate({
-				to: "/maps/$mapId",
-				params: { mapId: currentMap.id },
-				search: nextSearch,
-				replace: true,
-			});
-			return;
-		}
-
-		void navigate({
-			to: isAboutRoute ? "/about" : isUpdatesRoute ? "/updates" : "/",
-			search: nextSearch,
-			replace: true,
-		});
-	}
-
 	return (
 		<PublicLayoutConfigurationProvider
 			prepareMapNavigation={prepareMapNavigation}
@@ -126,11 +88,8 @@ function PublicLayout() {
 		>
 			<PublicShell
 				catalog={catalog}
-				selectedDocumentIds={selectedDocumentIds}
 				currentMapId={currentMap?.id}
-				currentMapImageId={configuration?.currentMapImageId}
 				editorSearch={{
-					documents: encodeDocumentFilters(selectedDocumentIds),
 					map: currentMap?.id,
 					...configuration?.editorSearch,
 				}}
@@ -139,11 +98,10 @@ function PublicLayout() {
 						? "About"
 						: isUpdatesRoute
 							? "Updates"
-							: (currentMap?.name ?? "Kord Breach Season Home")
+							: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}
-				onSelectedDocumentsChange={updateSelectedDocuments}
 				sidebarPanel={configuration?.sidebarPanel}
 			>
 				<Outlet />

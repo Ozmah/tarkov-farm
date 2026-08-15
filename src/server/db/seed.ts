@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { parseDocumentCatalog } from "../../lib/document-catalog";
 import { parseKeyCatalog } from "../../lib/key-catalog";
 import { getDatabase } from "./client.server";
 import {
@@ -181,54 +182,26 @@ const mapImageSeed = mapImageDefinitions.map(({ file, ...image }) => {
 	};
 });
 
-const documentSeed = [
-	{
-		id: "blueprints-technical",
-		name: "Blueprints and technical documentation",
-	},
-	{
-		id: "classified",
-		name: "Classified documents",
-		acquisitionType: "store" as const,
-		acquisitionSource: "Expansion Hub",
-		isFilterable: false,
-		isWildcard: true,
-	},
-	{ id: "financial", name: "Financial documents" },
-	{ id: "medical", name: "Medical documents" },
-	{ id: "pmc-personnel", name: "PMC personnel files" },
-	{ id: "project", name: "Project documentation" },
-	{ id: "technical", name: "Technical documentation" },
-	{ id: "test", name: "Test documentation" },
-	{ id: "user", name: "User documentation" },
-] as const;
-
-const documentMapSeed = [
-	["blueprints-technical", "factory"],
-	["blueprints-technical", "interchange"],
-	["blueprints-technical", "the-labyrinth"],
-	["financial", "customs"],
-	["financial", "interchange"],
-	["financial", "streets-of-tarkov"],
-	["medical", "ground-zero"],
-	["medical", "the-lab"],
-	["medical", "the-labyrinth"],
-	["pmc-personnel", "icebreaker"],
-	["pmc-personnel", "lighthouse"],
-	["pmc-personnel", "reserve"],
-	["project", "customs"],
-	["project", "factory"],
-	["project", "reserve"],
-	["technical", "lighthouse"],
-	["technical", "shoreline"],
-	["technical", "woods"],
-	["test", "icebreaker"],
-	["test", "shoreline"],
-	["test", "woods"],
-	["user", "ground-zero"],
-	["user", "streets-of-tarkov"],
-	["user", "the-lab"],
-] as const;
+const documentCatalog = parseDocumentCatalog(
+	JSON.parse(
+		await readFile(
+			resolve(process.cwd(), "data/catalog/documents.json"),
+			"utf8",
+		),
+	),
+);
+const documentSeed = documentCatalog.documents.map(
+	({ image, mapIds: _mapIds, ...document }) => ({
+		...document,
+		imageHash: image.sha256,
+		imageHeight: image.height,
+		imagePath: image.path,
+		imageWidth: image.width,
+	}),
+);
+const documentMapSeed = documentCatalog.documents.flatMap((document) =>
+	document.mapIds.map((mapId) => ({ documentId: document.id, mapId })),
+);
 
 const keyCatalog = parseKeyCatalog(
 	JSON.parse(
@@ -254,19 +227,16 @@ export async function seedCatalog(db: CatalogDatabase) {
 				.onConflictDoUpdate({ target: mapImages.id, set: currentImage })
 				.run();
 		}
-		await transaction
-			.insert(documents)
-			.values([...documentSeed])
-			.onConflictDoNothing()
-			.run();
+		for (const document of documentSeed) {
+			await transaction
+				.insert(documents)
+				.values(document)
+				.onConflictDoUpdate({ target: documents.id, set: document })
+				.run();
+		}
 		await transaction
 			.insert(documentMaps)
-			.values(
-				documentMapSeed.map(([documentId, mapId]) => ({
-					documentId,
-					mapId,
-				})),
-			)
+			.values(documentMapSeed)
 			.onConflictDoNothing()
 			.run();
 		await transaction

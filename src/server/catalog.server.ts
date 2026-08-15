@@ -29,6 +29,9 @@ export async function readCatalog() {
 			.select({
 				id: documents.id,
 				name: documents.name,
+				imagePath: documents.imagePath,
+				imageWidth: documents.imageWidth,
+				imageHeight: documents.imageHeight,
 				isFilterable: documents.isFilterable,
 				isWildcard: documents.isWildcard,
 				acquisitionType: documents.acquisitionType,
@@ -37,6 +40,26 @@ export async function readCatalog() {
 			.from(documents)
 			.where(eq(documents.isActive, true))
 			.orderBy(asc(documents.name))
+			.all(),
+		documentMaps: await db
+			.select({
+				documentId: documentMaps.documentId,
+				mapId: documentMaps.mapId,
+			})
+			.from(documentMaps)
+			.innerJoin(
+				documents,
+				and(
+					eq(documentMaps.documentId, documents.id),
+					eq(documents.isActive, true),
+					eq(documents.isFilterable, true),
+				),
+			)
+			.innerJoin(
+				maps,
+				and(eq(documentMaps.mapId, maps.id), eq(maps.isActive, true)),
+			)
+			.orderBy(asc(documentMaps.mapId), asc(documentMaps.documentId))
 			.all(),
 		documentLocations: await db
 			.select({

@@ -1,8 +1,12 @@
-import { HouseIcon, InfoIcon, MapTrifoldIcon } from "@phosphor-icons/react";
+import {
+	HouseIcon,
+	InfoIcon,
+	MapTrifoldIcon,
+	NewspaperClippingIcon,
+} from "@phosphor-icons/react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 
-import { DocumentFilter } from "@/components/document-filter";
 import {
 	Sidebar,
 	SidebarContent,
@@ -17,7 +21,7 @@ import {
 	SidebarMenuSubItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import { encodeDocumentFilters } from "@/lib/catalog-search";
+import { getDocumentShortName } from "@/lib/document-display";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
 import { cn } from "@/lib/utils";
 
@@ -28,34 +32,27 @@ type AppSidebarProps = {
 		name: string;
 		isFilterable: boolean;
 	}>;
-	documentLocations: ReadonlyArray<{
+	documentMaps: ReadonlyArray<{
 		documentId: string;
 		mapId: string;
-		mapImageId: string;
 	}>;
-	selectedDocumentIds: string[];
 	currentMapId?: string;
-	currentMapImageId?: string;
 	footer?: ReactNode;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
-	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
 };
 
 export function AppSidebar({
 	maps,
 	documents,
-	documentLocations,
-	selectedDocumentIds,
+	documentMaps,
 	currentMapId,
-	currentMapImageId,
 	footer,
 	onMapNavigate,
 	onMapNavigationStart,
 	onHomeNavigate,
-	onSelectedDocumentsChange,
 	sidebarPanel,
 }: AppSidebarProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
@@ -63,11 +60,16 @@ export function AppSidebar({
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const isHomeRoute = Boolean(matchRoute({ to: "/", fuzzy: false }));
+	const isUpdatesRoute = Boolean(matchRoute({ to: "/updates", fuzzy: false }));
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
-	const search = {
-		documents: encodeDocumentFilters(selectedDocumentIds),
-	};
 	const visibleSidebarPanel = isSidebarPanelOpen ? sidebarPanel : undefined;
+	const documentIdsByMap = new Map<string, Set<string>>();
+
+	for (const assignment of documentMaps) {
+		const documentIds = documentIdsByMap.get(assignment.mapId) ?? new Set();
+		documentIds.add(assignment.documentId);
+		documentIdsByMap.set(assignment.mapId, documentIds);
+	}
 
 	useEffect(() => {
 		if (hasSidebarPanel) {
@@ -95,31 +97,22 @@ export function AppSidebar({
 
 	return (
 		<Sidebar collapsible="offcanvas">
-			<SidebarHeader className="border-sidebar-border border-b p-5">
+			<SidebarHeader className="h-14 shrink-0 justify-center border-sidebar-border border-b px-5 py-0 pr-14 lg:pr-5">
 				<Link
 					to="/"
-					search={search}
+					search={{}}
 					onClick={closeMobileSidebar}
-					aria-label="Tarkov Season Documents homepage"
-					className="flex min-w-0 flex-col gap-1 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+					aria-label="Tarkov Farm Season Docs homepage"
+					className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 				>
-					<span className="font-heading font-semibold text-base text-sidebar-primary uppercase tracking-wide">
-						Tarkov
+					<span className="font-heading font-semibold text-sidebar-primary text-sm uppercase tracking-wide">
+						Tarkov Farm
 					</span>
-					<span className="text-sidebar-foreground/75 text-sm">
-						Season Documents
+					<span className="truncate text-sidebar-foreground/75 text-xs">
+						Season Docs
 					</span>
 				</Link>
 			</SidebarHeader>
-			<DocumentFilter
-				currentMapId={currentMapId}
-				currentMapImageId={currentMapImageId}
-				documents={documents}
-				documentLocations={documentLocations}
-				selectedDocumentIds={selectedDocumentIds}
-				onSelectedDocumentsChange={onSelectedDocumentsChange}
-			/>
-
 			<div className="relative min-h-0 flex-1 overflow-hidden">
 				<div
 					inert={visibleSidebarPanel ? true : undefined}
@@ -129,80 +122,109 @@ export function AppSidebar({
 					)}
 				>
 					<SidebarContent>
-						<SidebarGroup>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<div className="flex h-9 items-center gap-2 px-3 font-medium text-sm">
-										<MapTrifoldIcon aria-hidden="true" className="size-4" />
-										<span>Maps</span>
-									</div>
-									<SidebarMenuSub>
-										<SidebarMenuSubItem>
-											<SidebarMenuSubButton
-												render={
-													onHomeNavigate ? (
-														<button
-															type="button"
-															onClick={() => {
-																setIsSidebarPanelOpen(false);
-																closeMobileSidebar();
-																onHomeNavigate();
-															}}
-														/>
-													) : (
-														<Link
-															to="/"
-															search={search}
-															onClick={closeMobileSidebar}
-														/>
-													)
-												}
-												isActive={isHomeRoute && currentMapId === undefined}
-												className="h-11 md:h-8"
-											>
-												<HouseIcon aria-hidden="true" />
-												<span>Home</span>
-											</SidebarMenuSubButton>
-										</SidebarMenuSubItem>
-										{maps.map((map) => (
-											<SidebarMenuSubItem key={map.id}>
+						<nav aria-label="Map navigation">
+							<SidebarGroup>
+								<SidebarMenu>
+									<SidebarMenuItem>
+										<div className="flex h-9 items-center gap-2 px-3 font-medium text-sm">
+											<MapTrifoldIcon aria-hidden="true" className="size-4" />
+											<span>Maps</span>
+										</div>
+										<SidebarMenuSub>
+											<SidebarMenuSubItem>
 												<SidebarMenuSubButton
 													render={
-														onMapNavigate ? (
+														onHomeNavigate ? (
 															<button
 																type="button"
-																onClick={() => navigateToMap(map.id)}
+																onClick={() => {
+																	setIsSidebarPanelOpen(false);
+																	closeMobileSidebar();
+																	onHomeNavigate();
+																}}
 															/>
 														) : (
 															<Link
-																to="/maps/$mapId"
-																params={{ mapId: map.id }}
-																search={search}
-																onClick={(event) => {
-																	if (!isPlainNavigationClick(event)) {
-																		return;
-																	}
-
-																	setIsSidebarPanelOpen(true);
-																	if (map.id !== currentMapId) {
-																		onMapNavigationStart?.(map);
-																	}
-																	closeMobileSidebar();
-																}}
+																to="/"
+																search={{}}
+																onClick={closeMobileSidebar}
 															/>
 														)
 													}
-													isActive={currentMapId === map.id}
-													className="h-11 md:h-8"
+													isActive={isHomeRoute && currentMapId === undefined}
+													aria-current={
+														isHomeRoute && currentMapId === undefined
+															? "page"
+															: undefined
+													}
+													className="h-11 border-transparent border-l data-active:border-sidebar-primary lg:h-8"
 												>
-													<span>{map.name}</span>
+													<HouseIcon aria-hidden="true" />
+													<span>Home</span>
 												</SidebarMenuSubButton>
 											</SidebarMenuSubItem>
-										))}
-									</SidebarMenuSub>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarGroup>
+											{maps.map((map) => {
+												const assignedDocumentIds =
+													documentIdsByMap.get(map.id) ?? new Set();
+												const mapDocumentNames = documents
+													.filter(
+														(document) =>
+															document.isFilterable &&
+															assignedDocumentIds.has(document.id),
+													)
+													.map(getDocumentShortName);
+
+												return (
+													<SidebarMenuSubItem key={map.id}>
+														<SidebarMenuSubButton
+															render={
+																onMapNavigate ? (
+																	<button
+																		type="button"
+																		onClick={() => navigateToMap(map.id)}
+																	/>
+																) : (
+																	<Link
+																		to="/maps/$mapId"
+																		params={{ mapId: map.id }}
+																		search={{}}
+																		onClick={(event) => {
+																			if (!isPlainNavigationClick(event)) {
+																				return;
+																			}
+
+																			setIsSidebarPanelOpen(true);
+																			if (map.id !== currentMapId) {
+																				onMapNavigationStart?.(map);
+																			}
+																			closeMobileSidebar();
+																		}}
+																	/>
+																)
+															}
+															isActive={currentMapId === map.id}
+															aria-current={
+																currentMapId === map.id ? "page" : undefined
+															}
+															className="min-h-12 border-transparent border-l py-1.5 data-active:border-sidebar-primary"
+														>
+															<span className="min-w-0 flex-1">
+																<span className="block truncate">
+																	{map.name}
+																</span>
+																<span className="block truncate text-sidebar-foreground/60 text-xs">
+																	{mapDocumentNames.join(", ")}
+																</span>
+															</span>
+														</SidebarMenuSubButton>
+													</SidebarMenuSubItem>
+												);
+											})}
+										</SidebarMenuSub>
+									</SidebarMenuItem>
+								</SidebarMenu>
+							</SidebarGroup>
+						</nav>
 					</SidebarContent>
 				</div>
 				{visibleSidebarPanel ? (
@@ -212,27 +234,51 @@ export function AppSidebar({
 				) : null}
 			</div>
 			<SidebarFooter className="border-sidebar-border border-t">
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							render={
-								<Link
-									to="/about"
-									search={search}
-									onClick={() => {
-										setIsSidebarPanelOpen(false);
-										closeMobileSidebar();
-									}}
-								/>
-							}
-							isActive={isAboutRoute}
-						>
-							<InfoIcon aria-hidden="true" />
-							<span>About</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-				{footer}
+				<nav aria-label="Project navigation" className="flex flex-col gap-2">
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/updates"
+										search={{}}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isUpdatesRoute}
+								aria-current={isUpdatesRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<NewspaperClippingIcon aria-hidden="true" />
+								<span>Updates</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/about"
+										search={{}}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isAboutRoute}
+								aria-current={isAboutRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<InfoIcon aria-hidden="true" />
+								<span>About</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+					{footer}
+				</nav>
 			</SidebarFooter>
 		</Sidebar>
 	);

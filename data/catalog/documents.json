@@ -1,0 +1,167 @@
+{
+	"formatVersion": 1,
+	"documents": [
+		{
+			"id": "blueprints-technical",
+			"name": "Blueprints and technical documentation",
+			"description": "Blueprints and technical documentation belonging to TerraGroup. For convenience, all of the data has also been backed up onto a disk.",
+			"image": {
+				"height": 610,
+				"path": "/documents/blueprints-technical-e5dca5ab7147.webp",
+				"sha256": "e5dca5ab71473bd6758fcc7dfeb830d8e2e5b142c49314deaeae5f4f955b8824",
+				"sourceSha256": "82d60cdeeb082eab79520c7a5db74cd5723173e541491f60878b2c1bdc9bd7c1",
+				"width": 580
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["factory", "interchange", "the-labyrinth"]
+		},
+		{
+			"id": "classified",
+			"name": "Classified documents",
+			"description": "Classified information that somehow survived against all odds. Arguably the most valuable thing left in Tarkov.\n\nA unique document that can be used in place of any other document required for the Battle Pass.\n\nAvailable from the Expansion Hub.",
+			"image": {
+				"height": 569,
+				"path": "/documents/classified-edbfe0cd7107.webp",
+				"sha256": "edbfe0cd71076977a22848ac7c7b4a561010c593566b1d2bd2dde530ffb89035",
+				"sourceSha256": "1ccd769511fe76e7d0091e531c2109d2570907e0950d5160d821f3013b27c88d",
+				"width": 614
+			},
+			"acquisitionType": "store",
+			"acquisitionSource": "Expansion Hub",
+			"isFilterable": false,
+			"isWildcard": true,
+			"isActive": true,
+			"mapIds": []
+		},
+		{
+			"id": "financial",
+			"name": "Financial documents",
+			"description": "Financial reports from TerraGroup and its affiliated companies. There's bound to be plenty of inconsistencies and evidence hidden inside, but are you really willing to spend hours of your life reading dry financial paperwork?",
+			"image": {
+				"height": 559,
+				"path": "/documents/financial-f8b5b8dd4b8e.webp",
+				"sha256": "f8b5b8dd4b8e59aca178ed4b806f9fd8cfcd69ca9a21b191d398cde1e0c7e48a",
+				"sourceSha256": "3ffbcf876234d08adae35548657acd2430ddbbc89aa841406592d1828c2e4b66",
+				"width": 689
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["customs", "interchange", "streets-of-tarkov"]
+		},
+		{
+			"id": "medical",
+			"name": "Medical documents",
+			"description": "Medical records containing research findings. Many of them are ethically questionable, yet remarkably successful in every other regard. Truth is in the eye of the beholder.",
+			"image": {
+				"height": 602,
+				"path": "/documents/medical-860662003971.webp",
+				"sha256": "860662003971c03ed7923367205e395d47316a5b9f679d6266ac6ee051fcfa55",
+				"sourceSha256": "1081daeecb3cd9522ff2c451f1122e3e02c901cb5ae2bf6e121831492f2968eb",
+				"width": 487
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["ground-zero", "the-lab", "the-labyrinth"]
+		},
+		{
+			"id": "pmc-personnel",
+			"name": "PMC personnel files",
+			"description": "Rumor has it that TerraGroup keeps a personnel file on nearly every PMC operator. Judging by these documents, the rumors are true.",
+			"image": {
+				"height": 536,
+				"path": "/documents/pmc-personnel-ae1a69b11606.webp",
+				"sha256": "ae1a69b116067459ae8a8a78899db8b4a932bd15d26976cfa1da72e62f488175",
+				"sourceSha256": "b78a17c2a077071b9127d7414c8d40ffd69fc7cf0b1c78a3e92d6d13111d6640",
+				"width": 587
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["icebreaker", "lighthouse", "reserve"]
+		},
+		{
+			"id": "project",
+			"name": "Project documentation",
+			"description": "Documentation from Tarkov Infraline. The company officially specialized in road construction, but these blueprints clearly have nothing to do with transportation infrastructure.",
+			"image": {
+				"height": 377,
+				"path": "/documents/project-958d25de7e61.webp",
+				"sha256": "958d25de7e61a085e5cc8e9bf9dbe059e2bf82fbd87315ea4bc65ccf7f07ff60",
+				"sourceSha256": "f28735e5a77f2923a11fb0952c3608f515ee6940a399f79d30644322cd09530b",
+				"width": 530
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["customs", "factory", "reserve"]
+		},
+		{
+			"id": "technical",
+			"name": "Technical documentation",
+			"description": "Operating manuals for TerraGroup equipment. Essential for anyone who'd rather not lose a few fingers or break machinery worth millions of dollars. Or for anyone looking to make a tidy profit.",
+			"image": {
+				"height": 522,
+				"path": "/documents/technical-b63e56fc40f0.webp",
+				"sha256": "b63e56fc40f08e718530db93a1a6c7bcebc2fb3a8162e8dc3c2fba8784480461",
+				"sourceSha256": "9a72d3d9d59ed355c9344970120191d00d6543145f307c788f5f6a520b673329",
+				"width": 625
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["lighthouse", "shoreline", "woods"]
+		},
+		{
+			"id": "test",
+			"name": "Test documentation",
+			"description": "Documents detailing tests of various experimental compounds from TerraGroup-controlled laboratories. It's surprising they've managed to remain in Tarkov at all.",
+			"image": {
+				"height": 531,
+				"path": "/documents/test-e923af07aa44.webp",
+				"sha256": "e923af07aa4486fc5bcf3efe728b4259dafe189ec139fd662dc2442033faaf8d",
+				"sourceSha256": "5cc7cae5813f0fc225b85c5bf1d6e6136e00fe4169114a84346261cc7ece85b8",
+				"width": 590
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["icebreaker", "shoreline", "woods"]
+		},
+		{
+			"id": "user",
+			"name": "User documentation",
+			"description": "Documentation issued to every new TerraGroup employee upon signing. It contains both useful information and the obligatory, mind-numbing office rules like how to chip in for a coworker's birthday gift.",
+			"image": {
+				"height": 555,
+				"path": "/documents/user-9be8f2ab67f8.webp",
+				"sha256": "9be8f2ab67f8c663b79f3cebf17863fad0b44e12ee7bdede313f0d4409eec92f",
+				"sourceSha256": "7c5a5a19af20e8d898be1a04a615f7eb6251ddcb7fd2df19ec4f41b758bcfd44",
+				"width": 591
+			},
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["ground-zero", "streets-of-tarkov", "the-lab"]
+		}
+	]
+}

@@ -1,6 +1,10 @@
 import { ArrowLeftIcon, MapPinIcon } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 
+import {
+	type DocumentArtwork,
+	DocumentThumbnail,
+} from "@/components/document-thumbnail";
 import { Button } from "@/components/ui/button";
 import {
 	Empty,
@@ -31,7 +35,14 @@ type SidebarMapView = {
 };
 
 type SidebarLocation = {
+	documentId: string;
 	documentName: string;
+	id: string;
+	name: string;
+};
+
+type SidebarDocument = DocumentArtwork & {
+	count: number;
 	id: string;
 	name: string;
 };
@@ -39,13 +50,16 @@ type SidebarLocation = {
 type MapSidebarPanelProps = {
 	action?: ReactNode;
 	className?: string;
+	documents: SidebarDocument[];
 	locations: SidebarLocation[];
 	maps: SidebarMap[];
 	mapViews: SidebarMapView[];
 	selectedLocationId?: string;
+	selectedDocumentIds: string[];
 	selectedMapId: string;
 	selectedMapViewId?: string;
 	onBack: () => void;
+	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	onLocationSelect: (locationId: string) => void;
 	onMapChange: (mapId: string) => void;
 	onMapViewChange: (mapViewId: string) => void;
@@ -54,20 +68,49 @@ type MapSidebarPanelProps = {
 export function MapSidebarPanel({
 	action,
 	className,
+	documents,
 	locations,
 	maps,
 	mapViews,
 	selectedLocationId,
+	selectedDocumentIds,
 	selectedMapId,
 	selectedMapViewId,
 	onBack,
+	onSelectedDocumentsChange,
 	onLocationSelect,
 	onMapChange,
 	onMapViewChange,
 }: MapSidebarPanelProps) {
+	const selectedDocumentIdSet = new Set(selectedDocumentIds);
+	const documentById = new Map(
+		documents.map((document) => [document.id, document]),
+	);
+	const allDocumentsSelected = documents.every((document) =>
+		selectedDocumentIdSet.has(document.id),
+	);
+	const totalLocationCount = documents.reduce(
+		(total, document) => total + document.count,
+		0,
+	);
+
+	function toggleDocument(documentId: string) {
+		const isSelected = selectedDocumentIdSet.has(documentId);
+
+		if (isSelected && selectedDocumentIds.length === 1) {
+			return;
+		}
+
+		onSelectedDocumentsChange(
+			isSelected
+				? selectedDocumentIds.filter((id) => id !== documentId)
+				: [...selectedDocumentIds, documentId],
+		);
+	}
+
 	return (
 		<div className={cn("flex min-h-0 flex-1 flex-col", className)}>
-			<header className="flex min-h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
+			<header className="flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
 				<Button
 					type="button"
 					variant="ghost"
@@ -159,12 +202,69 @@ export function MapSidebarPanel({
 						</Select>
 					</Field>
 				) : null}
+
+				{documents.length > 0 ? (
+					<fieldset className="flex flex-col gap-2">
+						<div className="flex min-h-7 items-center justify-between gap-3">
+							<legend className="font-medium text-sidebar-primary text-sm">
+								Documents
+							</legend>
+							{allDocumentsSelected ? (
+								<p className="text-sidebar-foreground/60 text-xs tabular-nums">
+									All · {totalLocationCount}
+								</p>
+							) : (
+								<button
+									type="button"
+									onClick={() =>
+										onSelectedDocumentsChange(
+											documents.map((document) => document.id),
+										)
+									}
+									className="min-h-7 font-semibold text-sidebar-primary text-xs uppercase tracking-wide outline-none hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+								>
+									Show all
+								</button>
+							)}
+						</div>
+						<div className="grid grid-cols-2 gap-px overflow-hidden border border-sidebar-border bg-sidebar-border">
+							{documents.map((document) => {
+								const isSelected = selectedDocumentIdSet.has(document.id);
+
+								return (
+									<button
+										key={document.id}
+										type="button"
+										aria-label={`${document.name}, ${document.count} ${document.count === 1 ? "location" : "locations"}`}
+										aria-pressed={isSelected}
+										disabled={isSelected && selectedDocumentIds.length === 1}
+										onClick={() => toggleDocument(document.id)}
+										className={cn(
+											"flex min-h-14 items-center gap-2 bg-sidebar px-2 text-left text-sidebar-foreground text-xs outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset disabled:cursor-default disabled:opacity-70",
+											isSelected &&
+												"bg-sidebar-accent text-sidebar-accent-foreground",
+										)}
+									>
+										<DocumentThumbnail document={document} className="size-8" />
+										<span className="min-w-0 flex-1 truncate font-medium">
+											{document.name}
+										</span>
+										<span className="shrink-0 text-sidebar-foreground/60 tabular-nums">
+											{document.count}
+										</span>
+									</button>
+								);
+							})}
+						</div>
+					</fieldset>
+				) : null}
 			</div>
 
 			{locations.length > 0 ? (
 				<ul className="min-h-0 flex-1 overflow-auto py-2">
 					{locations.map((location, index) => {
 						const selected = selectedLocationId === location.id;
+						const document = documentById.get(location.documentId);
 
 						return (
 							<li key={location.id}>
@@ -181,6 +281,12 @@ export function MapSidebarPanel({
 									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-sidebar-border font-heading text-xs tabular-nums">
 										{index + 1}
 									</span>
+									{document ? (
+										<DocumentThumbnail
+											document={document}
+											className="size-10"
+										/>
+									) : null}
 									<span className="min-w-0 flex-1">
 										<span className="block truncate text-sm">
 											{location.name}
@@ -220,7 +326,7 @@ export function PendingMapSidebarPanel({
 }) {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
-			<header className="flex min-h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
+			<header className="flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
 				<Button
 					type="button"
 					variant="ghost"

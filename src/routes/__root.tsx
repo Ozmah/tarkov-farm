@@ -86,9 +86,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 					/>
 				) : null}
 				<Scripts />
-				<TanStackDevtools
-					config={{ inspectHotkey: ["Shift", "Alt", "CtrlOrMeta"] }}
-				/>
+				{import.meta.env.DEV ? (
+					<TanStackDevtools
+						config={{ inspectHotkey: ["Shift", "Alt", "CtrlOrMeta"] }}
+					/>
+				) : null}
 			</body>
 		</html>
 	);

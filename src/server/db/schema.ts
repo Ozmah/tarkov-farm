@@ -68,6 +68,10 @@ export const documents = sqliteTable(
 		id: text("id").notNull().primaryKey(),
 		name: text("name").notNull().unique(),
 		description: text("description"),
+		imagePath: text("image_path").notNull().unique(),
+		imageWidth: integer("image_width").notNull(),
+		imageHeight: integer("image_height").notNull(),
+		imageHash: text("image_hash").notNull(),
 		acquisitionType: text("acquisition_type", { enum: ["raid", "store"] })
 			.notNull()
 			.default("raid"),
@@ -82,6 +86,18 @@ export const documents = sqliteTable(
 	},
 	(table) => [
 		check("documents_id_not_null", sql`${table.id} IS NOT NULL`),
+		check(
+			"documents_image_width_valid",
+			sql`${table.imageWidth} BETWEEN 1 AND 768`,
+		),
+		check(
+			"documents_image_height_valid",
+			sql`${table.imageHeight} BETWEEN 1 AND 768`,
+		),
+		check(
+			"documents_image_hash_sha256",
+			sql`length(${table.imageHash}) = 64 AND ${table.imageHash} NOT GLOB '*[^0-9a-f]*'`,
+		),
 		check(
 			"documents_acquisition_type_allowed",
 			sql`${table.acquisitionType} IN ('raid', 'store')`,
