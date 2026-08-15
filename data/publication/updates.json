@@ -110,6 +110,19 @@
 						]
 					},
 					{
+						"id": "22eb0ba5-3d70-4f43-8247-f3882f8bfb73",
+						"name": "Resort",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "technical",
+						"documentName": "Technical documentation",
+						"fingerprint": "8d0798a5f91770c143c4b8b34c3a8c7f2471c7e3cf191e08fdd0d93a0469616b",
+						"screenshotIds": [
+							"3736c463-b743-4126-9208-9c53d6b726c9",
+							"9864e807-396e-4dfd-9eb9-6b7d126f80c3"
+						]
+					},
+					{
 						"id": "26670455-4c55-45bf-9365-7747dd5ff2fb",
 						"name": "Labrys Reseach Table",
 						"mapId": "the-labyrinth",
@@ -286,6 +299,19 @@
 						]
 					},
 					{
+						"id": "418318f1-63dc-4c93-9ca1-d10156c2592e",
+						"name": "Beach Houses",
+						"mapId": "lighthouse",
+						"mapName": "Lighthouse",
+						"documentId": "pmc-personnel",
+						"documentName": "PMC personnel files",
+						"fingerprint": "f2515217eca9837fde9f236ff1311a02a999be63acff5a1c3df4921a579d22cd",
+						"screenshotIds": [
+							"bbb5d3fc-e17e-4b70-a0af-5569e53a97dd",
+							"c8a5df01-71fd-46e8-83ac-a9b1fdabfcad"
+						]
+					},
+					{
 						"id": "44344ee5-fe9e-4959-a391-64958f00c832",
 						"name": "Office 3",
 						"mapId": "ground-zero",
@@ -359,6 +385,19 @@
 						]
 					},
 					{
+						"id": "59079e80-cf57-4554-8db2-7451c71cf5ae",
+						"name": "Hotel Bench",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "medical",
+						"documentName": "Medical documents",
+						"fingerprint": "effc2b6dc39d07574206b8e425fb658a7cdafcbadb612e93fb7453ea981170f7",
+						"screenshotIds": [
+							"106c385b-0eed-49de-a515-78ba583da70f",
+							"b307ec31-aed6-47b7-ad9d-6cfefd54bc11"
+						]
+					},
+					{
 						"id": "59f30d77-28e2-4d9f-a5fb-263da02958c7",
 						"name": "Usec Camp",
 						"mapId": "woods",
@@ -417,6 +456,18 @@
 						"fingerprint": "dae7c527434428200f94c7a6204e7a811b4298a026bc3bb96e99ffa1a338c42a",
 						"screenshotIds": [
 							"b0ef52c3-5ab6-4a1e-8f3a-d7a52594ce15"
+						]
+					},
+					{
+						"id": "74440315-b5f4-417e-b217-925eb3a99abb",
+						"name": "Machinegun Room",
+						"mapId": "ground-zero",
+						"mapName": "Ground Zero",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "ea897a21282213df6a0fc7f66d1e27857ae57a52a4407be4524f9961e1de7fed",
+						"screenshotIds": [
+							"f27532af-50e9-4876-800f-9a31084b5e63"
 						]
 					},
 					{
@@ -547,6 +598,20 @@
 						]
 					},
 					{
+						"id": "8f6e93b0-6e75-46b9-b3c0-8c848951d7cd",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "eb7c799af64aa915e63c7187ccb550da559e96b5030e3e1d81ba758410aa0b87",
+						"screenshotIds": [
+							"bcf7e7a4-1cb8-4250-a38e-0ac58b8c0d5a",
+							"edde7c92-21d2-4076-8024-259f4805878d",
+							"f5c86235-907a-47e4-a9b3-e9eb0ca1a8c9"
+						]
+					},
+					{
 						"id": "922ccd7b-814c-4501-8e76-be0216f08aa8",
 						"name": "Over safe",
 						"mapId": "customs",
@@ -581,6 +646,19 @@
 						"screenshotIds": [
 							"5e1a1ba2-f3ad-4c0a-b0b2-8f1e913c9157",
 							"693e68b6-3fc0-4f58-ad92-5321ef9f1d31"
+						]
+					},
+					{
+						"id": "a3592dc3-0b82-4eec-9af7-41a232ba4b47",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "2caa0bd5904a323922861082d65002e94702db8333ab6a24c10ea598fbc99766",
+						"screenshotIds": [
+							"6e633011-7195-4cf0-83f5-909342e66b2f",
+							"93b9d19a-1085-41ce-9bcf-c43d8de1f1fc"
 						]
 					},
 					{
@@ -630,6 +708,19 @@
 						"fingerprint": "08e0a4017982895a510c384d8aa62ac104aaa877de34a83b5ea1b2fba425d156",
 						"screenshotIds": [
 							"a6b93b8e-a0ca-4c21-9ab5-1735e2016413"
+						]
+					},
+					{
+						"id": "be27e27e-582b-4645-8d9d-7412222807a1",
+						"name": "Finance Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "5bdf4b01cf5d8c6a6e9447f086460d213f5aa2edaa4c99175c0f7f9b0776d25f",
+						"screenshotIds": [
+							"c33d601a-6c8c-4ba7-8d4d-5a083e55a4a5",
+							"ca2bf488-99e8-4692-b8e1-5595b0272ae1"
 						]
 					},
 					{
@@ -694,6 +785,19 @@
 						]
 					},
 					{
+						"id": "d8f717b2-e0c2-463a-b9a9-f65df8163da6",
+						"name": "Smuggler's Base",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "43cb86f8d6dceb0190811c3e8d36f3bc18d92bc8a2afb20ddda3aec203348efe",
+						"screenshotIds": [
+							"71437523-84dd-4161-bbc8-c33a5f1f646b",
+							"d0650422-edec-4f3b-8a82-1a8cf1046875"
+						]
+					},
+					{
 						"id": "da7c2f4a-1e5d-4987-b83f-f7a595b6297a",
 						"name": "Outside red table",
 						"mapId": "the-lab",
@@ -707,6 +811,19 @@
 						]
 					},
 					{
+						"id": "ddb7e993-450c-435f-a631-11c43794dd22",
+						"name": "TerraGroup Security Post Building",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "67bf8fbe55ee2749aa07969ae2c622b65cfe9d35a1c7e6e28c19b5a5731357f9",
+						"screenshotIds": [
+							"3846c676-abe2-4c9f-ac74-e7d4a46d35b5",
+							"ad428f14-f01f-47a9-a561-352c58729f63"
+						]
+					},
+					{
 						"id": "de1a22b5-add6-4cca-b222-f430dea6ca1f",
 						"name": "Above Tunnel Entrance",
 						"mapId": "factory",
@@ -716,6 +833,18 @@
 						"fingerprint": "3928fed519e498d85ef9940369c6f8fb50ba2efb3d9e24212fed6ff685af1a7b",
 						"screenshotIds": [
 							"01593b01-6f6b-4968-8d43-af82157f99a3"
+						]
+					},
+					{
+						"id": "e78fce7c-d0f5-4bda-ae04-ab216ede84ed",
+						"name": "IDEA Office",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "financial",
+						"documentName": "Financial documents",
+						"fingerprint": "3b7f8eb63a5847f540c617e52b8a5f3ef6468ea0ff799d9e7def3851a16e6649",
+						"screenshotIds": [
+							"a04548c6-5f92-4f2e-85b5-6743030c77be"
 						]
 					},
 					{
@@ -781,6 +910,19 @@
 						]
 					},
 					{
+						"id": "f50461a8-1b51-46ce-80ab-6c265fc76afa",
+						"name": "Unity Credit Bank",
+						"mapId": "streets-of-tarkov",
+						"mapName": "Streets of Tarkov",
+						"documentId": "user",
+						"documentName": "User documentation",
+						"fingerprint": "a941cf2acd881852b8bed49146ac55e4addbda949a533a9b9bf6c88a75e9d653",
+						"screenshotIds": [
+							"3422cbe9-248e-49be-96f8-beb8b022d0cb",
+							"983862f8-c938-48d8-8aeb-38e105619308"
+						]
+					},
+					{
 						"id": "f66af357-a23d-4d82-86a2-e2ec073b1cdd",
 						"name": "On Bookshelf",
 						"mapId": "customs",
@@ -790,6 +932,19 @@
 						"fingerprint": "63a14738d06ef4c4f1ce3fe969fb7173a872479aab7438f633db11a1eecff970",
 						"screenshotIds": [
 							"3199c184-02d7-4ab6-bafd-39f780411704"
+						]
+					},
+					{
+						"id": "ffb99ea3-def1-40bd-840e-4d891cd41fba",
+						"name": "OLI",
+						"mapId": "interchange",
+						"mapName": "Interchange",
+						"documentId": "blueprints-technical",
+						"documentName": "Blueprints and technical documentation",
+						"fingerprint": "f093ea2f88c0754635a2c2e5154668ea9db39938b1d98abdd019a55467da2d7d",
+						"screenshotIds": [
+							"01b86d37-7e0a-4cff-84e8-801a1301a361",
+							"42f66535-8ba0-454c-80a9-cdb58fe701a6"
 						]
 					}
 				]
