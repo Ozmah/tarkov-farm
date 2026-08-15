@@ -1,12 +1,23 @@
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const MAX_DOCUMENTS = 20;
 const MAX_MAPS_PER_DOCUMENT = 20;
+const MAX_IMAGE_DIMENSION = 768;
+
+export type CatalogDocumentImage = {
+	height: number;
+	path: string;
+	sha256: string;
+	sourceSha256: string;
+	width: number;
+};
 
 export type CatalogDocument = {
 	acquisitionSource: string | null;
 	acquisitionType: "raid" | "store";
 	description: string;
 	id: string;
+	image: CatalogDocumentImage;
 	isActive: boolean;
 	isFilterable: boolean;
 	isWildcard: boolean;
@@ -48,6 +59,10 @@ export function parseDocumentCatalog(input: unknown): DocumentCatalog {
 		documents.map(({ name }) => name),
 		"Document names",
 	);
+	assertUnique(
+		documents.map(({ image }) => image.path),
+		"Document image paths",
+	);
 
 	return {
 		formatVersion: 1,
@@ -63,6 +78,7 @@ function parseDocument(input: unknown): CatalogDocument {
 		"acquisitionType",
 		"description",
 		"id",
+		"image",
 		"isActive",
 		"isFilterable",
 		"isWildcard",
@@ -70,6 +86,7 @@ function parseDocument(input: unknown): CatalogDocument {
 		"name",
 	]);
 	const id = readId(value.id, "Document identifier");
+	const image = parseImage(value.image, id);
 	const acquisitionType = readAcquisitionType(value.acquisitionType, id);
 	const acquisitionSource = readNullableText(
 		value.acquisitionSource,
@@ -116,12 +133,50 @@ function parseDocument(input: unknown): CatalogDocument {
 			`Document ${id} description`,
 			1_000,
 		),
+		image,
 		acquisitionType,
 		acquisitionSource,
 		isFilterable,
 		isWildcard,
 		isActive,
 		mapIds: [...mapIds].sort(compareCodePoints),
+	};
+}
+
+function parseImage(input: unknown, documentId: string): CatalogDocumentImage {
+	const value = readObject(input, `Document ${documentId} image`, [
+		"height",
+		"path",
+		"sha256",
+		"sourceSha256",
+		"width",
+	]);
+	const sha256 = readHash(value.sha256, `Document ${documentId} image hash`);
+	const path = readText(value.path, `Document ${documentId} image path`, 240);
+
+	if (path !== `/documents/${documentId}-${sha256.slice(0, 12)}.webp`) {
+		throw new Error(`Document ${documentId} image path is invalid`);
+	}
+
+	return {
+		height: readInteger(
+			value.height,
+			`Document ${documentId} image height`,
+			1,
+			MAX_IMAGE_DIMENSION,
+		),
+		path,
+		sha256,
+		sourceSha256: readHash(
+			value.sourceSha256,
+			`Document ${documentId} source image hash`,
+		),
+		width: readInteger(
+			value.width,
+			`Document ${documentId} image width`,
+			1,
+			MAX_IMAGE_DIMENSION,
+		),
 	};
 }
 
@@ -177,6 +232,29 @@ function readNullableText(value: unknown, label: string, maximum: number) {
 
 function readBoolean(value: unknown, label: string) {
 	if (typeof value !== "boolean") throw new Error(`${label} is invalid`);
+	return value;
+}
+
+function readInteger(
+	value: unknown,
+	label: string,
+	minimum: number,
+	maximum: number,
+) {
+	if (
+		!Number.isSafeInteger(value) ||
+		(value as number) < minimum ||
+		(value as number) > maximum
+	) {
+		throw new Error(`${label} is invalid`);
+	}
+	return value as number;
+}
+
+function readHash(value: unknown, label: string) {
+	if (typeof value !== "string" || !SHA256_PATTERN.test(value)) {
+		throw new Error(`${label} is invalid`);
+	}
 	return value;
 }
 

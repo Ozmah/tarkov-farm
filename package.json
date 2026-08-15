@@ -21,6 +21,7 @@
 		"db:migrate": "bun src/server/db/migrate.ts",
 		"db:seed": "bun src/server/db/seed.ts",
 		"db:setup": "bun src/server/db/setup.ts",
+		"documents:images": "bun scripts/generate-document-images.ts",
 		"preview": "bun run env:check && vite preview",
 		"prepare": "husky || true",
 		"test": "vitest run",

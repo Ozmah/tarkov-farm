@@ -30,8 +30,9 @@ describe("catalog seed", () => {
 		try {
 			await migrateDatabase(db, resolve(process.cwd(), "drizzle"));
 			const counts = await seedCatalog(db);
+			await seedCatalog(db);
 			const documentRows = await client.all(
-				"SELECT id, description, acquisition_type, acquisition_source, is_filterable, is_wildcard FROM documents ORDER BY name",
+				"SELECT id, description, image_path, image_width, image_height, image_hash, acquisition_type, acquisition_source, is_filterable, is_wildcard FROM documents ORDER BY name",
 			);
 			const documentMapRows = await client.all(
 				"SELECT document_id, map_id FROM document_maps ORDER BY document_id, map_id",
@@ -53,6 +54,19 @@ describe("catalog seed", () => {
 				is_filterable: 0,
 				is_wildcard: 1,
 			});
+			expect(
+				documentRows.every(
+					({ id, image_hash, image_height, image_path, image_width }) =>
+						typeof image_path === "string" &&
+						image_path.startsWith(`/documents/${id}-`) &&
+						typeof image_hash === "string" &&
+						image_hash.length === 64 &&
+						typeof image_width === "number" &&
+						image_width > 0 &&
+						typeof image_height === "number" &&
+						image_height > 0,
+				),
+			).toBe(true);
 			expect(
 				documentMapRows.some(({ document_id }) => document_id === "classified"),
 			).toBe(false);

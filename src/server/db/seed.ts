@@ -191,7 +191,13 @@ const documentCatalog = parseDocumentCatalog(
 	),
 );
 const documentSeed = documentCatalog.documents.map(
-	({ mapIds: _mapIds, ...document }) => document,
+	({ image, mapIds: _mapIds, ...document }) => ({
+		...document,
+		imageHash: image.sha256,
+		imageHeight: image.height,
+		imagePath: image.path,
+		imageWidth: image.width,
+	}),
 );
 const documentMapSeed = documentCatalog.documents.flatMap((document) =>
 	document.mapIds.map((mapId) => ({ documentId: document.id, mapId })),
@@ -221,11 +227,13 @@ export async function seedCatalog(db: CatalogDatabase) {
 				.onConflictDoUpdate({ target: mapImages.id, set: currentImage })
 				.run();
 		}
-		await transaction
-			.insert(documents)
-			.values([...documentSeed])
-			.onConflictDoNothing()
-			.run();
+		for (const document of documentSeed) {
+			await transaction
+				.insert(documents)
+				.values(document)
+				.onConflictDoUpdate({ target: documents.id, set: document })
+				.run();
+		}
 		await transaction
 			.insert(documentMaps)
 			.values(documentMapSeed)

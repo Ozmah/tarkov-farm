@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { lstat, readdir, readFile, realpath } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
+import { parseDocumentCatalog } from "../../src/lib/document-catalog";
 import { parseKeyCatalog } from "../../src/lib/key-catalog";
 import {
 	type PublicationAsset,
@@ -184,6 +185,56 @@ export async function verifyKeyAssets(projectRoot: string) {
 	}
 
 	return { keyFiles: catalog.keys.length };
+}
+
+export async function verifyDocumentAssets(projectRoot: string) {
+	const documentRoot = resolve(projectRoot, "public", "documents");
+	const catalogPath = resolve(projectRoot, "data", "catalog", "documents.json");
+	const catalog = parseDocumentCatalog(
+		JSON.parse(await readFile(catalogPath, "utf8")),
+	);
+	const expectedFiles = new Set<string>();
+
+	for (const document of catalog.documents) {
+		const file = document.image.path.replace(/^\/documents\//, "");
+		if (!file || file.includes("/") || file.includes("\\")) {
+			throw new Error(`Document image path is invalid: ${document.image.path}`);
+		}
+		if (expectedFiles.has(file)) {
+			throw new Error(`Document catalog contains duplicate image ${file}`);
+		}
+		expectedFiles.add(file);
+
+		const imagePath = resolve(documentRoot, file);
+		await assertRegularContainedFile(imagePath, documentRoot, "Document image");
+		const metadata = await new Bun.Image(imagePath, {
+			maxPixels: 768 * 768,
+		}).metadata();
+
+		if (
+			metadata.format !== "webp" ||
+			metadata.width !== document.image.width ||
+			metadata.height !== document.image.height ||
+			(await hashFile(imagePath)) !== document.image.sha256
+		) {
+			throw new Error(`Document image does not match catalog: ${file}`);
+		}
+	}
+
+	const actualFiles = await readdir(documentRoot, { withFileTypes: true });
+	if (
+		actualFiles.some(
+			(entry) =>
+				!entry.isFile() ||
+				entry.isSymbolicLink() ||
+				!expectedFiles.has(entry.name),
+		) ||
+		actualFiles.length !== expectedFiles.size
+	) {
+		throw new Error("Document image inventory does not match its catalog");
+	}
+
+	return { documentFiles: catalog.documents.length };
 }
 
 async function verifyVariant(

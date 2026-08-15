@@ -28,5 +28,6 @@ data/backups
 data/rebuild
 assets/maps/originals
 assets/screenshots/originals
+assets/documents/originals
 tarkov-backup
 todos.json

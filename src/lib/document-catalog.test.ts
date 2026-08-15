@@ -65,4 +65,13 @@ describe("document catalog", () => {
 			"Wildcard document classified cannot have map assignments",
 		);
 	});
+
+	it("rejects document images that are not content-addressed", () => {
+		const invalid = JSON.parse(source);
+		invalid.documents[0].image.path = "/documents/untrusted.webp";
+
+		expect(() => parseDocumentCatalog(invalid)).toThrow(
+			"Document blueprints-technical image path is invalid",
+		);
+	});
 });

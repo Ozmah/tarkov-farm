@@ -12,7 +12,7 @@ ARG VITE_DATABUDDY_CLIENT_ID
 ENV VITE_DATABUDDY_CLIENT_ID=${VITE_DATABUDDY_CLIENT_ID}
 COPY --link . .
 ENV NODE_ENV=production
-RUN bun run updates:snapshot:check && bun run build
+RUN bun run updates:snapshot:check && bun run screenshots:check && bun run build
 
 FROM oven/bun:${BUN_VERSION}-debian AS production-dependencies
 WORKDIR /app
