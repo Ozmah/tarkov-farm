@@ -7,7 +7,7 @@ import {
 	screen,
 	waitFor,
 } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LocationDetailsPanel } from "./location-details-panel";
 
@@ -23,9 +23,14 @@ const screenshot = {
 	width: 1920,
 };
 
-afterEach(cleanup);
+beforeEach(() => setViewportWidth(1280));
 
-describe("LocationDetailsPanel screenshot lightbox", () => {
+afterEach(() => {
+	cleanup();
+	vi.restoreAllMocks();
+});
+
+describe("LocationDetailsPanel", () => {
 	it("shows every required key with a safe external wiki link", () => {
 		render(
 			<LocationDetailsPanel
@@ -57,9 +62,46 @@ describe("LocationDetailsPanel screenshot lightbox", () => {
 		expect(link.getAttribute("target")).toBe("_blank");
 	});
 
-	it("closes the location from the sheet backdrop", async () => {
+	it("keeps the desktop map interactive while details are open", () => {
+		const onClose = vi.fn();
+		const onSelectLocation = vi.fn();
+
+		render(
+			<>
+				<button type="button" onClick={onSelectLocation}>
+					Select another location
+				</button>
+				<LocationDetailsPanel
+					location={{
+						description: "Near the stairs",
+						documentName: "Test document",
+						name: "Sawmill",
+						requiredKeys: [],
+					}}
+					onClose={onClose}
+					screenshots={[screenshot]}
+				/>
+			</>,
+		);
+
+		expect(document.querySelector('[data-slot="sheet-overlay"]')).toBeNull();
+		fireEvent.click(
+			screen.getByRole("button", { name: "Select another location" }),
+		);
+
+		expect(onSelectLocation).toHaveBeenCalledOnce();
+		expect(onClose).not.toHaveBeenCalled();
+	});
+
+	it("closes the mobile location sheet from its backdrop", async () => {
+		setViewportWidth(800);
 		const onClose = vi.fn();
 		renderPanel(onClose);
+		await waitFor(() =>
+			expect(
+				document.querySelector('[data-slot="sheet-overlay"]'),
+			).not.toBeNull(),
+		);
 		const backdrop = document.querySelector<HTMLElement>(
 			'[data-slot="sheet-overlay"]',
 		);
@@ -153,4 +195,22 @@ function renderPanel(onClose = vi.fn()) {
 			screenshots={[screenshot]}
 		/>,
 	);
+}
+
+function setViewportWidth(width: number) {
+	Object.defineProperty(window, "innerWidth", {
+		configurable: true,
+		value: width,
+	});
+	Object.defineProperty(window, "matchMedia", {
+		configurable: true,
+		value: vi.fn().mockImplementation((query: string) => ({
+			addEventListener: vi.fn(),
+			dispatchEvent: vi.fn(),
+			matches: width < 1024,
+			media: query,
+			onchange: null,
+			removeEventListener: vi.fn(),
+		})),
+	});
 }

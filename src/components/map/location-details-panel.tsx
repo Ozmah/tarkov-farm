@@ -14,6 +14,7 @@ import {
 	SheetDescription,
 	SheetTitle,
 } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 type LocationDetails = {
@@ -55,6 +56,7 @@ export function LocationDetailsPanel({
 	onClose,
 	screenshots,
 }: LocationDetailsPanelProps) {
+	const isMobile = useIsMobile();
 	const [selectedScreenshot, setSelectedScreenshot] =
 		useState<LocationScreenshot>();
 
@@ -62,6 +64,8 @@ export function LocationDetailsPanel({
 		<>
 			<Sheet
 				open
+				modal={isMobile}
+				disablePointerDismissal={!isMobile}
 				onOpenChange={(open) => {
 					if (!open && !selectedScreenshot) onClose();
 				}}
@@ -70,11 +74,17 @@ export function LocationDetailsPanel({
 					side="right"
 					closeLabel="Close location details"
 					overlayClassName="bg-black/35 supports-backdrop-filter:backdrop-blur-none"
+					showOverlay={isMobile}
+					initialFocus={isMobile}
+					finalFocus={isMobile}
 					className={cn("w-[calc(100%-1rem)] sm:max-w-[26rem]", className)}
 				>
 					<header className="shrink-0 border-primary border-t p-5 pr-18">
 						<Badge variant="secondary">{location.documentName}</Badge>
-						<SheetTitle className="mt-3 text-balance font-medium text-2xl normal-case tracking-tight">
+						<SheetTitle
+							aria-live="polite"
+							className="mt-3 text-balance font-medium text-2xl normal-case tracking-tight"
+						>
 							{location.name}
 						</SheetTitle>
 					</header>
