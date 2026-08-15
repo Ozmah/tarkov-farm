@@ -1,0 +1,104 @@
+{
+	"formatVersion": 1,
+	"documents": [
+		{
+			"id": "blueprints-technical",
+			"name": "Blueprints and technical documentation",
+			"description": "Blueprints and technical documentation belonging to TerraGroup. For convenience, all of the data has also been backed up onto a disk.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["factory", "interchange", "the-labyrinth"]
+		},
+		{
+			"id": "classified",
+			"name": "Classified documents",
+			"description": "Classified information that somehow survived against all odds. Arguably the most valuable thing left in Tarkov.\n\nA unique document that can be used in place of any other document required for the Battle Pass.\n\nAvailable from the Expansion Hub.",
+			"acquisitionType": "store",
+			"acquisitionSource": "Expansion Hub",
+			"isFilterable": false,
+			"isWildcard": true,
+			"isActive": true,
+			"mapIds": []
+		},
+		{
+			"id": "financial",
+			"name": "Financial documents",
+			"description": "Financial reports from TerraGroup and its affiliated companies. There's bound to be plenty of inconsistencies and evidence hidden inside, but are you really willing to spend hours of your life reading dry financial paperwork?",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["customs", "interchange", "streets-of-tarkov"]
+		},
+		{
+			"id": "medical",
+			"name": "Medical documents",
+			"description": "Medical records containing research findings. Many of them are ethically questionable, yet remarkably successful in every other regard. Truth is in the eye of the beholder.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["ground-zero", "the-lab", "the-labyrinth"]
+		},
+		{
+			"id": "pmc-personnel",
+			"name": "PMC personnel files",
+			"description": "Rumor has it that TerraGroup keeps a personnel file on nearly every PMC operator. Judging by these documents, the rumors are true.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["icebreaker", "lighthouse", "reserve"]
+		},
+		{
+			"id": "project",
+			"name": "Project documentation",
+			"description": "Documentation from Tarkov Infraline. The company officially specialized in road construction, but these blueprints clearly have nothing to do with transportation infrastructure.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["customs", "factory", "reserve"]
+		},
+		{
+			"id": "technical",
+			"name": "Technical documentation",
+			"description": "Operating manuals for TerraGroup equipment. Essential for anyone who'd rather not lose a few fingers or break machinery worth millions of dollars. Or for anyone looking to make a tidy profit.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["lighthouse", "shoreline", "woods"]
+		},
+		{
+			"id": "test",
+			"name": "Test documentation",
+			"description": "Documents detailing tests of various experimental compounds from TerraGroup-controlled laboratories. It's surprising they've managed to remain in Tarkov at all.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["icebreaker", "shoreline", "woods"]
+		},
+		{
+			"id": "user",
+			"name": "User documentation",
+			"description": "Documentation issued to every new TerraGroup employee upon signing. It contains both useful information and the obligatory, mind-numbing office rules like how to chip in for a coworker's birthday gift.",
+			"acquisitionType": "raid",
+			"acquisitionSource": null,
+			"isFilterable": true,
+			"isWildcard": false,
+			"isActive": true,
+			"mapIds": ["ground-zero", "streets-of-tarkov", "the-lab"]
+		}
+	]
+}
