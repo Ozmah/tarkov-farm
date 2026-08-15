@@ -38,6 +38,26 @@ export async function readCatalog() {
 			.where(eq(documents.isActive, true))
 			.orderBy(asc(documents.name))
 			.all(),
+		documentMaps: await db
+			.select({
+				documentId: documentMaps.documentId,
+				mapId: documentMaps.mapId,
+			})
+			.from(documentMaps)
+			.innerJoin(
+				documents,
+				and(
+					eq(documentMaps.documentId, documents.id),
+					eq(documents.isActive, true),
+					eq(documents.isFilterable, true),
+				),
+			)
+			.innerJoin(
+				maps,
+				and(eq(documentMaps.mapId, maps.id), eq(maps.isActive, true)),
+			)
+			.orderBy(asc(documentMaps.mapId), asc(documentMaps.documentId))
+			.all(),
 		documentLocations: await db
 			.select({
 				id: locations.id,

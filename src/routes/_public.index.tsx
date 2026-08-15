@@ -2,7 +2,7 @@ import { ArrowRightIcon, MapTrifoldIcon } from "@phosphor-icons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { usePreparePublicMapNavigation } from "@/components/public-layout-context";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
 	Empty,
 	EmptyDescription,
@@ -12,10 +12,6 @@ import {
 } from "@/components/ui/empty";
 import { UpdateFeed } from "@/components/update-feed";
 import { getUpdates } from "@/functions/updates";
-import {
-	encodeDocumentFilters,
-	readSelectedDocumentIds,
-} from "@/lib/catalog-search";
 import { getDocumentShortName } from "@/lib/document-display";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
 import { Route as PublicLayoutRoute } from "./_public";
@@ -31,28 +27,11 @@ function App() {
 	const catalog = PublicLayoutRoute.useLoaderData();
 	const updates = Route.useLoaderData();
 	const prepareMapNavigation = usePreparePublicMapNavigation();
-	const search = Route.useSearch();
-	const navigate = Route.useNavigate();
 	const filterableDocuments = catalog.documents.filter(
 		(document) => document.isFilterable,
 	);
-	const filterableDocumentIds = new Set(
-		filterableDocuments.map((document) => document.id),
-	);
-	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
-		(id) => filterableDocumentIds.has(id),
-	);
-	const selectedDocumentIdSet = new Set(selectedDocumentIds);
-	const selectedDocuments = filterableDocuments.filter((document) =>
-		selectedDocumentIdSet.has(document.id),
-	);
-	const visibleLocations = catalog.documentLocations.filter(
-		(location) =>
-			selectedDocumentIdSet.size === 0 ||
-			selectedDocumentIdSet.has(location.documentId),
-	);
 	const mapSummaries = catalog.maps.flatMap((map) => {
-		const locations = visibleLocations.filter(
+		const locations = catalog.documentLocations.filter(
 			(location) => location.mapId === map.id,
 		);
 
@@ -61,7 +40,9 @@ function App() {
 		}
 
 		const documentIds = new Set(
-			locations.map((location) => location.documentId),
+			catalog.documentMaps
+				.filter((assignment) => assignment.mapId === map.id)
+				.map((assignment) => assignment.documentId),
 		);
 		const documents = filterableDocuments.filter((document) =>
 			documentIds.has(document.id),
@@ -69,40 +50,20 @@ function App() {
 
 		return [{ map, documents, documentCount: locations.length }];
 	});
-	const encodedFilters = encodeDocumentFilters(selectedDocumentIds);
-
-	function updateSelectedDocuments(documentIds: string[]) {
-		void navigate({
-			to: "/",
-			search: { documents: encodeDocumentFilters(documentIds) },
-			replace: true,
-		});
-	}
+	const totalLocations = catalog.documentLocations.length;
 
 	return (
 		<div className="min-h-0 flex-1 overflow-auto">
 			<div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8 sm:px-10 sm:py-10">
-				<header className="flex flex-wrap items-end justify-between gap-4 border-border border-b pb-6">
+				<header className="border-border border-b pb-6">
 					<div className="flex min-w-0 flex-col gap-1.5">
 						<h1 className="text-balance font-heading font-medium text-3xl tracking-tight sm:text-4xl">
 							Kord Breach
 						</h1>
 						<p className="text-muted-foreground text-sm">
-							{selectedDocuments.length > 0
-								? `${visibleLocations.length} locations for ${selectedDocuments.map((document) => document.name).join(", ")}.`
-								: `${visibleLocations.length} locations across ${mapSummaries.length} maps.`}
+							{totalLocations} locations across {mapSummaries.length} maps.
 						</p>
 					</div>
-					{selectedDocuments.length > 0 ? (
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							onClick={() => updateSelectedDocuments([])}
-						>
-							Clear filters
-						</Button>
-					) : null}
 				</header>
 
 				<div className="grid items-start gap-10 xl:grid-cols-2 xl:gap-12">
@@ -120,7 +81,7 @@ function App() {
 							{updates.length > 0 ? (
 								<Link
 									to="/updates"
-									search={{ documents: encodedFilters }}
+									search={{}}
 									className={buttonVariants({ variant: "ghost", size: "sm" })}
 								>
 									View all
@@ -153,7 +114,7 @@ function App() {
 											<Link
 												to="/maps/$mapId"
 												params={{ mapId: map.id }}
-												search={{ documents: encodedFilters }}
+												search={{}}
 												onClick={(event) => {
 													if (isPlainNavigationClick(event)) {
 														prepareMapNavigation(map);
@@ -198,18 +159,9 @@ function App() {
 									</EmptyMedia>
 									<EmptyTitle>No maps available</EmptyTitle>
 									<EmptyDescription>
-										No active locations match the selected documents.
+										No active locations are available.
 									</EmptyDescription>
 								</EmptyHeader>
-								{selectedDocuments.length > 0 ? (
-									<Button
-										type="button"
-										variant="outline"
-										onClick={() => updateSelectedDocuments([])}
-									>
-										Clear filters
-									</Button>
-								) : null}
 							</Empty>
 						)}
 					</section>

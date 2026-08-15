@@ -21,16 +21,13 @@ type PublicShellProps = {
 			name: string;
 			isFilterable: boolean;
 		}>;
-		documentLocations: ReadonlyArray<{
+		documentMaps: ReadonlyArray<{
 			documentId: string;
 			mapId: string;
-			mapImageId: string;
 		}>;
 		editorAvailable: boolean;
 	};
-	selectedDocumentIds: string[];
 	currentMapId?: string;
-	currentMapImageId?: string;
 	editorSearch?: {
 		documents?: string;
 		image?: string;
@@ -42,7 +39,6 @@ type PublicShellProps = {
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
-	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	sidebarFooter?: ReactNode;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
 	children: ReactNode;
@@ -50,16 +46,13 @@ type PublicShellProps = {
 
 export function PublicShell({
 	catalog,
-	selectedDocumentIds,
 	currentMapId,
-	currentMapImageId,
 	editorSearch,
 	headerTitle,
 	headerMeta,
 	onMapNavigate,
 	onMapNavigationStart,
 	onHomeNavigate,
-	onSelectedDocumentsChange,
 	sidebarFooter,
 	sidebarPanel,
 	children,
@@ -79,10 +72,8 @@ export function PublicShell({
 			<AppSidebar
 				maps={catalog.maps}
 				documents={catalog.documents}
-				documentLocations={catalog.documentLocations}
-				selectedDocumentIds={selectedDocumentIds}
+				documentMaps={catalog.documentMaps}
 				currentMapId={currentMapId}
-				currentMapImageId={currentMapImageId}
 				footer={
 					sidebarFooter ??
 					(catalog.editorAvailable ? (
@@ -106,7 +97,6 @@ export function PublicShell({
 				onMapNavigate={onMapNavigate}
 				onMapNavigationStart={onMapNavigationStart}
 				onHomeNavigate={onHomeNavigate}
-				onSelectedDocumentsChange={onSelectedDocumentsChange}
 				sidebarPanel={sidebarPanel}
 			/>
 			<SidebarInset

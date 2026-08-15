@@ -573,7 +573,7 @@ export function MapWorkspace({
 				className,
 			)}
 		>
-			<div className="flex min-h-14 shrink-0 items-center gap-2 border-border border-b bg-card px-3 py-2">
+			<div className="flex h-16 shrink-0 items-center gap-2 border-border border-b bg-card px-3 py-2">
 				{toolbarStart}
 				<p className="hidden min-w-0 flex-1 truncate text-muted-foreground text-sm xl:block">
 					{instructions}

@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
 	encodeDocumentFilters,
+	encodeMapDocumentFilters,
 	readSelectedDocumentIds,
+	resolveMapDocumentIds,
 	validateCatalogSearch,
 } from "./catalog-search";
 
@@ -13,6 +15,34 @@ describe("catalog search", () => {
 				" medical,financial,medical,<script>,project documentation ",
 			),
 		).toEqual(["medical", "financial"]);
+	});
+
+	it("resolves document filters within the current map", () => {
+		const availableIds = ["financial", "medical", "project"];
+
+		expect(resolveMapDocumentIds(undefined, availableIds)).toEqual(
+			availableIds,
+		);
+		expect(
+			resolveMapDocumentIds("project,unknown,financial", availableIds),
+		).toEqual(["financial", "project"]);
+		expect(resolveMapDocumentIds("unknown", availableIds)).toEqual(
+			availableIds,
+		);
+	});
+
+	it("omits the document query when every map document is selected", () => {
+		const availableIds = ["financial", "medical", "project"];
+
+		expect(
+			encodeMapDocumentFilters(
+				["project", "financial", "medical"],
+				availableIds,
+			),
+		).toBeUndefined();
+		expect(
+			encodeMapDocumentFilters(["project", "financial"], availableIds),
+		).toBe("financial,project");
 	});
 
 	it("rejects unsupported input and limits filter count", () => {
