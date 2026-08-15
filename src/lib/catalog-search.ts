@@ -43,6 +43,33 @@ export function encodeDocumentFilters(documentIds: string[]) {
 	return documentIds.length > 0 ? documentIds.join(",") : undefined;
 }
 
+export function resolveMapDocumentIds(
+	value: unknown,
+	availableDocumentIds: readonly string[],
+) {
+	if (typeof value !== "string") {
+		return [...availableDocumentIds];
+	}
+
+	const requestedIds = new Set(readSelectedDocumentIds(value));
+	const selectedIds = availableDocumentIds.filter((id) => requestedIds.has(id));
+
+	return selectedIds.length > 0 ? selectedIds : [...availableDocumentIds];
+}
+
+export function encodeMapDocumentFilters(
+	selectedDocumentIds: readonly string[],
+	availableDocumentIds: readonly string[],
+) {
+	const selectedIds = new Set(selectedDocumentIds);
+	const orderedSelectedIds = availableDocumentIds.filter((id) =>
+		selectedIds.has(id),
+	);
+	const allSelected = orderedSelectedIds.length === availableDocumentIds.length;
+
+	return allSelected ? undefined : encodeDocumentFilters(orderedSelectedIds);
+}
+
 export function readCatalogId(value: unknown) {
 	return typeof value === "string" &&
 		value.length > 0 &&

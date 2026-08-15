@@ -21,16 +21,13 @@ type PublicShellProps = {
 			name: string;
 			isFilterable: boolean;
 		}>;
-		documentLocations: ReadonlyArray<{
+		documentMaps: ReadonlyArray<{
 			documentId: string;
 			mapId: string;
-			mapImageId: string;
 		}>;
 		editorAvailable: boolean;
 	};
-	selectedDocumentIds: string[];
 	currentMapId?: string;
-	currentMapImageId?: string;
 	editorSearch?: {
 		documents?: string;
 		image?: string;
@@ -42,7 +39,6 @@ type PublicShellProps = {
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
-	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	sidebarFooter?: ReactNode;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
 	children: ReactNode;
@@ -50,16 +46,13 @@ type PublicShellProps = {
 
 export function PublicShell({
 	catalog,
-	selectedDocumentIds,
 	currentMapId,
-	currentMapImageId,
 	editorSearch,
 	headerTitle,
 	headerMeta,
 	onMapNavigate,
 	onMapNavigationStart,
 	onHomeNavigate,
-	onSelectedDocumentsChange,
 	sidebarFooter,
 	sidebarPanel,
 	children,
@@ -70,13 +63,17 @@ export function PublicShell({
 			className="isolate h-svh overflow-hidden"
 			style={{ "--sidebar-width": "21.875rem" } as CSSProperties}
 		>
+			<a
+				href="#main-content"
+				className="fixed top-3 left-3 z-50 -translate-y-20 bg-primary px-4 py-3 font-semibold text-primary-foreground text-xs uppercase tracking-widest outline-none transition-transform focus:translate-y-0 focus:ring-2 focus:ring-ring"
+			>
+				Skip to content
+			</a>
 			<AppSidebar
 				maps={catalog.maps}
 				documents={catalog.documents}
-				documentLocations={catalog.documentLocations}
-				selectedDocumentIds={selectedDocumentIds}
+				documentMaps={catalog.documentMaps}
 				currentMapId={currentMapId}
-				currentMapImageId={currentMapImageId}
 				footer={
 					sidebarFooter ??
 					(catalog.editorAvailable ? (
@@ -100,13 +97,16 @@ export function PublicShell({
 				onMapNavigate={onMapNavigate}
 				onMapNavigationStart={onMapNavigationStart}
 				onHomeNavigate={onHomeNavigate}
-				onSelectedDocumentsChange={onSelectedDocumentsChange}
 				sidebarPanel={sidebarPanel}
 			/>
-			<SidebarInset className="min-h-0 min-w-0 overflow-hidden">
+			<SidebarInset
+				id="main-content"
+				tabIndex={-1}
+				className="min-h-0 min-w-0 overflow-hidden outline-none"
+			>
 				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
-					<SidebarTrigger className="md:hidden" />
-					<Separator orientation="vertical" className="h-4 md:hidden" />
+					<SidebarTrigger className="lg:hidden" />
+					<Separator orientation="vertical" className="h-4 lg:hidden" />
 					<p className="truncate font-heading text-primary text-sm uppercase tracking-wide">
 						{headerTitle}
 					</p>

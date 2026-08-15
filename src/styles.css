@@ -156,6 +156,15 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+		min-width: 20rem;
+	}
+	::selection {
+		background: var(--rowdy-orange);
+		color: var(--cosmic-ink);
+	}
+	* {
+		scrollbar-color: var(--suez-canal) var(--cosmic-ink);
+		scrollbar-width: thin;
 	}
 	button:not(:disabled),
 	[role="button"]:not(:disabled) {
@@ -170,5 +179,6 @@
 	}
 	html {
 		@apply font-sans;
+		color-scheme: dark;
 	}
 }

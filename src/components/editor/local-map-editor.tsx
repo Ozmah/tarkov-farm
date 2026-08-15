@@ -66,9 +66,10 @@ import {
 	saveLocation,
 } from "@/functions/editor";
 import {
-	encodeDocumentFilters,
-	readSelectedDocumentIds,
+	encodeMapDocumentFilters,
+	resolveMapDocumentIds,
 } from "@/lib/catalog-search";
+import { getDocumentShortName } from "@/lib/document-display";
 import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
@@ -134,9 +135,18 @@ export function LocalMapEditor({
 	const imageLocations = data.locations.filter(
 		(location) => location.mapImageId === selectedImage?.id,
 	);
-	const documentIds = new Set(data.documents.map((document) => document.id));
-	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
-		(documentId) => documentIds.has(documentId),
+	const assignedDocumentIds = new Set(
+		data.documentMaps
+			.filter((assignment) => assignment.mapId === selectedMap?.id)
+			.map((assignment) => assignment.documentId),
+	);
+	const mapDocuments = data.documents.filter((document) =>
+		assignedDocumentIds.has(document.id),
+	);
+	const mapDocumentIds = mapDocuments.map((document) => document.id);
+	const selectedDocumentIds = resolveMapDocumentIds(
+		search.documents,
+		mapDocumentIds,
 	);
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
 	const locationDocumentIds = new Map(
@@ -167,6 +177,7 @@ export function LocalMapEditor({
 			{
 				map: mapId,
 				image: firstImage?.id,
+				documents: undefined,
 				location: undefined,
 				section: undefined,
 			},
@@ -195,7 +206,17 @@ export function LocalMapEditor({
 		);
 		await router.invalidate({ sync: true });
 	};
-	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
+	const documentSearch = encodeMapDocumentFilters(
+		selectedDocumentIds,
+		mapDocumentIds,
+	);
+	const sidebarDocuments = mapDocuments.map((document) => ({
+		count: imageLocations.filter(
+			(location) => locationDocumentIds.get(location.id) === document.id,
+		).length,
+		id: document.id,
+		name: getDocumentShortName(document),
+	}));
 	const sidebarLocations = visibleLocations.map((location) => {
 		const documentId = locationDocumentIds.get(location.id);
 		const document = data.documents.find((item) => item.id === documentId);
@@ -206,44 +227,19 @@ export function LocalMapEditor({
 			name: location.name,
 		};
 	});
-	const mapImagesById = new Map(
-		data.mapImages.map((image) => [image.id, image]),
-	);
-	const locationsById = new Map(
-		data.locations.map((location) => [location.id, location]),
-	);
 	const editorCatalog = {
 		maps: data.maps,
 		documents: data.documents.map((document) => ({
 			...document,
 			isFilterable: true,
 		})),
-		documentLocations: data.locationDocuments.flatMap(
-			({ documentId, locationId }) => {
-				const location = locationsById.get(locationId);
-				const image = location
-					? mapImagesById.get(location.mapImageId)
-					: undefined;
-
-				return location && image
-					? [
-							{
-								documentId,
-								mapId: image.mapId,
-								mapImageId: image.id,
-							},
-						]
-					: [];
-			},
-		),
+		documentMaps: data.documentMaps,
 		editorAvailable: false,
 	};
 	return (
 		<PublicShell
 			catalog={editorCatalog}
-			selectedDocumentIds={selectedDocumentIds}
 			currentMapId={selectedMap?.id}
-			currentMapImageId={selectedImage?.id}
 			headerTitle={
 				search.section === "updates" ? "Updates editor" : "Location editor"
 			}
@@ -252,17 +248,8 @@ export function LocalMapEditor({
 			onHomeNavigate={() =>
 				void router.navigate({
 					to: "/",
-					search: { documents: documentSearch },
+					search: {},
 				})
-			}
-			onSelectedDocumentsChange={(documentIds) =>
-				void onSearchChange(
-					{
-						documents: encodeDocumentFilters(documentIds),
-						location: undefined,
-					},
-					true,
-				)
 			}
 			sidebarFooter={
 				<EditorSidebarFooter
@@ -285,6 +272,7 @@ export function LocalMapEditor({
 					: (closePanel) => (
 							<EditorMapSidebarPanel
 								canCreateLocation={Boolean(selectedImage)}
+								documents={sidebarDocuments}
 								locations={sidebarLocations}
 								maps={data.maps}
 								mapViews={images.map((image) => ({
@@ -292,6 +280,7 @@ export function LocalMapEditor({
 									name: image.name,
 								}))}
 								selectedLocationId={selectedLocation?.id}
+								selectedDocumentIds={selectedDocumentIds}
 								selectedMapId={selectedMap?.id ?? ""}
 								selectedMapViewId={selectedImage?.id}
 								onBack={closePanel}
@@ -301,6 +290,18 @@ export function LocalMapEditor({
 								}
 								onMapChange={selectMap}
 								onMapViewChange={selectImage}
+								onSelectedDocumentsChange={(documentIds) =>
+									void onSearchChange(
+										{
+											documents: encodeMapDocumentFilters(
+												documentIds,
+												mapDocumentIds,
+											),
+											location: undefined,
+										},
+										true,
+									)
+								}
 							/>
 						)
 			}

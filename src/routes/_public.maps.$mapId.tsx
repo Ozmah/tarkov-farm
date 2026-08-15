@@ -18,10 +18,11 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { getPublicMapData } from "@/functions/catalog";
 import {
-	encodeDocumentFilters,
+	encodeMapDocumentFilters,
 	readCatalogId,
-	readSelectedDocumentIds,
+	resolveMapDocumentIds,
 } from "@/lib/catalog-search";
+import { getDocumentShortName } from "@/lib/document-display";
 import { SUBMAP_LINKS } from "@/lib/submap-links";
 import { Route as PublicLayoutRoute } from "./_public";
 
@@ -50,24 +51,29 @@ function MapPage() {
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 	const prepareMapNavigation = usePreparePublicMapNavigation();
-	const filterableDocumentIds = new Set(
-		catalog.documents
-			.filter((document) => document.isFilterable)
-			.map((document) => document.id),
+	const assignedDocumentIds = new Set(
+		catalog.documentMaps
+			.filter((assignment) => assignment.mapId === mapData.map.id)
+			.map((assignment) => assignment.documentId),
 	);
-	const selectedDocumentIds = readSelectedDocumentIds(search.documents).filter(
-		(id) => filterableDocumentIds.has(id),
+	const mapDocuments = catalog.documents.filter(
+		(document) => document.isFilterable && assignedDocumentIds.has(document.id),
+	);
+	const mapDocumentIds = mapDocuments.map((document) => document.id);
+	const selectedDocumentIds = resolveMapDocumentIds(
+		search.documents,
+		mapDocumentIds,
 	);
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
 	const selectedImage =
 		mapData.images.find((image) => image.viewKey === search.view) ??
 		mapData.images.find((image) => image.viewKey === "main") ??
 		mapData.images[0];
-	const visibleLocations = mapData.locations.filter(
-		(location) =>
-			location.mapImageId === selectedImage?.id &&
-			(selectedDocumentIdSet.size === 0 ||
-				selectedDocumentIdSet.has(location.documentId)),
+	const currentViewLocations = mapData.locations.filter(
+		(location) => location.mapImageId === selectedImage?.id,
+	);
+	const visibleLocations = currentViewLocations.filter((location) =>
+		selectedDocumentIdSet.has(location.documentId),
 	);
 	const selectedLocation = visibleLocations.find(
 		(location) => location.id === search.location,
@@ -113,10 +119,21 @@ function MapPage() {
 	const submapViewByMarkerId = new Map(
 		submapMarkers.map((marker) => [marker.id, marker.targetViewKey]),
 	);
-	const documentSearch = encodeDocumentFilters(selectedDocumentIds);
+	const documentSearch = encodeMapDocumentFilters(
+		selectedDocumentIds,
+		mapDocumentIds,
+	);
+	const sidebarDocuments = mapDocuments.map((document) => ({
+		count: currentViewLocations.filter(
+			(location) => location.documentId === document.id,
+		).length,
+		id: document.id,
+		name: getDocumentShortName(document),
+	}));
 
 	const sidebarPanel = (closePanel: () => void) => (
 		<RouteMapSidebarPanel
+			documents={sidebarDocuments}
 			locations={visibleLocations}
 			maps={catalog.maps}
 			mapViews={mapData.images.map((image) => ({
@@ -124,6 +141,7 @@ function MapPage() {
 				name: image.name,
 			}))}
 			selectedLocationId={selectedLocation?.id}
+			selectedDocumentIds={selectedDocumentIds}
 			selectedMapId={mapData.map.id}
 			selectedMapViewId={selectedImage?.viewKey}
 			onBack={closePanel}
@@ -138,6 +156,18 @@ function MapPage() {
 					},
 				})
 			}
+			onSelectedDocumentsChange={(documentIds) =>
+				void navigate({
+					to: "/maps/$mapId",
+					params: { mapId: mapData.map.id },
+					search: {
+						documents: encodeMapDocumentFilters(documentIds, mapDocumentIds),
+						location: undefined,
+						view: selectedImage?.viewKey,
+					},
+					replace: true,
+				})
+			}
 			onMapChange={(mapId) => {
 				const map = catalog.maps.find((item) => item.id === mapId);
 
@@ -148,7 +178,7 @@ function MapPage() {
 				void navigate({
 					to: "/maps/$mapId",
 					params: { mapId },
-					search: { documents: documentSearch },
+					search: {},
 				});
 			}}
 			onMapViewChange={(view) =>
@@ -168,7 +198,6 @@ function MapPage() {
 
 	usePublicLayoutConfiguration(
 		{
-			currentMapImageId: selectedImage?.id,
 			editorSearch: {
 				documents: documentSearch,
 				image: selectedImage?.id,
@@ -189,6 +218,7 @@ function MapPage() {
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
+			<h1 className="sr-only">{mapData.map.name} document locations</h1>
 			{selectedImage ? (
 				<div className="relative min-h-0 flex-1">
 					<div className="h-full">
@@ -210,7 +240,7 @@ function MapPage() {
 							]}
 							selectedMarkerId={selectedLocation?.id}
 							toolbarStart={
-								<p className="max-w-36 truncate font-heading text-sm">
+								<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
 									{selectedImage.name}
 								</p>
 							}
@@ -263,7 +293,7 @@ function MapPage() {
 				</Empty>
 			)}
 
-			<footer className="shrink-0 border-border border-t px-4 py-2 text-center">
+			<footer className="shrink-0 border-border border-t bg-card px-4 py-2 text-center">
 				<MapAttribution mapId={mapData.map.id} />
 			</footer>
 		</div>
