@@ -8,9 +8,30 @@ import { MapSidebarPanel } from "./map-sidebar-panel";
 afterEach(cleanup);
 
 const documents = [
-	{ count: 8, id: "financial", name: "Financial" },
-	{ count: 3, id: "medical", name: "Medical" },
-	{ count: 4, id: "project", name: "Project" },
+	{
+		count: 8,
+		id: "financial",
+		imageHeight: 559,
+		imagePath: "/documents/financial.webp",
+		imageWidth: 689,
+		name: "Financial",
+	},
+	{
+		count: 3,
+		id: "medical",
+		imageHeight: 602,
+		imagePath: "/documents/medical.webp",
+		imageWidth: 487,
+		name: "Medical",
+	},
+	{
+		count: 4,
+		id: "project",
+		imageHeight: 377,
+		imagePath: "/documents/project.webp",
+		imageWidth: 530,
+		name: "Project",
+	},
 ];
 
 describe("MapSidebarPanel document filters", () => {
@@ -68,6 +89,24 @@ describe("MapSidebarPanel document filters", () => {
 			"project",
 		]);
 	});
+
+	it("uses the matching document artwork in filters and location rows", () => {
+		const { container } = renderPanel({
+			selectedDocumentIds: documents.map((document) => document.id),
+		});
+		const financialImages = container.querySelectorAll<HTMLImageElement>(
+			'img[src="/documents/financial.webp"]',
+		);
+
+		expect(financialImages).toHaveLength(2);
+		for (const image of financialImages) {
+			expect(image.alt).toBe("");
+			expect(image.width).toBe(689);
+			expect(image.height).toBe(559);
+			expect(image.getAttribute("loading")).toBe("lazy");
+			expect(image.getAttribute("decoding")).toBe("async");
+		}
+	});
 });
 
 function renderPanel({
@@ -81,8 +120,18 @@ function renderPanel({
 		<MapSidebarPanel
 			documents={documents}
 			locations={[
-				{ documentName: "Financial", id: "one", name: "First location" },
-				{ documentName: "Project", id: "two", name: "Second location" },
+				{
+					documentId: "financial",
+					documentName: "Financial",
+					id: "one",
+					name: "First location",
+				},
+				{
+					documentId: "project",
+					documentName: "Project",
+					id: "two",
+					name: "Second location",
+				},
 			]}
 			maps={[{ id: "factory", name: "Factory" }]}
 			mapViews={[{ id: "main", name: "Main map" }]}

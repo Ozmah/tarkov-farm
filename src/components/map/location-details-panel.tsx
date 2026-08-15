@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import {
+	type DocumentArtwork,
+	DocumentThumbnail,
+} from "@/components/document-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import {
 	Dialog,
@@ -45,6 +49,7 @@ type LocationScreenshot = {
 
 type LocationDetailsPanelProps = {
 	className?: string;
+	documentArtwork?: DocumentArtwork;
 	location: LocationDetails;
 	onClose: () => void;
 	screenshots: LocationScreenshot[];
@@ -52,6 +57,7 @@ type LocationDetailsPanelProps = {
 
 export function LocationDetailsPanel({
 	className,
+	documentArtwork,
 	location,
 	onClose,
 	screenshots,
@@ -79,14 +85,22 @@ export function LocationDetailsPanel({
 					finalFocus={isMobile}
 					className={cn("w-[calc(100%-1rem)] sm:max-w-[26rem]", className)}
 				>
-					<header className="shrink-0 border-primary border-t p-5 pr-18">
-						<Badge variant="secondary">{location.documentName}</Badge>
-						<SheetTitle
-							aria-live="polite"
-							className="mt-3 text-balance font-medium text-2xl normal-case tracking-tight"
-						>
-							{location.name}
-						</SheetTitle>
+					<header className="flex shrink-0 items-center gap-4 border-primary border-t p-5 pr-18">
+						{documentArtwork ? (
+							<DocumentThumbnail
+								document={documentArtwork}
+								className="size-16 sm:size-20"
+							/>
+						) : null}
+						<div className="min-w-0 flex-1">
+							<Badge variant="secondary">{location.documentName}</Badge>
+							<SheetTitle
+								aria-live="polite"
+								className="mt-3 text-balance font-medium text-2xl normal-case tracking-tight"
+							>
+								{location.name}
+							</SheetTitle>
+						</div>
 					</header>
 					<Separator />
 

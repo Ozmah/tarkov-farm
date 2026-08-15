@@ -60,6 +60,9 @@ function MapPage() {
 		(document) => document.isFilterable && assignedDocumentIds.has(document.id),
 	);
 	const mapDocumentIds = mapDocuments.map((document) => document.id);
+	const documentById = new Map(
+		mapDocuments.map((document) => [document.id, document]),
+	);
 	const selectedDocumentIds = resolveMapDocumentIds(
 		search.documents,
 		mapDocumentIds,
@@ -128,6 +131,9 @@ function MapPage() {
 			(location) => location.documentId === document.id,
 		).length,
 		id: document.id,
+		imageHeight: document.imageHeight,
+		imagePath: document.imagePath,
+		imageWidth: document.imageWidth,
 		name: getDocumentShortName(document),
 	}));
 
@@ -262,6 +268,7 @@ function MapPage() {
 
 					{selectedLocation ? (
 						<LocationDetailsPanel
+							documentArtwork={documentById.get(selectedLocation.documentId)}
 							location={selectedLocation}
 							screenshots={selectedScreenshots}
 							onClose={() =>

@@ -22,6 +22,11 @@ const screenshot = {
 	previewWidth: 1000,
 	width: 1920,
 };
+const documentArtwork = {
+	imageHeight: 559,
+	imagePath: "/documents/financial.webp",
+	imageWidth: 689,
+};
 
 beforeEach(() => setViewportWidth(1280));
 
@@ -60,6 +65,20 @@ describe("LocationDetailsPanel", () => {
 		});
 		expect(link.getAttribute("rel")).toBe("noopener noreferrer");
 		expect(link.getAttribute("target")).toBe("_blank");
+	});
+
+	it("shows decorative document artwork with intrinsic dimensions", () => {
+		renderPanel();
+		const image = document.querySelector<HTMLImageElement>(
+			'img[src="/documents/financial.webp"]',
+		);
+
+		expect(image).not.toBeNull();
+		expect(image?.alt).toBe("");
+		expect(image?.width).toBe(689);
+		expect(image?.height).toBe(559);
+		expect(image?.getAttribute("loading")).toBe("lazy");
+		expect(image?.getAttribute("decoding")).toBe("async");
 	});
 
 	it("keeps the desktop map interactive while details are open", () => {
@@ -185,6 +204,7 @@ describe("LocationDetailsPanel", () => {
 function renderPanel(onClose = vi.fn()) {
 	return render(
 		<LocationDetailsPanel
+			documentArtwork={documentArtwork}
 			location={{
 				description: "Near the stairs",
 				documentName: "Test document",

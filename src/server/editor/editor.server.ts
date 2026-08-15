@@ -132,7 +132,13 @@ export async function readEditorData() {
 		.orderBy(asc(screenshots.locationId), asc(screenshots.sortOrder))
 		.all();
 	const documentRows = await db
-		.select({ id: documents.id, name: documents.name })
+		.select({
+			id: documents.id,
+			name: documents.name,
+			imagePath: documents.imagePath,
+			imageWidth: documents.imageWidth,
+			imageHeight: documents.imageHeight,
+		})
 		.from(documents)
 		.where(and(eq(documents.isActive, true), eq(documents.isFilterable, true)))
 		.orderBy(asc(documents.name))

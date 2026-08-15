@@ -215,6 +215,9 @@ export function LocalMapEditor({
 			(location) => locationDocumentIds.get(location.id) === document.id,
 		).length,
 		id: document.id,
+		imageHeight: document.imageHeight,
+		imagePath: document.imagePath,
+		imageWidth: document.imageWidth,
 		name: getDocumentShortName(document),
 	}));
 	const sidebarLocations = visibleLocations.map((location) => {
@@ -222,6 +225,7 @@ export function LocalMapEditor({
 		const document = data.documents.find((item) => item.id === documentId);
 
 		return {
+			documentId: documentId ?? "",
 			documentName: document?.name ?? "Unassigned document",
 			id: location.id,
 			name: location.name,

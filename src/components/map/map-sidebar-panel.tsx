@@ -1,6 +1,10 @@
 import { ArrowLeftIcon, MapPinIcon } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 
+import {
+	type DocumentArtwork,
+	DocumentThumbnail,
+} from "@/components/document-thumbnail";
 import { Button } from "@/components/ui/button";
 import {
 	Empty,
@@ -31,12 +35,13 @@ type SidebarMapView = {
 };
 
 type SidebarLocation = {
+	documentId: string;
 	documentName: string;
 	id: string;
 	name: string;
 };
 
-type SidebarDocument = {
+type SidebarDocument = DocumentArtwork & {
 	count: number;
 	id: string;
 	name: string;
@@ -78,6 +83,9 @@ export function MapSidebarPanel({
 	onMapViewChange,
 }: MapSidebarPanelProps) {
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
+	const documentById = new Map(
+		documents.map((document) => [document.id, document]),
+	);
 	const allDocumentsSelected = documents.every((document) =>
 		selectedDocumentIdSet.has(document.id),
 	);
@@ -232,12 +240,13 @@ export function MapSidebarPanel({
 										disabled={isSelected && selectedDocumentIds.length === 1}
 										onClick={() => toggleDocument(document.id)}
 										className={cn(
-											"flex min-h-11 items-center justify-between gap-2 bg-sidebar px-3 text-left text-sidebar-foreground text-xs outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset disabled:cursor-default disabled:opacity-70",
+											"flex min-h-14 items-center gap-2 bg-sidebar px-2 text-left text-sidebar-foreground text-xs outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset disabled:cursor-default disabled:opacity-70",
 											isSelected &&
 												"bg-sidebar-accent text-sidebar-accent-foreground",
 										)}
 									>
-										<span className="truncate font-medium">
+										<DocumentThumbnail document={document} className="size-8" />
+										<span className="min-w-0 flex-1 truncate font-medium">
 											{document.name}
 										</span>
 										<span className="shrink-0 text-sidebar-foreground/60 tabular-nums">
@@ -255,6 +264,7 @@ export function MapSidebarPanel({
 				<ul className="min-h-0 flex-1 overflow-auto py-2">
 					{locations.map((location, index) => {
 						const selected = selectedLocationId === location.id;
+						const document = documentById.get(location.documentId);
 
 						return (
 							<li key={location.id}>
@@ -271,6 +281,12 @@ export function MapSidebarPanel({
 									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-sidebar-border font-heading text-xs tabular-nums">
 										{index + 1}
 									</span>
+									{document ? (
+										<DocumentThumbnail
+											document={document}
+											className="size-10"
+										/>
+									) : null}
 									<span className="min-w-0 flex-1">
 										<span className="block truncate text-sm">
 											{location.name}
