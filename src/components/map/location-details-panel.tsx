@@ -83,7 +83,10 @@ export function LocationDetailsPanel({
 					showOverlay={isMobile}
 					initialFocus={isMobile}
 					finalFocus={isMobile}
-					className={cn("w-[calc(100%-1rem)] sm:max-w-[26rem]", className)}
+					className={cn(
+						"data-[side=right]:w-[calc(100%-1rem)] sm:max-w-[26rem]",
+						className,
+					)}
 				>
 					<header className="flex shrink-0 items-center gap-4 border-primary border-t p-5 pr-18">
 						{documentArtwork ? (
@@ -96,7 +99,7 @@ export function LocationDetailsPanel({
 							<Badge variant="secondary">{location.documentName}</Badge>
 							<SheetTitle
 								aria-live="polite"
-								className="mt-3 text-balance font-medium text-2xl normal-case tracking-tight"
+								className="mt-3 min-h-24 text-balance font-medium text-2xl normal-case tracking-tight"
 							>
 								{location.name}
 							</SheetTitle>
