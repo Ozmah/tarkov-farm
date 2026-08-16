@@ -5,7 +5,7 @@ import {
 	PlusIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import {
 	LocationScreenshotEditor,
@@ -499,12 +499,16 @@ function LocationWorkspace({
 				(item) => item.locationId === selectedLocation.id,
 			)?.documentId ?? "")
 		: "";
-	const selectedRequiredKeyIds = selectedLocation
-		? data.locationRequiredKeys
-				.filter((item) => item.locationId === selectedLocation.id)
-				.map((item) => item.keyId)
-				.sort()
-		: [];
+	const selectedRequiredKeyIds = useMemo(
+		() =>
+			selectedLocation
+				? data.locationRequiredKeys
+						.filter((item) => item.locationId === selectedLocation.id)
+						.map((item) => item.keyId)
+						.sort()
+				: [],
+		[data.locationRequiredKeys, selectedLocation],
+	);
 	const [draft, setDraft] = useState<Draft>(() =>
 		createLocationDraft(
 			selectedLocation,
@@ -520,14 +524,26 @@ function LocationWorkspace({
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
+	const resetState = {
+		draftVersion,
+		imageId: image.id,
+		screenshots: data.screenshots,
+		selectedDocumentId,
+		selectedLocation,
+		selectedRequiredKeyIds,
+	};
+	const [previousResetState, setPreviousResetState] = useState(resetState);
+	const shouldReset =
+		resetState.draftVersion !== previousResetState.draftVersion ||
+		resetState.imageId !== previousResetState.imageId ||
+		resetState.screenshots !== previousResetState.screenshots ||
+		resetState.selectedDocumentId !== previousResetState.selectedDocumentId ||
+		resetState.selectedLocation !== previousResetState.selectedLocation ||
+		resetState.selectedRequiredKeyIds !==
+			previousResetState.selectedRequiredKeyIds;
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: draftVersion intentionally resets a new-location draft without remounting the map canvas.
-	useEffect(() => {
-		for (const objectUrl of screenshotObjectUrlsRef.current) {
-			URL.revokeObjectURL(objectUrl);
-		}
-
-		screenshotObjectUrlsRef.current.clear();
+	if (shouldReset) {
+		setPreviousResetState(resetState);
 		setDraft(
 			createLocationDraft(
 				selectedLocation,
@@ -540,22 +556,25 @@ function LocationWorkspace({
 			createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 		);
 		setError(undefined);
-	}, [
-		data.screenshots,
-		draftVersion,
-		image.id,
-		selectedDocumentId,
-		selectedRequiredKeyIds.join("\u0000"),
-		selectedLocation,
-	]);
+	}
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: these values define when owned preview URLs are no longer in use.
 	useEffect(() => {
 		return () => {
 			for (const objectUrl of screenshotObjectUrlsRef.current) {
 				URL.revokeObjectURL(objectUrl);
 			}
+
+			screenshotObjectUrlsRef.current.clear();
 		};
-	}, []);
+	}, [
+		data.screenshots,
+		draftVersion,
+		image.id,
+		selectedDocumentId,
+		selectedLocation,
+		selectedRequiredKeyIds,
+	]);
 	const draftImage =
 		data.mapImages.find((item) => item.id === draft.mapImageId) ?? image;
 	const draftMapImages = data.mapImages.filter(
@@ -688,16 +707,20 @@ function LocationWorkspace({
 	};
 
 	const removeScreenshotDraft = (key: string) => {
-		setScreenshotDrafts((current) => {
-			const removed = current.find((screenshot) => screenshot.key === key);
+		const removed = screenshotDrafts.find(
+			(screenshot) => screenshot.key === key,
+		);
 
-			if (removed?.file) {
-				URL.revokeObjectURL(removed.previewUrl);
-				screenshotObjectUrlsRef.current.delete(removed.previewUrl);
-			}
+		setScreenshotDrafts((current) =>
+			current.filter((screenshot) => screenshot.key !== key),
+		);
 
-			return current.filter((screenshot) => screenshot.key !== key);
-		});
+		if (
+			removed?.file &&
+			screenshotObjectUrlsRef.current.delete(removed.previewUrl)
+		) {
+			URL.revokeObjectURL(removed.previewUrl);
+		}
 	};
 
 	const submitLocation = async () => {

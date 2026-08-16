@@ -2,6 +2,7 @@ import {
 	createContext,
 	type ReactNode,
 	useContext,
+	useEffectEvent,
 	useLayoutEffect,
 	useMemo,
 } from "react";
@@ -71,9 +72,13 @@ export function usePublicLayoutConfiguration(
 		);
 	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: configurationKey is the explicit semantic identity of this route configuration.
-	useLayoutEffect(() => {
+	const applyConfiguration = useEffectEvent(() => {
 		context.setConfiguration(configuration);
+	});
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: configurationKey controls when the current route configuration is installed.
+	useLayoutEffect(() => {
+		applyConfiguration();
 
 		return () => context.setConfiguration(undefined);
 	}, [configurationKey, context]);

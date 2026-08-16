@@ -6,7 +6,7 @@ import {
 	NewspaperClippingIcon,
 } from "@phosphor-icons/react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import {
 	Sidebar,
@@ -65,7 +65,18 @@ export function AppSidebar({
 	);
 	const isHomeRoute = Boolean(matchRoute({ to: "/", fuzzy: false }));
 	const isUpdatesRoute = Boolean(matchRoute({ to: "/updates", fuzzy: false }));
+	const [previousHasSidebarPanel, setPreviousHasSidebarPanel] =
+		useState(hasSidebarPanel);
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
+
+	if (hasSidebarPanel !== previousHasSidebarPanel) {
+		setPreviousHasSidebarPanel(hasSidebarPanel);
+
+		if (hasSidebarPanel) {
+			setIsSidebarPanelOpen(true);
+		}
+	}
+
 	const visibleSidebarPanel = isSidebarPanelOpen ? sidebarPanel : undefined;
 	const documentIdsByMap = new Map<string, Set<string>>();
 
@@ -74,12 +85,6 @@ export function AppSidebar({
 		documentIds.add(assignment.documentId);
 		documentIdsByMap.set(assignment.mapId, documentIds);
 	}
-
-	useEffect(() => {
-		if (hasSidebarPanel) {
-			setIsSidebarPanelOpen(true);
-		}
-	}, [hasSidebarPanel]);
 
 	function closeMobileSidebar() {
 		if (isMobile) {
