@@ -5,7 +5,7 @@ import {
 	PlusIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import {
 	LocationScreenshotEditor,
@@ -517,7 +517,6 @@ function LocationWorkspace({
 			image.id,
 		),
 	);
-	const screenshotObjectUrlsRef = useRef(new Set<string>());
 	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
 		() => createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 	);
@@ -558,23 +557,6 @@ function LocationWorkspace({
 		setError(undefined);
 	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: these values define when owned preview URLs are no longer in use.
-	useEffect(() => {
-		return () => {
-			for (const objectUrl of screenshotObjectUrlsRef.current) {
-				URL.revokeObjectURL(objectUrl);
-			}
-
-			screenshotObjectUrlsRef.current.clear();
-		};
-	}, [
-		data.screenshots,
-		draftVersion,
-		image.id,
-		selectedDocumentId,
-		selectedLocation,
-		selectedRequiredKeyIds,
-	]);
 	const draftImage =
 		data.mapImages.find((item) => item.id === draft.mapImageId) ?? image;
 	const draftMapImages = data.mapImages.filter(
@@ -658,18 +640,15 @@ function LocationWorkspace({
 			return;
 		}
 
-		const additions = files.map((file) => {
-			const previewUrl = URL.createObjectURL(file);
-			screenshotObjectUrlsRef.current.add(previewUrl);
-
-			return {
-				altText: "",
-				caption: "",
-				file,
-				key: crypto.randomUUID(),
-				previewUrl,
-			} satisfies ScreenshotDraft;
-		});
+		const additions = files.map(
+			(file) =>
+				({
+					altText: "",
+					caption: "",
+					file,
+					key: crypto.randomUUID(),
+				}) satisfies ScreenshotDraft,
+		);
 
 		setScreenshotDrafts((current) => [...current, ...additions]);
 	};
@@ -707,20 +686,9 @@ function LocationWorkspace({
 	};
 
 	const removeScreenshotDraft = (key: string) => {
-		const removed = screenshotDrafts.find(
-			(screenshot) => screenshot.key === key,
-		);
-
 		setScreenshotDrafts((current) =>
 			current.filter((screenshot) => screenshot.key !== key),
 		);
-
-		if (
-			removed?.file &&
-			screenshotObjectUrlsRef.current.delete(removed.previewUrl)
-		) {
-			URL.revokeObjectURL(removed.previewUrl);
-		}
 	};
 
 	const submitLocation = async () => {

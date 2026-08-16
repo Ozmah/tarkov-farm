@@ -35,7 +35,6 @@ function PublicLayout() {
 	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
-	const [pendingMapId, setPendingMapId] = useState<string>();
 	const [committedConfiguration, setCommittedConfiguration] =
 		useState<PublicLayoutConfiguration>();
 	const [pendingConfiguration, setPendingConfiguration] =
@@ -48,7 +47,6 @@ function PublicLayout() {
 	);
 	const prepareMapNavigation = useCallback(
 		(map: { id: string; name: string }) => {
-			setPendingMapId(map.id);
 			setPendingConfiguration({
 				editorSearch: { map: map.id },
 				headerMeta: "Loading…",
@@ -60,6 +58,7 @@ function PublicLayout() {
 		[],
 	);
 	const currentMap = catalog.maps.find((map) => map.id === params.mapId);
+	const pendingMapId = pendingConfiguration?.editorSearch?.map;
 	const configuration = pendingConfiguration ?? committedConfiguration;
 
 	useEffect(() => {
@@ -70,14 +69,12 @@ function PublicLayout() {
 
 		if (pendingMapId === currentMap?.id) {
 			navigationStartedRef.current = false;
-			setPendingMapId(undefined);
 			setPendingConfiguration(undefined);
 			return;
 		}
 
 		if (navigationStartedRef.current && pendingMapId) {
 			navigationStartedRef.current = false;
-			setPendingMapId(undefined);
 			setPendingConfiguration(undefined);
 		}
 	}, [currentMap?.id, isRouterLoading, pendingMapId]);
