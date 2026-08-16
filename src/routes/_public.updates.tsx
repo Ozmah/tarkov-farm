@@ -11,6 +11,9 @@ import { UpdateFeed } from "@/components/update-feed";
 import { getUpdates } from "@/functions/updates";
 
 export const Route = createFileRoute("/_public/updates")({
+	loader: () => getUpdates(),
+	staleTime: 30_000,
+	preloadStaleTime: 30_000,
 	head: () => ({
 		meta: [
 			{ title: "Updates | Tarkov Farm" },
@@ -20,9 +23,6 @@ export const Route = createFileRoute("/_public/updates")({
 			},
 		],
 	}),
-	loader: () => getUpdates(),
-	staleTime: 30_000,
-	preloadStaleTime: 30_000,
 	component: UpdatesRoute,
 });
 

@@ -5,6 +5,7 @@ import {
 	type PointerEvent as ReactPointerEvent,
 	useCallback,
 	useEffect,
+	useEffectEvent,
 	useId,
 	useMemo,
 	useRef,
@@ -103,13 +104,6 @@ export function MapWorkspace({
 	const pointerSessionRef = useRef<PointerSession | undefined>(undefined);
 	const suppressContextMenuRef = useRef(false);
 	const centeredMarkerIdRef = useRef<string | undefined>(undefined);
-	const selectedMarkerFocusRef = useRef<
-		| {
-				xBasisPoints: number;
-				yBasisPoints: number;
-		  }
-		| undefined
-	>(undefined);
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
 	const [imageStatus, setImageStatus] = useState<"loading" | "ready" | "error">(
@@ -123,7 +117,7 @@ export function MapWorkspace({
 		: undefined;
 	const selectedFocusX = selectedMarkerX ?? selectedMarker?.xBasisPoints;
 	const selectedFocusY = selectedMarkerY ?? selectedMarker?.yBasisPoints;
-	selectedMarkerFocusRef.current =
+	const selectedMarkerFocus =
 		selectedMarkerId &&
 		selectedFocusX !== undefined &&
 		selectedFocusY !== undefined
@@ -132,6 +126,7 @@ export function MapWorkspace({
 					yBasisPoints: selectedFocusY,
 				}
 			: undefined;
+	const getSelectedMarkerFocus = useEffectEvent(() => selectedMarkerFocus);
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
@@ -212,7 +207,7 @@ export function MapWorkspace({
 					MAX_ZOOM_RATIO,
 				);
 				const nextScale = nextFitView.scale * preservedZoomRatio;
-				const selectedFocus = selectedMarkerFocusRef.current;
+				const selectedFocus = getSelectedMarkerFocus();
 
 				nextView = selectedFocus
 					? focusViewOnImagePoint({
