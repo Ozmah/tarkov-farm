@@ -74,7 +74,7 @@ The production image rebuilds the database before starting the HTTP server. Conf
 
 ## Analytics
 
-Production builds initialize the Databuddy React SDK when `VITE_DATABUDDY_CLIENT_ID` is configured. Development does not initialize analytics. Page navigation, hash changes, interactions, Web Vitals, and application errors are tracked; event payloads must not contain PII.
+Production builds initialize the Databuddy React SDK when `VITE_DATABUDDY_CLIENT_ID` is configured. Page navigation, hash changes, interactions, Web Vitals, and application errors are tracked.
 
 ## Built with
 

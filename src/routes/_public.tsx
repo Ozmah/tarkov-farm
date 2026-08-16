@@ -32,6 +32,7 @@ function PublicLayout() {
 		select: (state) => state.location.pathname,
 	});
 	const isAboutRoute = currentPathname === "/about";
+	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
 	const [pendingMapId, setPendingMapId] = useState<string>();
@@ -96,9 +97,11 @@ function PublicLayout() {
 				headerTitle={
 					isAboutRoute
 						? "About"
-						: isUpdatesRoute
-							? "Updates"
-							: (currentMap?.name ?? "Overview")
+						: isDocumentsRoute
+							? "Documents"
+							: isUpdatesRoute
+								? "Updates"
+								: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={prepareMapNavigation}

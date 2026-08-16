@@ -7,15 +7,17 @@ export type DocumentArtwork = {
 };
 
 export function DocumentThumbnail({
+	alt,
 	className,
 	document,
 }: {
+	alt?: string;
 	className?: string;
 	document: DocumentArtwork;
 }) {
 	return (
 		<span
-			aria-hidden="true"
+			aria-hidden={alt ? undefined : true}
 			className={cn(
 				"pointer-events-none flex shrink-0 select-none items-center justify-center overflow-hidden bg-foreground/5 ring-1 ring-foreground/10 ring-inset",
 				className,
@@ -23,7 +25,7 @@ export function DocumentThumbnail({
 		>
 			<img
 				src={document.imagePath}
-				alt=""
+				alt={alt ?? ""}
 				width={document.imageWidth}
 				height={document.imageHeight}
 				loading="lazy"
