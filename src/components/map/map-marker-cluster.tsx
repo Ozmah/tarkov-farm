@@ -8,6 +8,11 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Point } from "@/lib/map-viewport";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +40,7 @@ const MAP_SHORTCUT_KEYS = new Set([
 	"-",
 	"0",
 ]);
+const TOOLTIP_LOCATION_LIMIT = 4;
 
 export function MapMarkerCluster({
 	markers,
@@ -43,9 +49,31 @@ export function MapMarkerCluster({
 	selectedMarkerId,
 }: MapMarkerClusterProps) {
 	const [open, setOpen] = useState(false);
+	const [tooltipOpen, setTooltipOpen] = useState(false);
 	const restoreFocusRef = useRef(true);
 	const containsSelection = markers.some(
 		(marker) => marker.id === selectedMarkerId,
+	);
+	const tooltipMarkers = markers.slice(0, TOOLTIP_LOCATION_LIMIT);
+	const hiddenTooltipMarkerCount = markers.length - tooltipMarkers.length;
+	const trigger = (
+		<PopoverTrigger
+			aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}`}
+			onPointerDown={(event) => event.stopPropagation()}
+			className={cn(
+				"group/cluster pointer-events-auto absolute z-20 flex size-11 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-sm shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache before:absolute before:-z-10 before:size-10 before:-translate-x-1.5 before:-translate-y-1.5 before:rounded-full before:border-2 before:border-cosmic-ink before:bg-milk-mustache before:content-[''] focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+				containsSelection &&
+					"bg-rowdy-orange text-rowdy-orange-foreground ring-rowdy-orange",
+			)}
+			style={{
+				left: position.x,
+				top: position.y,
+				transform: "translate(-50%, -100%)",
+				transformOrigin: "50% 100%",
+			}}
+		>
+			<span className="tabular-nums">{markers.length}</span>
+		</PopoverTrigger>
 	);
 
 	return (
@@ -55,28 +83,32 @@ export function MapMarkerCluster({
 			onOpenChange={(nextOpen) => {
 				if (nextOpen) {
 					restoreFocusRef.current = true;
+					setTooltipOpen(false);
 				}
 
 				setOpen(nextOpen);
 			}}
 		>
-			<PopoverTrigger
-				aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}`}
-				onPointerDown={(event) => event.stopPropagation()}
-				className={cn(
-					"group/cluster pointer-events-auto absolute z-20 flex size-11 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-sm shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache before:absolute before:-z-10 before:size-10 before:-translate-x-1.5 before:-translate-y-1.5 before:rounded-full before:border-2 before:border-cosmic-ink before:bg-milk-mustache before:content-[''] focus-visible:ring-4 focus-visible:ring-rowdy-orange",
-					containsSelection &&
-						"bg-rowdy-orange text-rowdy-orange-foreground ring-rowdy-orange",
-				)}
-				style={{
-					left: position.x,
-					top: position.y,
-					transform: "translate(-50%, -100%)",
-					transformOrigin: "50% 100%",
-				}}
-			>
-				<span className="tabular-nums">{markers.length}</span>
-			</PopoverTrigger>
+			<Tooltip open={!open && tooltipOpen} onOpenChange={setTooltipOpen}>
+				<TooltipTrigger render={trigger} />
+				<TooltipContent className="max-w-64 flex-col items-stretch gap-1 px-3 py-2">
+					<ul className="space-y-0.5">
+						{tooltipMarkers.map((marker) => (
+							<li key={marker.id} className="flex min-w-0 gap-2">
+								<span className="shrink-0 font-heading tabular-nums">
+									{marker.label}
+								</span>
+								<span className="truncate">{marker.name}</span>
+							</li>
+						))}
+					</ul>
+					{hiddenTooltipMarkerCount > 0 ? (
+						<p className="text-background/70">
+							And {hiddenTooltipMarkerCount} more…
+						</p>
+					) : null}
+				</TooltipContent>
+			</Tooltip>
 			<PopoverContent
 				finalFocus={() => restoreFocusRef.current}
 				onPointerDown={(event) => event.stopPropagation()}

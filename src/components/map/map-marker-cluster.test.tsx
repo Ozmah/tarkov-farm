@@ -88,6 +88,39 @@ describe("MapMarkerCluster", () => {
 		);
 		expect(document.activeElement).toBe(trigger);
 	});
+
+	it("previews a limited number of nearby location names", async () => {
+		render(
+			<MapMarkerCluster
+				markers={Array.from({ length: 6 }, (_, index) => ({
+					id: `location-${index + 1}`,
+					label: `${index + 1}`,
+					name: `Location ${index + 1}`,
+				}))}
+				onSelect={vi.fn()}
+				position={{ x: 500, y: 500 }}
+			/>,
+		);
+		const trigger = screen.getByRole("button", {
+			name: "Choose among 6 nearby locations",
+		});
+
+		fireEvent.focus(trigger);
+
+		await waitFor(() =>
+			expect(
+				document.querySelector('[data-slot="tooltip-content"]'),
+			).not.toBeNull(),
+		);
+		const tooltip = document.querySelector('[data-slot="tooltip-content"]');
+		if (!tooltip) {
+			throw new Error("Expected the cluster tooltip to open");
+		}
+		expect(tooltip.textContent).toContain("Location 1");
+		expect(tooltip.textContent).toContain("Location 4");
+		expect(tooltip.textContent).not.toContain("Location 5");
+		expect(tooltip.textContent).toContain("And 2 more…");
+	});
 });
 
 function renderCluster(onSelect = vi.fn()) {
