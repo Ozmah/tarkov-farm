@@ -8,6 +8,7 @@ export type LocationViewSource = "direct" | "marker" | "sidebar";
 
 type AnalyticsRoute =
 	| "about"
+	| "contribute"
 	| "documents"
 	| "home"
 	| "map"
@@ -93,6 +94,7 @@ const MAX_PENDING_EVENTS = 50;
 const ROUTE_BY_PATHNAME = {
 	"/": "home",
 	"/about": "about",
+	"/contribute": "contribute",
 	"/documents": "documents",
 	"/updates": "updates",
 } as const;

@@ -1,0 +1,74 @@
+name: Submit a new location
+description: Share a document location that is not on Tarkov Farm yet.
+title: "[Location] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping with Tarkov Farm.
+
+        Submit one location per issue. Found several? Open one issue for each.
+
+  - type: input
+    id: map
+    attributes:
+      label: Map
+      description: Which map is this location on?
+      placeholder: Reserve
+    validations:
+      required: true
+
+  - type: input
+    id: document
+    attributes:
+      label: Document
+      description: Which seasonal document appears here?
+      placeholder: Financial documents
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Where is it?
+      description: Describe the building, room, floor and any nearby landmarks that make the location easy to recognize.
+      placeholder: Second floor of the west building, on the desk beside the filing cabinet.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag at least one clear in-game screenshot here. Circle the document in red when it is difficult to see.
+      placeholder: Drag your screenshots into this field.
+    validations:
+      required: true
+
+  - type: input
+    id: key
+    attributes:
+      label: Required key
+      description: If this location needs a key and you know its name, add it here.
+      placeholder: No key required
+
+  - type: input
+    id: page
+    attributes:
+      label: Tarkov Farm page
+      description: This may be filled automatically when you opened the form from Tarkov Farm.
+      placeholder: https://tarkov.farm/maps/reserve
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked Tarkov Farm and this location is not already published.
+          required: true
+        - label: I checked the open issues and did not find this location.
+          required: true
+        - label: I attached at least one clear in-game screenshot.
+          required: true
+        - label: These are screenshots I captured myself.
+          required: true

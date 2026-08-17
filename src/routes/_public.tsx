@@ -46,6 +46,7 @@ function PublicLayout() {
 		select: (state) => state.location.pathname,
 	});
 	const isAboutRoute = currentPathname === "/about";
+	const isContributeRoute = currentPathname === "/contribute";
 	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
@@ -112,11 +113,13 @@ function PublicLayout() {
 				headerTitle={
 					isAboutRoute
 						? "About"
-						: isDocumentsRoute
-							? "Documents"
-							: isUpdatesRoute
-								? "Updates"
-								: (currentMap?.name ?? "Overview")
+						: isContributeRoute
+							? "Contribute"
+							: isDocumentsRoute
+								? "Documents"
+								: isUpdatesRoute
+									? "Updates"
+									: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={(map) => prepareMapNavigation(map, "sidebar")}

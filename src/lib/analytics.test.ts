@@ -16,6 +16,9 @@ describe("analytics privacy helpers", () => {
 			map_id: "customs",
 			route: "map",
 		});
+		expect(readAnalyticsRouteProperties("/contribute")).toEqual({
+			route: "contribute",
+		});
 		expect(readAnalyticsRouteProperties("/unknown")).toEqual({
 			route: "other",
 		});
