@@ -4,19 +4,17 @@ import { DocumentThumbnail } from "@/components/document-thumbnail";
 import { usePreparePublicMapNavigation } from "@/components/public-layout-context";
 import { encodeMapDocumentFilters } from "@/lib/catalog-search";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
+import { createSeoHead } from "@/lib/seo";
 import { Route as PublicLayoutRoute } from "./_public";
 
 export const Route = createFileRoute("/_public/documents")({
-	head: () => ({
-		meta: [
-			{ title: "Battle Pass Documents | Tarkov Farm" },
-			{
-				name: "description",
-				content:
-					"Identify every Battle Pass document and open the maps where it can be found.",
-			},
-		],
-	}),
+	head: () =>
+		createSeoHead({
+			title: "Battle Pass Documents | Tarkov Farm",
+			description:
+				"Identify every Battle Pass document and open the Escape from Tarkov maps where it can be found.",
+			pathname: "/documents",
+		}),
 	component: DocumentsPage,
 });
 

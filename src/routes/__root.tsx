@@ -17,11 +17,12 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "Tarkov Season Documents",
+				title: "Tarkov Farm | Escape from Tarkov Document Locations",
 			},
 			{
 				name: "description",
-				content: "Escape from Tarkov seasonal document location reference.",
+				content:
+					"Interactive maps and screenshots for Escape from Tarkov seasonal document locations.",
 			},
 			{
 				name: "theme-color",
@@ -29,6 +30,11 @@ export const Route = createRootRoute({
 			},
 		],
 		links: [
+			{
+				rel: "icon",
+				href: "/favicon.ico",
+				sizes: "any",
+			},
 			{
 				rel: "stylesheet",
 				href: appCss,

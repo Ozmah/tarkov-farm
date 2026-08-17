@@ -14,6 +14,12 @@ type EditorSearch = {
 };
 
 export const Route = createFileRoute("/editor")({
+	head: () => ({
+		meta: [
+			{ title: "Editor | Tarkov Farm" },
+			{ name: "robots", content: "noindex, nofollow" },
+		],
+	}),
 	validateSearch: (search: Record<string, unknown>): EditorSearch => {
 		const catalogSearch = validateCatalogSearch(search);
 

@@ -1,11 +1,14 @@
 import {
+	ArrowSquareOutIcon,
 	FileTextIcon,
+	HandHeartIcon,
 	HouseIcon,
 	InfoIcon,
 	MapTrifoldIcon,
 	NewspaperClippingIcon,
+	WarningCircleIcon,
 } from "@phosphor-icons/react";
-import { Link, useMatchRoute } from "@tanstack/react-router";
+import { Link, useMatchRoute, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
 
 import {
@@ -23,6 +26,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { getDocumentShortName } from "@/lib/document-display";
+import { buildProblemIssueUrl } from "@/lib/github-links";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
 import { cn } from "@/lib/utils";
 
@@ -58,8 +62,14 @@ export function AppSidebar({
 }: AppSidebarProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
 	const matchRoute = useMatchRoute();
+	const currentHref = useRouterState({
+		select: (state) => state.location.href,
+	});
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
+	const isContributeRoute = Boolean(
+		matchRoute({ to: "/contribute", fuzzy: false }),
+	);
 	const isDocumentsRoute = Boolean(
 		matchRoute({ to: "/documents", fuzzy: false }),
 	);
@@ -78,6 +88,13 @@ export function AppSidebar({
 	}
 
 	const visibleSidebarPanel = isSidebarPanelOpen ? sidebarPanel : undefined;
+	const currentMap = currentMapId
+		? maps.find((map) => map.id === currentMapId)
+		: undefined;
+	const problemIssueUrl = buildProblemIssueUrl({
+		currentHref,
+		mapName: currentMap?.name,
+	});
 	const documentIdsByMap = new Map<string, Set<string>>();
 
 	for (const assignment of documentMaps) {
@@ -303,6 +320,45 @@ export function AppSidebar({
 							>
 								<InfoIcon aria-hidden="true" />
 								<span>About</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<a
+										href={problemIssueUrl}
+										target="_blank"
+										rel="noreferrer"
+										onClick={closeMobileSidebar}
+									/>
+								}
+							>
+								<WarningCircleIcon aria-hidden="true" />
+								<span>Something wrong?</span>
+								<ArrowSquareOutIcon
+									aria-hidden="true"
+									className="ml-auto size-3! text-sidebar-foreground/60"
+								/>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/contribute"
+										search={{ map: currentMapId }}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isContributeRoute}
+								aria-current={isContributeRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<HandHeartIcon aria-hidden="true" />
+								<span>Want to help?</span>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					</SidebarMenu>

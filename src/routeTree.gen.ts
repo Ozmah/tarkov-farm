@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
 import { Route as PublicAboutRouteImport } from './routes/_public.about'
+import { Route as PublicContributeRouteImport } from './routes/_public.contribute'
 import { Route as PublicDocumentsRouteImport } from './routes/_public.documents'
 import { Route as PublicUpdatesRouteImport } from './routes/_public.updates'
 import { Route as PublicMapsMapIdRouteImport } from './routes/_public.maps.$mapId'
@@ -32,6 +34,11 @@ const HealthRoute = HealthRouteImport.update({
   path: '/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -40,6 +47,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
 const PublicAboutRoute = PublicAboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicContributeRoute = PublicContributeRouteImport.update({
+  id: '/contribute',
+  path: '/contribute',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicDocumentsRoute = PublicDocumentsRouteImport.update({
@@ -62,7 +74,9 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof PublicAboutRoute
+  '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
@@ -70,7 +84,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof PublicAboutRoute
+  '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
   '/': typeof PublicIndexRoute
@@ -81,7 +97,9 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_public/about': typeof PublicAboutRoute
+  '/_public/contribute': typeof PublicContributeRoute
   '/_public/documents': typeof PublicDocumentsRoute
   '/_public/updates': typeof PublicUpdatesRoute
   '/_public/': typeof PublicIndexRoute
@@ -93,7 +111,9 @@ export interface FileRouteTypes {
     | '/'
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/about'
+    | '/contribute'
     | '/documents'
     | '/updates'
     | '/maps/$mapId'
@@ -101,7 +121,9 @@ export interface FileRouteTypes {
   to:
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/about'
+    | '/contribute'
     | '/documents'
     | '/updates'
     | '/'
@@ -111,7 +133,9 @@ export interface FileRouteTypes {
     | '/_public'
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/_public/about'
+    | '/_public/contribute'
     | '/_public/documents'
     | '/_public/updates'
     | '/_public/'
@@ -122,6 +146,7 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   EditorRoute: typeof EditorRoute
   HealthRoute: typeof HealthRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/': {
       id: '/_public/'
       path: '/'
@@ -159,6 +191,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof PublicAboutRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/contribute': {
+      id: '/_public/contribute'
+      path: '/contribute'
+      fullPath: '/contribute'
+      preLoaderRoute: typeof PublicContributeRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/documents': {
@@ -187,6 +226,7 @@ declare module '@tanstack/react-router' {
 
 interface PublicRouteChildren {
   PublicAboutRoute: typeof PublicAboutRoute
+  PublicContributeRoute: typeof PublicContributeRoute
   PublicDocumentsRoute: typeof PublicDocumentsRoute
   PublicUpdatesRoute: typeof PublicUpdatesRoute
   PublicIndexRoute: typeof PublicIndexRoute
@@ -195,6 +235,7 @@ interface PublicRouteChildren {
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicAboutRoute: PublicAboutRoute,
+  PublicContributeRoute: PublicContributeRoute,
   PublicDocumentsRoute: PublicDocumentsRoute,
   PublicUpdatesRoute: PublicUpdatesRoute,
   PublicIndexRoute: PublicIndexRoute,
@@ -208,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   EditorRoute: EditorRoute,
   HealthRoute: HealthRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

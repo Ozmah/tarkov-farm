@@ -1,0 +1,41 @@
+name: Report a problem
+description: Tell me when something on Tarkov Farm is incorrect or broken.
+title: "[Problem] "
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Where did you find the problem?
+      placeholder: https://tarkov.farm/maps/reserve
+    validations:
+      required: true
+
+  - type: input
+    id: map
+    attributes:
+      label: Map
+      description: Leave this empty when the problem is not related to a map.
+      placeholder: Reserve
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+      description: Tell me what happened and what you expected to see instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or extra details
+      description: Add anything that makes the problem easier to verify. You can drag screenshots into this field.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked the open issues and did not find this problem.
+          required: true

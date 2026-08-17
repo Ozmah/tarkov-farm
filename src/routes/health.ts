@@ -5,6 +5,7 @@ import { getDatabase } from "@/server/db/client.server";
 const RESPONSE_HEADERS = {
 	"cache-control": "no-store",
 	"content-type": "application/json; charset=utf-8",
+	"x-robots-tag": "noindex, nofollow",
 };
 
 export const Route = createFileRoute("/health")({
