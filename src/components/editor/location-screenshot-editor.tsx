@@ -4,6 +4,7 @@ import {
 	ImageIcon,
 	TrashIcon,
 } from "@phosphor-icons/react";
+import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +26,7 @@ export type ScreenshotDraft = {
 	height?: number;
 	id?: string;
 	key: string;
-	previewUrl: string;
+	previewUrl?: string;
 	width?: number;
 };
 
@@ -122,12 +123,25 @@ function ScreenshotItem({
 }: ScreenshotItemProps) {
 	const altInputId = `screenshot-${screenshot.key}-alt`;
 	const captionInputId = `screenshot-${screenshot.key}-caption`;
+	const previewImageRef = useRef<HTMLImageElement>(null);
+	const file = screenshot.file;
+
+	useEffect(() => {
+		const previewImage = previewImageRef.current;
+
+		if (!file || !previewImage) {
+			return;
+		}
+
+		return attachFilePreview(previewImage, file);
+	}, [file]);
 
 	return (
 		<li className="overflow-hidden border border-border bg-background">
 			<div className="aspect-video bg-muted">
 				<img
-					src={screenshot.previewUrl}
+					ref={previewImageRef}
+					src={file ? undefined : screenshot.previewUrl}
 					alt={screenshot.altText}
 					width={screenshot.width}
 					height={screenshot.height}
@@ -207,4 +221,11 @@ function ScreenshotItem({
 			</div>
 		</li>
 	);
+}
+
+function attachFilePreview(image: HTMLImageElement, file: File) {
+	const previewUrl = URL.createObjectURL(file);
+	image.src = previewUrl;
+
+	return () => URL.revokeObjectURL(previewUrl);
 }

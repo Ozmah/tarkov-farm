@@ -2,6 +2,7 @@ import { ArrowRightIcon, MapTrifoldIcon } from "@phosphor-icons/react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { usePreparePublicMapNavigation } from "@/components/public-layout-context";
+import { RouteError } from "@/components/route-error";
 import { buttonVariants } from "@/components/ui/button";
 import {
 	Empty,
@@ -18,6 +19,15 @@ import { Route as PublicLayoutRoute } from "./_public";
 
 export const Route = createFileRoute("/_public/")({
 	loader: () => getUpdates(),
+	errorComponent: (props) => (
+		<RouteError
+			{...props}
+			analyticsError={{
+				error_code: "updates_unavailable",
+				operation: "updates_load",
+			}}
+		/>
+	),
 	staleTime: 30_000,
 	preloadStaleTime: 30_000,
 	component: App,
@@ -117,7 +127,7 @@ function App() {
 												search={{}}
 												onClick={(event) => {
 													if (isPlainNavigationClick(event)) {
-														prepareMapNavigation(map);
+														prepareMapNavigation(map, "home");
 													}
 												}}
 												className="group flex min-h-20 items-center gap-3 bg-card p-3 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"

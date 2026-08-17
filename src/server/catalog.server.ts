@@ -29,6 +29,7 @@ export async function readCatalog() {
 			.select({
 				id: documents.id,
 				name: documents.name,
+				description: documents.description,
 				imagePath: documents.imagePath,
 				imageWidth: documents.imageWidth,
 				imageHeight: documents.imageHeight,

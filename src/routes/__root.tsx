@@ -1,9 +1,8 @@
-import { Databuddy } from "@databuddy/sdk/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import type { ErrorComponentProps } from "@tanstack/react-router";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
-import { Button } from "@/components/ui/button";
+import { AnalyticsProvider } from "@/components/analytics-provider";
+import { RouteError } from "@/components/route-error";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import appCss from "../styles.css?url";
 
@@ -36,7 +35,15 @@ export const Route = createRootRoute({
 			},
 		],
 	}),
-	errorComponent: RootErrorComponent,
+	errorComponent: (props) => (
+		<RouteError
+			{...props}
+			analyticsError={{
+				error_code: "unexpected_application_error",
+				operation: "route_load",
+			}}
+		/>
+	),
 	notFoundComponent: () => (
 		<main className="container mx-auto p-4 pt-16">
 			<h1>404</h1>
@@ -46,28 +53,6 @@ export const Route = createRootRoute({
 	shellComponent: RootDocument,
 });
 
-function RootErrorComponent({ reset }: ErrorComponentProps) {
-	return (
-		<main className="isolate flex min-h-svh items-center justify-center p-6">
-			<div className="flex max-w-md flex-col items-center gap-4 text-center">
-				<p className="font-heading text-muted-foreground text-sm uppercase tracking-wide">
-					Application error
-				</p>
-				<h1 className="text-balance font-heading font-medium text-3xl tracking-tight">
-					The requested data could not be loaded
-				</h1>
-				<p className="text-pretty text-base text-muted-foreground">
-					Try the request again. If it continues failing, the database may be
-					unavailable.
-				</p>
-				<Button type="button" onClick={reset}>
-					Try again
-				</Button>
-			</div>
-		</main>
-	);
-}
-
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en" className="dark scheme-only-dark">
@@ -75,16 +60,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="antialiased">
+				<AnalyticsProvider />
 				<TooltipProvider>{children}</TooltipProvider>
-				{import.meta.env.PROD && import.meta.env.VITE_DATABUDDY_CLIENT_ID ? (
-					<Databuddy
-						clientId={import.meta.env.VITE_DATABUDDY_CLIENT_ID}
-						trackHashChanges
-						trackInteractions
-						trackWebVitals
-						trackErrors
-					/>
-				) : null}
 				<Scripts />
 				{import.meta.env.DEV ? (
 					<TanStackDevtools

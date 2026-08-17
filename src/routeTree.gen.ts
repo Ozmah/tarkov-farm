@@ -14,6 +14,7 @@ import { Route as EditorRouteImport } from './routes/editor'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
 import { Route as PublicAboutRouteImport } from './routes/_public.about'
+import { Route as PublicDocumentsRouteImport } from './routes/_public.documents'
 import { Route as PublicUpdatesRouteImport } from './routes/_public.updates'
 import { Route as PublicMapsMapIdRouteImport } from './routes/_public.maps.$mapId'
 
@@ -41,6 +42,11 @@ const PublicAboutRoute = PublicAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => PublicRoute,
 } as any)
+const PublicDocumentsRoute = PublicDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => PublicRoute,
+} as any)
 const PublicUpdatesRoute = PublicUpdatesRouteImport.update({
   id: '/updates',
   path: '/updates',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
   '/about': typeof PublicAboutRoute
+  '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
 }
@@ -64,6 +71,7 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
   '/about': typeof PublicAboutRoute
+  '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
   '/': typeof PublicIndexRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
   '/_public/about': typeof PublicAboutRoute
+  '/_public/documents': typeof PublicDocumentsRoute
   '/_public/updates': typeof PublicUpdatesRoute
   '/_public/': typeof PublicIndexRoute
   '/_public/maps/$mapId': typeof PublicMapsMapIdRoute
@@ -81,15 +90,29 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/editor' | '/health' | '/about' | '/updates' | '/maps/$mapId'
+    | '/'
+    | '/editor'
+    | '/health'
+    | '/about'
+    | '/documents'
+    | '/updates'
+    | '/maps/$mapId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/editor' | '/health' | '/about' | '/updates' | '/' | '/maps/$mapId'
+  to:
+    | '/editor'
+    | '/health'
+    | '/about'
+    | '/documents'
+    | '/updates'
+    | '/'
+    | '/maps/$mapId'
   id:
     | '__root__'
     | '/_public'
     | '/editor'
     | '/health'
     | '/_public/about'
+    | '/_public/documents'
     | '/_public/updates'
     | '/_public/'
     | '/_public/maps/$mapId'
@@ -138,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicAboutRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_public/documents': {
+      id: '/_public/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof PublicDocumentsRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/updates': {
       id: '/_public/updates'
       path: '/updates'
@@ -157,6 +187,7 @@ declare module '@tanstack/react-router' {
 
 interface PublicRouteChildren {
   PublicAboutRoute: typeof PublicAboutRoute
+  PublicDocumentsRoute: typeof PublicDocumentsRoute
   PublicUpdatesRoute: typeof PublicUpdatesRoute
   PublicIndexRoute: typeof PublicIndexRoute
   PublicMapsMapIdRoute: typeof PublicMapsMapIdRoute
@@ -164,6 +195,7 @@ interface PublicRouteChildren {
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicAboutRoute: PublicAboutRoute,
+  PublicDocumentsRoute: PublicDocumentsRoute,
   PublicUpdatesRoute: PublicUpdatesRoute,
   PublicIndexRoute: PublicIndexRoute,
   PublicMapsMapIdRoute: PublicMapsMapIdRoute,
