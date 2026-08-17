@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { MapSidebarPanel } from "./map-sidebar-panel";
@@ -107,6 +113,23 @@ describe("MapSidebarPanel document filters", () => {
 			expect(image.getAttribute("decoding")).toBe("async");
 		}
 	});
+
+	it("shows stable marker labels without renumbering filtered results", () => {
+		renderPanel({
+			selectedDocumentIds: documents.map((document) => document.id),
+		});
+
+		expect(
+			within(screen.getByRole("button", { name: /First location/ })).getByText(
+				"3",
+			),
+		).toBeTruthy();
+		expect(
+			within(screen.getByRole("button", { name: /Second location/ })).getByText(
+				"9",
+			),
+		).toBeTruthy();
+	});
 });
 
 function renderPanel({
@@ -124,12 +147,14 @@ function renderPanel({
 					documentId: "financial",
 					documentName: "Financial",
 					id: "one",
+					markerLabel: "3",
 					name: "First location",
 				},
 				{
 					documentId: "project",
 					documentName: "Project",
 					id: "two",
+					markerLabel: "9",
 					name: "Second location",
 				},
 			]}

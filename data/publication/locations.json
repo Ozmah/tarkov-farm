@@ -595,6 +595,39 @@
 			"yBasisPoints": 5162
 		},
 		{
+			"description": "On the third floor of the offices, in the room locked by the factory emergency exit key, in a wooden drawer next to the door.",
+			"documentId": "project",
+			"id": "2614583a-9dbf-44b6-b577-45acb1278e1a",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Factory Key Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/2614583a-9dbf-44b6-b577-45acb1278e1a/ca104d9b7eca0bef10c93b01c91476511e773080958eb9648373935d09604127-1920.webp",
+						"sha256": "9811a6512536b0c1f7edd4ab57654598a95e1a6a96d59ef069a4d78c9d624712",
+						"width": 1920
+					},
+					"id": "442719cb-73eb-4308-8427-f5c67c80f64a",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/2614583a-9dbf-44b6-b577-45acb1278e1a/ca104d9b7eca0bef10c93b01c91476511e773080958eb9648373935d09604127-1000.webp",
+						"sha256": "6ba822f944447d21f94fcd6ea132e886fbe97688ae3328722fd5063ad285f7b1",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ca104d9b7eca0bef10c93b01c91476511e773080958eb9648373935d09604127"
+				}
+			],
+			"xBasisPoints": 607,
+			"yBasisPoints": 2995
+		},
+		{
 			"description": "On top of the pallet in front of the shelves",
 			"documentId": "medical",
 			"id": "26670455-4c55-45bf-9365-7747dd5ff2fb",
@@ -1389,6 +1422,39 @@
 			],
 			"xBasisPoints": 8739,
 			"yBasisPoints": 4075
+		},
+		{
+			"description": "Walk from Gate 3 towards the office on the lowest floor, just before the door with the lock, there's a staircase leading underground, go down, turn left twice, on top of the pallete.",
+			"documentId": "project",
+			"id": "459883a1-d6a8-47fb-bf3e-b861d02c575b",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Under Office Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1060,
+						"path": "/screenshots/459883a1-d6a8-47fb-bf3e-b861d02c575b/0861ac8a240e53c911b199a0f27bf1bd40b0965058accc6385a20a3dd4b977e1-1920.webp",
+						"sha256": "01b4fb9e510315abee62f901f1dbbbe993f1aa35984a58f86416c676929f5371",
+						"width": 1920
+					},
+					"id": "bba66a48-715d-4cfa-8acb-dca4d207c636",
+					"isActive": true,
+					"preview": {
+						"height": 552,
+						"path": "/screenshots/459883a1-d6a8-47fb-bf3e-b861d02c575b/0861ac8a240e53c911b199a0f27bf1bd40b0965058accc6385a20a3dd4b977e1-1000.webp",
+						"sha256": "f59f4f9566484cf5e5af5baa3b0bca3feac49daca027fab8a019286e31623d45",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0861ac8a240e53c911b199a0f27bf1bd40b0965058accc6385a20a3dd4b977e1"
+				}
+			],
+			"xBasisPoints": 7685,
+			"yBasisPoints": 4098
 		},
 		{
 			"description": "Office in front of RB-PKPTS room, between a copy machine and a file cabinet",
@@ -2224,6 +2290,59 @@
 			"yBasisPoints": 2785
 		},
 		{
+			"description": "On the ground next to a facing down body on the left side of the container (facing-down body might now appear)",
+			"documentId": "test",
+			"id": "7d579526-81fc-490b-9d51-e33ce98515e9",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Emercon Container",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 783,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c-1920.webp",
+						"sha256": "cd31c34e2625c899a5633e818ae996a58e4d85a20fbec7837e27b4a11d7bc078",
+						"width": 1900
+					},
+					"id": "bc3bb3e0-1c48-49c9-a6dd-1446e80b77db",
+					"isActive": true,
+					"preview": {
+						"height": 412,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c-1000.webp",
+						"sha256": "9a63cde16967d0c9ea727eeac3c2ea0997d0474813d0f047de56145c452ea280",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 787,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba-1920.webp",
+						"sha256": "7c6aec1515d733d6b2d40a0e5ff7a151de3826c700dcc6f187e79f8ffa407fc4",
+						"width": 1908
+					},
+					"id": "32e4a7c4-2f4c-40f8-a7c3-b147c3a24269",
+					"isActive": true,
+					"preview": {
+						"height": 412,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba-1000.webp",
+						"sha256": "93faf2ae0c43cf82a0ad0e6b6d872f75badea08851cf1a44c5e8abab700ffe85",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba"
+				}
+			],
+			"xBasisPoints": 6109,
+			"yBasisPoints": 6538
+		},
+		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
 			"documentId": "financial",
 			"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
@@ -2255,6 +2374,39 @@
 			],
 			"xBasisPoints": 5852,
 			"yBasisPoints": 3473
+		},
+		{
+			"description": "Next to the body behind the car, on the ground",
+			"documentId": "technical",
+			"id": "7fd055e8-f195-493b-bb75-50e1244b3655",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Road to Outskirts",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 781,
+						"path": "/screenshots/7fd055e8-f195-493b-bb75-50e1244b3655/228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4-1920.webp",
+						"sha256": "61ab28dabf61b0b5c68cbde928a9bc66de62870a93115f7e22b32f8ef619469e",
+						"width": 1900
+					},
+					"id": "ac0296ee-cae2-4ff1-86d9-cd8e1fabbe29",
+					"isActive": true,
+					"preview": {
+						"height": 411,
+						"path": "/screenshots/7fd055e8-f195-493b-bb75-50e1244b3655/228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4-1000.webp",
+						"sha256": "3fb96f976263e8943d432d315578036b7d9930d71cbeaaba07313a9fb02794e0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4"
+				}
+			],
+			"xBasisPoints": 2270,
+			"yBasisPoints": 5923
 		},
 		{
 			"description": "In the small office in front of the stairs, in the cabinet to the right",
@@ -2628,7 +2780,7 @@
 			"yBasisPoints": 6434
 		},
 		{
-			"description": "Inside the locked office in the office building ground floor",
+			"description": "Inside the locked office in the office building ground floor, on the desk",
 			"documentId": "blueprints-technical",
 			"id": "89c22b91-7db1-47b5-b400-d746f449195f",
 			"isActive": true,
@@ -2837,7 +2989,7 @@
 			"yBasisPoints": 2069
 		},
 		{
-			"description": null,
+			"description": "Medican second floor, west room, on the keyboard holder of the desk with the fan on top",
 			"documentId": "blueprints-technical",
 			"id": "a22db3c4-73c9-4172-a281-b28bd0d8fdce",
 			"isActive": true,
@@ -3582,6 +3734,41 @@
 			"yBasisPoints": 7245
 		},
 		{
+			"description": "In the corporate apartment in the kitchen on the island",
+			"documentId": "user",
+			"id": "d94b81ba-5a18-4030-90cd-ea316645fc9c",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Corporate Apartment",
+			"requiredKeyIds": [
+				"terragroup-corporate-apartment-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 996,
+						"path": "/screenshots/d94b81ba-5a18-4030-90cd-ea316645fc9c/ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe-1920.webp",
+						"sha256": "7b9fe28177e27ff4c435f9fdb52f33f851e4d597386ad4f74574c8036a593e72",
+						"width": 1920
+					},
+					"id": "21e2e25c-78d5-449c-aa97-af2e4b1334a2",
+					"isActive": true,
+					"preview": {
+						"height": 519,
+						"path": "/screenshots/d94b81ba-5a18-4030-90cd-ea316645fc9c/ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe-1000.webp",
+						"sha256": "2e4be8513eeeed55a04c2254613d9925921a3e44cdb5c369b7affbb9d35da1ff",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe"
+				}
+			],
+			"xBasisPoints": 5961,
+			"yBasisPoints": 3143
+		},
+		{
 			"description": "Desk at the end of the room outside red",
 			"documentId": "user",
 			"id": "da7c2f4a-1e5d-4987-b83f-f7a595b6297a",
@@ -3752,6 +3939,39 @@
 			],
 			"xBasisPoints": 7854,
 			"yBasisPoints": 2752
+		},
+		{
+			"description": "Inside the locked office in the office building ground floor, between the filing cabinet and the desk.",
+			"documentId": "project",
+			"id": "e920b99d-65b6-4f40-a728-b15dab21990f",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Locked Office Desk",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e920b99d-65b6-4f40-a728-b15dab21990f/931c619e7fc8ad8f140324e4f1d6df79f742daa91493b0f5218fdbf6b3de97c4-1920.webp",
+						"sha256": "b962f186c35c4358cbdee2c7b1b1b92a4e097b97167bce74b00b5cab5f79f442",
+						"width": 1920
+					},
+					"id": "3597bc96-bb79-4ec3-b3c6-a26a21118370",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e920b99d-65b6-4f40-a728-b15dab21990f/931c619e7fc8ad8f140324e4f1d6df79f742daa91493b0f5218fdbf6b3de97c4-1000.webp",
+						"sha256": "989279c0c345bc2e22a591a67f0d5e5796a466bd7157999b59780f10137fba0e",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "931c619e7fc8ad8f140324e4f1d6df79f742daa91493b0f5218fdbf6b3de97c4"
+				}
+			],
+			"xBasisPoints": 5385,
+			"yBasisPoints": 3029
 		},
 		{
 			"description": "Second floor to the right, room with the TV, below the stereo",
@@ -4098,6 +4318,61 @@
 			"yBasisPoints": 3407
 		},
 		{
+			"description": "In the basement, inside the Polikhim keycard room, on the wooden pallet on the right of the room, leaning against a box.",
+			"documentId": "project",
+			"id": "f58b1758-d467-44ac-9594-60bd852231cc",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Storage Room",
+			"requiredKeyIds": [
+				"terragroup-storage-room-keycard"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/f58b1758-d467-44ac-9594-60bd852231cc/df389d9504f33584d5657455960077766552589b300e6e0225b965aa9da1d3fe-1920.webp",
+						"sha256": "7f8c1bcac2e215625e61a6fb7deb94552f01dc81add84b96d0b5b288804b6e52",
+						"width": 1920
+					},
+					"id": "ef9c0877-531f-4a74-8d7b-22b92d00c185",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/f58b1758-d467-44ac-9594-60bd852231cc/df389d9504f33584d5657455960077766552589b300e6e0225b965aa9da1d3fe-1000.webp",
+						"sha256": "167cbac890710adee859e4f2a3b0ed981d927d353580bda08cafd18dde15d47a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "df389d9504f33584d5657455960077766552589b300e6e0225b965aa9da1d3fe"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/f58b1758-d467-44ac-9594-60bd852231cc/6620c7a8a5657c7387a8b9d4b07a3cbbe82152c00940448dd7b7e60299014534-1920.webp",
+						"sha256": "ac311c612924241172adaac31612f2ce46de6ec4f8f0df35f2ca357b79ec4fe9",
+						"width": 1920
+					},
+					"id": "3f8cf0ea-7181-48c4-a4c8-c75879bf79b8",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/f58b1758-d467-44ac-9594-60bd852231cc/6620c7a8a5657c7387a8b9d4b07a3cbbe82152c00940448dd7b7e60299014534-1000.webp",
+						"sha256": "22203a198895988b4588ab731d68c1b20b51ad5a5aae40a60b771a8cc33b24a9",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "6620c7a8a5657c7387a8b9d4b07a3cbbe82152c00940448dd7b7e60299014534"
+				}
+			],
+			"xBasisPoints": 7710,
+			"yBasisPoints": 4739
+		},
+		{
 			"description": "On a bookshelf on the opposite side of the safe in company director's room",
 			"documentId": "project",
 			"id": "f66af357-a23d-4d82-86a2-e2ec073b1cdd",
@@ -4131,6 +4406,41 @@
 			],
 			"xBasisPoints": 5730,
 			"yBasisPoints": 4450
+		},
+		{
+			"description": "In the basement, inside the Polikhim keycard room, on top of the safe.",
+			"documentId": "blueprints-technical",
+			"id": "fa29c5b2-f3ec-4ff9-9eb3-092222983234",
+			"isActive": true,
+			"mapImageId": "factory-main",
+			"name": "Storage Room",
+			"requiredKeyIds": [
+				"terragroup-storage-room-keycard"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/fa29c5b2-f3ec-4ff9-9eb3-092222983234/4ba9115be666693c10ce9a7ff6cee3125256672e91b01623f8d5cd8db952668c-1920.webp",
+						"sha256": "98cf1650036a33031e88cc6318104954c0d5fb6f0d0efe0e0f2021c54d2f93fc",
+						"width": 1920
+					},
+					"id": "00a3edcd-fb21-4ddc-b91b-48971a7bd753",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/fa29c5b2-f3ec-4ff9-9eb3-092222983234/4ba9115be666693c10ce9a7ff6cee3125256672e91b01623f8d5cd8db952668c-1000.webp",
+						"sha256": "a447fc87b19db18880b0788cc678172fc4607d307ba74690b6ef61282ba34cd6",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "4ba9115be666693c10ce9a7ff6cee3125256672e91b01623f8d5cd8db952668c"
+				}
+			],
+			"xBasisPoints": 7672,
+			"yBasisPoints": 4880
 		},
 		{
 			"description": "On a desk at the very back of the room, next to a laptop",

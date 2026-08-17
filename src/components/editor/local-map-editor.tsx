@@ -74,6 +74,7 @@ import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
 } from "@/lib/editor-validation";
+import { numberMapLocations } from "@/lib/map-location-order";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
 
@@ -132,8 +133,10 @@ export function LocalMapEditor({
 		images.find((image) => image.id === search.image) ??
 		images.find((image) => image.viewKey === "main") ??
 		images[0];
-	const imageLocations = data.locations.filter(
-		(location) => location.mapImageId === selectedImage?.id,
+	const imageLocations = numberMapLocations(
+		data.locations.filter(
+			(location) => location.mapImageId === selectedImage?.id,
+		),
 	);
 	const assignedDocumentIds = new Set(
 		data.documentMaps
@@ -228,6 +231,7 @@ export function LocalMapEditor({
 			documentId: documentId ?? "",
 			documentName: document?.name ?? "Unassigned document",
 			id: location.id,
+			markerLabel: location.markerLabel,
 			name: location.name,
 		};
 	});

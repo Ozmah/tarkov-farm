@@ -12,8 +12,15 @@ import {
 	useState,
 } from "react";
 
+import { MapMarkerCluster } from "@/components/map/map-marker-cluster";
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { pointerToBasisPoints } from "@/lib/map-coordinates";
+import { groupOverlappingMapMarkers } from "@/lib/map-marker-groups";
 import {
 	constrainView,
 	fitView,
@@ -29,7 +36,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const MIN_ZOOM_RATIO = 1;
-const MAX_ZOOM_RATIO = 4;
+const MAX_ZOOM_RATIO = 8;
 const ZOOM_BUTTON_STEP = 0.25;
 const WHEEL_SENSITIVITY = 0.0015;
 const DRAG_THRESHOLD = 5;
@@ -43,11 +50,14 @@ export type MapWorkspaceImage = {
 };
 
 export type MapWorkspaceMarker = {
+	clusterable?: boolean;
+	focusOnSelect?: boolean;
 	id: string;
 	isActive?: boolean;
 	kind?: "location" | "submap";
 	label?: string;
 	name: string;
+	secondaryLabel?: string;
 	xBasisPoints: number;
 	yBasisPoints: number;
 };
@@ -139,6 +149,33 @@ export function MapWorkspace({
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
+	);
+	const clusterableLocationMarkers = useMemo(
+		() =>
+			markers.filter(
+				(marker) => marker.kind !== "submap" && marker.clusterable !== false,
+			),
+		[markers],
+	);
+	const standaloneLocationMarkers = useMemo(
+		() =>
+			markers.filter(
+				(marker) => marker.kind !== "submap" && marker.clusterable === false,
+			),
+		[markers],
+	);
+	const submapMarkers = useMemo(
+		() => markers.filter((marker) => marker.kind === "submap"),
+		[markers],
+	);
+	const markerGroups = useMemo(
+		() =>
+			groupOverlappingMapMarkers(
+				clusterableLocationMarkers,
+				imageSize,
+				view?.scale ?? fitScaleRef.current,
+			),
+		[clusterableLocationMarkers, imageSize, view?.scale],
 	);
 	const zoomRatio = view ? view.scale / fitScaleRef.current : 1;
 	const zoomPercent = Math.round(zoomRatio * 100);
@@ -336,6 +373,12 @@ export function MapWorkspace({
 		}
 
 		const marker = markers.find((item) => item.id === selectedMarkerId);
+
+		if (marker?.focusOnSelect === false) {
+			centeredMarkerIdRef.current = selectedMarkerId;
+			return;
+		}
+
 		const viewportSize = viewportSizeRef.current;
 
 		if (!marker || !viewportSize) {
@@ -685,8 +728,41 @@ export function MapWorkspace({
 							)}
 						/>
 
-						{isImageReady
-							? markers.map((marker) => (
+						{isImageReady ? (
+							<>
+								{markerGroups.map((group) => {
+									const marker = group.markers[0];
+
+									return group.markers.length === 1 && marker ? (
+										<MapMarker
+											key={marker.id}
+											marker={marker}
+											image={imageSize}
+											inverseScale={view ? 1 / view.scale : 1}
+											isSelected={marker.id === selectedMarkerId}
+											onClick={
+												onSelectMarker
+													? () => onSelectMarker(marker.id)
+													: undefined
+											}
+										/>
+									) : onSelectMarker ? (
+										<MapMarkerCluster
+											key={group.id}
+											image={imageSize}
+											inverseScale={view ? 1 / view.scale : 1}
+											markers={group.markers}
+											selectedMarkerId={selectedMarkerId}
+											xBasisPoints={group.xBasisPoints}
+											yBasisPoints={group.yBasisPoints}
+											onSelect={(markerId) => {
+												viewportRef.current?.focus();
+												onSelectMarker(markerId);
+											}}
+										/>
+									) : null;
+								})}
+								{standaloneLocationMarkers.map((marker) => (
 									<MapMarker
 										key={marker.id}
 										marker={marker}
@@ -699,8 +775,23 @@ export function MapWorkspace({
 												: undefined
 										}
 									/>
-								))
-							: null}
+								))}
+								{submapMarkers.map((marker) => (
+									<MapMarker
+										key={marker.id}
+										marker={marker}
+										image={imageSize}
+										inverseScale={view ? 1 / view.scale : 1}
+										isSelected={false}
+										onClick={
+											onSelectMarker
+												? () => onSelectMarker(marker.id)
+												: undefined
+										}
+									/>
+								))}
+							</>
+						) : null}
 					</div>
 
 					{imageStatus === "loading" ? (
@@ -779,7 +870,7 @@ function MapMarker({
 		);
 	}
 
-	return (
+	const trigger = (
 		<button
 			type="button"
 			data-map-marker
@@ -792,10 +883,14 @@ function MapMarker({
 		>
 			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
 			<span className="tabular-nums">{marker.label}</span>
-			<span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] left-1/2 w-max max-w-52 -translate-x-1/2 bg-cosmic-ink px-2.5 py-1.5 font-medium font-sans text-milk-mustache text-xs opacity-0 shadow-[0_4px_14px_rgb(0_0_0/0.45)] transition-opacity group-hover/marker:opacity-100 group-focus-visible/marker:opacity-100 motion-reduce:transition-none">
-				{marker.name}
-			</span>
 		</button>
+	);
+
+	return (
+		<Tooltip>
+			<TooltipTrigger render={trigger} />
+			<TooltipContent>{marker.name}</TooltipContent>
+		</Tooltip>
 	);
 }
 
