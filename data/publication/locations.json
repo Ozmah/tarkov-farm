@@ -2224,6 +2224,59 @@
 			"yBasisPoints": 2785
 		},
 		{
+			"description": "On the ground next to a facing down body on the left side of the container (facing-down body might now appear)",
+			"documentId": "test",
+			"id": "7d579526-81fc-490b-9d51-e33ce98515e9",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Emercon Container",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 783,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c-1920.webp",
+						"sha256": "cd31c34e2625c899a5633e818ae996a58e4d85a20fbec7837e27b4a11d7bc078",
+						"width": 1900
+					},
+					"id": "bc3bb3e0-1c48-49c9-a6dd-1446e80b77db",
+					"isActive": true,
+					"preview": {
+						"height": 412,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c-1000.webp",
+						"sha256": "9a63cde16967d0c9ea727eeac3c2ea0997d0474813d0f047de56145c452ea280",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a6811ab7d45a3e0ab99462297059943d17913f4372e1d41d05bf69ae4e44866c"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 787,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba-1920.webp",
+						"sha256": "7c6aec1515d733d6b2d40a0e5ff7a151de3826c700dcc6f187e79f8ffa407fc4",
+						"width": 1908
+					},
+					"id": "32e4a7c4-2f4c-40f8-a7c3-b147c3a24269",
+					"isActive": true,
+					"preview": {
+						"height": 412,
+						"path": "/screenshots/7d579526-81fc-490b-9d51-e33ce98515e9/4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba-1000.webp",
+						"sha256": "93faf2ae0c43cf82a0ad0e6b6d872f75badea08851cf1a44c5e8abab700ffe85",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "4dee44f7684510bdbc2af282cf28596c7215cae28df243c36b43dd10b7463cba"
+				}
+			],
+			"xBasisPoints": 6109,
+			"yBasisPoints": 6538
+		},
+		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
 			"documentId": "financial",
 			"id": "7f66d17a-a75f-48c1-b8d5-162c0fafc633",
@@ -2255,6 +2308,39 @@
 			],
 			"xBasisPoints": 5852,
 			"yBasisPoints": 3473
+		},
+		{
+			"description": "Next to the body behind the car, on the ground",
+			"documentId": "technical",
+			"id": "7fd055e8-f195-493b-bb75-50e1244b3655",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Road to Outskirts",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 781,
+						"path": "/screenshots/7fd055e8-f195-493b-bb75-50e1244b3655/228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4-1920.webp",
+						"sha256": "61ab28dabf61b0b5c68cbde928a9bc66de62870a93115f7e22b32f8ef619469e",
+						"width": 1900
+					},
+					"id": "ac0296ee-cae2-4ff1-86d9-cd8e1fabbe29",
+					"isActive": true,
+					"preview": {
+						"height": 411,
+						"path": "/screenshots/7fd055e8-f195-493b-bb75-50e1244b3655/228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4-1000.webp",
+						"sha256": "3fb96f976263e8943d432d315578036b7d9930d71cbeaaba07313a9fb02794e0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "228ad170950fb21f33e5fb82c84e69659758de259253fb153b818d3ebfe507e4"
+				}
+			],
+			"xBasisPoints": 2270,
+			"yBasisPoints": 5923
 		},
 		{
 			"description": "In the small office in front of the stairs, in the cabinet to the right",
@@ -3580,6 +3666,41 @@
 			],
 			"xBasisPoints": 892,
 			"yBasisPoints": 7245
+		},
+		{
+			"description": "In the corporate apartment in the kitchen on the island",
+			"documentId": "user",
+			"id": "d94b81ba-5a18-4030-90cd-ea316645fc9c",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Corporate Apartment",
+			"requiredKeyIds": [
+				"terragroup-corporate-apartment-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 996,
+						"path": "/screenshots/d94b81ba-5a18-4030-90cd-ea316645fc9c/ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe-1920.webp",
+						"sha256": "7b9fe28177e27ff4c435f9fdb52f33f851e4d597386ad4f74574c8036a593e72",
+						"width": 1920
+					},
+					"id": "21e2e25c-78d5-449c-aa97-af2e4b1334a2",
+					"isActive": true,
+					"preview": {
+						"height": 519,
+						"path": "/screenshots/d94b81ba-5a18-4030-90cd-ea316645fc9c/ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe-1000.webp",
+						"sha256": "2e4be8513eeeed55a04c2254613d9925921a3e44cdb5c369b7affbb9d35da1ff",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ecfdd92391fbd16f8072c4ae8e8210ceca15c96914a2502c02693ed01a2163fe"
+				}
+			],
+			"xBasisPoints": 5961,
+			"yBasisPoints": 3143
 		},
 		{
 			"description": "Desk at the end of the room outside red",
