@@ -74,7 +74,9 @@ The production image rebuilds the database before starting the HTTP server. Conf
 
 ## Analytics
 
-Production builds initialize the Databuddy React SDK when `VITE_DATABUDDY_CLIENT_ID` is configured. Page navigation, hash changes, interactions, Web Vitals, and application errors are tracked.
+Production builds initialize PostHog when `VITE_POSTHOG_KEY` is configured. Set `VITE_POSTHOG_HOST` to the ingest host for the project. Docker builds require both values as build arguments because Vite embeds them at compile time.
+
+The client records pathname-only pageviews, map selections, document filter changes, location views, explicit screenshot opens, and application errors. Query strings and URL fragments are removed before sending. Web Vitals are sampled at 20%. Autocapture, pageleave events, session replay, surveys, heatmaps, feature flags, and person profiles are disabled.
 
 ## Built with
 

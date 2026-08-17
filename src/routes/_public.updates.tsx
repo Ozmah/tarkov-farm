@@ -1,5 +1,6 @@
 import { NewspaperClippingIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { RouteError } from "@/components/route-error";
 import {
 	Empty,
 	EmptyDescription,
@@ -12,6 +13,15 @@ import { getUpdates } from "@/functions/updates";
 
 export const Route = createFileRoute("/_public/updates")({
 	loader: () => getUpdates(),
+	errorComponent: (props) => (
+		<RouteError
+			{...props}
+			analyticsError={{
+				error_code: "updates_unavailable",
+				operation: "updates_load",
+			}}
+		/>
+	),
 	staleTime: 30_000,
 	preloadStaleTime: 30_000,
 	head: () => ({

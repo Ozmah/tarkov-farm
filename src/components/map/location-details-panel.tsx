@@ -52,6 +52,7 @@ type LocationDetailsPanelProps = {
 	documentArtwork?: DocumentArtwork;
 	location: LocationDetails;
 	onClose: () => void;
+	onScreenshotOpen?: (screenshotIndex: number) => void;
 	screenshots: LocationScreenshot[];
 };
 
@@ -60,6 +61,7 @@ export function LocationDetailsPanel({
 	documentArtwork,
 	location,
 	onClose,
+	onScreenshotOpen,
 	screenshots,
 }: LocationDetailsPanelProps) {
 	const isMobile = useIsMobile();
@@ -169,11 +171,14 @@ export function LocationDetailsPanel({
 
 							{screenshots.length > 0 ? (
 								<ul className="flex flex-col gap-4">
-									{screenshots.map((screenshot) => (
+									{screenshots.map((screenshot, screenshotIndex) => (
 										<li key={screenshot.id} className="flex flex-col gap-2">
 											<button
 												type="button"
-												onClick={() => setSelectedScreenshot(screenshot)}
+												onClick={() => {
+													onScreenshotOpen?.(screenshotIndex);
+													setSelectedScreenshot(screenshot);
+												}}
 												aria-label={`View ${screenshot.altText || location.name} screenshot`}
 												className="block w-full cursor-zoom-in bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
 											>

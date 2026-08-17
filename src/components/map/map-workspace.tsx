@@ -69,6 +69,7 @@ type MapWorkspaceProps = {
 		xBasisPoints: number;
 		yBasisPoints: number;
 	}) => void;
+	onImageError?: () => void;
 	onSelectMarker?: (markerId: string) => void;
 };
 
@@ -91,6 +92,7 @@ export function MapWorkspace({
 	selectedMarkerId,
 	selectedMarkerPosition,
 	toolbarStart,
+	onImageError,
 	onMapPress,
 	onSelectMarker,
 }: MapWorkspaceProps) {
@@ -104,6 +106,7 @@ export function MapWorkspace({
 	const pointerSessionRef = useRef<PointerSession | undefined>(undefined);
 	const suppressContextMenuRef = useRef(false);
 	const centeredMarkerIdRef = useRef<string | undefined>(undefined);
+	const reportedImageErrorRef = useRef(false);
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
 	const [imageStatus, setImageStatus] = useState<"loading" | "ready" | "error">(
@@ -127,6 +130,12 @@ export function MapWorkspace({
 				}
 			: undefined;
 	const getSelectedMarkerFocus = useEffectEvent(() => selectedMarkerFocus);
+	const reportCachedImageError = useEffectEvent(() => {
+		if (!reportedImageErrorRef.current) {
+			reportedImageErrorRef.current = true;
+			onImageError?.();
+		}
+	});
 	const imageSize = useMemo(
 		() => ({ width: image.width, height: image.height }),
 		[image.height, image.width],
@@ -162,7 +171,12 @@ export function MapWorkspace({
 		const imageElement = imageElementRef.current;
 
 		if (imageElement?.complete) {
-			setImageStatus(imageElement.naturalWidth > 0 ? "ready" : "error");
+			if (imageElement.naturalWidth > 0) {
+				setImageStatus("ready");
+			} else {
+				setImageStatus("error");
+				reportCachedImageError();
+			}
 		}
 	}, []);
 
@@ -657,7 +671,14 @@ export function MapWorkspace({
 							fetchPriority="high"
 							draggable={false}
 							onLoad={() => setImageStatus("ready")}
-							onError={() => setImageStatus("error")}
+							onError={() => {
+								setImageStatus("error");
+
+								if (!reportedImageErrorRef.current) {
+									reportedImageErrorRef.current = true;
+									onImageError?.();
+								}
+							}}
 							className={cn(
 								"pointer-events-none size-full max-w-none",
 								!isImageReady && "opacity-0",

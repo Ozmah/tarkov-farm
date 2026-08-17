@@ -6,6 +6,7 @@ import {
 	useLayoutEffect,
 	useMemo,
 } from "react";
+import type { MapSelectionSource } from "@/lib/analytics";
 
 export type PublicLayoutConfiguration = {
 	editorSearch?: {
@@ -19,7 +20,10 @@ export type PublicLayoutConfiguration = {
 };
 
 type PublicLayoutContextValue = {
-	prepareMapNavigation: (map: { id: string; name: string }) => void;
+	prepareMapNavigation: (
+		map: { id: string; name: string },
+		source: MapSelectionSource,
+	) => void;
 	setConfiguration: (configuration?: PublicLayoutConfiguration) => void;
 };
 

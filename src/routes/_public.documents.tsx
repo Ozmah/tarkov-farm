@@ -112,7 +112,7 @@ function DocumentsPage() {
 																}}
 																onClick={(event) => {
 																	if (isPlainNavigationClick(event)) {
-																		prepareMapNavigation(map);
+																		prepareMapNavigation(map, "documents");
 																	}
 																}}
 																className="font-medium underline decoration-border underline-offset-4 outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
