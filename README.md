@@ -1,6 +1,6 @@
 # Tarko-Farm for Season Documents
 
-Why? I just wanted to have everything in the same page, not 10 wiki tabs.
+Why? I just wanted to have everything on the same page, not 10 wiki tabs.
 
 ## Development
 
