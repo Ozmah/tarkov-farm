@@ -551,7 +551,7 @@ function createReleaseSummary(context: ReleaseContext) {
 
 	if (locationChanges.length > 0) {
 		sentences.push(
-			`Locations: ${locationChanges.join(", ")} across ${formatEnglishList(context.affectedMaps.map(({ name }) => name))}.`,
+			`Doc locations: ${locationChanges.join(", ")} across ${formatEnglishList(context.affectedMaps.map(({ name }) => name))}.`,
 		);
 	}
 
