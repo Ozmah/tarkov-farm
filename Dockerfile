@@ -8,8 +8,10 @@ COPY --link package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 FROM dependencies AS builder
-ARG VITE_DATABUDDY_CLIENT_ID
-ENV VITE_DATABUDDY_CLIENT_ID=${VITE_DATABUDDY_CLIENT_ID}
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST=https://us.i.posthog.com
+ENV VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY}
+ENV VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST}
 COPY --link . .
 ENV NODE_ENV=production
 RUN bun run updates:snapshot:check && bun run screenshots:check && bun run build

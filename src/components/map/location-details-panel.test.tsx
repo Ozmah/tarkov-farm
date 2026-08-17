@@ -134,12 +134,15 @@ describe("LocationDetailsPanel", () => {
 	});
 
 	it("opens in place and closes with its close button", async () => {
-		renderPanel();
+		const onScreenshotOpen = vi.fn();
+		renderPanel(vi.fn(), onScreenshotOpen);
 		fireEvent.click(
 			screen.getByRole("button", {
 				name: "View Document on a desk screenshot",
 			}),
 		);
+		expect(onScreenshotOpen).toHaveBeenCalledOnce();
+		expect(onScreenshotOpen).toHaveBeenCalledWith(0);
 
 		expect(
 			screen.getByRole("dialog", { name: screenshot.altText }),
@@ -201,7 +204,7 @@ describe("LocationDetailsPanel", () => {
 	});
 });
 
-function renderPanel(onClose = vi.fn()) {
+function renderPanel(onClose = vi.fn(), onScreenshotOpen = vi.fn()) {
 	return render(
 		<LocationDetailsPanel
 			documentArtwork={documentArtwork}
@@ -212,6 +215,7 @@ function renderPanel(onClose = vi.fn()) {
 				requiredKeys: [],
 			}}
 			onClose={onClose}
+			onScreenshotOpen={onScreenshotOpen}
 			screenshots={[screenshot]}
 		/>,
 	);

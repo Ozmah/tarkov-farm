@@ -1,11 +1,12 @@
 import {
+	FileTextIcon,
 	HouseIcon,
 	InfoIcon,
 	MapTrifoldIcon,
 	NewspaperClippingIcon,
 } from "@phosphor-icons/react";
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import {
 	Sidebar,
@@ -59,9 +60,23 @@ export function AppSidebar({
 	const matchRoute = useMatchRoute();
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
+	const isDocumentsRoute = Boolean(
+		matchRoute({ to: "/documents", fuzzy: false }),
+	);
 	const isHomeRoute = Boolean(matchRoute({ to: "/", fuzzy: false }));
 	const isUpdatesRoute = Boolean(matchRoute({ to: "/updates", fuzzy: false }));
+	const [previousHasSidebarPanel, setPreviousHasSidebarPanel] =
+		useState(hasSidebarPanel);
 	const [isSidebarPanelOpen, setIsSidebarPanelOpen] = useState(hasSidebarPanel);
+
+	if (hasSidebarPanel !== previousHasSidebarPanel) {
+		setPreviousHasSidebarPanel(hasSidebarPanel);
+
+		if (hasSidebarPanel) {
+			setIsSidebarPanelOpen(true);
+		}
+	}
+
 	const visibleSidebarPanel = isSidebarPanelOpen ? sidebarPanel : undefined;
 	const documentIdsByMap = new Map<string, Set<string>>();
 
@@ -70,12 +85,6 @@ export function AppSidebar({
 		documentIds.add(assignment.documentId);
 		documentIdsByMap.set(assignment.mapId, documentIds);
 	}
-
-	useEffect(() => {
-		if (hasSidebarPanel) {
-			setIsSidebarPanelOpen(true);
-		}
-	}, [hasSidebarPanel]);
 
 	function closeMobileSidebar() {
 		if (isMobile) {
@@ -236,6 +245,26 @@ export function AppSidebar({
 			<SidebarFooter className="border-sidebar-border border-t">
 				<nav aria-label="Project navigation" className="flex flex-col gap-2">
 					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								render={
+									<Link
+										to="/documents"
+										search={{}}
+										onClick={() => {
+											setIsSidebarPanelOpen(false);
+											closeMobileSidebar();
+										}}
+									/>
+								}
+								isActive={isDocumentsRoute}
+								aria-current={isDocumentsRoute ? "page" : undefined}
+								className="border-transparent border-l data-active:border-sidebar-primary"
+							>
+								<FileTextIcon aria-hidden="true" />
+								<span>Documents</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
 						<SidebarMenuItem>
 							<SidebarMenuButton
 								render={

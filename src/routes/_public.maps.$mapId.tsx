@@ -1,5 +1,6 @@
 import { CrosshairIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { LocationDetailsPanel } from "@/components/map/location-details-panel";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { MapWorkspace } from "@/components/map/map-workspace";
@@ -8,6 +9,7 @@ import {
 	usePreparePublicMapNavigation,
 	usePublicLayoutConfiguration,
 } from "@/components/public-layout-context";
+import { RouteError } from "@/components/route-error";
 import {
 	Empty,
 	EmptyDescription,
@@ -17,6 +19,10 @@ import {
 } from "@/components/ui/empty";
 import { useSidebar } from "@/components/ui/sidebar";
 import { getPublicMapData } from "@/functions/catalog";
+import {
+	captureAnalyticsEvent,
+	type LocationViewSource,
+} from "@/lib/analytics";
 import {
 	encodeMapDocumentFilters,
 	readCatalogId,
@@ -40,12 +46,24 @@ export const Route = createFileRoute("/_public/maps/$mapId")({
 
 		return mapData;
 	},
+	errorComponent: (props) => (
+		<RouteError
+			{...props}
+			analyticsError={{
+				error_code: "map_data_unavailable",
+				operation: "map_load",
+			}}
+		/>
+	),
 	staleTime: 30_000,
 	preloadStaleTime: 30_000,
 	component: MapPage,
 });
 
 function MapPage() {
+	const locationViewIntentRef = useRef<
+		{ locationId: string; source: LocationViewSource } | undefined
+	>(undefined);
 	const mapData = Route.useLoaderData();
 	const catalog = PublicLayoutRoute.useLoaderData();
 	const search = Route.useSearch();
@@ -126,6 +144,54 @@ function MapPage() {
 		selectedDocumentIds,
 		mapDocumentIds,
 	);
+	const selectedLocationId = selectedLocation?.id;
+	const selectedLocationDocumentId = selectedLocation?.documentId;
+	const selectedImageId = selectedImage?.id;
+	const selectedScreenshotCount = selectedScreenshots.length;
+
+	useEffect(() => {
+		if (selectedImageId) {
+			return;
+		}
+
+		captureAnalyticsEvent("app_error", {
+			error_code: "map_image_missing",
+			operation: "map_load",
+			route: "map",
+		});
+	}, [selectedImageId]);
+
+	useEffect(() => {
+		if (!selectedLocationId || selectedScreenshotCount > 0) {
+			return;
+		}
+
+		captureAnalyticsEvent("app_error", {
+			error_code: "location_screenshots_unavailable",
+			operation: "location_load",
+			route: "map",
+		});
+	}, [selectedLocationId, selectedScreenshotCount]);
+
+	useEffect(() => {
+		if (!selectedLocationId || !selectedLocationDocumentId) {
+			locationViewIntentRef.current = undefined;
+			return;
+		}
+
+		const locationViewIntent = locationViewIntentRef.current;
+		captureAnalyticsEvent("location_viewed", {
+			document_id: selectedLocationDocumentId,
+			location_id: selectedLocationId,
+			map_id: mapData.map.id,
+			source:
+				locationViewIntent?.locationId === selectedLocationId
+					? locationViewIntent.source
+					: "direct",
+		});
+		locationViewIntentRef.current = undefined;
+	}, [mapData.map.id, selectedLocationDocumentId, selectedLocationId]);
+
 	const sidebarDocuments = mapDocuments.map((document) => ({
 		count: currentViewLocations.filter(
 			(location) => location.documentId === document.id,
@@ -151,7 +217,11 @@ function MapPage() {
 			selectedMapId={mapData.map.id}
 			selectedMapViewId={selectedImage?.viewKey}
 			onBack={closePanel}
-			onLocationSelect={(locationId) =>
+			onLocationSelect={(locationId) => {
+				locationViewIntentRef.current = {
+					locationId,
+					source: "sidebar",
+				};
 				void navigate({
 					to: "/maps/$mapId",
 					params: { mapId: mapData.map.id },
@@ -160,9 +230,15 @@ function MapPage() {
 						location: locationId,
 						view: selectedImage?.viewKey,
 					},
-				})
-			}
-			onSelectedDocumentsChange={(documentIds) =>
+				});
+			}}
+			onSelectedDocumentsChange={(documentIds) => {
+				captureAnalyticsEvent("document_filter_changed", {
+					document_ids: documentIds,
+					map_id: mapData.map.id,
+					selected_count: documentIds.length,
+					source: "sidebar",
+				});
 				void navigate({
 					to: "/maps/$mapId",
 					params: { mapId: mapData.map.id },
@@ -172,13 +248,13 @@ function MapPage() {
 						view: selectedImage?.viewKey,
 					},
 					replace: true,
-				})
-			}
+				});
+			}}
 			onMapChange={(mapId) => {
 				const map = catalog.maps.find((item) => item.id === mapId);
 
 				if (map) {
-					prepareMapNavigation(map);
+					prepareMapNavigation(map, "current_map");
 				}
 
 				void navigate({
@@ -245,6 +321,13 @@ function MapPage() {
 								...submapMarkers,
 							]}
 							selectedMarkerId={selectedLocation?.id}
+							onImageError={() =>
+								captureAnalyticsEvent("app_error", {
+									error_code: "map_image_unavailable",
+									operation: "map_load",
+									route: "map",
+								})
+							}
 							toolbarStart={
 								<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
 									{selectedImage.name}
@@ -252,6 +335,13 @@ function MapPage() {
 							}
 							onSelectMarker={(markerId) => {
 								const targetView = submapViewByMarkerId.get(markerId);
+
+								if (!targetView) {
+									locationViewIntentRef.current = {
+										locationId: markerId,
+										source: "marker",
+									};
+								}
 
 								void navigate({
 									to: "/maps/$mapId",
@@ -271,6 +361,14 @@ function MapPage() {
 							documentArtwork={documentById.get(selectedLocation.documentId)}
 							location={selectedLocation}
 							screenshots={selectedScreenshots}
+							onScreenshotOpen={(screenshotIndex) =>
+								captureAnalyticsEvent("screenshot_opened", {
+									location_id: selectedLocation.id,
+									map_id: mapData.map.id,
+									screenshot_count: selectedScreenshots.length,
+									screenshot_index: screenshotIndex,
+								})
+							}
 							onClose={() =>
 								void navigate({
 									to: "/maps/$mapId",

@@ -25,18 +25,17 @@
 		"preview": "bun run env:check && vite preview",
 		"prepare": "husky || true",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"doctor": "npx react-doctor@latest"
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.7.0",
-		"@databuddy/sdk": "^2.6.0",
 		"@fontsource-variable/jetbrains-mono": "^5.3.0",
 		"@fontsource-variable/manrope": "^5.3.0",
 		"@js-temporal/polyfill": "0.5.1",
 		"@phosphor-icons/react": "^2.1.10",
 		"@tailwindcss/vite": "^4",
 		"@tanstack/react-router": "latest",
-		"@tanstack/react-router-devtools": "latest",
 		"@tanstack/react-router-ssr-query": "latest",
 		"@tanstack/react-start": "latest",
 		"@tanstack/router-plugin": "latest",
@@ -45,6 +44,7 @@
 		"clsx": "^2.1.1",
 		"drizzle-orm": "1.0.0-rc.4",
 		"nitro": "3.0.260610-beta",
+		"posthog-js": "1.417.1",
 		"react": "^19.2.6",
 		"react-dom": "^19.2.6",
 		"shadcn": "^4.16.2",
@@ -66,6 +66,7 @@
 		"drizzle-kit": "1.0.0-rc.4",
 		"husky": "^9.1.7",
 		"jsdom": "^28",
+		"react-doctor": "^0.9.12",
 		"typescript": "^6",
 		"vite": "^8",
 		"vitest": "^4"

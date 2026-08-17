@@ -11,12 +11,26 @@ import {
 	PublicLayoutConfigurationProvider,
 } from "@/components/public-layout-context";
 import { PublicShell } from "@/components/public-shell";
+import { RouteError } from "@/components/route-error";
 import { getCatalog } from "@/functions/catalog";
+import {
+	captureAnalyticsEvent,
+	type MapSelectionSource,
+} from "@/lib/analytics";
 import { validateCatalogSearch } from "@/lib/catalog-search";
 
 export const Route = createFileRoute("/_public")({
 	validateSearch: validateCatalogSearch,
 	loader: () => getCatalog(),
+	errorComponent: (props) => (
+		<RouteError
+			{...props}
+			analyticsError={{
+				error_code: "catalog_unavailable",
+				operation: "catalog_load",
+			}}
+		/>
+	),
 	staleTime: 30_000,
 	preloadStaleTime: 30_000,
 	component: PublicLayout,
@@ -32,9 +46,9 @@ function PublicLayout() {
 		select: (state) => state.location.pathname,
 	});
 	const isAboutRoute = currentPathname === "/about";
+	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
-	const [pendingMapId, setPendingMapId] = useState<string>();
 	const [committedConfiguration, setCommittedConfiguration] =
 		useState<PublicLayoutConfiguration>();
 	const [pendingConfiguration, setPendingConfiguration] =
@@ -46,8 +60,11 @@ function PublicLayout() {
 		[],
 	);
 	const prepareMapNavigation = useCallback(
-		(map: { id: string; name: string }) => {
-			setPendingMapId(map.id);
+		(map: { id: string; name: string }, source: MapSelectionSource) => {
+			captureAnalyticsEvent("map_selected", {
+				map_id: map.id,
+				source,
+			});
 			setPendingConfiguration({
 				editorSearch: { map: map.id },
 				headerMeta: "Loading…",
@@ -59,6 +76,7 @@ function PublicLayout() {
 		[],
 	);
 	const currentMap = catalog.maps.find((map) => map.id === params.mapId);
+	const pendingMapId = pendingConfiguration?.editorSearch?.map;
 	const configuration = pendingConfiguration ?? committedConfiguration;
 
 	useEffect(() => {
@@ -69,14 +87,12 @@ function PublicLayout() {
 
 		if (pendingMapId === currentMap?.id) {
 			navigationStartedRef.current = false;
-			setPendingMapId(undefined);
 			setPendingConfiguration(undefined);
 			return;
 		}
 
 		if (navigationStartedRef.current && pendingMapId) {
 			navigationStartedRef.current = false;
-			setPendingMapId(undefined);
 			setPendingConfiguration(undefined);
 		}
 	}, [currentMap?.id, isRouterLoading, pendingMapId]);
@@ -96,12 +112,14 @@ function PublicLayout() {
 				headerTitle={
 					isAboutRoute
 						? "About"
-						: isUpdatesRoute
-							? "Updates"
-							: (currentMap?.name ?? "Overview")
+						: isDocumentsRoute
+							? "Documents"
+							: isUpdatesRoute
+								? "Updates"
+								: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
-				onMapNavigationStart={prepareMapNavigation}
+				onMapNavigationStart={(map) => prepareMapNavigation(map, "sidebar")}
 				sidebarPanel={configuration?.sidebarPanel}
 			>
 				<Outlet />
