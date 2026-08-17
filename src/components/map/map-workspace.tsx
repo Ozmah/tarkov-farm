@@ -14,6 +14,11 @@ import {
 
 import { MapMarkerCluster } from "@/components/map/map-marker-cluster";
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { pointerToBasisPoints } from "@/lib/map-coordinates";
 import { groupOverlappingMapMarkers } from "@/lib/map-marker-groups";
 import {
@@ -46,6 +51,7 @@ export type MapWorkspaceImage = {
 
 export type MapWorkspaceMarker = {
 	clusterable?: boolean;
+	focusOnSelect?: boolean;
 	id: string;
 	isActive?: boolean;
 	kind?: "location" | "submap";
@@ -367,6 +373,12 @@ export function MapWorkspace({
 		}
 
 		const marker = markers.find((item) => item.id === selectedMarkerId);
+
+		if (marker?.focusOnSelect === false) {
+			centeredMarkerIdRef.current = selectedMarkerId;
+			return;
+		}
+
 		const viewportSize = viewportSizeRef.current;
 
 		if (!marker || !viewportSize) {
@@ -858,7 +870,7 @@ function MapMarker({
 		);
 	}
 
-	return (
+	const trigger = (
 		<button
 			type="button"
 			data-map-marker
@@ -871,10 +883,14 @@ function MapMarker({
 		>
 			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
 			<span className="tabular-nums">{marker.label}</span>
-			<span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] left-1/2 w-max max-w-52 -translate-x-1/2 bg-cosmic-ink px-2.5 py-1.5 font-medium font-sans text-milk-mustache text-xs opacity-0 shadow-[0_4px_14px_rgb(0_0_0/0.45)] transition-opacity group-hover/marker:opacity-100 group-focus-visible/marker:opacity-100 motion-reduce:transition-none">
-				{marker.name}
-			</span>
 		</button>
+	);
+
+	return (
+		<Tooltip>
+			<TooltipTrigger render={trigger} />
+			<TooltipContent>{marker.name}</TooltipContent>
+		</Tooltip>
 	);
 }
 

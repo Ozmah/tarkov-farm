@@ -83,6 +83,7 @@ describe("MapCanvas selection centering", () => {
 		expect(props?.markers).toEqual([
 			expect.objectContaining({
 				clusterable: false,
+				focusOnSelect: false,
 				id: "new-location",
 			}),
 		]);

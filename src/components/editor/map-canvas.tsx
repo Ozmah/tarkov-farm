@@ -48,6 +48,7 @@ export function MapCanvas({
 		markers.push({
 			...draftMarker,
 			clusterable: false,
+			focusOnSelect: false,
 			id: "new-location",
 			label: "+",
 			name: draftMarker.name || "New location",
