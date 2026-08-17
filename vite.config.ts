@@ -46,6 +46,11 @@ const config = defineConfig(({ mode }) => ({
 					nitro({
 						preset: "bun",
 						routeRules: {
+							"/documents": {
+								headers: {
+									"cache-control": "public, max-age=0, must-revalidate",
+								},
+							},
 							"/documents/**": {
 								headers: {
 									"cache-control": "public, max-age=31536000, immutable",

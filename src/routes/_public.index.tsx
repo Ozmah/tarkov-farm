@@ -15,9 +15,17 @@ import { UpdateFeed } from "@/components/update-feed";
 import { getUpdates } from "@/functions/updates";
 import { getDocumentShortName } from "@/lib/document-display";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
+import { createSeoHead } from "@/lib/seo";
 import { Route as PublicLayoutRoute } from "./_public";
 
 export const Route = createFileRoute("/_public/")({
+	head: () =>
+		createSeoHead({
+			title: "Tarkov Farm | Kord Breach Document Locations",
+			description:
+				"Find Kord Breach document locations in Escape from Tarkov with interactive maps, screenshots and key requirements.",
+			pathname: "/",
+		}),
 	loader: () => getUpdates(),
 	errorComponent: (props) => (
 		<RouteError

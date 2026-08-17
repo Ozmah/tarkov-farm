@@ -13,6 +13,7 @@ import {
 	CONTRIBUTING_GUIDE_URL,
 	X_PROFILE_URL,
 } from "@/lib/github-links";
+import { createSeoHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 const publicRoute = getRouteApi("/_public");
@@ -21,15 +22,12 @@ export const Route = createFileRoute("/_public/contribute")({
 	validateSearch: (search: Record<string, unknown>) => ({
 		map: readCatalogId(search.map),
 	}),
-	head: () => ({
-		meta: [
-			{ title: "Contribute | Tarkov Farm" },
-			{
-				name: "description",
-				content: "Share a new seasonal document location with Tarkov Farm.",
-			},
-		],
-	}),
+	head: () =>
+		createSeoHead({
+			title: "Contribute | Tarkov Farm",
+			description: "Share a new seasonal document location with Tarkov Farm.",
+			pathname: "/contribute",
+		}),
 	component: ContributePage,
 });
 

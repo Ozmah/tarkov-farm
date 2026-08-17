@@ -6,17 +6,15 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 
 import { buttonVariants } from "@/components/ui/button";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_public/about")({
-	head: () => ({
-		meta: [
-			{ title: "About | Tarkov Farm" },
-			{
-				name: "description",
-				content: "About Tarkov Farm and its creator, Ozmah.",
-			},
-		],
-	}),
+	head: () =>
+		createSeoHead({
+			title: "About | Tarkov Farm",
+			description: "About Tarkov Farm, its sources and its creator, Ozmah.",
+			pathname: "/about",
+		}),
 	component: AboutPage,
 });
 

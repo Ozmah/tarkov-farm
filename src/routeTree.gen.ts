@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as HealthRouteImport } from './routes/health'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
 import { Route as PublicAboutRouteImport } from './routes/_public.about'
 import { Route as PublicContributeRouteImport } from './routes/_public.contribute'
@@ -31,6 +32,11 @@ const EditorRoute = EditorRouteImport.update({
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof PublicAboutRoute
   '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about': typeof PublicAboutRoute
   '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/editor': typeof EditorRoute
   '/health': typeof HealthRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_public/about': typeof PublicAboutRoute
   '/_public/contribute': typeof PublicContributeRoute
   '/_public/documents': typeof PublicDocumentsRoute
@@ -102,6 +111,7 @@ export interface FileRouteTypes {
     | '/'
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/about'
     | '/contribute'
     | '/documents'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/about'
     | '/contribute'
     | '/documents'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/_public'
     | '/editor'
     | '/health'
+    | '/sitemap.xml'
     | '/_public/about'
     | '/_public/contribute'
     | '/_public/documents'
@@ -134,6 +146,7 @@ export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   EditorRoute: typeof EditorRoute
   HealthRoute: typeof HealthRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public/': {
@@ -229,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   EditorRoute: EditorRoute,
   HealthRoute: HealthRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -30,6 +30,7 @@ import {
 } from "@/lib/catalog-search";
 import { getDocumentShortName } from "@/lib/document-display";
 import { numberMapLocations } from "@/lib/map-location-order";
+import { createSeoHead } from "@/lib/seo";
 import { SUBMAP_LINKS } from "@/lib/submap-links";
 import { Route as PublicLayoutRoute } from "./_public";
 
@@ -46,6 +47,20 @@ export const Route = createFileRoute("/_public/maps/$mapId")({
 		}
 
 		return mapData;
+	},
+	head: ({ loaderData, params }) => {
+		if (!loaderData) {
+			return {};
+		}
+
+		const locationCount = loaderData.locations.length;
+		const locationLabel = locationCount === 1 ? "location" : "locations";
+
+		return createSeoHead({
+			title: `${loaderData.map.name} Document Locations | Tarkov Farm`,
+			description: `Find ${locationCount} seasonal document ${locationLabel} on ${loaderData.map.name} in Escape from Tarkov, with map markers and screenshots.`,
+			pathname: `/maps/${encodeURIComponent(params.mapId)}`,
+		});
 	},
 	errorComponent: (props) => (
 		<RouteError

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/empty";
 import { UpdateFeed } from "@/components/update-feed";
 import { getUpdates } from "@/functions/updates";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/_public/updates")({
 	loader: () => getUpdates(),
@@ -24,15 +25,13 @@ export const Route = createFileRoute("/_public/updates")({
 	),
 	staleTime: 30_000,
 	preloadStaleTime: 30_000,
-	head: () => ({
-		meta: [
-			{ title: "Updates | Tarkov Farm" },
-			{
-				name: "description",
-				content: "New locations, corrections, and improvements to Tarkov Farm.",
-			},
-		],
-	}),
+	head: () =>
+		createSeoHead({
+			title: "Updates | Tarkov Farm",
+			description:
+				"New locations, corrections and improvements to Tarkov Farm.",
+			pathname: "/updates",
+		}),
 	component: UpdatesRoute,
 });
 
