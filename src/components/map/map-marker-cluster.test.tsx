@@ -26,8 +26,6 @@ describe("MapMarkerCluster", () => {
 				onPointerDown={onPointerDown}
 			>
 				<MapMarkerCluster
-					image={{ height: 1000, width: 1000 }}
-					inverseScale={1}
 					markers={[
 						{
 							id: "one",
@@ -43,15 +41,16 @@ describe("MapMarkerCluster", () => {
 						},
 					]}
 					onSelect={onSelect}
-					xBasisPoints={5000}
-					yBasisPoints={5000}
+					position={{ x: 500, y: 500 }}
 				/>
 			</div>,
 		);
 
-		fireEvent.click(
-			screen.getByRole("button", { name: "Choose among 2 nearby locations" }),
-		);
+		const trigger = screen.getByRole("button", {
+			name: "Choose among 2 nearby locations",
+		});
+		expect(trigger.style.transform).toBe("translate(-50%, -100%)");
+		fireEvent.click(trigger);
 		expect(await screen.findByText("Nearby locations")).toBeTruthy();
 
 		const option = screen.getByRole("button", {
@@ -94,15 +93,12 @@ describe("MapMarkerCluster", () => {
 function renderCluster(onSelect = vi.fn()) {
 	return render(
 		<MapMarkerCluster
-			image={{ height: 1000, width: 1000 }}
-			inverseScale={1}
 			markers={[
 				{ id: "one", label: "7", name: "First location" },
 				{ id: "two", label: "11", name: "Second location" },
 			]}
 			onSelect={onSelect}
-			xBasisPoints={5000}
-			yBasisPoints={5000}
+			position={{ x: 500, y: 500 }}
 		/>,
 	);
 }

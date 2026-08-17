@@ -692,7 +692,7 @@ export function MapWorkspace({
 					}}
 				>
 					<div
-						className="absolute top-0 left-0 isolate"
+						className="absolute top-0 left-0"
 						style={{
 							width: image.width,
 							height: image.height,
@@ -727,47 +727,21 @@ export function MapWorkspace({
 								!isImageReady && "opacity-0",
 							)}
 						/>
+					</div>
 
-						{isImageReady ? (
-							<>
-								{markerGroups.map((group) => {
-									const marker = group.markers[0];
+					{isImageReady && view ? (
+						<div
+							className="pointer-events-none absolute isolate"
+							style={{ left: view.x, top: view.y }}
+						>
+							{markerGroups.map((group) => {
+								const marker = group.markers[0];
 
-									return group.markers.length === 1 && marker ? (
-										<MapMarker
-											key={marker.id}
-											marker={marker}
-											image={imageSize}
-											inverseScale={view ? 1 / view.scale : 1}
-											isSelected={marker.id === selectedMarkerId}
-											onClick={
-												onSelectMarker
-													? () => onSelectMarker(marker.id)
-													: undefined
-											}
-										/>
-									) : onSelectMarker ? (
-										<MapMarkerCluster
-											key={group.id}
-											image={imageSize}
-											inverseScale={view ? 1 / view.scale : 1}
-											markers={group.markers}
-											selectedMarkerId={selectedMarkerId}
-											xBasisPoints={group.xBasisPoints}
-											yBasisPoints={group.yBasisPoints}
-											onSelect={(markerId) => {
-												viewportRef.current?.focus();
-												onSelectMarker(markerId);
-											}}
-										/>
-									) : null;
-								})}
-								{standaloneLocationMarkers.map((marker) => (
+								return group.markers.length === 1 && marker ? (
 									<MapMarker
 										key={marker.id}
 										marker={marker}
-										image={imageSize}
-										inverseScale={view ? 1 / view.scale : 1}
+										position={getMarkerPosition(marker, imageSize, view.scale)}
 										isSelected={marker.id === selectedMarkerId}
 										onClick={
 											onSelectMarker
@@ -775,24 +749,43 @@ export function MapWorkspace({
 												: undefined
 										}
 									/>
-								))}
-								{submapMarkers.map((marker) => (
-									<MapMarker
-										key={marker.id}
-										marker={marker}
-										image={imageSize}
-										inverseScale={view ? 1 / view.scale : 1}
-										isSelected={false}
-										onClick={
-											onSelectMarker
-												? () => onSelectMarker(marker.id)
-												: undefined
-										}
+								) : onSelectMarker ? (
+									<MapMarkerCluster
+										key={group.id}
+										markers={group.markers}
+										position={getMarkerPosition(group, imageSize, view.scale)}
+										selectedMarkerId={selectedMarkerId}
+										onSelect={(markerId) => {
+											viewportRef.current?.focus();
+											onSelectMarker(markerId);
+										}}
 									/>
-								))}
-							</>
-						) : null}
-					</div>
+								) : null;
+							})}
+							{standaloneLocationMarkers.map((marker) => (
+								<MapMarker
+									key={marker.id}
+									marker={marker}
+									position={getMarkerPosition(marker, imageSize, view.scale)}
+									isSelected={marker.id === selectedMarkerId}
+									onClick={
+										onSelectMarker ? () => onSelectMarker(marker.id) : undefined
+									}
+								/>
+							))}
+							{submapMarkers.map((marker) => (
+								<MapMarker
+									key={marker.id}
+									marker={marker}
+									position={getMarkerPosition(marker, imageSize, view.scale)}
+									isSelected={false}
+									onClick={
+										onSelectMarker ? () => onSelectMarker(marker.id) : undefined
+									}
+								/>
+							))}
+						</div>
+					) : null}
 
 					{imageStatus === "loading" ? (
 						<div
@@ -827,23 +820,16 @@ export function MapWorkspace({
 }
 
 type MapMarkerProps = {
-	image: Size;
-	inverseScale: number;
 	isSelected: boolean;
 	marker: MapWorkspaceMarker;
 	onClick?: () => void;
+	position: Point;
 };
 
-function MapMarker({
-	image,
-	inverseScale,
-	isSelected,
-	marker,
-	onClick,
-}: MapMarkerProps) {
+function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 	const isSubmap = marker.kind === "submap";
 	const className = cn(
-		"group/marker absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+		"group/marker pointer-events-auto absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
 		isSubmap &&
 			"h-11 w-auto min-w-14 gap-1.5 rounded-none bg-rowdy-orange px-2 text-rowdy-orange-foreground ring-rowdy-orange after:bg-rowdy-orange [&_svg]:size-5",
 		isSelected &&
@@ -852,9 +838,9 @@ function MapMarker({
 		marker.isActive === false && "opacity-60",
 	);
 	const style = {
-		left: `${(marker.xBasisPoints / 10_000) * image.width}px`,
-		top: `${(marker.yBasisPoints / 10_000) * image.height}px`,
-		transform: `translate(-50%, -100%) scale(${inverseScale})`,
+		left: position.x,
+		top: position.y,
+		transform: "translate(-50%, -100%)",
 		transformOrigin: "50% 100%",
 	};
 
@@ -892,6 +878,17 @@ function MapMarker({
 			<TooltipContent>{marker.name}</TooltipContent>
 		</Tooltip>
 	);
+}
+
+function getMarkerPosition(
+	marker: Pick<MapWorkspaceMarker, "xBasisPoints" | "yBasisPoints">,
+	image: Size,
+	scale: number,
+): Point {
+	return {
+		x: (marker.xBasisPoints / 10_000) * image.width * scale,
+		y: (marker.yBasisPoints / 10_000) * image.height * scale,
+	};
 }
 
 function normalizeWheelDelta(event: WheelEvent, viewportHeight: number) {

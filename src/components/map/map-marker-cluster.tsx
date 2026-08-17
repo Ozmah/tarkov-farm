@@ -8,7 +8,7 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import type { Size } from "@/lib/map-viewport";
+import type { Point } from "@/lib/map-viewport";
 import { cn } from "@/lib/utils";
 
 type ClusterMarker = {
@@ -19,13 +19,10 @@ type ClusterMarker = {
 };
 
 type MapMarkerClusterProps = {
-	image: Size;
-	inverseScale: number;
 	markers: ClusterMarker[];
 	onSelect: (markerId: string) => void;
+	position: Point;
 	selectedMarkerId?: string;
-	xBasisPoints: number;
-	yBasisPoints: number;
 };
 
 const MAP_SHORTCUT_KEYS = new Set([
@@ -40,13 +37,10 @@ const MAP_SHORTCUT_KEYS = new Set([
 ]);
 
 export function MapMarkerCluster({
-	image,
-	inverseScale,
 	markers,
 	onSelect,
+	position,
 	selectedMarkerId,
-	xBasisPoints,
-	yBasisPoints,
 }: MapMarkerClusterProps) {
 	const [open, setOpen] = useState(false);
 	const restoreFocusRef = useRef(true);
@@ -70,14 +64,14 @@ export function MapMarkerCluster({
 				aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}`}
 				onPointerDown={(event) => event.stopPropagation()}
 				className={cn(
-					"group/cluster absolute z-20 flex size-11 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-sm shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache before:absolute before:-z-10 before:size-10 before:-translate-x-1.5 before:-translate-y-1.5 before:rounded-full before:border-2 before:border-cosmic-ink before:bg-milk-mustache before:content-[''] focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+					"group/cluster pointer-events-auto absolute z-20 flex size-11 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-sm shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache before:absolute before:-z-10 before:size-10 before:-translate-x-1.5 before:-translate-y-1.5 before:rounded-full before:border-2 before:border-cosmic-ink before:bg-milk-mustache before:content-[''] focus-visible:ring-4 focus-visible:ring-rowdy-orange",
 					containsSelection &&
 						"bg-rowdy-orange text-rowdy-orange-foreground ring-rowdy-orange",
 				)}
 				style={{
-					left: `${(xBasisPoints / 10_000) * image.width}px`,
-					top: `${(yBasisPoints / 10_000) * image.height}px`,
-					transform: `translate(-50%, -100%) scale(${inverseScale})`,
+					left: position.x,
+					top: position.y,
+					transform: "translate(-50%, -100%)",
 					transformOrigin: "50% 100%",
 				}}
 			>
