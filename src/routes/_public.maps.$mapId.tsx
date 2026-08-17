@@ -29,6 +29,7 @@ import {
 	resolveMapDocumentIds,
 } from "@/lib/catalog-search";
 import { getDocumentShortName } from "@/lib/document-display";
+import { numberMapLocations } from "@/lib/map-location-order";
 import { SUBMAP_LINKS } from "@/lib/submap-links";
 import { Route as PublicLayoutRoute } from "./_public";
 
@@ -90,8 +91,10 @@ function MapPage() {
 		mapData.images.find((image) => image.viewKey === search.view) ??
 		mapData.images.find((image) => image.viewKey === "main") ??
 		mapData.images[0];
-	const currentViewLocations = mapData.locations.filter(
-		(location) => location.mapImageId === selectedImage?.id,
+	const currentViewLocations = numberMapLocations(
+		mapData.locations.filter(
+			(location) => location.mapImageId === selectedImage?.id,
+		),
 	);
 	const visibleLocations = currentViewLocations.filter((location) =>
 		selectedDocumentIdSet.has(location.documentId),
@@ -180,14 +183,15 @@ function MapPage() {
 		}
 
 		const locationViewIntent = locationViewIntentRef.current;
+		const locationViewSource =
+			locationViewIntent?.locationId === selectedLocationId
+				? (locationViewIntent?.source ?? "direct")
+				: "direct";
 		captureAnalyticsEvent("location_viewed", {
 			document_id: selectedLocationDocumentId,
 			location_id: selectedLocationId,
 			map_id: mapData.map.id,
-			source:
-				locationViewIntent?.locationId === selectedLocationId
-					? locationViewIntent.source
-					: "direct",
+			source: locationViewSource,
 		});
 		locationViewIntentRef.current = undefined;
 	}, [mapData.map.id, selectedLocationDocumentId, selectedLocationId]);
@@ -311,10 +315,11 @@ function MapPage() {
 							image={selectedImage}
 							instructions="Drag to move · Wheel or controls to zoom"
 							markers={[
-								...visibleLocations.map((location, index) => ({
+								...visibleLocations.map((location) => ({
 									id: location.id,
-									label: String(index + 1),
+									label: location.markerLabel,
 									name: location.name,
+									secondaryLabel: location.documentName,
 									xBasisPoints: location.xBasisPoints,
 									yBasisPoints: location.yBasisPoints,
 								})),

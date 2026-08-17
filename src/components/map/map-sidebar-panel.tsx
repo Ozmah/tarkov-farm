@@ -38,6 +38,7 @@ type SidebarLocation = {
 	documentId: string;
 	documentName: string;
 	id: string;
+	markerLabel?: string;
 	name: string;
 };
 
@@ -279,7 +280,7 @@ export function MapSidebarPanel({
 									)}
 								>
 									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-sidebar-border font-heading text-xs tabular-nums">
-										{index + 1}
+										{location.markerLabel ?? index + 1}
 									</span>
 									{document ? (
 										<DocumentThumbnail

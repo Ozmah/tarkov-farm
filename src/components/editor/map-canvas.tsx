@@ -6,6 +6,7 @@ import {
 
 type MapCanvasLocation = MapWorkspaceMarker & {
 	isActive: boolean;
+	markerLabel?: string;
 };
 
 type DraftMarker = Omit<MapCanvasLocation, "id">;
@@ -39,13 +40,14 @@ export function MapCanvas({
 		return {
 			...marker,
 			id: location.id,
-			label: String(index + 1),
+			label: location.markerLabel ?? String(index + 1),
 		};
 	});
 
 	if (!selectedLocationId) {
 		markers.push({
 			...draftMarker,
+			clusterable: false,
 			id: "new-location",
 			label: "+",
 			name: draftMarker.name || "New location",
