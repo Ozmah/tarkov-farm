@@ -11,6 +11,7 @@ import {
 import { Link, useMatchRoute, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
 
+import { TarkovFarmLogo } from "@/components/tarkov-farm-logo";
 import {
 	Sidebar,
 	SidebarContent,
@@ -129,13 +130,16 @@ export function AppSidebar({
 					search={{}}
 					onClick={closeMobileSidebar}
 					aria-label="Tarkov Farm Season Docs homepage"
-					className="flex min-w-0 items-baseline gap-1.5 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+					className="flex min-w-0 items-center gap-2.5 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 				>
-					<span className="font-heading font-semibold text-sidebar-primary text-sm uppercase tracking-wide">
-						Tarkov Farm
-					</span>
-					<span className="truncate text-sidebar-foreground/75 text-xs">
-						Season Docs
+					<TarkovFarmLogo className="size-8" />
+					<span className="flex min-w-0 items-baseline gap-1.5">
+						<span className="font-heading font-semibold text-sidebar-primary text-sm uppercase tracking-wide">
+							Tarkov Farm
+						</span>
+						<span className="truncate text-sidebar-foreground/75 text-xs">
+							Season Docs
+						</span>
 					</span>
 				</Link>
 			</SidebarHeader>

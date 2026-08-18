@@ -1,6 +1,14 @@
 export const SITE_NAME = "Tarkov Farm";
 export const SITE_ORIGIN = "https://tarkov.farm";
 
+const SOCIAL_IMAGE_PATH = "/tarkov-farm-social.jpg";
+
+export const SOCIAL_IMAGE_URL = import.meta.env.DEV
+	? SOCIAL_IMAGE_PATH
+	: `${SITE_ORIGIN}${SOCIAL_IMAGE_PATH}`;
+
+const SOCIAL_IMAGE_ALT = "Tarkov Farm Kord Breach seasonal documents guide";
+
 type SeoHeadInput = {
 	description: string;
 	pathname: string;
@@ -19,9 +27,17 @@ export function createSeoHead({ description, pathname, title }: SeoHeadInput) {
 			{ property: "og:title", content: title },
 			{ property: "og:description", content: description },
 			{ property: "og:url", content: canonicalUrl },
-			{ name: "twitter:card", content: "summary" },
+			{ property: "og:image", content: SOCIAL_IMAGE_URL },
+			{ property: "og:image:type", content: "image/jpeg" },
+			{ property: "og:image:width", content: "1200" },
+			{ property: "og:image:height", content: "630" },
+			{ property: "og:image:alt", content: SOCIAL_IMAGE_ALT },
+			{ name: "twitter:card", content: "summary_large_image" },
 			{ name: "twitter:title", content: title },
 			{ name: "twitter:description", content: description },
+			{ name: "twitter:url", content: canonicalUrl },
+			{ name: "twitter:image", content: SOCIAL_IMAGE_URL },
+			{ name: "twitter:image:alt", content: SOCIAL_IMAGE_ALT },
 		],
 		links: [{ rel: "canonical", href: canonicalUrl }],
 	};

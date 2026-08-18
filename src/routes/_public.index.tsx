@@ -152,7 +152,9 @@ function App() {
 													</h3>
 													<p className="text-muted-foreground text-xs tabular-nums">
 														{documentCount}{" "}
-														{documentCount === 1 ? "location" : "locations"}
+														{documentCount === 1
+															? "doc location"
+															: "doc locations"}
 													</p>
 													<p className="truncate text-muted-foreground text-xs">
 														{documents
