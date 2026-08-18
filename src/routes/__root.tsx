@@ -28,12 +28,35 @@ export const Route = createRootRoute({
 				name: "theme-color",
 				content: "#062540",
 			},
+			{
+				name: "apple-mobile-web-app-title",
+				content: "Tarkov Farm",
+			},
 		],
 		links: [
 			{
 				rel: "icon",
-				href: "/favicon.ico",
-				sizes: "any",
+				type: "image/png",
+				href: "/favicon-96x96.png?v=20260817",
+				sizes: "96x96",
+			},
+			{
+				rel: "icon",
+				type: "image/svg+xml",
+				href: "/favicon.svg?v=20260817",
+			},
+			{
+				rel: "shortcut icon",
+				href: "/favicon.ico?v=20260817",
+			},
+			{
+				rel: "apple-touch-icon",
+				sizes: "180x180",
+				href: "/apple-touch-icon.png?v=20260817",
+			},
+			{
+				rel: "manifest",
+				href: "/site.webmanifest?v=20260817",
 			},
 			{
 				rel: "stylesheet",

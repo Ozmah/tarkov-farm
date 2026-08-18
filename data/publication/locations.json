@@ -1100,6 +1100,59 @@
 			"yBasisPoints": 2936
 		},
 		{
+			"description": "Lab at the end of the room, on top of a desk in front of the entrance",
+			"documentId": "medical",
+			"id": "32bce4df-d149-45b7-9802-2e2540fcd391",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Containment Block",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1247,
+						"path": "/screenshots/32bce4df-d149-45b7-9802-2e2540fcd391/ad07126a8e847284ab8b99d335102303201abd37427a9cec667ea798987e9977-1920.webp",
+						"sha256": "da0a912e4c4b5936b15f36bd3f18eaf8b88cb34430a65a79709de230225400df",
+						"width": 1920
+					},
+					"id": "ee39566c-e6f7-447d-836a-133f71299cb7",
+					"isActive": true,
+					"preview": {
+						"height": 650,
+						"path": "/screenshots/32bce4df-d149-45b7-9802-2e2540fcd391/ad07126a8e847284ab8b99d335102303201abd37427a9cec667ea798987e9977-1000.webp",
+						"sha256": "fd549fe2023943fdc94ee54a553fe1369b1efce9f913e1be8e66fbb280fcd7bb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ad07126a8e847284ab8b99d335102303201abd37427a9cec667ea798987e9977"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1128,
+						"path": "/screenshots/32bce4df-d149-45b7-9802-2e2540fcd391/766c69139e390fc44a8a5a85e9e00ea1a61a08fc01d1c8b4f6c676db0a82780c-1920.webp",
+						"sha256": "fd0e05310c1caa26763dfbb4e6fa53883c74a61a93c4fbf7ff9bef8a23c1476b",
+						"width": 1920
+					},
+					"id": "03cb00bc-4240-4d49-a4b6-57e071e6fded",
+					"isActive": true,
+					"preview": {
+						"height": 588,
+						"path": "/screenshots/32bce4df-d149-45b7-9802-2e2540fcd391/766c69139e390fc44a8a5a85e9e00ea1a61a08fc01d1c8b4f6c676db0a82780c-1000.webp",
+						"sha256": "bc403c871b64a583d54b9580604e1293c638a1902fb7e351daf14e3c927b2737",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "766c69139e390fc44a8a5a85e9e00ea1a61a08fc01d1c8b4f6c676db0a82780c"
+				}
+			],
+			"xBasisPoints": 3181,
+			"yBasisPoints": 9361
+		},
+		{
 			"description": "On the desk at the end, next to a locker",
 			"documentId": "financial",
 			"id": "36094ccb-73d3-4217-8373-faf4dcba389a",
@@ -1508,6 +1561,61 @@
 			],
 			"xBasisPoints": 4946,
 			"yBasisPoints": 2820
+		},
+		{
+			"description": "In the middle section, left side cabinets in front of the bookshelf",
+			"documentId": "medical",
+			"id": "4824d0bd-6c2b-4bb7-84bc-f48922653cf5",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Green Keycard Room",
+			"requiredKeyIds": [
+				"terragroup-labs-keycard-green"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1114,
+						"path": "/screenshots/4824d0bd-6c2b-4bb7-84bc-f48922653cf5/e759c102760f2f9770dbcb934eef53ba6cbecbadf9aa04d1f2137c520ca2fb74-1920.webp",
+						"sha256": "71fe442e1fb90c44e3cd177c2d8b8ca145ac265550ff71b7f1ad4caf94fcfb93",
+						"width": 1920
+					},
+					"id": "9f7782b3-adf6-48aa-86d9-115610349b31",
+					"isActive": true,
+					"preview": {
+						"height": 580,
+						"path": "/screenshots/4824d0bd-6c2b-4bb7-84bc-f48922653cf5/e759c102760f2f9770dbcb934eef53ba6cbecbadf9aa04d1f2137c520ca2fb74-1000.webp",
+						"sha256": "93c05e29f148629aa0dc11a9313ede305533e3d31798d5f1c03865d8f358d370",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "e759c102760f2f9770dbcb934eef53ba6cbecbadf9aa04d1f2137c520ca2fb74"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1201,
+						"path": "/screenshots/4824d0bd-6c2b-4bb7-84bc-f48922653cf5/68fbcd0ac51515e111e2b60d0dd2fb3ae8ca6ab5e75c73d0272b82f9b850081f-1920.webp",
+						"sha256": "6393fb9a275d33580cbcca9ecaa7bbe13d420b70d96f0c93746f9dada04ac8e4",
+						"width": 1920
+					},
+					"id": "b4d73e70-004e-4b5c-b90b-d6ba79940d9a",
+					"isActive": true,
+					"preview": {
+						"height": 626,
+						"path": "/screenshots/4824d0bd-6c2b-4bb7-84bc-f48922653cf5/68fbcd0ac51515e111e2b60d0dd2fb3ae8ca6ab5e75c73d0272b82f9b850081f-1000.webp",
+						"sha256": "3c611a26c4bb04c6f5fb69f242a947ac6a9432ad9f32b71d8299d111e1348984",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "68fbcd0ac51515e111e2b60d0dd2fb3ae8ca6ab5e75c73d0272b82f9b850081f"
+				}
+			],
+			"xBasisPoints": 7697,
+			"yBasisPoints": 4586
 		},
 		{
 			"description": "In an open drawer in the office main desk",
@@ -2954,6 +3062,92 @@
 			"yBasisPoints": 4508
 		},
 		{
+			"description": "South building in the smuggler's base, on a stool next to a bed and a crushed barrel",
+			"documentId": "test",
+			"id": "96873099-bd91-4dd7-82da-7336d40ef29b",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Smuggler's Base",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/96873099-bd91-4dd7-82da-7336d40ef29b/854ef3b2cf99fb83b1ca2f4c008d45778bdc98d3eee5cafc3ff69aead12e795c-1920.webp",
+						"sha256": "8558db943d929f865266b9c928819ce8a00f7cb879d3e261c15b50c77a643e75",
+						"width": 1920
+					},
+					"id": "fe26907b-7220-4943-a86d-c148595eefeb",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/96873099-bd91-4dd7-82da-7336d40ef29b/854ef3b2cf99fb83b1ca2f4c008d45778bdc98d3eee5cafc3ff69aead12e795c-1000.webp",
+						"sha256": "b4e206cc6b58f2f7d6d44c4c3178496b2e034fcb2d57c868ff11fdceeb4ffaeb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "854ef3b2cf99fb83b1ca2f4c008d45778bdc98d3eee5cafc3ff69aead12e795c"
+				}
+			],
+			"xBasisPoints": 6889,
+			"yBasisPoints": 1919
+		},
+		{
+			"description": "On the east side of the village, the two floor brick house, second floor on the mattress next to an ashtray",
+			"documentId": "test",
+			"id": "96da60de-ad19-443e-a984-139e848fd3b4",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Two Floor Brickhouse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1032,
+						"path": "/screenshots/96da60de-ad19-443e-a984-139e848fd3b4/03893d8b1c9374a1e9121e648d018fa362bc905d6914044b440717ab52d51138-1920.webp",
+						"sha256": "6cbe43e9c26d0f553ea50d09e2a204ed4b9034392a25395a5316a6bcabd92804",
+						"width": 1920
+					},
+					"id": "92bd2ca9-6be3-44a8-8ca1-0ab888f0663b",
+					"isActive": true,
+					"preview": {
+						"height": 537,
+						"path": "/screenshots/96da60de-ad19-443e-a984-139e848fd3b4/03893d8b1c9374a1e9121e648d018fa362bc905d6914044b440717ab52d51138-1000.webp",
+						"sha256": "912e224282cff787d5c56ee82ef0f2b0d6b13224f5328e0e07b6072224910ada",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "03893d8b1c9374a1e9121e648d018fa362bc905d6914044b440717ab52d51138"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 932,
+						"path": "/screenshots/96da60de-ad19-443e-a984-139e848fd3b4/41994b3dd95d5cc9a1d45b6cd6ffdb83e0325be2340267cd47e1895d0520d208-1920.webp",
+						"sha256": "9dc709307880ff2912583c27c2b8c094ec83e1339d518f414d9baa0cb49a9abf",
+						"width": 1920
+					},
+					"id": "42c625d1-e649-4c5f-830b-e8fbb6ab44e8",
+					"isActive": true,
+					"preview": {
+						"height": 485,
+						"path": "/screenshots/96da60de-ad19-443e-a984-139e848fd3b4/41994b3dd95d5cc9a1d45b6cd6ffdb83e0325be2340267cd47e1895d0520d208-1000.webp",
+						"sha256": "0b1a28ce8709bbc7731b3dee8b5678502ccd01539b81da7af3a5ac9d0b04cb30",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "41994b3dd95d5cc9a1d45b6cd6ffdb83e0325be2340267cd47e1895d0520d208"
+				}
+			],
+			"xBasisPoints": 8048,
+			"yBasisPoints": 3233
+		},
+		{
 			"description": "On a pile of boxes next to a cabinet with a fan on top",
 			"documentId": "user",
 			"id": "9bfe1c5c-841c-4a53-bad3-72f900d910e1",
@@ -3818,8 +4012,8 @@
 					"sourceSha256": "c93ef53388896a3939f9bb5841a3af56364451a8c23416d43885a561e3287b11"
 				}
 			],
-			"xBasisPoints": 4999,
-			"yBasisPoints": 4320
+			"xBasisPoints": 8337,
+			"yBasisPoints": 533
 		},
 		{
 			"description": "In the terragroup building front entrance, take a right, office on the left, desk on the left next to the file cabinet.",
@@ -4494,6 +4688,59 @@
 			],
 			"xBasisPoints": 3932,
 			"yBasisPoints": 7836
+		},
+		{
+			"description": "Second floor office container in the east scav camp, on the pillow in one corner of the room",
+			"documentId": "technical",
+			"id": "fd745c57-c39b-4ed4-a6ce-2b9571d12d16",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Office Container",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/fd745c57-c39b-4ed4-a6ce-2b9571d12d16/6ef51c88d4d590fab7b08e3cb7474b68308b9e037afff93ced170d98965f2eca-1920.webp",
+						"sha256": "abb60b63446ece1faf5d104c3619b063c0bbbb3e9543a2e2e69f3b51ee4bfbed",
+						"width": 1920
+					},
+					"id": "75130813-bc55-4b77-ae24-bfdd65d8db13",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/fd745c57-c39b-4ed4-a6ce-2b9571d12d16/6ef51c88d4d590fab7b08e3cb7474b68308b9e037afff93ced170d98965f2eca-1000.webp",
+						"sha256": "66b44e94a5a5a6dc7dbab83aafa0bba6157d7354f3dec36855f20a1daa4cfb57",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "6ef51c88d4d590fab7b08e3cb7474b68308b9e037afff93ced170d98965f2eca"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1076,
+						"path": "/screenshots/fd745c57-c39b-4ed4-a6ce-2b9571d12d16/c823618c9e5ed8b5deb903739e2924564ca4a7e942cb471fcf2293f4cba57234-1920.webp",
+						"sha256": "84df26cb1429ec6663a19ecc23219c3af11139bea8098db1dd0d42624080aa3a",
+						"width": 1920
+					},
+					"id": "6046e7bf-81e5-48ef-a2a8-d1ac373f1fbb",
+					"isActive": true,
+					"preview": {
+						"height": 560,
+						"path": "/screenshots/fd745c57-c39b-4ed4-a6ce-2b9571d12d16/c823618c9e5ed8b5deb903739e2924564ca4a7e942cb471fcf2293f4cba57234-1000.webp",
+						"sha256": "64487d181b49a9ac5a69e155980ec02339847d718cfea8b131406606edb33610",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "c823618c9e5ed8b5deb903739e2924564ca4a7e942cb471fcf2293f4cba57234"
+				}
+			],
+			"xBasisPoints": 3762,
+			"yBasisPoints": 1461
 		},
 		{
 			"description": "Island office next to the bathroom fixtures section",

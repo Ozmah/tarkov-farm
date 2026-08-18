@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createCanonicalUrl, createSeoHead } from "./seo";
+import { createCanonicalUrl, createSeoHead, SOCIAL_IMAGE_URL } from "./seo";
 
 describe("SEO metadata", () => {
 	it("removes search state and fragments from canonical URLs", () => {
@@ -31,7 +31,19 @@ describe("SEO metadata", () => {
 		});
 		expect(head.meta).toContainEqual({
 			name: "twitter:card",
-			content: "summary",
+			content: "summary_large_image",
+		});
+		expect(head.meta).toContainEqual({
+			property: "og:image",
+			content: SOCIAL_IMAGE_URL,
+		});
+		expect(head.meta).toContainEqual({
+			name: "twitter:image",
+			content: SOCIAL_IMAGE_URL,
+		});
+		expect(head.meta).toContainEqual({
+			name: "twitter:url",
+			content: "https://tarkov.farm/maps/reserve",
 		});
 	});
 });
