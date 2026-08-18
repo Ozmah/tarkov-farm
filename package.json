@@ -7,7 +7,7 @@
 	"scripts": {
 		"check": "biome check --write .",
 		"glados": "biome check . && bun run typecheck && bun run test && bun run build",
-		"release:check": "bun run updates:snapshot:check && bun run glados && bun run screenshots:check",
+		"release:check": "bun run glados && bun run screenshots:check",
 		"dev": "bun run env:check && bun run db:setup && vite dev",
 		"build": "vite build",
 		"start": "bun run env:check && bun run db:setup && bun .output/server/index.mjs",

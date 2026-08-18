@@ -44,6 +44,8 @@ Before opening a pull request, run:
 bun run release:check
 ```
 
+If the change publishes a project update, also run `bun run updates:snapshot:check`. Location-only corrections do not require a project update.
+
 Keep pull requests focused. Do not mix unrelated refactors, content updates and generated assets in the same change.
 
 Location data changes directly in PRs won't be accepted right now since I don't have a good way to make a comparison review yet.

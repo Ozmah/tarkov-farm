@@ -14,7 +14,7 @@ ENV VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY}
 ENV VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST}
 COPY --link . .
 ENV NODE_ENV=production
-RUN bun run updates:snapshot:check && bun run screenshots:check && bun run build
+RUN bun run screenshots:check && bun run build
 
 FROM oven/bun:${BUN_VERSION}-debian AS production-dependencies
 WORKDIR /app
