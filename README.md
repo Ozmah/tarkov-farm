@@ -58,9 +58,15 @@ Every successful location or project-update mutation refreshes its corresponding
 bun run db:manifest
 ```
 
-Commit both publication manifests together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
+Commit each changed publication manifest together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
 
-Each project update captures a canonical snapshot of the active public locations and screenshots. Before the first update, release context compares the current database with `data/publication/locations.json` from Git `HEAD`; later updates compare with the newest captured snapshot.
+Project updates are public announcements, not a requirement for every location correction. Each update captures a canonical snapshot of the active public locations and screenshots. Release context therefore represents changes since the newest announcement, even when location-only releases happened afterward. When publishing an update, verify that its snapshot covers the current publication:
+
+```bash
+bun run updates:snapshot:check
+```
+
+Do not synchronize an older update merely to release an unannounced location correction. Before the first update, release context compares the current database with `data/publication/locations.json` from Git `HEAD`.
 
 Application date logic uses Temporal with `America/Mexico_City` as its display and authoring timezone. Publication timestamps remain canonical UTC instants in SQLite and JSON. Native `Date` is reserved for external library boundaries that explicitly require it.
 
