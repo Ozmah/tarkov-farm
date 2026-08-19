@@ -2275,6 +2275,39 @@
 			"yBasisPoints": 2990
 		},
 		{
+			"description": "On top of the bar near the stairs",
+			"documentId": "financial",
+			"id": "6ad4d78b-f6e6-4d60-bc0a-708d00975d96",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Beluga 2nd Floor",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/6ad4d78b-f6e6-4d60-bc0a-708d00975d96/fd0779aa6eaf2234700b5cf55958e0c2f5665741e0619d8d6b822349f1ce84a7-1920.webp",
+						"sha256": "10592ac99ea18d6b12d374cb3706db64f20fcd5b508adeb47dedcbcabef5a90e",
+						"width": 1920
+					},
+					"id": "07d240f6-b3a2-4234-9f5a-c37c06927895",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/6ad4d78b-f6e6-4d60-bc0a-708d00975d96/fd0779aa6eaf2234700b5cf55958e0c2f5665741e0619d8d6b822349f1ce84a7-1000.webp",
+						"sha256": "8c978cfbaeade887ea077eac7d37dbc8c1eda5f047b2f3c8b2b8341549ff03fe",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "fd0779aa6eaf2234700b5cf55958e0c2f5665741e0619d8d6b822349f1ce84a7"
+				}
+			],
+			"xBasisPoints": 7546,
+			"yBasisPoints": 3463
+		},
+		{
 			"description": "On the window inside the RB-KPRL room, in the dome area",
 			"documentId": "pmc-personnel",
 			"id": "6f3cc1bc-9357-4577-b220-2688b67ce826",
@@ -4032,6 +4065,59 @@
 			],
 			"xBasisPoints": 8435,
 			"yBasisPoints": 6704
+		},
+		{
+			"description": "On a bench with an umbrella next to the car dealership",
+			"documentId": "user",
+			"id": "be64ce01-cc81-49da-b901-f93eb45640e0",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Car Dealership Bench",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/be64ce01-cc81-49da-b901-f93eb45640e0/a8a8e4af50f06be4d80a5464481eabfa5026b0f5cb73cf8812c170cd1653aa57-1920.webp",
+						"sha256": "e0150a23e318d37971a1f993b7704090e06878054ed91261c2706844fa28b635",
+						"width": 1562
+					},
+					"id": "1cd79c74-fdb4-4109-b4fa-2e24be64b7a1",
+					"isActive": true,
+					"preview": {
+						"height": 691,
+						"path": "/screenshots/be64ce01-cc81-49da-b901-f93eb45640e0/a8a8e4af50f06be4d80a5464481eabfa5026b0f5cb73cf8812c170cd1653aa57-1000.webp",
+						"sha256": "207d63eba604c35811020b1035e0ad14fc5111b21e939770b0a52ad8309bd35c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a8a8e4af50f06be4d80a5464481eabfa5026b0f5cb73cf8812c170cd1653aa57"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/be64ce01-cc81-49da-b901-f93eb45640e0/ea0ed00ae78a36df943bb0c8a78c1b46c060d52768b126b6f5d282d007d2dc32-1920.webp",
+						"sha256": "9f2841a14996c8d201c5c9ae12eb81fe13b184e4b502182a204fd386a02a2ffb",
+						"width": 1557
+					},
+					"id": "6a4c7d9f-c907-496d-8f94-8ef500bbd4fe",
+					"isActive": true,
+					"preview": {
+						"height": 693,
+						"path": "/screenshots/be64ce01-cc81-49da-b901-f93eb45640e0/ea0ed00ae78a36df943bb0c8a78c1b46c060d52768b126b6f5d282d007d2dc32-1000.webp",
+						"sha256": "1c4c4b1d98f145fc8a8b734d8a03da89b466995827aaae80a0116d98fd45bd26",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "ea0ed00ae78a36df943bb0c8a78c1b46c060d52768b126b6f5d282d007d2dc32"
+				}
+			],
+			"xBasisPoints": 6687,
+			"yBasisPoints": 6552
 		},
 		{
 			"description": "On the table next to the soldier's body",
