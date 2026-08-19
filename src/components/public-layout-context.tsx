@@ -7,6 +7,7 @@ import {
 	useMemo,
 } from "react";
 import type { MapSelectionSource } from "@/lib/analytics";
+import type { LayoutMode } from "@/lib/layout-mode";
 
 export type PublicLayoutConfiguration = {
 	editorSearch?: {
@@ -17,9 +18,11 @@ export type PublicLayoutConfiguration = {
 	};
 	headerMeta?: string;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
+	verticalPanel?: ReactNode;
 };
 
 type PublicLayoutContextValue = {
+	layoutMode: LayoutMode;
 	prepareMapNavigation: (
 		map: { id: string; name: string },
 		source: MapSelectionSource,
@@ -33,16 +36,18 @@ const PublicLayoutContext = createContext<PublicLayoutContextValue | null>(
 
 export function PublicLayoutConfigurationProvider({
 	children,
+	layoutMode,
 	prepareMapNavigation,
 	setConfiguration,
 }: {
 	children: ReactNode;
+	layoutMode: LayoutMode;
 	prepareMapNavigation: PublicLayoutContextValue["prepareMapNavigation"];
 	setConfiguration: PublicLayoutContextValue["setConfiguration"];
 }) {
 	const value = useMemo(
-		() => ({ prepareMapNavigation, setConfiguration }),
-		[prepareMapNavigation, setConfiguration],
+		() => ({ layoutMode, prepareMapNavigation, setConfiguration }),
+		[layoutMode, prepareMapNavigation, setConfiguration],
 	);
 
 	return (
@@ -50,6 +55,18 @@ export function PublicLayoutConfigurationProvider({
 			{children}
 		</PublicLayoutContext.Provider>
 	);
+}
+
+export function usePublicLayoutMode() {
+	const context = useContext(PublicLayoutContext);
+
+	if (!context) {
+		throw new Error(
+			"usePublicLayoutMode must be used within PublicLayoutConfigurationProvider",
+		);
+	}
+
+	return context.layoutMode;
 }
 
 export function usePreparePublicMapNavigation() {

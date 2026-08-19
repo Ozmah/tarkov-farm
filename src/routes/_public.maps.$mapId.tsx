@@ -4,10 +4,13 @@ import { useEffect, useRef } from "react";
 import { LocationDetailsPanel } from "@/components/map/location-details-panel";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { MapWorkspace } from "@/components/map/map-workspace";
+import { VerticalMapControls } from "@/components/map/vertical-map-controls";
+import { VerticalScreenshotInspector } from "@/components/map/vertical-screenshot-inspector";
 import { MapAttribution } from "@/components/map-attribution";
 import {
 	usePreparePublicMapNavigation,
 	usePublicLayoutConfiguration,
+	usePublicLayoutMode,
 } from "@/components/public-layout-context";
 import { RouteError } from "@/components/route-error";
 import {
@@ -22,6 +25,7 @@ import { getPublicMapData } from "@/functions/catalog";
 import {
 	captureAnalyticsEvent,
 	type LocationViewSource,
+	type MapControlSource,
 } from "@/lib/analytics";
 import {
 	encodeMapDocumentFilters,
@@ -85,6 +89,7 @@ function MapPage() {
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 	const prepareMapNavigation = usePreparePublicMapNavigation();
+	const layoutMode = usePublicLayoutMode();
 	const assignedDocumentIds = new Set(
 		catalog.documentMaps
 			.filter((assignment) => assignment.mapId === mapData.map.id)
@@ -222,78 +227,114 @@ function MapPage() {
 		name: getDocumentShortName(document),
 	}));
 
+	function selectLocation(locationId: string, source: MapControlSource) {
+		locationViewIntentRef.current = { locationId, source };
+		void navigate({
+			to: "/maps/$mapId",
+			params: { mapId: mapData.map.id },
+			search: {
+				documents: documentSearch,
+				location: locationId,
+				view: selectedImage?.viewKey,
+			},
+		});
+	}
+
+	function changeSelectedDocuments(
+		documentIds: string[],
+		source: MapControlSource,
+	) {
+		captureAnalyticsEvent("document_filter_changed", {
+			document_ids: documentIds,
+			map_id: mapData.map.id,
+			selected_count: documentIds.length,
+			source,
+		});
+		void navigate({
+			to: "/maps/$mapId",
+			params: { mapId: mapData.map.id },
+			search: {
+				documents: encodeMapDocumentFilters(documentIds, mapDocumentIds),
+				location: undefined,
+				view: selectedImage?.viewKey,
+			},
+			replace: true,
+		});
+	}
+
+	function changeMap(mapId: string) {
+		const map = catalog.maps.find((item) => item.id === mapId);
+
+		if (map) prepareMapNavigation(map, "current_map");
+
+		void navigate({
+			to: "/maps/$mapId",
+			params: { mapId },
+			search: {},
+		});
+	}
+
+	function changeMapView(view: string) {
+		void navigate({
+			to: "/maps/$mapId",
+			params: { mapId: mapData.map.id },
+			search: {
+				documents: documentSearch,
+				location: undefined,
+				view,
+			},
+			replace: true,
+		});
+	}
+
+	function closeLocation() {
+		void navigate({
+			to: "/maps/$mapId",
+			params: { mapId: mapData.map.id },
+			search: {
+				documents: documentSearch,
+				location: undefined,
+				view: selectedImage?.viewKey,
+			},
+			replace: true,
+		});
+	}
+
+	const sharedMapControlProps = {
+		documents: sidebarDocuments,
+		locations: visibleLocations,
+		maps: catalog.maps,
+		mapViews: mapData.images.map((image) => ({
+			id: image.viewKey,
+			name: image.name,
+		})),
+		selectedLocationId: selectedLocation?.id,
+		selectedDocumentIds,
+		selectedMapId: mapData.map.id,
+		selectedMapViewId: selectedImage?.viewKey,
+	};
 	const sidebarPanel = (closePanel: () => void) => (
 		<RouteMapSidebarPanel
-			documents={sidebarDocuments}
-			locations={visibleLocations}
-			maps={catalog.maps}
-			mapViews={mapData.images.map((image) => ({
-				id: image.viewKey,
-				name: image.name,
-			}))}
-			selectedLocationId={selectedLocation?.id}
-			selectedDocumentIds={selectedDocumentIds}
-			selectedMapId={mapData.map.id}
-			selectedMapViewId={selectedImage?.viewKey}
+			{...sharedMapControlProps}
 			onBack={closePanel}
-			onLocationSelect={(locationId) => {
-				locationViewIntentRef.current = {
-					locationId,
-					source: "sidebar",
-				};
-				void navigate({
-					to: "/maps/$mapId",
-					params: { mapId: mapData.map.id },
-					search: {
-						documents: documentSearch,
-						location: locationId,
-						view: selectedImage?.viewKey,
-					},
-				});
-			}}
-			onSelectedDocumentsChange={(documentIds) => {
-				captureAnalyticsEvent("document_filter_changed", {
-					document_ids: documentIds,
-					map_id: mapData.map.id,
-					selected_count: documentIds.length,
-					source: "sidebar",
-				});
-				void navigate({
-					to: "/maps/$mapId",
-					params: { mapId: mapData.map.id },
-					search: {
-						documents: encodeMapDocumentFilters(documentIds, mapDocumentIds),
-						location: undefined,
-						view: selectedImage?.viewKey,
-					},
-					replace: true,
-				});
-			}}
-			onMapChange={(mapId) => {
-				const map = catalog.maps.find((item) => item.id === mapId);
-
-				if (map) {
-					prepareMapNavigation(map, "current_map");
-				}
-
-				void navigate({
-					to: "/maps/$mapId",
-					params: { mapId },
-					search: {},
-				});
-			}}
-			onMapViewChange={(view) =>
-				void navigate({
-					to: "/maps/$mapId",
-					params: { mapId: mapData.map.id },
-					search: {
-						documents: documentSearch,
-						location: undefined,
-						view,
-					},
-					replace: true,
-				})
+			onLocationSelect={(locationId) => selectLocation(locationId, "sidebar")}
+			onSelectedDocumentsChange={(documentIds) =>
+				changeSelectedDocuments(documentIds, "sidebar")
 			}
+			onMapChange={changeMap}
+			onMapViewChange={changeMapView}
+		/>
+	);
+	const verticalPanel = (
+		<VerticalMapControls
+			{...sharedMapControlProps}
+			selectedLocation={selectedLocation}
+			onLocationSelect={(locationId) => selectLocation(locationId, "topbar")}
+			onSelectedDocumentsChange={(documentIds) =>
+				changeSelectedDocuments(documentIds, "topbar")
+			}
+			onMapChange={changeMap}
+			onMapViewChange={changeMapView}
 		/>
 	);
 
@@ -307,6 +348,7 @@ function MapPage() {
 			},
 			headerMeta: `${visibleLocations.length} ${visibleLocations.length === 1 ? "location" : "locations"}`,
 			sidebarPanel,
+			verticalPanel,
 		},
 		[
 			mapData.map.id,
@@ -321,64 +363,82 @@ function MapPage() {
 		<div className="flex min-h-0 flex-1 flex-col">
 			<h1 className="sr-only">{mapData.map.name} document locations</h1>
 			{selectedImage ? (
-				<div className="relative min-h-0 flex-1">
-					<div className="h-full">
-						<MapWorkspace
-							key={selectedImage.id}
-							ariaLabel={`${mapData.map.name} map`}
-							className="h-full"
-							image={selectedImage}
-							instructions="Drag to move · Wheel or controls to zoom"
-							markers={[
-								...visibleLocations.map((location) => ({
-									id: location.id,
-									label: location.markerLabel,
-									name: location.name,
-									secondaryLabel: location.documentName,
-									xBasisPoints: location.xBasisPoints,
-									yBasisPoints: location.yBasisPoints,
-								})),
-								...submapMarkers,
-							]}
-							selectedMarkerId={selectedLocation?.id}
-							onImageError={() =>
-								captureAnalyticsEvent("app_error", {
-									error_code: "map_image_unavailable",
-									operation: "map_load",
-									route: "map",
-								})
-							}
-							toolbarStart={
-								<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
-									{selectedImage.name}
-								</p>
-							}
-							onSelectMarker={(markerId) => {
-								const targetView = submapViewByMarkerId.get(markerId);
-
-								if (!targetView) {
-									locationViewIntentRef.current = {
-										locationId: markerId,
-										source: "marker",
-									};
+				<>
+					<div className="relative min-h-0 flex-1">
+						<div className="h-full">
+							<MapWorkspace
+								key={selectedImage.id}
+								ariaLabel={`${mapData.map.name} map`}
+								className="h-full"
+								image={selectedImage}
+								instructions="Drag to move · Wheel or controls to zoom"
+								markers={[
+									...visibleLocations.map((location) => ({
+										id: location.id,
+										label: location.markerLabel,
+										name: location.name,
+										secondaryLabel: location.documentName,
+										xBasisPoints: location.xBasisPoints,
+										yBasisPoints: location.yBasisPoints,
+									})),
+									...submapMarkers,
+								]}
+								selectedMarkerId={selectedLocation?.id}
+								onImageError={() =>
+									captureAnalyticsEvent("app_error", {
+										error_code: "map_image_unavailable",
+										operation: "map_load",
+										route: "map",
+									})
 								}
+								toolbarStart={
+									<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
+										{selectedImage.name}
+									</p>
+								}
+								onSelectMarker={(markerId) => {
+									const targetView = submapViewByMarkerId.get(markerId);
 
-								void navigate({
-									to: "/maps/$mapId",
-									params: { mapId: mapData.map.id },
-									search: {
-										documents: documentSearch,
-										location: targetView ? undefined : markerId,
-										view: targetView ?? selectedImage.viewKey,
-									},
-								});
-							}}
-						/>
+									if (!targetView) {
+										locationViewIntentRef.current = {
+											locationId: markerId,
+											source: "marker",
+										};
+									}
+
+									void navigate({
+										to: "/maps/$mapId",
+										params: { mapId: mapData.map.id },
+										search: {
+											documents: documentSearch,
+											location: targetView ? undefined : markerId,
+											view: targetView ?? selectedImage.viewKey,
+										},
+									});
+								}}
+							/>
+						</div>
+
+						{selectedLocation && layoutMode === "standard" ? (
+							<LocationDetailsPanel
+								documentArtwork={documentById.get(selectedLocation.documentId)}
+								location={selectedLocation}
+								screenshots={selectedScreenshots}
+								onScreenshotOpen={(screenshotIndex) =>
+									captureAnalyticsEvent("screenshot_opened", {
+										location_id: selectedLocation.id,
+										map_id: mapData.map.id,
+										screenshot_count: selectedScreenshots.length,
+										screenshot_index: screenshotIndex,
+									})
+								}
+								onClose={closeLocation}
+							/>
+						) : null}
 					</div>
-
-					{selectedLocation ? (
-						<LocationDetailsPanel
-							documentArtwork={documentById.get(selectedLocation.documentId)}
+					{selectedLocation && layoutMode === "vertical" ? (
+						<VerticalScreenshotInspector
+							key={selectedLocation.id}
 							location={selectedLocation}
 							screenshots={selectedScreenshots}
 							onScreenshotOpen={(screenshotIndex) =>
@@ -389,21 +449,10 @@ function MapPage() {
 									screenshot_index: screenshotIndex,
 								})
 							}
-							onClose={() =>
-								void navigate({
-									to: "/maps/$mapId",
-									params: { mapId: mapData.map.id },
-									search: {
-										documents: documentSearch,
-										location: undefined,
-										view: selectedImage.viewKey,
-									},
-									replace: true,
-								})
-							}
+							onClose={closeLocation}
 						/>
 					) : null}
-				</div>
+				</>
 			) : (
 				<Empty>
 					<EmptyHeader>

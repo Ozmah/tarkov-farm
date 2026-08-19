@@ -24,17 +24,17 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-type SidebarMap = {
+export type SidebarMap = {
 	id: string;
 	name: string;
 };
 
-type SidebarMapView = {
+export type SidebarMapView = {
 	id: string;
 	name: string;
 };
 
-type SidebarLocation = {
+export type SidebarLocation = {
 	documentId: string;
 	documentName: string;
 	id: string;
@@ -42,13 +42,13 @@ type SidebarLocation = {
 	name: string;
 };
 
-type SidebarDocument = DocumentArtwork & {
+export type SidebarDocument = DocumentArtwork & {
 	count: number;
 	id: string;
 	name: string;
 };
 
-type MapSidebarPanelProps = {
+export type MapSidebarPanelProps = {
 	action?: ReactNode;
 	className?: string;
 	documents: SidebarDocument[];

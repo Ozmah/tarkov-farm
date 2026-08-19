@@ -10,7 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import { Link, useMatchRoute, useRouterState } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
-
+import { LayoutModeToggle } from "@/components/layout-mode-toggle";
 import { TarkovFarmLogo } from "@/components/tarkov-farm-logo";
 import {
 	Sidebar,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getDocumentShortName } from "@/lib/document-display";
 import { buildProblemIssueUrl } from "@/lib/github-links";
+import type { LayoutMode } from "@/lib/layout-mode";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +45,10 @@ type AppSidebarProps = {
 	}>;
 	currentMapId?: string;
 	footer?: ReactNode;
+	layoutMode?: LayoutMode;
+	layoutModeError?: string;
+	layoutModePending?: boolean;
+	onLayoutModeChange?: (layoutMode: LayoutMode) => void;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
@@ -56,6 +61,10 @@ export function AppSidebar({
 	documentMaps,
 	currentMapId,
 	footer,
+	layoutMode,
+	layoutModeError,
+	layoutModePending,
+	onLayoutModeChange,
 	onMapNavigate,
 	onMapNavigationStart,
 	onHomeNavigate,
@@ -368,6 +377,16 @@ export function AppSidebar({
 					</SidebarMenu>
 					{footer}
 				</nav>
+				{layoutMode && onLayoutModeChange ? (
+					<LayoutModeToggle
+						id="sidebar-vertical-mode"
+						layoutMode={layoutMode}
+						disabled={layoutModePending}
+						error={layoutModeError}
+						onLayoutModeChange={onLayoutModeChange}
+						surface="sidebar"
+					/>
+				) : null}
 			</SidebarFooter>
 		</Sidebar>
 	);

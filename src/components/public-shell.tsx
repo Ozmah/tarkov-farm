@@ -12,6 +12,8 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { VerticalAppBar } from "@/components/vertical-app-bar";
+import type { LayoutMode } from "@/lib/layout-mode";
 
 type PublicShellProps = {
 	catalog: {
@@ -36,11 +38,16 @@ type PublicShellProps = {
 	};
 	headerTitle: string;
 	headerMeta?: string;
+	layoutMode?: LayoutMode;
+	layoutModeError?: string;
+	layoutModePending?: boolean;
 	onMapNavigate?: (mapId: string) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
+	onLayoutModeChange?: (layoutMode: LayoutMode) => void;
 	sidebarFooter?: ReactNode;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
+	verticalPanel?: ReactNode;
 	children: ReactNode;
 };
 
@@ -50,11 +57,16 @@ export function PublicShell({
 	editorSearch,
 	headerTitle,
 	headerMeta,
+	layoutMode,
+	layoutModeError,
+	layoutModePending,
 	onMapNavigate,
 	onMapNavigationStart,
 	onHomeNavigate,
+	onLayoutModeChange,
 	sidebarFooter,
 	sidebarPanel,
+	verticalPanel,
 	children,
 }: PublicShellProps) {
 	return (
@@ -69,56 +81,80 @@ export function PublicShell({
 			>
 				Skip to content
 			</a>
-			<AppSidebar
-				maps={catalog.maps}
-				documents={catalog.documents}
-				documentMaps={catalog.documentMaps}
-				currentMapId={currentMapId}
-				footer={
-					sidebarFooter ??
-					(catalog.editorAvailable ? (
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton
-									render={
-										<Link
-											to="/editor"
-											search={editorSearch ?? { map: currentMapId }}
-										/>
-									}
-								>
-									<PencilSimpleIcon aria-hidden="true" />
-									<span>Open editor</span>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					) : undefined)
-				}
-				onMapNavigate={onMapNavigate}
-				onMapNavigationStart={onMapNavigationStart}
-				onHomeNavigate={onHomeNavigate}
-				sidebarPanel={sidebarPanel}
-			/>
+			{layoutMode !== "vertical" ? (
+				<AppSidebar
+					maps={catalog.maps}
+					documents={catalog.documents}
+					documentMaps={catalog.documentMaps}
+					currentMapId={currentMapId}
+					layoutMode={layoutMode}
+					layoutModeError={layoutModeError}
+					layoutModePending={layoutModePending}
+					footer={
+						sidebarFooter ??
+						(catalog.editorAvailable ? (
+							<SidebarMenu>
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										render={
+											<Link
+												to="/editor"
+												search={editorSearch ?? { map: currentMapId }}
+											/>
+										}
+									>
+										<PencilSimpleIcon aria-hidden="true" />
+										<span>Open editor</span>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</SidebarMenu>
+						) : undefined)
+					}
+					onMapNavigate={onMapNavigate}
+					onMapNavigationStart={onMapNavigationStart}
+					onHomeNavigate={onHomeNavigate}
+					onLayoutModeChange={onLayoutModeChange}
+					sidebarPanel={sidebarPanel}
+				/>
+			) : null}
 			<SidebarInset
 				id="main-content"
 				tabIndex={-1}
 				className="min-h-0 min-w-0 overflow-hidden outline-none"
 			>
-				<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
-					<SidebarTrigger className="lg:hidden" />
-					<Separator orientation="vertical" className="h-4 lg:hidden" />
-					<p className="truncate font-heading text-primary text-sm uppercase tracking-wide">
-						{headerTitle}
-					</p>
-					{headerMeta ? (
-						<p
-							aria-live="polite"
-							className="ml-auto shrink-0 text-muted-foreground text-sm tabular-nums"
-						>
-							{headerMeta}
+				{layoutMode === "vertical" && onLayoutModeChange ? (
+					<>
+						<VerticalAppBar
+							catalog={catalog}
+							currentMapId={currentMapId}
+							editorSearch={editorSearch}
+							headerTitle={headerTitle}
+							headerMeta={headerMeta}
+							layoutMode={layoutMode}
+							layoutModeError={layoutModeError}
+							layoutModePending={layoutModePending}
+							onLayoutModeChange={onLayoutModeChange}
+							onMapNavigationStart={onMapNavigationStart}
+						/>
+						{verticalPanel}
+					</>
+				) : (
+					<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
+						<SidebarTrigger className="lg:hidden" />
+						<Separator orientation="vertical" className="h-4 lg:hidden" />
+						<p className="truncate font-heading text-primary text-sm uppercase tracking-wide">
+							{headerTitle}
 						</p>
-					) : null}
-				</header>
+						{headerMeta ? (
+							<p
+								aria-live="polite"
+								className="ml-auto shrink-0 text-muted-foreground text-sm tabular-nums"
+							>
+								{headerMeta}
+							</p>
+						) : null}
+					</header>
+				)}
 				{children}
 			</SidebarInset>
 		</SidebarProvider>

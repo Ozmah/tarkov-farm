@@ -6,10 +6,14 @@ export const getCatalog = createServerFn({ method: "GET" }).handler(
 		const { canAccessLocalEditor } = await import(
 			"@/server/editor/access.server"
 		);
+		const { readPublicLayoutMode } = await import(
+			"@/server/layout-mode.server"
+		);
 
 		return {
 			...(await readCatalog()),
 			editorAvailable: canAccessLocalEditor(),
+			layoutMode: readPublicLayoutMode(),
 		};
 	},
 );
