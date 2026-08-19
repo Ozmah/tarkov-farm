@@ -176,6 +176,59 @@
 			"yBasisPoints": 3451
 		},
 		{
+			"description": "On the table on the left",
+			"documentId": "pmc-personnel",
+			"id": "0929494e-05b8-4fc4-ae62-50865729565e",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Southeastern Water Basin Tent",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 892,
+						"path": "/screenshots/0929494e-05b8-4fc4-ae62-50865729565e/d4797854d331e5cc67fc6abbf85b89bf3f8c86e1da1760ef81b14d5a8cd8b175-1920.webp",
+						"sha256": "9799a558e9f89e2fa1d2f81b67d8177191be8d3699fdf8de00ff782ea072a3ad",
+						"width": 1920
+					},
+					"id": "a4714c7d-3943-42f2-a212-b5d53ef356ce",
+					"isActive": true,
+					"preview": {
+						"height": 465,
+						"path": "/screenshots/0929494e-05b8-4fc4-ae62-50865729565e/d4797854d331e5cc67fc6abbf85b89bf3f8c86e1da1760ef81b14d5a8cd8b175-1000.webp",
+						"sha256": "84fcc18e315c84638654aa3d198d4211cb271298fa646042a2aaea82e96d25b2",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "d4797854d331e5cc67fc6abbf85b89bf3f8c86e1da1760ef81b14d5a8cd8b175"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 977,
+						"path": "/screenshots/0929494e-05b8-4fc4-ae62-50865729565e/54c8f4f60b8cbb3e2657ce0cb7fae5bfd9c676c8426e50d899c69706786024c2-1920.webp",
+						"sha256": "30659d3fce3271a10e0ed12b157868fad3385d44e9df0bbd8a8ec18c0e3b3e0f",
+						"width": 1920
+					},
+					"id": "52bf1f57-5f52-41b9-ae25-d4ae85e354de",
+					"isActive": true,
+					"preview": {
+						"height": 509,
+						"path": "/screenshots/0929494e-05b8-4fc4-ae62-50865729565e/54c8f4f60b8cbb3e2657ce0cb7fae5bfd9c676c8426e50d899c69706786024c2-1000.webp",
+						"sha256": "51578e9c8400b8574ae87be74fc104b15add971f3efd6e976e3f50856e7add6e",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "54c8f4f60b8cbb3e2657ce0cb7fae5bfd9c676c8426e50d899c69706786024c2"
+				}
+			],
+			"xBasisPoints": 7136,
+			"yBasisPoints": 3054
+		},
+		{
 			"description": "Under the desk in the center of the main office",
 			"documentId": "project",
 			"id": "099038e1-e647-4b2f-ad41-17e961ae450e",
@@ -1272,6 +1325,39 @@
 			"yBasisPoints": 7011
 		},
 		{
+			"description": "Almost inside the sleeping bag in the back",
+			"documentId": "test",
+			"id": "39fa231d-4091-453c-b93f-86fb80a4d076",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Southern Usec Camp",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 948,
+						"path": "/screenshots/39fa231d-4091-453c-b93f-86fb80a4d076/079124268107fef43cbf3f43f761375ae625aed9cb13bcb250b1b03b62646035-1920.webp",
+						"sha256": "502f7aeaee691c1e2459c735ff02f8e79671b59dd060258e1b226dce33a78bfb",
+						"width": 1920
+					},
+					"id": "e0d3b2d3-03fd-4917-832a-84a2056fdde8",
+					"isActive": true,
+					"preview": {
+						"height": 494,
+						"path": "/screenshots/39fa231d-4091-453c-b93f-86fb80a4d076/079124268107fef43cbf3f43f761375ae625aed9cb13bcb250b1b03b62646035-1000.webp",
+						"sha256": "89caedd5a88ae71f17afec01fa0d3923572480ce48136b6439bda190b3f7d070",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "079124268107fef43cbf3f43f761375ae625aed9cb13bcb250b1b03b62646035"
+				}
+			],
+			"xBasisPoints": 2890,
+			"yBasisPoints": 2993
+		},
+		{
 			"description": "On the top floor in on of the drawers in the file cabinet between the locked and the blocked room",
 			"documentId": "blueprints-technical",
 			"id": "3adb373d-a44f-4374-923a-779fee3b62fe",
@@ -1896,6 +1982,59 @@
 			"yBasisPoints": 3038
 		},
 		{
+			"description": "On the ground, below the table",
+			"documentId": "technical",
+			"id": "54bffb30-e1bf-44b3-8294-0ccf1e589ea2",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Corrugated Metal Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 946,
+						"path": "/screenshots/54bffb30-e1bf-44b3-8294-0ccf1e589ea2/1b2f14e0aadf164e652d508c6a93eb7cb5faed77fc1a133f56a7de8cf3eb6021-1920.webp",
+						"sha256": "2f5082d89403e2fe54fe4bf07e0dd5a04467265039822ae48e2caabb6a127996",
+						"width": 1920
+					},
+					"id": "de83732a-99ee-46cd-9ee3-7dfd33415acc",
+					"isActive": true,
+					"preview": {
+						"height": 493,
+						"path": "/screenshots/54bffb30-e1bf-44b3-8294-0ccf1e589ea2/1b2f14e0aadf164e652d508c6a93eb7cb5faed77fc1a133f56a7de8cf3eb6021-1000.webp",
+						"sha256": "a895fca9b8da5c6b79c9f3d85ee43c9d682c2a52f5ed7f85e9f2f888a1819408",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "1b2f14e0aadf164e652d508c6a93eb7cb5faed77fc1a133f56a7de8cf3eb6021"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 903,
+						"path": "/screenshots/54bffb30-e1bf-44b3-8294-0ccf1e589ea2/3e5c7ead6e29910be6b663c81cf25566607e800dc3bb8d5ba510679ba8e82c8c-1920.webp",
+						"sha256": "224692edd69a0d1b70b51572ee859d1ea951ad706e83eabc9cdab77860029ac1",
+						"width": 1920
+					},
+					"id": "614e1247-0d96-48b2-91e9-b66a2b472fe8",
+					"isActive": true,
+					"preview": {
+						"height": 471,
+						"path": "/screenshots/54bffb30-e1bf-44b3-8294-0ccf1e589ea2/3e5c7ead6e29910be6b663c81cf25566607e800dc3bb8d5ba510679ba8e82c8c-1000.webp",
+						"sha256": "1da609923d559fb3864e351bac9d524c14508fa8872fb239603fbc57f743bed9",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "3e5c7ead6e29910be6b663c81cf25566607e800dc3bb8d5ba510679ba8e82c8c"
+				}
+			],
+			"xBasisPoints": 7844,
+			"yBasisPoints": 4368
+		},
+		{
 			"description": "On the ground inside the power pump office between a locker and a shelf",
 			"documentId": "project",
 			"id": "5746b489-86a2-432d-bc7a-e09e5952b944",
@@ -2292,6 +2431,92 @@
 			"yBasisPoints": 5257
 		},
 		{
+			"description": "At the base of the antena, on top of the two stacked white radios",
+			"documentId": "technical",
+			"id": "75d04019-4a69-4b60-99cc-8d40d5a9637a",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Antena Scav Bunker",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 907,
+						"path": "/screenshots/75d04019-4a69-4b60-99cc-8d40d5a9637a/ff0dbb79fc45f3c698e9d25b76ae35d9cefa396a7c5f058a15fb35761a60fb71-1920.webp",
+						"sha256": "3b6ebcf352acc5229dc4f3f34bae5e1517702fd307bdbff6f028bf4b0aa6b4fa",
+						"width": 1920
+					},
+					"id": "c10aba45-e9d1-4386-b2f9-d2e7ab99bbc7",
+					"isActive": true,
+					"preview": {
+						"height": 472,
+						"path": "/screenshots/75d04019-4a69-4b60-99cc-8d40d5a9637a/ff0dbb79fc45f3c698e9d25b76ae35d9cefa396a7c5f058a15fb35761a60fb71-1000.webp",
+						"sha256": "2ab7338d7893b39cccb24f67f9bdb82bc5d69b31d505b6bbc141894aad2aff92",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ff0dbb79fc45f3c698e9d25b76ae35d9cefa396a7c5f058a15fb35761a60fb71"
+				}
+			],
+			"xBasisPoints": 3193,
+			"yBasisPoints": 1527
+		},
+		{
+			"description": "On top of the industrial control panel.",
+			"documentId": "test",
+			"id": "77b7ed5b-75dd-46fc-9a71-b92d1680873f",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Small Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 935,
+						"path": "/screenshots/77b7ed5b-75dd-46fc-9a71-b92d1680873f/cd6aa3c66faf3c3123f1743e72bcc2959bc555268749b2f7565cf928b52e284a-1920.webp",
+						"sha256": "9038d6d2d5ce598e258c86104ccb9233f50c47806d1e7e38dc21a06a8c7dd434",
+						"width": 1920
+					},
+					"id": "9fa6566e-091b-407c-898e-97770816a525",
+					"isActive": true,
+					"preview": {
+						"height": 487,
+						"path": "/screenshots/77b7ed5b-75dd-46fc-9a71-b92d1680873f/cd6aa3c66faf3c3123f1743e72bcc2959bc555268749b2f7565cf928b52e284a-1000.webp",
+						"sha256": "9a5d6d0f34e424a471a56955bb3d9e9f8fb3977c4296ca9613d3fe00d9f4efc2",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "cd6aa3c66faf3c3123f1743e72bcc2959bc555268749b2f7565cf928b52e284a"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1012,
+						"path": "/screenshots/77b7ed5b-75dd-46fc-9a71-b92d1680873f/07a34b7301ac5469380795e1a8f51770bdfbb39c597f060facf9e34c8d010008-1920.webp",
+						"sha256": "7950fa843b683f0aa8bf011ff08c4155fa171a93fa3f7d80d077b451ef0474fc",
+						"width": 1920
+					},
+					"id": "1c5a9568-36e8-459d-8540-4845b3900aea",
+					"isActive": true,
+					"preview": {
+						"height": 527,
+						"path": "/screenshots/77b7ed5b-75dd-46fc-9a71-b92d1680873f/07a34b7301ac5469380795e1a8f51770bdfbb39c597f060facf9e34c8d010008-1000.webp",
+						"sha256": "63bcb22d2be6d7397ffaff181ffe963dbc7d112e110837b44699545c842a79fe",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "07a34b7301ac5469380795e1a8f51770bdfbb39c597f060facf9e34c8d010008"
+				}
+			],
+			"xBasisPoints": 8093,
+			"yBasisPoints": 4349
+		},
+		{
 			"description": "Terragroup building, front facing office, on a sofa near the entrance",
 			"documentId": "medical",
 			"id": "796d1122-6f17-4780-adca-aad59658962e",
@@ -2674,6 +2899,59 @@
 			],
 			"xBasisPoints": 7660,
 			"yBasisPoints": 576
+		},
+		{
+			"description": "The shack with the broken down roof, near a truck and a tractor. Next to the sleeping mat on the floor.",
+			"documentId": "technical",
+			"id": "85e83cf1-2cd2-4c7b-9fa0-411da1b85dba",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Broken Down Roof Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1058,
+						"path": "/screenshots/85e83cf1-2cd2-4c7b-9fa0-411da1b85dba/f723aa9fa484c2840a0735f5d5be0913c0f1f7cf7f4e7496db476f2713383d4d-1920.webp",
+						"sha256": "61fa92030cd2866e25a4b18b6993b217eb32b745080f10251cf468e61baa4752",
+						"width": 1920
+					},
+					"id": "d3cb2a95-5372-49a1-99c6-dfa655caa6d7",
+					"isActive": true,
+					"preview": {
+						"height": 551,
+						"path": "/screenshots/85e83cf1-2cd2-4c7b-9fa0-411da1b85dba/f723aa9fa484c2840a0735f5d5be0913c0f1f7cf7f4e7496db476f2713383d4d-1000.webp",
+						"sha256": "22047ed1420bec9cbd51741c84ab97b6c2c4be243ee1d9ed971d97bba4996684",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f723aa9fa484c2840a0735f5d5be0913c0f1f7cf7f4e7496db476f2713383d4d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1041,
+						"path": "/screenshots/85e83cf1-2cd2-4c7b-9fa0-411da1b85dba/81d315e3289823c208e26ca535d572543b622e8f2a2d36c0ca43b7c6ac3f1bac-1920.webp",
+						"sha256": "e48de2647d5d94735643d136e80943c7154fa65f9e052ba84c6c04e59f377564",
+						"width": 1920
+					},
+					"id": "7e652b16-6a15-4867-ad2a-88652b9f6450",
+					"isActive": true,
+					"preview": {
+						"height": 542,
+						"path": "/screenshots/85e83cf1-2cd2-4c7b-9fa0-411da1b85dba/81d315e3289823c208e26ca535d572543b622e8f2a2d36c0ca43b7c6ac3f1bac-1000.webp",
+						"sha256": "91d6e47ef38b43e934cc409480e39cf4cf32d45ae0cfae9d31e2818d20c24922",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "81d315e3289823c208e26ca535d572543b622e8f2a2d36c0ca43b7c6ac3f1bac"
+				}
+			],
+			"xBasisPoints": 5565,
+			"yBasisPoints": 1716
 		},
 		{
 			"description": "In the utility room before the helipad, below a desk on top of a computer",
@@ -3148,6 +3426,74 @@
 			"yBasisPoints": 3233
 		},
 		{
+			"description": "In a corner near the big table, next to a computer in the back of the room",
+			"documentId": "medical",
+			"id": "97854680-fc14-4ccf-8453-78f7356c6263",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Green Keycard Room",
+			"requiredKeyIds": [
+				"terragroup-labs-keycard-green"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 994,
+						"path": "/screenshots/97854680-fc14-4ccf-8453-78f7356c6263/6aa46142c032f593b312d086cbe5ff8e0456d0f6079115b4d343775214d82701-1920.webp",
+						"sha256": "63d016240f510fcf3c610da59b1985f09b377eeeea05bcc26f58c768c8374715",
+						"width": 1920
+					},
+					"id": "200b1b53-fb4c-402b-b7d1-bb027784ecb6",
+					"isActive": true,
+					"preview": {
+						"height": 518,
+						"path": "/screenshots/97854680-fc14-4ccf-8453-78f7356c6263/6aa46142c032f593b312d086cbe5ff8e0456d0f6079115b4d343775214d82701-1000.webp",
+						"sha256": "d00f9b2cf885a838030e625db023fd033639c8025fd37257eb0fbce824ebdf29",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "6aa46142c032f593b312d086cbe5ff8e0456d0f6079115b4d343775214d82701"
+				}
+			],
+			"xBasisPoints": 7470,
+			"yBasisPoints": 4263
+		},
+		{
+			"description": "Near the north entrance, on the ground next to the tipped-over table",
+			"documentId": "test",
+			"id": "97c36067-a1cf-4221-8fad-0110964c3483",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Emercon Base",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 959,
+						"path": "/screenshots/97c36067-a1cf-4221-8fad-0110964c3483/f06d4bbbf873a9bb69c4eacaabbd1628ece8e962fefd6e6ba030e3e186c112f5-1920.webp",
+						"sha256": "cee4fd6c6b29864c005ec18cf47f199a09498ed453054424c74cd6c9a30fdda6",
+						"width": 1920
+					},
+					"id": "2e7f9fe3-a881-491d-bfdb-5fa7de114600",
+					"isActive": true,
+					"preview": {
+						"height": 499,
+						"path": "/screenshots/97c36067-a1cf-4221-8fad-0110964c3483/f06d4bbbf873a9bb69c4eacaabbd1628ece8e962fefd6e6ba030e3e186c112f5-1000.webp",
+						"sha256": "aadd68a7dc7184d33c9b5fd293cd72b76f9cf22bdd1003e64864024fafaa0624",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f06d4bbbf873a9bb69c4eacaabbd1628ece8e962fefd6e6ba030e3e186c112f5"
+				}
+			],
+			"xBasisPoints": 5942,
+			"yBasisPoints": 6315
+		},
+		{
 			"description": "On a pile of boxes next to a cabinet with a fan on top",
 			"documentId": "user",
 			"id": "9bfe1c5c-841c-4a53-bad3-72f900d910e1",
@@ -3181,6 +3527,59 @@
 			],
 			"xBasisPoints": 7409,
 			"yBasisPoints": 2069
+		},
+		{
+			"description": "On the second floor on the chair in the middle of the room",
+			"documentId": "test",
+			"id": "a1dd55c8-558e-4622-8075-1fe1b6c6ac22",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Radio Station Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 916,
+						"path": "/screenshots/a1dd55c8-558e-4622-8075-1fe1b6c6ac22/37d2a3d6ef53a310879cc062fcc0c436aa5bcdf147e3c28e6a47481a266dc64e-1920.webp",
+						"sha256": "36e00ca80a217d471e1ec9abcb7259b2ae6b21a9bd15ddf7550d7868ab3e310e",
+						"width": 1920
+					},
+					"id": "a1f8dda5-0e12-4f1a-bb92-bd9128774556",
+					"isActive": true,
+					"preview": {
+						"height": 477,
+						"path": "/screenshots/a1dd55c8-558e-4622-8075-1fe1b6c6ac22/37d2a3d6ef53a310879cc062fcc0c436aa5bcdf147e3c28e6a47481a266dc64e-1000.webp",
+						"sha256": "31c543980372832bf8c2b1181eb2f3497b939c6f53bb385fb33de531b13fbbea",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "37d2a3d6ef53a310879cc062fcc0c436aa5bcdf147e3c28e6a47481a266dc64e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 894,
+						"path": "/screenshots/a1dd55c8-558e-4622-8075-1fe1b6c6ac22/aba95e78d4f68de59a99192e3a14e5b41cfceef8133dd3eedbaca1ad4ff43e62-1920.webp",
+						"sha256": "e1ca3218929673b6b303824745cf4715726ef53ffebc21a91386836e258ae4d9",
+						"width": 1920
+					},
+					"id": "8993fbe0-aa27-4c61-93f7-572cbc416da0",
+					"isActive": true,
+					"preview": {
+						"height": 465,
+						"path": "/screenshots/a1dd55c8-558e-4622-8075-1fe1b6c6ac22/aba95e78d4f68de59a99192e3a14e5b41cfceef8133dd3eedbaca1ad4ff43e62-1000.webp",
+						"sha256": "072f2d550143c5304fa8fc257a3343f267ea2639b317bc425cceb2528bc2d1d2",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "aba95e78d4f68de59a99192e3a14e5b41cfceef8133dd3eedbaca1ad4ff43e62"
+				}
+			],
+			"xBasisPoints": 6559,
+			"yBasisPoints": 4435
 		},
 		{
 			"description": "Medican second floor, west room, on the keyboard holder of the desk with the fan on top",
@@ -3719,6 +4118,39 @@
 			],
 			"xBasisPoints": 6201,
 			"yBasisPoints": 2190
+		},
+		{
+			"description": "Third floor, opposite of the armory door on the bookshelf near the stairs door.",
+			"documentId": "pmc-personnel",
+			"id": "c4724a4e-dbc6-40f5-a072-301d847b4dca",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Pawn",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/c4724a4e-dbc6-40f5-a072-301d847b4dca/5e2e1593c78f5e67ed15a0f0f7b75be7d218398e512c6a69601dfba5e1dcabdf-1920.webp",
+						"sha256": "0cbcbdfe594b61536ae8f2808447144abcf6ecd6b54ea0cd6d29dadbdba9f6fd",
+						"width": 1919
+					},
+					"id": "6ebed1cb-3531-418b-afff-c7e3e894ca08",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/c4724a4e-dbc6-40f5-a072-301d847b4dca/5e2e1593c78f5e67ed15a0f0f7b75be7d218398e512c6a69601dfba5e1dcabdf-1000.webp",
+						"sha256": "894305ffc0236b477c8673bb5dcbc565177ad5a9e97ac5c974e21562b097da20",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "5e2e1593c78f5e67ed15a0f0f7b75be7d218398e512c6a69601dfba5e1dcabdf"
+				}
+			],
+			"xBasisPoints": 8144,
+			"yBasisPoints": 3479
 		},
 		{
 			"description": "Inside the residential unit using the card, over the desk next to the laptop",
@@ -4338,6 +4770,92 @@
 			],
 			"xBasisPoints": 6507,
 			"yBasisPoints": 5371
+		},
+		{
+			"description": "House with a white car blocking the driveway near the edge of the map just north of tunnel exit. Inside the house on a table near the entrance.",
+			"documentId": "test",
+			"id": "f02863dc-63b3-4076-8a68-49a8e317f918",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Two Story Brick House",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 853,
+						"path": "/screenshots/f02863dc-63b3-4076-8a68-49a8e317f918/ff72ad9b8033dd7a727f414e415e05593037c259f922a110eb01ab0076a0b2bc-1920.webp",
+						"sha256": "02077708477e3829a2c8ac1d4a48fcefbce1b1b0254fe65399cce3778dea21b9",
+						"width": 1920
+					},
+					"id": "a84fec68-4fbc-4ee6-a62c-347edf2b48f5",
+					"isActive": true,
+					"preview": {
+						"height": 444,
+						"path": "/screenshots/f02863dc-63b3-4076-8a68-49a8e317f918/ff72ad9b8033dd7a727f414e415e05593037c259f922a110eb01ab0076a0b2bc-1000.webp",
+						"sha256": "71f8fb79e8665069dd79fbd247b99792fde36a54745aa96410b06c249581c40a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ff72ad9b8033dd7a727f414e415e05593037c259f922a110eb01ab0076a0b2bc"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 941,
+						"path": "/screenshots/f02863dc-63b3-4076-8a68-49a8e317f918/0376793f10a40f71e5998571ecdc2ac5a51be56b797b5eb3cfdbd61d88137464-1920.webp",
+						"sha256": "b235cec79810d8dbca8fa3d005518016957b10f50450d6eeefc5aba6f1517bc2",
+						"width": 1920
+					},
+					"id": "b21cd77c-8622-4b8c-9ac2-526af87b9715",
+					"isActive": true,
+					"preview": {
+						"height": 490,
+						"path": "/screenshots/f02863dc-63b3-4076-8a68-49a8e317f918/0376793f10a40f71e5998571ecdc2ac5a51be56b797b5eb3cfdbd61d88137464-1000.webp",
+						"sha256": "5dfc7f6d198ef81d4c63c5683712ae87c6f48158949f317b9223e240ba8f713f",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "0376793f10a40f71e5998571ecdc2ac5a51be56b797b5eb3cfdbd61d88137464"
+				}
+			],
+			"xBasisPoints": 1466,
+			"yBasisPoints": 4100
+		},
+		{
+			"description": "Building in the middle with the piled boxes, on top of the cabinet in front of the technical boxes",
+			"documentId": "pmc-personnel",
+			"id": "f1624467-856a-4e49-8889-326e1fbab9f8",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "K4 Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/f1624467-856a-4e49-8889-326e1fbab9f8/73056dece88c0d1bdf5a472f617c5a4aa4acf66317abf33da9ec177a5d1e3452-1920.webp",
+						"sha256": "f098ecd73ee0eee03ae3f260bc153005ab4643877308ed8acc3323487b68ca22",
+						"width": 1919
+					},
+					"id": "bec84e44-8d12-43de-b21d-26b585f52199",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/f1624467-856a-4e49-8889-326e1fbab9f8/73056dece88c0d1bdf5a472f617c5a4aa4acf66317abf33da9ec177a5d1e3452-1000.webp",
+						"sha256": "7d6085c55b9dc1d3c9beef51f4644710542ffc5c80250e4a5a36b8d4fc26aa4a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "73056dece88c0d1bdf5a472f617c5a4aa4acf66317abf33da9ec177a5d1e3452"
+				}
+			],
+			"xBasisPoints": 3794,
+			"yBasisPoints": 1700
 		},
 		{
 			"description": "Next to the soldier's body between torture room and ariadne's path",
