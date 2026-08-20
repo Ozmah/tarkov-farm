@@ -44,6 +44,23 @@ describe("VerticalMapControls", () => {
 		expect(onSelectedDocumentsChange).toHaveBeenCalledWith(["financial"]);
 	});
 
+	it("keeps the last filter selected without offering a bulk reset", async () => {
+		const onSelectedDocumentsChange = vi.fn();
+		renderControls({
+			onSelectedDocumentsChange,
+			selectedDocumentIds: ["financial"],
+		});
+		fireEvent.click(screen.getByRole("button", { name: /Documents/ }));
+		const financialFilter = await screen.findByRole("button", {
+			name: "Financial, 2 locations",
+		});
+
+		expect(financialFilter.hasAttribute("disabled")).toBe(true);
+		expect(screen.queryByRole("button", { name: "Show all" })).toBeNull();
+		fireEvent.click(financialFilter);
+		expect(onSelectedDocumentsChange).not.toHaveBeenCalled();
+	});
+
 	it("selects a location and dismisses the location disclosure", async () => {
 		const onLocationSelect = vi.fn();
 		renderControls({ onLocationSelect });
@@ -75,9 +92,11 @@ describe("VerticalMapControls", () => {
 function renderControls({
 	onLocationSelect = vi.fn(),
 	onSelectedDocumentsChange = vi.fn(),
+	selectedDocumentIds = ["financial", "medical"],
 }: {
 	onLocationSelect?: (locationId: string) => void;
 	onSelectedDocumentsChange?: (documentIds: string[]) => void;
+	selectedDocumentIds?: string[];
 } = {}) {
 	return render(
 		<VerticalMapControls
@@ -91,9 +110,7 @@ function renderControls({
 					name: "First location",
 				},
 			]}
-			maps={[{ id: "customs", name: "Customs" }]}
-			mapViews={[{ id: "main", name: "Main map" }]}
-			selectedDocumentIds={["financial", "medical"]}
+			selectedDocumentIds={selectedDocumentIds}
 			selectedLocationId="one"
 			selectedLocation={{
 				description: "Near the truck",
@@ -111,11 +128,7 @@ function renderControls({
 					},
 				],
 			}}
-			selectedMapId="customs"
-			selectedMapViewId="main"
 			onLocationSelect={onLocationSelect}
-			onMapChange={vi.fn()}
-			onMapViewChange={vi.fn()}
 			onSelectedDocumentsChange={onSelectedDocumentsChange}
 		/>,
 	);

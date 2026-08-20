@@ -8,6 +8,7 @@ describe("submap links", () => {
 			{
 				mapId: "customs",
 				name: "Dorms",
+				navigationName: "Dorms",
 				targetViewKey: "dorms",
 				xBasisPoints: 4_935,
 				yBasisPoints: 6_822,
@@ -15,6 +16,7 @@ describe("submap links", () => {
 			{
 				mapId: "reserve",
 				name: "Tunnels",
+				navigationName: "Tunnels",
 				targetViewKey: "tunnels",
 				xBasisPoints: 7_337,
 				yBasisPoints: 3_381,
@@ -22,6 +24,7 @@ describe("submap links", () => {
 			{
 				mapId: "shoreline",
 				name: "Health Resort",
+				navigationName: "Resort",
 				targetViewKey: "resort",
 				xBasisPoints: 5_135,
 				yBasisPoints: 2_058,

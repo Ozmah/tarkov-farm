@@ -77,7 +77,11 @@ function PublicLayout() {
 				editorSearch: { map: map.id },
 				headerMeta: "Loading…",
 				sidebarPanel: (closePanel) => (
-					<PendingMapSidebarPanel mapName={map.name} onBack={closePanel} />
+					<PendingMapSidebarPanel
+						hideHeaderOnDesktop
+						mapName={map.name}
+						onBack={closePanel}
+					/>
 				),
 				verticalPanel: <PendingVerticalMapControls mapName={map.name} />,
 			});

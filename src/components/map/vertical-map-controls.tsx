@@ -1,5 +1,6 @@
 import {
 	CaretDownIcon,
+	CheckIcon,
 	FunnelSimpleIcon,
 	InfoIcon,
 	MapPinIcon,
@@ -21,14 +22,6 @@ import {
 	PopoverTitle,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 type VerticalMapControlsProps = Omit<
@@ -41,23 +34,14 @@ type VerticalMapControlsProps = Omit<
 export function VerticalMapControls({
 	documents,
 	locations,
-	maps,
-	mapViews,
 	selectedDocumentIds,
 	selectedLocation,
 	selectedLocationId,
-	selectedMapId,
-	selectedMapViewId,
 	onLocationSelect,
-	onMapChange,
-	onMapViewChange,
 	onSelectedDocumentsChange,
 }: VerticalMapControlsProps) {
 	const [locationsOpen, setLocationsOpen] = useState(false);
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
-	const allDocumentsSelected = documents.every((document) =>
-		selectedDocumentIdSet.has(document.id),
-	);
 
 	function toggleDocument(documentId: string) {
 		const isSelected = selectedDocumentIdSet.has(documentId);
@@ -74,74 +58,13 @@ export function VerticalMapControls({
 	return (
 		<section
 			aria-label="Map controls"
-			className="flex min-h-16 shrink-0 flex-wrap items-center gap-2 border-border border-b bg-card px-3 py-2 sm:px-5"
+			className="flex min-h-16 shrink-0 flex-wrap items-center gap-2 border-border border-b bg-card px-3 py-2"
 		>
-			<div className="min-w-40 flex-1 sm:max-w-52">
-				<label htmlFor="vertical-map" className="sr-only">
-					Map
-				</label>
-				<Select
-					items={maps.map((map) => ({ value: map.id, label: map.name }))}
-					value={selectedMapId}
-					onValueChange={(mapId) => {
-						if (mapId) onMapChange(mapId);
-					}}
-				>
-					<SelectTrigger id="vertical-map" className="w-full">
-						<SelectValue placeholder="Select a map" />
-					</SelectTrigger>
-					<SelectContent alignItemWithTrigger={false}>
-						<SelectGroup>
-							{maps.map((map) => (
-								<SelectItem key={map.id} value={map.id}>
-									{map.name}
-								</SelectItem>
-							))}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
-			</div>
-
-			{mapViews.length > 1 ? (
-				<div className="min-w-36 flex-1 sm:max-w-48">
-					<label htmlFor="vertical-map-view" className="sr-only">
-						Map view
-					</label>
-					<Select
-						items={mapViews.map((view) => ({
-							value: view.id,
-							label: view.name,
-						}))}
-						value={selectedMapViewId ?? null}
-						onValueChange={(mapViewId) => {
-							if (mapViewId) onMapViewChange(mapViewId);
-						}}
-					>
-						<SelectTrigger id="vertical-map-view" className="w-full">
-							<SelectValue placeholder="Select a map view" />
-						</SelectTrigger>
-						<SelectContent alignItemWithTrigger={false}>
-							<SelectGroup>
-								{mapViews.map((view) => (
-									<SelectItem key={view.id} value={view.id}>
-										{view.name}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
-			) : null}
-
 			{documents.length > 0 ? (
 				<DocumentsPopover
 					documents={documents}
-					allDocumentsSelected={allDocumentsSelected}
 					selectedDocumentIdSet={selectedDocumentIdSet}
 					selectedDocumentIds={selectedDocumentIds}
-					onShowAll={() =>
-						onSelectedDocumentsChange(documents.map((document) => document.id))
-					}
 					onToggleDocument={toggleDocument}
 				/>
 			) : null}
@@ -212,20 +135,16 @@ export function VerticalMapControls({
 }
 
 type DocumentsPopoverProps = {
-	allDocumentsSelected: boolean;
 	documents: SidebarDocument[];
 	selectedDocumentIdSet: Set<string>;
 	selectedDocumentIds: string[];
-	onShowAll: () => void;
 	onToggleDocument: (documentId: string) => void;
 };
 
 function DocumentsPopover({
-	allDocumentsSelected,
 	documents,
 	selectedDocumentIdSet,
 	selectedDocumentIds,
-	onShowAll,
 	onToggleDocument,
 }: DocumentsPopoverProps) {
 	return (
@@ -243,20 +162,13 @@ function DocumentsPopover({
 				align="end"
 				className="w-[min(28rem,calc(100vw-1rem))]"
 			>
-				<div className="flex items-start justify-between gap-4 border-border border-b p-4">
-					<div>
-						<PopoverTitle className="font-heading font-medium">
-							Document filters
-						</PopoverTitle>
-						<PopoverDescription className="mt-1 text-muted-foreground text-sm">
-							Choose which document locations appear on the map.
-						</PopoverDescription>
-					</div>
-					{!allDocumentsSelected ? (
-						<Button variant="ghost" size="xs" onClick={onShowAll}>
-							Show all
-						</Button>
-					) : null}
+				<div className="border-border border-b p-4">
+					<PopoverTitle className="font-heading font-medium">
+						Document filters
+					</PopoverTitle>
+					<PopoverDescription className="mt-1 text-muted-foreground text-sm">
+						Choose which document locations appear on the map.
+					</PopoverDescription>
 				</div>
 				<div className="grid grid-cols-2 gap-px bg-border p-px">
 					{documents.map((document) => {
@@ -268,17 +180,25 @@ function DocumentsPopover({
 								type="button"
 								aria-label={`${document.name}, ${document.count} ${document.count === 1 ? "location" : "locations"}`}
 								aria-pressed={selected}
+								data-selected={selected}
 								disabled={selected && selectedDocumentIds.length === 1}
 								onClick={() => onToggleDocument(document.id)}
 								className={cn(
-									"flex min-h-16 items-center gap-2 bg-popover px-3 text-left text-xs outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset disabled:cursor-default disabled:opacity-70",
-									selected && "bg-muted",
+									"flex min-h-16 items-center gap-2 bg-popover px-3 text-left text-muted-foreground text-xs outline-none transition-[color,background-color,box-shadow] hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset disabled:cursor-default",
+									selected &&
+										"bg-accent text-accent-foreground shadow-[inset_0_0_0_1px_var(--primary)] hover:bg-[color-mix(in_oklch,var(--accent),var(--foreground)_8%)]",
 								)}
 							>
 								<DocumentThumbnail document={document} className="size-9" />
 								<span className="min-w-0 flex-1 truncate font-medium">
 									{document.name}
 								</span>
+								{selected ? (
+									<CheckIcon
+										aria-hidden="true"
+										className="size-3.5 shrink-0 text-primary"
+									/>
+								) : null}
 								<span className="text-muted-foreground tabular-nums">
 									{document.count}
 								</span>

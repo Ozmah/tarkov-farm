@@ -111,6 +111,8 @@
 	--sidebar-accent-foreground: var(--blue-opal-foreground);
 	--sidebar-border: var(--suez-canal);
 	--sidebar-ring: var(--rowdy-orange);
+	--map-context-row-height: 2.75rem;
+	--map-controls-row-height: 4rem;
 }
 
 .dark {

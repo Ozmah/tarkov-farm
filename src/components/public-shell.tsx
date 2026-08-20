@@ -139,7 +139,7 @@ export function PublicShell({
 						{verticalPanel}
 					</>
 				) : (
-					<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6">
+					<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6 lg:px-3">
 						<SidebarTrigger className="lg:hidden" />
 						<Separator orientation="vertical" className="h-4 lg:hidden" />
 						<p className="truncate font-heading text-primary text-sm uppercase tracking-wide">

@@ -1,7 +1,7 @@
 export type MapSelectionSource =
-	| "current_map"
 	| "documents"
 	| "home"
+	| "map_strip"
 	| "sidebar"
 	| "topbar";
 

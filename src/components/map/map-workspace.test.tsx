@@ -290,6 +290,46 @@ describe("MapWorkspace", () => {
 		expect(marker.style.top).toBe("600px");
 	});
 
+	it("keeps a selected marker inside a reduced interaction viewport", () => {
+		const markers = [
+			{
+				id: "selected",
+				label: "4",
+				name: "Selected location",
+				xBasisPoints: 8_000,
+				yBasisPoints: 2_000,
+			},
+		];
+		const { rerender } = renderWorkspace({
+			markers,
+			rightViewportInset: 400,
+			selectedMarkerId: "selected",
+		});
+		prepareReadyViewport();
+		flushAnimationFrames();
+		const image = screen.getByRole("img", { name: "Customs map" });
+
+		expect(image.parentElement?.style.transform).toBe(
+			"translate3d(-150px, 0px, 0) scale(0.75)",
+		);
+
+		rerender(
+			<MapWorkspace
+				ariaLabel="Test map"
+				image={DEFAULT_IMAGE}
+				instructions="Drag to move"
+				markers={markers}
+				rightViewportInset={0}
+				selectedMarkerId="selected"
+			/>,
+		);
+		flushAnimationFrames();
+
+		expect(image.parentElement?.style.transform).toBe(
+			"translate3d(125px, 0px, 0) scale(0.75)",
+		);
+	});
+
 	it("groups overlapping locations while keeping standalone markers separate", () => {
 		renderWorkspace({
 			markers: [

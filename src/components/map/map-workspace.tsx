@@ -69,6 +69,7 @@ type MapWorkspaceProps = {
 	instructions: string;
 	markers: MapWorkspaceMarker[];
 	panWithPrimaryButton?: boolean;
+	rightViewportInset?: number;
 	selectedMarkerId?: string;
 	selectedMarkerPosition?: {
 		xBasisPoints: number;
@@ -99,6 +100,7 @@ export function MapWorkspace({
 	instructions,
 	markers,
 	panWithPrimaryButton = true,
+	rightViewportInset = 0,
 	selectedMarkerId,
 	selectedMarkerPosition,
 	toolbarStart,
@@ -111,6 +113,7 @@ export function MapWorkspace({
 	const imageElementRef = useRef<HTMLImageElement>(null);
 	const viewRef = useRef<ViewTransform | undefined>(undefined);
 	const viewportSizeRef = useRef<Size | undefined>(undefined);
+	const rightViewportInsetRef = useRef(rightViewportInset);
 	const fitScaleRef = useRef(1);
 	const frameRef = useRef<number | undefined>(undefined);
 	const pointerSessionRef = useRef<PointerSession | undefined>(undefined);
@@ -123,6 +126,7 @@ export function MapWorkspace({
 		"loading",
 	);
 	const isImageReady = imageStatus === "ready";
+	rightViewportInsetRef.current = rightViewportInset;
 	const selectedMarkerX = selectedMarkerPosition?.xBasisPoints;
 	const selectedMarkerY = selectedMarkerPosition?.yBasisPoints;
 	const selectedMarker = selectedMarkerId
@@ -239,16 +243,24 @@ export function MapWorkspace({
 			}
 
 			const nextFitView = fitView(nextViewportSize, imageSize);
+			const nextInteractionViewport = getInteractionViewport(
+				nextViewportSize,
+				rightViewportInsetRef.current,
+			);
 			const currentView = viewRef.current;
 			const previousViewportSize = viewportSizeRef.current;
 			const previousFitScale = fitScaleRef.current;
 			let nextView = nextFitView;
 
 			if (currentView && previousViewportSize) {
+				const previousInteractionViewport = getInteractionViewport(
+					previousViewportSize,
+					rightViewportInsetRef.current,
+				);
 				const previousCenter = viewportPointToImagePoint(
 					{
-						x: previousViewportSize.width / 2,
-						y: previousViewportSize.height / 2,
+						x: previousInteractionViewport.width / 2,
+						y: previousInteractionViewport.height / 2,
 					},
 					currentView,
 				);
@@ -268,15 +280,19 @@ export function MapWorkspace({
 								y: (selectedFocus.yBasisPoints / 10_000) * imageSize.height,
 							},
 							scale: nextScale,
-							viewport: nextViewportSize,
+							viewport: nextInteractionViewport,
 						})
 					: constrainView(
 							{
 								scale: nextScale,
-								x: nextViewportSize.width / 2 - previousCenter.x * nextScale,
-								y: nextViewportSize.height / 2 - previousCenter.y * nextScale,
+								x:
+									nextInteractionViewport.width / 2 -
+									previousCenter.x * nextScale,
+								y:
+									nextInteractionViewport.height / 2 -
+									previousCenter.y * nextScale,
 							},
-							nextViewportSize,
+							nextInteractionViewport,
 							imageSize,
 						);
 			}
@@ -291,6 +307,32 @@ export function MapWorkspace({
 
 		return () => observer.disconnect();
 	}, [imageSize]);
+
+	useEffect(() => {
+		const currentView = viewRef.current;
+		const viewportSize = viewportSizeRef.current;
+
+		if (!currentView || !viewportSize) return;
+
+		const interactionViewport = getInteractionViewport(
+			viewportSize,
+			rightViewportInset,
+		);
+		const selectedFocus = getSelectedMarkerFocus();
+		const nextView = selectedFocus
+			? focusViewOnImagePoint({
+					image: imageSize,
+					point: {
+						x: (selectedFocus.xBasisPoints / 10_000) * imageSize.width,
+						y: (selectedFocus.yBasisPoints / 10_000) * imageSize.height,
+					},
+					scale: currentView.scale,
+					viewport: interactionViewport,
+				})
+			: constrainView(currentView, interactionViewport, imageSize);
+
+		scheduleView(nextView);
+	}, [imageSize, rightViewportInset, scheduleView]);
 
 	const zoomAtPoint = useCallback(
 		(nextZoomRatio: number, point: Point) => {
@@ -307,6 +349,10 @@ export function MapWorkspace({
 				MAX_ZOOM_RATIO,
 			);
 			const nextScale = fitScaleRef.current * boundedZoomRatio;
+			const interactionViewport = getInteractionViewport(
+				viewportSize,
+				rightViewportInset,
+			);
 
 			scheduleView(
 				zoomViewAtPoint({
@@ -314,11 +360,11 @@ export function MapWorkspace({
 					nextScale,
 					point,
 					view: currentView,
-					viewport: viewportSize,
+					viewport: interactionViewport,
 				}),
 			);
 		},
-		[imageSize, scheduleView],
+		[imageSize, rightViewportInset, scheduleView],
 	);
 
 	useEffect(() => {
@@ -387,6 +433,10 @@ export function MapWorkspace({
 
 		const nextScale =
 			fitScaleRef.current * Math.max(zoomRatio, SELECTED_MARKER_ZOOM_RATIO);
+		const interactionViewport = getInteractionViewport(
+			viewportSize,
+			rightViewportInset,
+		);
 		const centerPosition =
 			selectedMarkerX !== undefined && selectedMarkerY !== undefined
 				? { xBasisPoints: selectedMarkerX, yBasisPoints: selectedMarkerY }
@@ -402,7 +452,7 @@ export function MapWorkspace({
 				image: imageSize,
 				point: markerPoint,
 				scale: nextScale,
-				viewport: viewportSize,
+				viewport: interactionViewport,
 			}),
 		);
 	}, [
@@ -411,6 +461,7 @@ export function MapWorkspace({
 		imageSize,
 		markers,
 		scheduleView,
+		rightViewportInset,
 		selectedMarkerId,
 		selectedMarkerX,
 		selectedMarkerY,
@@ -422,9 +473,13 @@ export function MapWorkspace({
 		const viewportSize = viewportSizeRef.current;
 
 		if (viewportSize) {
+			const interactionViewport = getInteractionViewport(
+				viewportSize,
+				rightViewportInset,
+			);
 			zoomAtPoint(nextZoomRatio, {
-				x: viewportSize.width / 2,
-				y: viewportSize.height / 2,
+				x: interactionViewport.width / 2,
+				y: interactionViewport.height / 2,
 			});
 		}
 	};
@@ -433,7 +488,25 @@ export function MapWorkspace({
 		const viewportSize = viewportSizeRef.current;
 
 		if (viewportSize) {
-			scheduleView(fitView(viewportSize, imageSize));
+			const fit = fitView(viewportSize, imageSize);
+			const selectedFocus = getSelectedMarkerFocus();
+
+			scheduleView(
+				selectedFocus && rightViewportInset > 0
+					? focusViewOnImagePoint({
+							image: imageSize,
+							point: {
+								x: (selectedFocus.xBasisPoints / 10_000) * imageSize.width,
+								y: (selectedFocus.yBasisPoints / 10_000) * imageSize.height,
+							},
+							scale: fit.scale,
+							viewport: getInteractionViewport(
+								viewportSize,
+								rightViewportInset,
+							),
+						})
+					: fit,
+			);
 		}
 	};
 
@@ -459,12 +532,16 @@ export function MapWorkspace({
 
 		if (panDelta) {
 			event.preventDefault();
+			const interactionViewport = getInteractionViewport(
+				viewportSize,
+				rightViewportInset,
+			);
 			scheduleView(
 				panView({
 					delta: panDelta,
 					image: imageSize,
 					view: currentView,
-					viewport: viewportSize,
+					viewport: interactionViewport,
 				}),
 			);
 			return;
@@ -544,6 +621,10 @@ export function MapWorkspace({
 		const viewportSize = viewportSizeRef.current;
 
 		if (currentView && viewportSize) {
+			const interactionViewport = getInteractionViewport(
+				viewportSize,
+				rightViewportInset,
+			);
 			scheduleView(
 				panView({
 					delta: {
@@ -552,7 +633,7 @@ export function MapWorkspace({
 					},
 					image: imageSize,
 					view: currentView,
-					viewport: viewportSize,
+					viewport: interactionViewport,
 				}),
 			);
 		}
@@ -625,7 +706,7 @@ export function MapWorkspace({
 				className,
 			)}
 		>
-			<div className="flex h-16 shrink-0 items-center gap-2 border-border border-b bg-card px-3 py-2">
+			<div className="flex h-[var(--map-controls-row-height)] shrink-0 items-center gap-2 border-border border-b bg-card px-3 py-2">
 				{toolbarStart}
 				<p className="hidden min-w-0 flex-1 truncate text-muted-foreground text-sm xl:block">
 					{instructions}
@@ -900,6 +981,20 @@ function normalizeWheelDelta(event: WheelEvent, viewportHeight: number) {
 				: event.deltaY;
 
 	return clamp(pixels, -120, 120);
+}
+
+function getInteractionViewport(
+	viewport: Size,
+	rightViewportInset: number,
+): Size {
+	const boundedInset = Number.isFinite(rightViewportInset)
+		? clamp(rightViewportInset, 0, Math.max(0, viewport.width - 1))
+		: 0;
+
+	return {
+		height: viewport.height,
+		width: viewport.width - boundedInset,
+	};
 }
 
 function clamp(value: number, minimum: number, maximum: number) {
