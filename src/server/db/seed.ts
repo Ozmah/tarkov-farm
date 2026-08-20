@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { parseDocumentCatalog } from "../../lib/document-catalog";
 import { parseKeyCatalog } from "../../lib/key-catalog";
 import { getDatabase } from "./client.server";
+import { readMapMasterManifest } from "./map-master-manifest.server";
 import {
 	documentMaps,
 	documents,
@@ -150,19 +151,7 @@ const mapImageDefinitions = [
 	},
 ] as const;
 
-type MapMaster = {
-	file: string;
-	height: number;
-	sha256: string;
-	width: number;
-};
-
-const masterManifest = JSON.parse(
-	await readFile(
-		resolve(process.cwd(), "public/maps/masters/manifest.json"),
-		"utf8",
-	),
-) as { images: MapMaster[] };
+const masterManifest = await readMapMasterManifest();
 const mastersByFile = new Map(
 	masterManifest.images.map((master) => [master.file, master]),
 );

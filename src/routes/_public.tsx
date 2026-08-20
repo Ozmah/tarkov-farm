@@ -13,11 +13,13 @@ import {
 import { PublicShell } from "@/components/public-shell";
 import { RouteError } from "@/components/route-error";
 import { getCatalog } from "@/functions/catalog";
+import { setPublicLayoutMode } from "@/functions/layout-mode";
 import {
 	captureAnalyticsEvent,
 	type MapSelectionSource,
 } from "@/lib/analytics";
 import { validateCatalogSearch } from "@/lib/catalog-search";
+import type { LayoutMode } from "@/lib/layout-mode";
 
 export const Route = createFileRoute("/_public")({
 	validateSearch: validateCatalogSearch,
@@ -54,6 +56,10 @@ function PublicLayout() {
 		useState<PublicLayoutConfiguration>();
 	const [pendingConfiguration, setPendingConfiguration] =
 		useState<PublicLayoutConfiguration>();
+	const [layoutMode, setLayoutMode] = useState<LayoutMode>(catalog.layoutMode);
+	const [layoutModeError, setLayoutModeError] = useState<string>();
+	const [layoutModePending, setLayoutModePending] = useState(false);
+	const layoutModeRequestRef = useRef(0);
 	const setConfiguration = useCallback(
 		(nextConfiguration?: PublicLayoutConfiguration) => {
 			setCommittedConfiguration(nextConfiguration);
@@ -70,7 +76,11 @@ function PublicLayout() {
 				editorSearch: { map: map.id },
 				headerMeta: "Loading…",
 				sidebarPanel: (closePanel) => (
-					<PendingMapSidebarPanel mapName={map.name} onBack={closePanel} />
+					<PendingMapSidebarPanel
+						hideHeaderOnDesktop
+						mapName={map.name}
+						onBack={closePanel}
+					/>
 				),
 			});
 		},
@@ -79,6 +89,30 @@ function PublicLayout() {
 	const currentMap = catalog.maps.find((map) => map.id === params.mapId);
 	const pendingMapId = pendingConfiguration?.editorSearch?.map;
 	const configuration = pendingConfiguration ?? committedConfiguration;
+	const changeLayoutMode = useCallback(
+		(nextLayoutMode: LayoutMode) => {
+			const previousLayoutMode = layoutMode;
+			const requestId = layoutModeRequestRef.current + 1;
+			layoutModeRequestRef.current = requestId;
+			setLayoutMode(nextLayoutMode);
+			setLayoutModeError(undefined);
+			setLayoutModePending(true);
+
+			void setPublicLayoutMode({ data: { layoutMode: nextLayoutMode } })
+				.catch(() => {
+					if (layoutModeRequestRef.current === requestId) {
+						setLayoutMode(previousLayoutMode);
+						setLayoutModeError("Could not save this preference. Try again.");
+					}
+				})
+				.finally(() => {
+					if (layoutModeRequestRef.current === requestId) {
+						setLayoutModePending(false);
+					}
+				});
+		},
+		[layoutMode],
+	);
 
 	useEffect(() => {
 		if (isRouterLoading) {
@@ -100,12 +134,16 @@ function PublicLayout() {
 
 	return (
 		<PublicLayoutConfigurationProvider
+			layoutMode={layoutMode}
 			prepareMapNavigation={prepareMapNavigation}
 			setConfiguration={setConfiguration}
 		>
 			<PublicShell
 				catalog={catalog}
 				currentMapId={currentMap?.id}
+				layoutMode={layoutMode}
+				layoutModeError={layoutModeError}
+				layoutModePending={layoutModePending}
 				editorSearch={{
 					map: currentMap?.id,
 					...configuration?.editorSearch,
@@ -122,8 +160,15 @@ function PublicLayout() {
 									: (currentMap?.name ?? "Overview")
 				}
 				headerMeta={configuration?.headerMeta}
-				onMapNavigationStart={(map) => prepareMapNavigation(map, "sidebar")}
+				onMapNavigationStart={(map) =>
+					prepareMapNavigation(
+						map,
+						layoutMode === "vertical" ? "topbar" : "sidebar",
+					)
+				}
+				onLayoutModeChange={changeLayoutMode}
 				sidebarPanel={configuration?.sidebarPanel}
+				verticalLocationsControl={configuration?.verticalLocationsControl}
 			>
 				<Outlet />
 			</PublicShell>

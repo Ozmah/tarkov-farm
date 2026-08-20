@@ -282,6 +282,59 @@
 			"yBasisPoints": 3325
 		},
 		{
+			"description": "Room in front of the bathroom in the southwest corner of the map",
+			"documentId": "medical",
+			"id": "0b6fa600-31a5-4b59-a8fd-c915040033d3",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Infirmary Second Floor",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 929,
+						"path": "/screenshots/0b6fa600-31a5-4b59-a8fd-c915040033d3/ad5910f11a751fcfa31f51ef64a9cbfb0c3b689e92bfe9f436acea745915414e-1920.webp",
+						"sha256": "d5ca97a4d5eaade58e2397c2adb0f9a6f9699716cd355a53970eddcc8116e9ba",
+						"width": 1920
+					},
+					"id": "2b3b884f-3f10-4f33-b1ab-613cdf48fc82",
+					"isActive": true,
+					"preview": {
+						"height": 484,
+						"path": "/screenshots/0b6fa600-31a5-4b59-a8fd-c915040033d3/ad5910f11a751fcfa31f51ef64a9cbfb0c3b689e92bfe9f436acea745915414e-1000.webp",
+						"sha256": "65880e6e7d6bd6044c13b355da93228d44c2f86d7a38389b344c2327877ee879",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ad5910f11a751fcfa31f51ef64a9cbfb0c3b689e92bfe9f436acea745915414e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1015,
+						"path": "/screenshots/0b6fa600-31a5-4b59-a8fd-c915040033d3/700e759a6963f87be6800c0a8c9b98f7306fa2c3d72f88ea37c348028b116b3c-1920.webp",
+						"sha256": "d016df86ec72c9f4d131e91bece0f9e3c14331d8a97da129574c7f691d4e755d",
+						"width": 1920
+					},
+					"id": "f01f327b-ad22-4244-97dc-0f20ec41096d",
+					"isActive": true,
+					"preview": {
+						"height": 529,
+						"path": "/screenshots/0b6fa600-31a5-4b59-a8fd-c915040033d3/700e759a6963f87be6800c0a8c9b98f7306fa2c3d72f88ea37c348028b116b3c-1000.webp",
+						"sha256": "215fbf871cd37942abb5a2708bfdf359fb9d100a2f8d2b78bf067679daddf7c2",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "700e759a6963f87be6800c0a8c9b98f7306fa2c3d72f88ea37c348028b116b3c"
+				}
+			],
+			"xBasisPoints": 6938,
+			"yBasisPoints": 4183
+		},
+		{
 			"description": "Right side in the back on the ground in front of the bed",
 			"documentId": "medical",
 			"id": "0d15c53d-f73f-47ca-a7f2-93f6a8e932dd",
@@ -567,7 +620,7 @@
 			"id": "1d392969-77cb-488a-837a-86e01d4043af",
 			"isActive": true,
 			"mapImageId": "customs-main",
-			"name": "Old Gas Desk",
+			"name": "Old Gas Office",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -592,7 +645,7 @@
 				}
 			],
 			"xBasisPoints": 3635,
-			"yBasisPoints": 3356
+			"yBasisPoints": 3252
 		},
 		{
 			"description": "Next to the wines in the back of the resort",
@@ -1596,6 +1649,59 @@
 			"yBasisPoints": 4098
 		},
 		{
+			"description": "In the room in the back of the area between radar station, bunker and D2, in the middle desk",
+			"documentId": "pmc-personnel",
+			"id": "468b5701-cbaa-4054-b6ff-32f78cf09322",
+			"isActive": true,
+			"mapImageId": "reserve-tunnels",
+			"name": "Tunnels Hub",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 956,
+						"path": "/screenshots/468b5701-cbaa-4054-b6ff-32f78cf09322/bc357b4b689fff5e86d27825358ac909350f619e3ec5c39fcae7661fae694a56-1920.webp",
+						"sha256": "7e3cd4c09c4441f4547a8b9f7c251471f5737c413af961ba1bf459d2a15fdc14",
+						"width": 1920
+					},
+					"id": "a47be2d4-f41d-4a10-90ab-fb806b64d262",
+					"isActive": true,
+					"preview": {
+						"height": 498,
+						"path": "/screenshots/468b5701-cbaa-4054-b6ff-32f78cf09322/bc357b4b689fff5e86d27825358ac909350f619e3ec5c39fcae7661fae694a56-1000.webp",
+						"sha256": "c9e14e53b349fb02c0078911fe27bb837e600e5d7f416af837cb6227fba258df",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "bc357b4b689fff5e86d27825358ac909350f619e3ec5c39fcae7661fae694a56"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 973,
+						"path": "/screenshots/468b5701-cbaa-4054-b6ff-32f78cf09322/91413c854a9c4eb075119d375e14abbe2e34a5916b1e9cbd0b897b88122f0464-1920.webp",
+						"sha256": "30a2840b9c379ebf3fcb621cdef601e9582f93dada4b936b181ac4703d985af6",
+						"width": 1920
+					},
+					"id": "1661de2b-b786-402e-851c-c500f03de29d",
+					"isActive": true,
+					"preview": {
+						"height": 507,
+						"path": "/screenshots/468b5701-cbaa-4054-b6ff-32f78cf09322/91413c854a9c4eb075119d375e14abbe2e34a5916b1e9cbd0b897b88122f0464-1000.webp",
+						"sha256": "9ffaf72327e1c47c7c5ec3b3126301d69948038f2968e9f8a80a583e25f3733d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "91413c854a9c4eb075119d375e14abbe2e34a5916b1e9cbd0b897b88122f0464"
+				}
+			],
+			"xBasisPoints": 2703,
+			"yBasisPoints": 7827
+		},
+		{
 			"description": "Office in front of RB-PKPTS room, between a copy machine and a file cabinet",
 			"documentId": "project",
 			"id": "47f4a784-0bf2-4631-baf8-a6a30ab4be4f",
@@ -2154,6 +2260,61 @@
 			"yBasisPoints": 2563
 		},
 		{
+			"description": "Second floor, archives room, in the back of the room between a file cabinet and a water dispenser",
+			"documentId": "project",
+			"id": "5d5fba7c-e474-4511-b003-76ca0d43580e",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Radar Station",
+			"requiredKeyIds": [
+				"rb-rlsa-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 936,
+						"path": "/screenshots/5d5fba7c-e474-4511-b003-76ca0d43580e/b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82-1920.webp",
+						"sha256": "2cfb7d08559ca7eb7d7c61bc1940dbc7900cc838d1df94f30ccdd6a61a3630a3",
+						"width": 1920
+					},
+					"id": "a04025c7-5542-4ee9-84a4-1bed083bcabf",
+					"isActive": true,
+					"preview": {
+						"height": 488,
+						"path": "/screenshots/5d5fba7c-e474-4511-b003-76ca0d43580e/b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82-1000.webp",
+						"sha256": "2a8d79ea466c5ff27040f1a4db9f647f219b72486712a80ccaeb5e56f91cd4a0",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 952,
+						"path": "/screenshots/5d5fba7c-e474-4511-b003-76ca0d43580e/e4c780511a51e125d35ce3ab6be248eb2d4266b7bdc0c078426f679a67ad1559-1920.webp",
+						"sha256": "5bbe1e6f7b60ae97f875829124d3151b0d8f4ef306485e1ba618ee98a111a580",
+						"width": 1920
+					},
+					"id": "b1b90b28-6b06-4fc1-9725-9018aadb7a33",
+					"isActive": true,
+					"preview": {
+						"height": 496,
+						"path": "/screenshots/5d5fba7c-e474-4511-b003-76ca0d43580e/e4c780511a51e125d35ce3ab6be248eb2d4266b7bdc0c078426f679a67ad1559-1000.webp",
+						"sha256": "8a0e4260e35331d7d3ba8972d3eae024c73379597010aa49cbcc2d55036b79de",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "e4c780511a51e125d35ce3ab6be248eb2d4266b7bdc0c078426f679a67ad1559"
+				}
+			],
+			"xBasisPoints": 6419,
+			"yBasisPoints": 6035
+		},
+		{
 			"description": "Inside the cabinet in the workshop in front of gate 3 exit",
 			"documentId": "project",
 			"id": "5ea6cd9d-2b74-4344-9e53-61447ccf2af9",
@@ -2707,6 +2868,39 @@
 			],
 			"xBasisPoints": 6109,
 			"yBasisPoints": 6538
+		},
+		{
+			"description": "On the ground right next to the bookshelf",
+			"documentId": "project",
+			"id": "7dd81357-d608-4c73-968b-6e80f705c4b0",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Old Gas Office",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 914,
+						"path": "/screenshots/7dd81357-d608-4c73-968b-6e80f705c4b0/308cb51c03284ab04a941a832e03b81cc71f19e79e0476ffd59d5ac2b13de325-1920.webp",
+						"sha256": "2406a1c9651eec2ea4dc5b74b7009b2c2be5277619f5f75d5305a5a78cf3946c",
+						"width": 1920
+					},
+					"id": "8e6dd3a0-1884-4726-a647-fc8dd7f5f819",
+					"isActive": true,
+					"preview": {
+						"height": 476,
+						"path": "/screenshots/7dd81357-d608-4c73-968b-6e80f705c4b0/308cb51c03284ab04a941a832e03b81cc71f19e79e0476ffd59d5ac2b13de325-1000.webp",
+						"sha256": "59ad60f1e99568d6e103657d05fa23b6e0219abcb75b220e2aa896d5bab17437",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "308cb51c03284ab04a941a832e03b81cc71f19e79e0476ffd59d5ac2b13de325"
+				}
+			],
+			"xBasisPoints": 3653,
+			"yBasisPoints": 3333
 		},
 		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
@@ -3865,7 +4059,7 @@
 			"id": "aa91565a-8dbd-4365-9072-df24a234b7a1",
 			"isActive": true,
 			"mapImageId": "customs-main",
-			"name": "Computer Room",
+			"name": "Tarcone Computer Room",
 			"requiredKeyIds": [
 				"tarcone-directors-office-key"
 			],
@@ -3946,6 +4140,39 @@
 			],
 			"xBasisPoints": 5734,
 			"yBasisPoints": 2032
+		},
+		{
+			"description": "Under a desk with a monitor, near the window",
+			"documentId": "project",
+			"id": "baf517e5-c33d-4f41-a7fa-4ec3149f71f3",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "Tarcone Computer Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 969,
+						"path": "/screenshots/baf517e5-c33d-4f41-a7fa-4ec3149f71f3/e2281dc64d9d1de8495d387cd6272048342f7e73058abb1be74e1b6861bcf38b-1920.webp",
+						"sha256": "ad67004b03ecc6a670a415c902136ccef4e8bcf640d4ed36dad383a9d68980a9",
+						"width": 1920
+					},
+					"id": "6709e7a5-cf4b-4363-b5aa-7daa4585342d",
+					"isActive": true,
+					"preview": {
+						"height": 505,
+						"path": "/screenshots/baf517e5-c33d-4f41-a7fa-4ec3149f71f3/e2281dc64d9d1de8495d387cd6272048342f7e73058abb1be74e1b6861bcf38b-1000.webp",
+						"sha256": "507b213b30aee4fc11467dc6ec284e6839ada061ec6374f488e059b32ee73264",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "e2281dc64d9d1de8495d387cd6272048342f7e73058abb1be74e1b6861bcf38b"
+				}
+			],
+			"xBasisPoints": 8478,
+			"yBasisPoints": 3963
 		},
 		{
 			"description": "On the ground between a bookshelf and the utility cart",
@@ -4206,6 +4433,61 @@
 			"yBasisPoints": 2190
 		},
 		{
+			"description": "Second floor, document archives on the desk between two windows",
+			"documentId": "pmc-personnel",
+			"id": "c311bb7e-ad0e-495a-94fc-2e69e88d18a5",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Radar Station",
+			"requiredKeyIds": [
+				"rb-rlsa-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 948,
+						"path": "/screenshots/c311bb7e-ad0e-495a-94fc-2e69e88d18a5/502e11e2fd4ab5a005ddbaa529ddb4d4c917b9507c74a53f26dd983b3d2969d5-1920.webp",
+						"sha256": "f224c1f761bfc2bca219d5701fd7589d78ceeff63f2c29c90abdeb55750d8ba8",
+						"width": 1920
+					},
+					"id": "1feb4ece-7a1b-46a8-8305-3f2f4e6bd1f4",
+					"isActive": true,
+					"preview": {
+						"height": 494,
+						"path": "/screenshots/c311bb7e-ad0e-495a-94fc-2e69e88d18a5/502e11e2fd4ab5a005ddbaa529ddb4d4c917b9507c74a53f26dd983b3d2969d5-1000.webp",
+						"sha256": "62bc38275c547fd81d05970a6860b4316a70fe32b64e49d50c88ff31b6e1fe1e",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "502e11e2fd4ab5a005ddbaa529ddb4d4c917b9507c74a53f26dd983b3d2969d5"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 936,
+						"path": "/screenshots/c311bb7e-ad0e-495a-94fc-2e69e88d18a5/b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82-1920.webp",
+						"sha256": "2cfb7d08559ca7eb7d7c61bc1940dbc7900cc838d1df94f30ccdd6a61a3630a3",
+						"width": 1920
+					},
+					"id": "08f04108-95a4-4022-8700-8f7552230bb4",
+					"isActive": true,
+					"preview": {
+						"height": 488,
+						"path": "/screenshots/c311bb7e-ad0e-495a-94fc-2e69e88d18a5/b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82-1000.webp",
+						"sha256": "2a8d79ea466c5ff27040f1a4db9f647f219b72486712a80ccaeb5e56f91cd4a0",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "b68b1f858e78407062d50ba257618efd73fe8432edd84138e522fa40c93c8e82"
+				}
+			],
+			"xBasisPoints": 6434,
+			"yBasisPoints": 6093
+		},
+		{
 			"description": "Third floor, opposite of the armory door on the bookshelf near the stairs door.",
 			"documentId": "pmc-personnel",
 			"id": "c4724a4e-dbc6-40f5-a072-301d847b4dca",
@@ -4270,6 +4552,61 @@
 			],
 			"xBasisPoints": 2962,
 			"yBasisPoints": 8373
+		},
+		{
+			"description": "Second floor, in the back of the server room on the desk",
+			"documentId": "pmc-personnel",
+			"id": "ce0c90ba-692a-4ef3-921b-59eef9137771",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Radar Station",
+			"requiredKeyIds": [
+				"rb-rs-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1034,
+						"path": "/screenshots/ce0c90ba-692a-4ef3-921b-59eef9137771/7659ed059ee0c2b1131724c4730a9d47b3b00a0048a25702d33dc70e4fa2e4d1-1920.webp",
+						"sha256": "415a8230449b2d638523619f5b60e3745fabeb0ad7a405882ec6a3c738419a61",
+						"width": 1920
+					},
+					"id": "d0a197fb-0d09-4f1e-9e65-5b06a5193d05",
+					"isActive": true,
+					"preview": {
+						"height": 538,
+						"path": "/screenshots/ce0c90ba-692a-4ef3-921b-59eef9137771/7659ed059ee0c2b1131724c4730a9d47b3b00a0048a25702d33dc70e4fa2e4d1-1000.webp",
+						"sha256": "ca2140dc0dda1e457c440688eef45a797a6efb4f3b00f500ecbfcf369bbf0f89",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7659ed059ee0c2b1131724c4730a9d47b3b00a0048a25702d33dc70e4fa2e4d1"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1000,
+						"path": "/screenshots/ce0c90ba-692a-4ef3-921b-59eef9137771/1afdb4d97c072a4aff1cedf0f11ff87a24fab8afbc4d363e7ea610807ef86eab-1920.webp",
+						"sha256": "80c3aa6fa00a750d17c09088b182587ccf71a6675a4b1bda5b55a281a6b19c30",
+						"width": 1920
+					},
+					"id": "863522a8-0df8-4389-81d4-834fb25c440b",
+					"isActive": true,
+					"preview": {
+						"height": 521,
+						"path": "/screenshots/ce0c90ba-692a-4ef3-921b-59eef9137771/1afdb4d97c072a4aff1cedf0f11ff87a24fab8afbc4d363e7ea610807ef86eab-1000.webp",
+						"sha256": "5d4070093abc1533945efcb808ccf553b0aba9e5aa836666ff474d09fa2b81ce",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "1afdb4d97c072a4aff1cedf0f11ff87a24fab8afbc4d363e7ea610807ef86eab"
+				}
+			],
+			"xBasisPoints": 6446,
+			"yBasisPoints": 6649
 		},
 		{
 			"description": "On the side of the desk, next to a shelf",

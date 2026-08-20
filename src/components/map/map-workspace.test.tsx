@@ -18,6 +18,10 @@ const DEFAULT_IMAGE = {
 	altText: "Customs map",
 	height: 1_000,
 	path: "/maps/customs.webp",
+	sources: [
+		{ height: 500, path: "/maps/customs-500w.webp", width: 500 },
+		{ height: 1_000, path: "/maps/customs.webp", width: 1_000 },
+	],
 	width: 1_000,
 };
 
@@ -80,6 +84,62 @@ afterEach(() => {
 });
 
 describe("MapWorkspace", () => {
+	it("selects responsive sources from the rendered map width", () => {
+		renderWorkspace();
+		const image = screen.getByAltText("Customs map");
+
+		expect(image.getAttribute("src")).toBeNull();
+		expect(image.getAttribute("srcset")).toBe(
+			"/maps/customs-500w.webp 500w, /maps/customs.webp 1000w",
+		);
+		expect(image.getAttribute("sizes")).toBe("100vw");
+
+		prepareViewport();
+		expect(image.getAttribute("sizes")).toBe("100vw");
+	});
+
+	it("keeps the current source visible until a sharper source is decoded", async () => {
+		let resolveDecode: () => void = () => {};
+		let preloadedPath: string | undefined;
+		vi.spyOn(HTMLImageElement.prototype, "currentSrc", "get").mockReturnValue(
+			"http://localhost/maps/customs-500w.webp",
+		);
+		vi.stubGlobal(
+			"Image",
+			class {
+				decoding = "auto";
+				onerror: (() => void) | null = null;
+				onload: (() => void) | null = null;
+
+				decode() {
+					return new Promise<void>((resolve) => {
+						resolveDecode = resolve;
+					});
+				}
+
+				set src(path: string) {
+					preloadedPath = path;
+					queueMicrotask(() => this.onload?.());
+				}
+			},
+		);
+		renderWorkspace();
+		prepareReadyViewport();
+		const image = screen.getByAltText("Customs map");
+
+		expect(image.getAttribute("src")).toBe("/maps/customs-500w.webp");
+		expect(image.getAttribute("srcset")).toBeNull();
+		fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+		flushAnimationFrames();
+		await vi.waitFor(() => expect(preloadedPath).toBe("/maps/customs.webp"));
+		expect(image.getAttribute("src")).toBe("/maps/customs-500w.webp");
+
+		resolveDecode();
+		await vi.waitFor(() =>
+			expect(image.getAttribute("src")).toBe("/maps/customs.webp"),
+		);
+	});
+
 	it("fits the image and reveals markers only after the image loads", () => {
 		renderWorkspace({
 			markers: [
@@ -288,6 +348,46 @@ describe("MapWorkspace", () => {
 		});
 		expect(marker.style.left).toBe("300px");
 		expect(marker.style.top).toBe("600px");
+	});
+
+	it("keeps a selected marker inside a reduced interaction viewport", () => {
+		const markers = [
+			{
+				id: "selected",
+				label: "4",
+				name: "Selected location",
+				xBasisPoints: 8_000,
+				yBasisPoints: 2_000,
+			},
+		];
+		const { rerender } = renderWorkspace({
+			markers,
+			rightViewportInset: 400,
+			selectedMarkerId: "selected",
+		});
+		prepareReadyViewport();
+		flushAnimationFrames();
+		const image = screen.getByRole("img", { name: "Customs map" });
+
+		expect(image.parentElement?.style.transform).toBe(
+			"translate3d(-150px, 0px, 0) scale(0.75)",
+		);
+
+		rerender(
+			<MapWorkspace
+				ariaLabel="Test map"
+				image={DEFAULT_IMAGE}
+				instructions="Drag to move"
+				markers={markers}
+				rightViewportInset={0}
+				selectedMarkerId="selected"
+			/>,
+		);
+		flushAnimationFrames();
+
+		expect(image.parentElement?.style.transform).toBe(
+			"translate3d(125px, 0px, 0) scale(0.75)",
+		);
 	});
 
 	it("groups overlapping locations while keeping standalone markers separate", () => {

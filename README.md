@@ -20,13 +20,17 @@ The local data editor is available at [`/editor`](http://localhost:3000/editor).
 
 ### Generate map masters
 
-Maintainers with access to the ignored source images can regenerate the optimized WebP masters with:
+Maintainers with access to the ignored source images can regenerate the optimized WebP masters and their responsive variants with:
 
 ```bash
 bun run images:masters
 ```
 
-The command processes each image in an isolated subprocess and replaces `public/maps/masters` only after every image succeeds.
+The command processes each image in an isolated subprocess and replaces `public/maps/masters` only after every image succeeds. To regenerate only the responsive variants from the tracked masters, without the ignored originals, run:
+
+```bash
+bun run images:responsive
+```
 
 ### Document images
 

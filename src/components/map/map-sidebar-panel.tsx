@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, MapPinIcon } from "@phosphor-icons/react";
+import { ArrowLeftIcon, CheckIcon, MapPinIcon } from "@phosphor-icons/react";
 import type { ReactNode } from "react";
 
 import {
@@ -13,28 +13,9 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Field, FieldLabel } from "@/components/ui/field";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-type SidebarMap = {
-	id: string;
-	name: string;
-};
-
-type SidebarMapView = {
-	id: string;
-	name: string;
-};
-
-type SidebarLocation = {
+export type SidebarLocation = {
 	documentId: string;
 	documentName: string;
 	id: string;
@@ -42,59 +23,45 @@ type SidebarLocation = {
 	name: string;
 };
 
-type SidebarDocument = DocumentArtwork & {
+export type SidebarDocument = DocumentArtwork & {
 	count: number;
 	id: string;
 	name: string;
 };
 
-type MapSidebarPanelProps = {
+export type MapSidebarPanelProps = {
 	action?: ReactNode;
 	className?: string;
 	documents: SidebarDocument[];
+	headerTitle?: string;
+	hideHeaderOnDesktop?: boolean;
 	locations: SidebarLocation[];
-	maps: SidebarMap[];
-	mapViews: SidebarMapView[];
+	navigationControls?: ReactNode;
 	selectedLocationId?: string;
 	selectedDocumentIds: string[];
-	selectedMapId: string;
-	selectedMapViewId?: string;
 	onBack: () => void;
 	onSelectedDocumentsChange: (documentIds: string[]) => void;
 	onLocationSelect: (locationId: string) => void;
-	onMapChange: (mapId: string) => void;
-	onMapViewChange: (mapViewId: string) => void;
 };
 
 export function MapSidebarPanel({
 	action,
 	className,
 	documents,
+	headerTitle = "Locations",
+	hideHeaderOnDesktop = false,
 	locations,
-	maps,
-	mapViews,
+	navigationControls,
 	selectedLocationId,
 	selectedDocumentIds,
-	selectedMapId,
-	selectedMapViewId,
 	onBack,
 	onSelectedDocumentsChange,
 	onLocationSelect,
-	onMapChange,
-	onMapViewChange,
 }: MapSidebarPanelProps) {
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
 	const documentById = new Map(
 		documents.map((document) => [document.id, document]),
 	);
-	const allDocumentsSelected = documents.every((document) =>
-		selectedDocumentIdSet.has(document.id),
-	);
-	const totalLocationCount = documents.reduce(
-		(total, document) => total + document.count,
-		0,
-	);
-
 	function toggleDocument(documentId: string) {
 		const isSelected = selectedDocumentIdSet.has(documentId);
 
@@ -111,7 +78,12 @@ export function MapSidebarPanel({
 
 	return (
 		<div className={cn("flex min-h-0 flex-1 flex-col", className)}>
-			<header className="flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
+			<header
+				className={cn(
+					"flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3",
+					hideHeaderOnDesktop && "lg:hidden",
+				)}
+			>
 				<Button
 					type="button"
 					variant="ghost"
@@ -124,110 +96,28 @@ export function MapSidebarPanel({
 				</Button>
 				<div className="min-w-0 flex-1">
 					<p className="truncate font-heading font-medium text-sidebar-foreground text-sm">
-						Locations
+						{headerTitle}
 					</p>
 					<p className="truncate text-sidebar-foreground/70 text-sm tabular-nums">
-						{locations.length} {locations.length === 1 ? "result" : "results"}
+						{locations.length}{" "}
+						{locations.length === 1 ? "location" : "locations"}
 					</p>
 				</div>
 				{action}
 			</header>
 
-			<div className="grid shrink-0 gap-4 border-sidebar-border border-b p-4">
-				<Field>
-					<FieldLabel htmlFor="sidebar-map" className="text-sidebar-primary">
-						Map
-					</FieldLabel>
-					<Select
-						items={maps.map((map) => ({ value: map.id, label: map.name }))}
-						value={selectedMapId}
-						onValueChange={(mapId) => {
-							if (mapId) {
-								onMapChange(mapId);
-							}
-						}}
-					>
-						<SelectTrigger
-							id="sidebar-map"
-							className="w-full border-sidebar-border text-sidebar-foreground focus-visible:border-sidebar-ring focus-visible:ring-sidebar-ring/30"
-						>
-							<SelectValue placeholder="Select a map" />
-						</SelectTrigger>
-						<SelectContent alignItemWithTrigger={false}>
-							<SelectGroup>
-								{maps.map((map) => (
-									<SelectItem key={map.id} value={map.id}>
-										{map.name}
-									</SelectItem>
-								))}
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</Field>
-
-				{mapViews.length > 1 ? (
-					<Field>
-						<FieldLabel
-							htmlFor="sidebar-map-view"
-							className="text-sidebar-primary"
-						>
-							Map view
-						</FieldLabel>
-						<Select
-							items={mapViews.map((view) => ({
-								value: view.id,
-								label: view.name,
-							}))}
-							value={selectedMapViewId ?? null}
-							onValueChange={(mapViewId) => {
-								if (mapViewId) {
-									onMapViewChange(mapViewId);
-								}
-							}}
-						>
-							<SelectTrigger
-								id="sidebar-map-view"
-								className="w-full border-sidebar-border text-sidebar-foreground focus-visible:border-sidebar-ring focus-visible:ring-sidebar-ring/30"
-							>
-								<SelectValue placeholder="Select a map view" />
-							</SelectTrigger>
-							<SelectContent alignItemWithTrigger={false}>
-								<SelectGroup>
-									{mapViews.map((view) => (
-										<SelectItem key={view.id} value={view.id}>
-											{view.name}
-										</SelectItem>
-									))}
-								</SelectGroup>
-							</SelectContent>
-						</Select>
-					</Field>
-				) : null}
-
+			<div
+				className={cn(
+					"grid shrink-0 gap-4 border-sidebar-border border-b p-4",
+					hideHeaderOnDesktop && "lg:border-b-0 lg:px-4 lg:py-3",
+				)}
+			>
+				{navigationControls}
 				{documents.length > 0 ? (
 					<fieldset className="flex flex-col gap-2">
-						<div className="flex min-h-7 items-center justify-between gap-3">
-							<legend className="font-medium text-sidebar-primary text-sm">
-								Documents
-							</legend>
-							{allDocumentsSelected ? (
-								<p className="text-sidebar-foreground/60 text-xs tabular-nums">
-									All · {totalLocationCount}
-								</p>
-							) : (
-								<button
-									type="button"
-									onClick={() =>
-										onSelectedDocumentsChange(
-											documents.map((document) => document.id),
-										)
-									}
-									className="min-h-7 font-semibold text-sidebar-primary text-xs uppercase tracking-wide outline-none hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-								>
-									Show all
-								</button>
-							)}
-						</div>
+						<legend className="flex min-h-7 items-center font-medium text-sidebar-primary text-sm">
+							Documents
+						</legend>
 						<div className="grid grid-cols-2 gap-px overflow-hidden border border-sidebar-border bg-sidebar-border">
 							{documents.map((document) => {
 								const isSelected = selectedDocumentIdSet.has(document.id);
@@ -238,18 +128,25 @@ export function MapSidebarPanel({
 										type="button"
 										aria-label={`${document.name}, ${document.count} ${document.count === 1 ? "location" : "locations"}`}
 										aria-pressed={isSelected}
+										data-selected={isSelected}
 										disabled={isSelected && selectedDocumentIds.length === 1}
 										onClick={() => toggleDocument(document.id)}
 										className={cn(
-											"flex min-h-14 items-center gap-2 bg-sidebar px-2 text-left text-sidebar-foreground text-xs outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset disabled:cursor-default disabled:opacity-70",
+											"flex min-h-14 items-center gap-2 bg-sidebar px-2 text-left text-sidebar-foreground/75 text-xs outline-none transition-[color,background-color,box-shadow] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:ring-inset disabled:cursor-default",
 											isSelected &&
-												"bg-sidebar-accent text-sidebar-accent-foreground",
+												"bg-sidebar-accent text-sidebar-accent-foreground shadow-[inset_0_0_0_1px_var(--sidebar-primary)] hover:bg-[color-mix(in_oklch,var(--sidebar-accent),var(--sidebar-foreground)_8%)]",
 										)}
 									>
 										<DocumentThumbnail document={document} className="size-8" />
 										<span className="min-w-0 flex-1 truncate font-medium">
 											{document.name}
 										</span>
+										{isSelected ? (
+											<CheckIcon
+												aria-hidden="true"
+												className="size-3.5 shrink-0 text-sidebar-primary"
+											/>
+										) : null}
 										<span className="shrink-0 text-sidebar-foreground/60 tabular-nums">
 											{document.count}
 										</span>
@@ -261,8 +158,14 @@ export function MapSidebarPanel({
 				) : null}
 			</div>
 
+			<h2 id="sidebar-location-list" className="sr-only">
+				Locations
+			</h2>
 			{locations.length > 0 ? (
-				<ul className="min-h-0 flex-1 overflow-auto py-2">
+				<ul
+					aria-labelledby="sidebar-location-list"
+					className="min-h-0 flex-1 overflow-auto py-2"
+				>
 					{locations.map((location, index) => {
 						const selected = selectedLocationId === location.id;
 						const document = documentById.get(location.documentId);
@@ -292,9 +195,6 @@ export function MapSidebarPanel({
 										<span className="block truncate text-sm">
 											{location.name}
 										</span>
-										<span className="block truncate text-sidebar-foreground/65 text-xs">
-											{location.documentName}
-										</span>
 									</span>
 								</button>
 							</li>
@@ -319,15 +219,22 @@ export function MapSidebarPanel({
 }
 
 export function PendingMapSidebarPanel({
+	hideHeaderOnDesktop = false,
 	mapName,
 	onBack,
 }: {
+	hideHeaderOnDesktop?: boolean;
 	mapName: string;
 	onBack: () => void;
 }) {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
-			<header className="flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3">
+			<header
+				className={cn(
+					"flex h-16 shrink-0 items-center gap-3 border-sidebar-border border-b px-3",
+					hideHeaderOnDesktop && "lg:hidden",
+				)}
+			>
 				<Button
 					type="button"
 					variant="ghost"

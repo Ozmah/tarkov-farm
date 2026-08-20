@@ -6,6 +6,7 @@ import {
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import {
 	LocationScreenshotEditor,
@@ -432,15 +433,27 @@ function EditorSidebarFooter({
 
 type EditorMapSidebarPanelProps = Omit<
 	React.ComponentProps<typeof MapSidebarPanel>,
-	"action"
+	"action" | "navigationControls"
 > & {
 	canCreateLocation: boolean;
+	maps: Array<{ id: string; name: string }>;
+	mapViews: Array<{ id: string; name: string }>;
+	selectedMapId: string;
+	selectedMapViewId?: string;
 	onCreateLocation: () => void;
+	onMapChange: (mapId: string) => void;
+	onMapViewChange: (mapViewId: string) => void;
 };
 
 function EditorMapSidebarPanel({
 	canCreateLocation,
+	maps,
+	mapViews,
+	selectedMapId,
+	selectedMapViewId,
 	onCreateLocation,
+	onMapChange,
+	onMapViewChange,
 	...props
 }: EditorMapSidebarPanelProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
@@ -456,6 +469,18 @@ function EditorMapSidebarPanel({
 	return (
 		<MapSidebarPanel
 			{...props}
+			navigationControls={
+				<EditorMapSelectors
+					maps={maps}
+					mapViews={mapViews}
+					selectedMapId={selectedMapId}
+					selectedMapViewId={selectedMapViewId}
+					onMapChange={(mapId) => runNavigation(() => onMapChange(mapId))}
+					onMapViewChange={(mapViewId) =>
+						runNavigation(() => onMapViewChange(mapViewId))
+					}
+				/>
+			}
 			action={
 				<Button
 					type="button"
@@ -470,10 +495,6 @@ function EditorMapSidebarPanel({
 			onBack={props.onBack}
 			onLocationSelect={(locationId) =>
 				runNavigation(() => props.onLocationSelect(locationId))
-			}
-			onMapChange={(mapId) => runNavigation(() => props.onMapChange(mapId))}
-			onMapViewChange={(mapViewId) =>
-				runNavigation(() => props.onMapViewChange(mapViewId))
 			}
 		/>
 	);

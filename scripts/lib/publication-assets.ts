@@ -5,6 +5,10 @@ import { relative, resolve, sep } from "node:path";
 import { parseDocumentCatalog } from "../../src/lib/document-catalog";
 import { parseKeyCatalog } from "../../src/lib/key-catalog";
 import {
+	type MapMasterVariant,
+	parseMapMasterManifest,
+} from "../../src/lib/map-master-manifest";
+import {
 	type PublicationAsset,
 	type PublicationData,
 	parsePublicationData,
@@ -56,63 +60,23 @@ export async function verifyMapMasterAssets(projectRoot: string) {
 	const masterRoot = resolve(projectRoot, "public", "maps", "masters");
 	const manifestPath = resolve(masterRoot, "manifest.json");
 	await assertRegularContainedFile(manifestPath, masterRoot, "Map manifest");
-	const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as unknown;
-
-	if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
-		throw new Error("Map manifest is invalid");
-	}
-
-	const images = (manifest as Record<string, unknown>).images;
-
-	if (!Array.isArray(images) || images.length === 0) {
-		throw new Error("Map manifest contains no images");
-	}
+	const manifest = parseMapMasterManifest(
+		JSON.parse(await readFile(manifestPath, "utf8")),
+	);
 
 	const expectedFiles = new Set(["manifest.json"]);
 
-	for (const input of images) {
-		if (!input || typeof input !== "object" || Array.isArray(input)) {
-			throw new Error("Map manifest image is invalid");
+	for (const image of manifest.images) {
+		await verifyMapImageAsset(masterRoot, image, expectedFiles, "Map master");
+
+		for (const variant of image.variants) {
+			await verifyMapImageAsset(
+				masterRoot,
+				variant,
+				expectedFiles,
+				"Responsive map variant",
+			);
 		}
-
-		const image = input as Record<string, unknown>;
-
-		if (
-			typeof image.file !== "string" ||
-			image.file.length === 0 ||
-			image.file.includes("/") ||
-			image.file.includes("\\") ||
-			typeof image.sha256 !== "string" ||
-			!/^[a-f0-9]{64}$/.test(image.sha256) ||
-			!Number.isSafeInteger(image.width) ||
-			!Number.isSafeInteger(image.height) ||
-			!Number.isSafeInteger(image.size)
-		) {
-			throw new Error("Map manifest image metadata is invalid");
-		}
-
-		const imagePath = resolve(masterRoot, image.file);
-		await assertRegularContainedFile(imagePath, masterRoot, "Map master");
-		const metadata = await new Bun.Image(imagePath, {
-			maxPixels: MAX_SCREENSHOT_PIXELS,
-		}).metadata();
-		const stats = await lstat(imagePath);
-
-		if (
-			metadata.format !== "webp" ||
-			metadata.width !== image.width ||
-			metadata.height !== image.height ||
-			stats.size !== image.size ||
-			(await hashFile(imagePath)) !== image.sha256
-		) {
-			throw new Error(`Map master does not match manifest: ${image.file}`);
-		}
-
-		if (expectedFiles.has(image.file)) {
-			throw new Error(`Map manifest contains duplicate file ${image.file}`);
-		}
-
-		expectedFiles.add(image.file);
 	}
 
 	const actualFiles = await readdir(masterRoot, { withFileTypes: true });
@@ -129,7 +93,43 @@ export async function verifyMapMasterAssets(projectRoot: string) {
 		throw new Error("Map master inventory does not match its manifest");
 	}
 
-	return { mapFiles: images.length };
+	return {
+		mapFiles: manifest.images.length,
+		responsiveMapFiles: manifest.images.reduce(
+			(count, image) => count + image.variants.length,
+			0,
+		),
+	};
+}
+
+async function verifyMapImageAsset(
+	masterRoot: string,
+	asset: MapMasterVariant,
+	expectedFiles: Set<string>,
+	label: string,
+) {
+	if (expectedFiles.has(asset.file)) {
+		throw new Error(`Map manifest contains duplicate file ${asset.file}`);
+	}
+
+	const imagePath = resolve(masterRoot, asset.file);
+	await assertRegularContainedFile(imagePath, masterRoot, label);
+	const metadata = await new Bun.Image(imagePath, {
+		maxPixels: MAX_SCREENSHOT_PIXELS,
+	}).metadata();
+	const stats = await lstat(imagePath);
+
+	if (
+		metadata.format !== "webp" ||
+		metadata.width !== asset.width ||
+		metadata.height !== asset.height ||
+		stats.size !== asset.size ||
+		(await hashFile(imagePath)) !== asset.sha256
+	) {
+		throw new Error(`${label} does not match manifest: ${asset.file}`);
+	}
+
+	expectedFiles.add(asset.file);
 }
 
 export async function verifyKeyAssets(projectRoot: string) {

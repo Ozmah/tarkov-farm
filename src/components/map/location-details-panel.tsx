@@ -4,13 +4,8 @@ import {
 	type DocumentArtwork,
 	DocumentThumbnail,
 } from "@/components/document-thumbnail";
+import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 import { Badge } from "@/components/ui/badge";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import {
 	Sheet,
@@ -21,7 +16,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
-type LocationDetails = {
+export type LocationDetails = {
 	description: string | null;
 	documentName: string;
 	name: string;
@@ -35,7 +30,7 @@ type LocationDetails = {
 	}>;
 };
 
-type LocationScreenshot = {
+export type LocationScreenshot = {
 	altText: string;
 	caption: string | null;
 	height: number;
@@ -210,42 +205,13 @@ export function LocationDetailsPanel({
 				</SheetContent>
 			</Sheet>
 
-			<Dialog
-				open={Boolean(selectedScreenshot)}
+			<LocationScreenshotDialog
+				locationName={location.name}
+				screenshot={selectedScreenshot}
 				onOpenChange={(open) => {
 					if (!open) setSelectedScreenshot(undefined);
 				}}
-			>
-				<DialogContent
-					overlayClassName="bg-black/85"
-					className="w-auto max-w-[calc(100vw-2rem)] gap-0 bg-transparent p-0 shadow-none ring-0 sm:max-w-[calc(100vw-2rem)]"
-				>
-					<DialogTitle className="sr-only">
-						{selectedScreenshot?.altText || `${location.name} screenshot`}
-					</DialogTitle>
-					<DialogDescription className="sr-only">
-						Full-size location screenshot. Press Escape or click outside to
-						close.
-					</DialogDescription>
-					{selectedScreenshot ? (
-						<figure className="flex max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)] flex-col bg-background">
-							<img
-								src={selectedScreenshot.path}
-								alt={selectedScreenshot.altText}
-								width={selectedScreenshot.width}
-								height={selectedScreenshot.height}
-								decoding="async"
-								className="max-h-[calc(100dvh-2rem)] min-h-0 w-auto max-w-[calc(100vw-2rem)] object-contain"
-							/>
-							{selectedScreenshot.caption ? (
-								<figcaption className="shrink-0 p-3 pr-14 text-muted-foreground text-sm">
-									{selectedScreenshot.caption}
-								</figcaption>
-							) : null}
-						</figure>
-					) : null}
-				</DialogContent>
-			</Dialog>
+			/>
 		</>
 	);
 }

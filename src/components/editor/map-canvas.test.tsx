@@ -24,6 +24,7 @@ describe("MapCanvas selection centering", () => {
 					altText: "Map",
 					height: 1_000,
 					path: "/map.webp",
+					sources: [{ height: 1_000, path: "/map.webp", width: 1_000 }],
 					width: 1_000,
 				}}
 				locations={[
@@ -71,6 +72,7 @@ describe("MapCanvas selection centering", () => {
 					altText: "Map",
 					height: 1_000,
 					path: "/map.webp",
+					sources: [{ height: 1_000, path: "/map.webp", width: 1_000 }],
 					width: 1_000,
 				}}
 				locations={[]}

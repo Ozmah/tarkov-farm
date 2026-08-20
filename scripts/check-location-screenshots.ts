@@ -35,5 +35,5 @@ const screenshotCount = publication.locations.reduce(
 );
 
 console.info(
-	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, ${mapAssets.mapFiles} map masters, ${keyAssets.keyFiles} key images, and ${documentAssets.documentFiles} document images.`,
+	`Validated ${publication.locations.length} locations, ${screenshotCount} screenshots, ${screenshotAssets.referencedFiles} screenshot assets, ${mapAssets.mapFiles} map masters, ${mapAssets.responsiveMapFiles} responsive map variants, ${keyAssets.keyFiles} key images, and ${documentAssets.documentFiles} document images.`,
 );

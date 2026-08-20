@@ -1,10 +1,13 @@
 export type MapSelectionSource =
-	| "current_map"
 	| "documents"
 	| "home"
-	| "sidebar";
+	| "map_strip"
+	| "sidebar"
+	| "topbar";
 
-export type LocationViewSource = "direct" | "marker" | "sidebar";
+export type MapControlSource = "sidebar" | "topbar";
+
+export type LocationViewSource = "direct" | "marker" | MapControlSource;
 
 type AnalyticsRoute =
 	| "about"
@@ -60,7 +63,7 @@ type AnalyticsEventProperties = {
 		document_ids: string[];
 		map_id: string;
 		selected_count: number;
-		source: "sidebar";
+		source: MapControlSource;
 	};
 	location_viewed: {
 		document_id: string;

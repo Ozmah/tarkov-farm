@@ -1,3 +1,5 @@
+import jetBrainsMonoLatinUrl from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
+import manropeLatinUrl from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
@@ -34,6 +36,20 @@ export const Route = createRootRoute({
 			},
 		],
 		links: [
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+				href: manropeLatinUrl,
+			},
+			{
+				rel: "preload",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+				href: jetBrainsMonoLatinUrl,
+			},
 			{
 				rel: "icon",
 				type: "image/png",

@@ -55,7 +55,8 @@ describe("MapSidebarPanel document filters", () => {
 					.getAttribute("aria-pressed"),
 			).toBe("true");
 		}
-		expect(screen.getByText("All · 15")).toBeTruthy();
+		expect(screen.queryByText("All · 15")).toBeNull();
+		expect(screen.queryByRole("button", { name: "Show all" })).toBeNull();
 	});
 
 	it("removes one document without changing the flat location list", () => {
@@ -76,7 +77,7 @@ describe("MapSidebarPanel document filters", () => {
 		expect(screen.getAllByRole("listitem")).toHaveLength(2);
 	});
 
-	it("restores every document and prevents an empty selection", () => {
+	it("prevents an empty selection without rendering a redundant bulk reset", () => {
 		const onSelectedDocumentsChange = vi.fn();
 		renderPanel({
 			onSelectedDocumentsChange,
@@ -88,12 +89,11 @@ describe("MapSidebarPanel document filters", () => {
 				.getByRole("button", { name: "Financial, 8 locations" })
 				.hasAttribute("disabled"),
 		).toBe(true);
-		fireEvent.click(screen.getByRole("button", { name: "Show all" }));
-		expect(onSelectedDocumentsChange).toHaveBeenCalledWith([
-			"financial",
-			"medical",
-			"project",
-		]);
+		expect(screen.queryByRole("button", { name: "Show all" })).toBeNull();
+		fireEvent.click(
+			screen.getByRole("button", { name: "Financial, 8 locations" }),
+		);
+		expect(onSelectedDocumentsChange).not.toHaveBeenCalled();
 	});
 
 	it("uses the matching document artwork in filters and location rows", () => {
@@ -158,15 +158,9 @@ function renderPanel({
 					name: "Second location",
 				},
 			]}
-			maps={[{ id: "factory", name: "Factory" }]}
-			mapViews={[{ id: "main", name: "Main map" }]}
 			selectedDocumentIds={selectedDocumentIds}
-			selectedMapId="factory"
-			selectedMapViewId="main"
 			onBack={vi.fn()}
 			onLocationSelect={vi.fn()}
-			onMapChange={vi.fn()}
-			onMapViewChange={vi.fn()}
 			onSelectedDocumentsChange={onSelectedDocumentsChange}
 		/>,
 	);

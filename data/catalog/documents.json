@@ -114,11 +114,11 @@
 			"name": "Technical documentation",
 			"description": "Operating manuals for TerraGroup equipment. Essential for anyone who'd rather not lose a few fingers or break machinery worth millions of dollars. Or for anyone looking to make a tidy profit.",
 			"image": {
-				"height": 522,
-				"path": "/documents/technical-b63e56fc40f0.webp",
-				"sha256": "b63e56fc40f08e718530db93a1a6c7bcebc2fb3a8162e8dc3c2fba8784480461",
-				"sourceSha256": "9a72d3d9d59ed355c9344970120191d00d6543145f307c788f5f6a520b673329",
-				"width": 625
+				"height": 546,
+				"path": "/documents/technical-b8a06f661587.webp",
+				"sha256": "b8a06f661587de8b4fa67d7121c1781aac65ac6098a446453a8124dc127864bb",
+				"sourceSha256": "84a75b5f02bd3fa77994fb0f9c3f2024e1a28dd2ef7129c317755388be678e7a",
+				"width": 666
 			},
 			"acquisitionType": "raid",
 			"acquisitionSource": null,
