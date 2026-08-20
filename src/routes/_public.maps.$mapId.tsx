@@ -5,7 +5,10 @@ import { LocationDetailsPanel } from "@/components/map/location-details-panel";
 import { MapNavigationStrip } from "@/components/map/map-navigation-strip";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { MapWorkspace } from "@/components/map/map-workspace";
-import { VerticalMapControls } from "@/components/map/vertical-map-controls";
+import {
+	VerticalDocumentFilters,
+	VerticalLocationsControl,
+} from "@/components/map/vertical-map-controls";
 import { VerticalScreenshotInspector } from "@/components/map/vertical-screenshot-inspector";
 import { MapAttribution } from "@/components/map-attribution";
 import {
@@ -298,14 +301,11 @@ function MapPage() {
 			}
 		/>
 	);
-	const verticalPanel = (
-		<VerticalMapControls
-			{...sharedMapControlProps}
-			selectedLocation={selectedLocation}
+	const verticalLocationsControl = (
+		<VerticalLocationsControl
+			locations={visibleLocations}
+			selectedLocationId={selectedLocation?.id}
 			onLocationSelect={(locationId) => selectLocation(locationId, "topbar")}
-			onSelectedDocumentsChange={(documentIds) =>
-				changeSelectedDocuments(documentIds, "topbar")
-			}
 		/>
 	);
 	const rightViewportInset =
@@ -323,7 +323,7 @@ function MapPage() {
 			},
 			headerMeta: `${visibleLocations.length} ${visibleLocations.length === 1 ? "location" : "locations"}`,
 			sidebarPanel,
-			verticalPanel,
+			verticalLocationsControl,
 		},
 		[
 			mapData.map.id,
@@ -351,7 +351,9 @@ function MapPage() {
 							<MapWorkspace
 								key={selectedImage.id}
 								ariaLabel={`${mapData.map.name} map`}
-								className="h-full"
+								className={
+									layoutMode === "vertical" ? "h-full min-h-0" : "h-full"
+								}
 								image={selectedImage}
 								instructions="Drag to move · Wheel or controls to zoom"
 								markers={[
@@ -375,9 +377,19 @@ function MapPage() {
 									})
 								}
 								toolbarStart={
-									<p className="min-w-0 flex-1 truncate font-heading text-sm xl:max-w-48 xl:flex-none">
-										{selectedImage.name}
-									</p>
+									layoutMode === "vertical" ? (
+										<VerticalDocumentFilters
+											documents={sidebarDocuments}
+											selectedDocumentIds={selectedDocumentIds}
+											onSelectedDocumentsChange={(documentIds) =>
+												changeSelectedDocuments(documentIds, "topbar")
+											}
+										/>
+									) : selectedImage.viewKey !== "main" ? (
+										<p className="min-w-0 flex-1 truncate font-heading text-sm lg:hidden">
+											{selectedImage.name}
+										</p>
+									) : null
 								}
 								onSelectMarker={(markerId) => {
 									const targetView = submapViewByMarkerId.get(markerId);

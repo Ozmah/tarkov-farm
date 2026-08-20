@@ -48,32 +48,29 @@ describe("VerticalScreenshotInspector", () => {
 	it("navigates location screenshots without covering the map in a dialog", () => {
 		renderInspector();
 
-		expect(screen.getByText("Screenshot 1 of 2")).toBeTruthy();
+		expect(screen.getByText("1 of 2")).toBeTruthy();
 		expect(
 			screen.getByRole("img", { name: screenshots[0].altText }),
 		).toBeTruthy();
 		fireEvent.click(screen.getByRole("button", { name: "Next screenshot" }));
-		expect(screen.getByText("Screenshot 2 of 2")).toBeTruthy();
+		expect(screen.getByText("2 of 2")).toBeTruthy();
 		expect(
 			screen.getByRole("img", { name: screenshots[1].altText }),
 		).toBeTruthy();
 	});
 
-	it("collapses to its contextual header and expands again", async () => {
+	it("stays open until the location is closed", () => {
 		renderInspector();
-		fireEvent.click(
-			screen.getByRole("button", { name: "Collapse screenshots" }),
-		);
 
-		await waitFor(() =>
-			expect(
-				screen.queryByRole("img", { name: screenshots[0].altText }),
-			).toBeNull(),
-		);
-		fireEvent.click(screen.getByRole("button", { name: "Expand screenshots" }));
 		expect(
 			screen.getByRole("img", { name: screenshots[0].altText }),
 		).toBeTruthy();
+		expect(
+			screen.queryByRole("button", { name: "Collapse screenshots" }),
+		).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "Open full-size screenshot" }),
+		).toBeNull();
 	});
 
 	it("opens the existing fullscreen viewer without closing the location", async () => {

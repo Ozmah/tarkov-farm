@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PendingMapSidebarPanel } from "@/components/map/map-sidebar-panel";
-import { PendingVerticalMapControls } from "@/components/map/vertical-map-controls";
 import {
 	type PublicLayoutConfiguration,
 	PublicLayoutConfigurationProvider,
@@ -83,7 +82,6 @@ function PublicLayout() {
 						onBack={closePanel}
 					/>
 				),
-				verticalPanel: <PendingVerticalMapControls mapName={map.name} />,
 			});
 		},
 		[],
@@ -170,7 +168,7 @@ function PublicLayout() {
 				}
 				onLayoutModeChange={changeLayoutMode}
 				sidebarPanel={configuration?.sidebarPanel}
-				verticalPanel={configuration?.verticalPanel}
+				verticalLocationsControl={configuration?.verticalLocationsControl}
 			>
 				<Outlet />
 			</PublicShell>

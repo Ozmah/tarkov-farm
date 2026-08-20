@@ -1,17 +1,17 @@
 import {
 	ArrowSquareOutIcon,
-	CaretDownIcon,
 	FileTextIcon,
 	HandHeartIcon,
 	HouseIcon,
 	InfoIcon,
+	ListIcon,
 	MapTrifoldIcon,
 	NewspaperClippingIcon,
 	PencilSimpleIcon,
 	WarningCircleIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import { LayoutModeToggle } from "@/components/layout-mode-toggle";
 import { TarkovFarmLogo } from "@/components/tarkov-farm-logo";
@@ -26,6 +26,8 @@ import {
 import { buildProblemIssueUrl } from "@/lib/github-links";
 import type { LayoutMode } from "@/lib/layout-mode";
 import { isPlainNavigationClick } from "@/lib/navigation-intent";
+import { SUBMAP_LINKS } from "@/lib/submap-links";
+import { cn } from "@/lib/utils";
 
 type VerticalAppBarProps = {
 	catalog: {
@@ -46,6 +48,7 @@ type VerticalAppBarProps = {
 	layoutModePending?: boolean;
 	onLayoutModeChange: (layoutMode: LayoutMode) => void;
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
+	locationsControl?: ReactNode;
 };
 
 const projectLinks = [
@@ -66,10 +69,17 @@ export function VerticalAppBar({
 	layoutModePending,
 	onLayoutModeChange,
 	onMapNavigationStart,
+	locationsControl,
 }: VerticalAppBarProps) {
-	const [navigationOpen, setNavigationOpen] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
 	const currentHref = useRouterState({
 		select: (state) => state.location.href,
+	});
+	const currentViewKey = useRouterState({
+		select: (state) => {
+			const view = (state.location.search as { view?: unknown }).view;
+			return typeof view === "string" ? view : "main";
+		},
 	});
 	const currentMap = currentMapId
 		? catalog.maps.find((map) => map.id === currentMapId)
@@ -88,7 +98,7 @@ export function VerticalAppBar({
 				className="flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 			>
 				<TarkovFarmLogo className="size-8" />
-				<span className="hidden items-baseline gap-1.5 lg:flex">
+				<span className="hidden items-baseline gap-[var(--inline-context-gap)] lg:flex">
 					<span className="font-heading font-semibold text-sidebar-primary text-sm uppercase tracking-wide">
 						Tarkov Farm
 					</span>
@@ -99,33 +109,45 @@ export function VerticalAppBar({
 			</Link>
 
 			<div className="h-5 w-px shrink-0 bg-sidebar-border" aria-hidden="true" />
-			<div className="min-w-0 flex-1">
-				<p className="truncate font-heading text-sidebar-primary text-sm uppercase tracking-wide">
+			<div className="flex min-w-0 flex-1 items-baseline justify-start gap-[var(--inline-context-gap)]">
+				<span className="truncate font-heading text-sidebar-primary text-sm uppercase tracking-wide">
 					{headerTitle}
-				</p>
+				</span>
 				{headerMeta ? (
-					<p
+					<span
 						aria-live="polite"
 						className="truncate text-sidebar-foreground/65 text-xs tabular-nums"
 					>
 						{headerMeta}
-					</p>
+					</span>
 				) : null}
 			</div>
 
-			<Popover open={navigationOpen} onOpenChange={setNavigationOpen}>
+			<LayoutModeToggle
+				id="topbar-vertical-mode"
+				compact
+				layoutMode={layoutMode}
+				disabled={layoutModePending}
+				error={layoutModeError}
+				onLayoutModeChange={onLayoutModeChange}
+				surface="sidebar"
+			/>
+
+			{locationsControl}
+
+			<Popover open={menuOpen} onOpenChange={setMenuOpen}>
 				<PopoverTrigger
 					render={
 						<Button
 							variant="ghost"
 							size="sm"
+							aria-label="Open menu"
 							className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground"
 						/>
 					}
 				>
-					<MapTrifoldIcon data-icon="inline-start" aria-hidden="true" />
-					<span className="hidden sm:inline">Navigate</span>
-					<CaretDownIcon data-icon="inline-end" aria-hidden="true" />
+					<ListIcon data-icon="inline-start" aria-hidden="true" />
+					<span className="hidden sm:inline">Menu</span>
 				</PopoverTrigger>
 				<PopoverContent
 					side="bottom"
@@ -134,48 +156,87 @@ export function VerticalAppBar({
 				>
 					<div className="border-border border-b p-4">
 						<PopoverTitle className="font-heading font-medium">
-							Explore Tarkov Farm
+							Menu
 						</PopoverTitle>
 						<PopoverDescription className="mt-1 text-muted-foreground text-sm">
-							Maps, season documents, and project information.
+							Tarkov Farm navigation and project links.
 						</PopoverDescription>
 					</div>
 					<nav
 						aria-label="Vertical mode navigation"
 						className="overflow-auto p-2"
 					>
-						<p className="px-3 py-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest">
-							Maps
+						<div className="lg:hidden">
+							<p className="px-3 py-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest">
+								Maps
+							</p>
+							{catalog.maps.map((map) => {
+								const isCurrentMap = map.id === currentMapId;
+								const submaps = SUBMAP_LINKS.filter(
+									(submap) => submap.mapId === map.id,
+								);
+
+								return (
+									<div key={map.id}>
+										<NavLink
+											icon={MapTrifoldIcon}
+											label={map.name}
+											to="/maps/$mapId"
+											params={{ mapId: map.id }}
+											search={{
+												documents: isCurrentMap
+													? editorSearch?.documents
+													: undefined,
+												view: undefined,
+											}}
+											isCurrent={isCurrentMap && currentViewKey === "main"}
+											onNavigate={(event) => {
+												setMenuOpen(false);
+												if (!isCurrentMap && isPlainNavigationClick(event)) {
+													onMapNavigationStart?.(map);
+												}
+											}}
+										/>
+										{submaps.map((submap) => (
+											<NavLink
+												key={submap.targetViewKey}
+												icon={MapTrifoldIcon}
+												label={submap.navigationName}
+												to="/maps/$mapId"
+												params={{ mapId: map.id }}
+												search={{
+													documents: isCurrentMap
+														? editorSearch?.documents
+														: undefined,
+													view: submap.targetViewKey,
+												}}
+												isCurrent={
+													isCurrentMap &&
+													currentViewKey === submap.targetViewKey
+												}
+												className="pl-8 text-muted-foreground"
+												onNavigate={(event) => {
+													setMenuOpen(false);
+													if (!isCurrentMap && isPlainNavigationClick(event)) {
+														onMapNavigationStart?.(map);
+													}
+												}}
+											/>
+										))}
+									</div>
+								);
+							})}
+						</div>
+
+						<p className="mt-2 border-border border-t px-3 pt-4 pb-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest lg:mt-0 lg:border-t-0 lg:pt-2">
+							Project
 						</p>
 						<NavLink
 							icon={HouseIcon}
 							label="Home"
 							to="/"
-							onNavigate={() => setNavigationOpen(false)}
+							onNavigate={() => setMenuOpen(false)}
 						/>
-						{catalog.maps.map((map) => (
-							<NavLink
-								key={map.id}
-								icon={MapTrifoldIcon}
-								label={map.name}
-								to="/maps/$mapId"
-								params={{ mapId: map.id }}
-								isCurrent={map.id === currentMapId}
-								onNavigate={(event) => {
-									setNavigationOpen(false);
-									if (
-										map.id !== currentMapId &&
-										isPlainNavigationClick(event)
-									) {
-										onMapNavigationStart?.(map);
-									}
-								}}
-							/>
-						))}
-
-						<p className="mt-2 border-border border-t px-3 pt-4 pb-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest">
-							Project
-						</p>
 						{projectLinks.map((link) => (
 							<NavLink
 								key={link.to}
@@ -183,7 +244,7 @@ export function VerticalAppBar({
 								label={link.label}
 								to={link.to}
 								search={link.to === "/contribute" ? { map: currentMapId } : {}}
-								onNavigate={() => setNavigationOpen(false)}
+								onNavigate={() => setMenuOpen(false)}
 							/>
 						))}
 						<a
@@ -205,36 +266,18 @@ export function VerticalAppBar({
 								label="Open editor"
 								to="/editor"
 								search={editorSearch ?? { map: currentMapId }}
-								onNavigate={() => setNavigationOpen(false)}
+								onNavigate={() => setMenuOpen(false)}
 							/>
 						) : null}
 					</nav>
-					<div className="border-border border-t p-3 md:hidden">
-						<LayoutModeToggle
-							id="navigation-vertical-mode"
-							layoutMode={layoutMode}
-							disabled={layoutModePending}
-							error={layoutModeError}
-							onLayoutModeChange={onLayoutModeChange}
-						/>
-					</div>
 				</PopoverContent>
 			</Popover>
-
-			<LayoutModeToggle
-				id="topbar-vertical-mode"
-				layoutMode={layoutMode}
-				disabled={layoutModePending}
-				error={layoutModeError}
-				onLayoutModeChange={onLayoutModeChange}
-				surface="sidebar"
-				className="hidden md:flex"
-			/>
 		</header>
 	);
 }
 
 type NavLinkProps = {
+	className?: string;
 	icon: React.ComponentType<{ "aria-hidden"?: boolean; className?: string }>;
 	isCurrent?: boolean;
 	label: string;
@@ -245,6 +288,7 @@ type NavLinkProps = {
 		image?: string;
 		location?: string;
 		map?: string;
+		view?: string;
 	};
 	to:
 		| "/"
@@ -257,6 +301,7 @@ type NavLinkProps = {
 };
 
 function NavLink({
+	className,
 	icon: Icon,
 	isCurrent,
 	label,
@@ -272,7 +317,10 @@ function NavLink({
 			search={search}
 			onClick={onNavigate}
 			aria-current={isCurrent ? "page" : undefined}
-			className="flex min-h-11 items-center gap-3 border-transparent border-l-2 px-3 text-sm outline-none hover:border-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:border-primary aria-[current=page]:bg-muted"
+			className={cn(
+				"flex min-h-11 items-center gap-3 border-transparent border-l-2 px-3 text-sm outline-none hover:border-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:border-primary aria-[current=page]:bg-muted",
+				className,
+			)}
 		>
 			<Icon aria-hidden={true} className="size-4" />
 			<span className="truncate">{label}</span>

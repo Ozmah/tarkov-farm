@@ -1,10 +1,4 @@
-import {
-	CaretDownIcon,
-	CaretLeftIcon,
-	CaretRightIcon,
-	CornersOutIcon,
-	XIcon,
-} from "@phosphor-icons/react";
+import { CaretLeftIcon, CaretRightIcon, XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import type {
@@ -14,11 +8,6 @@ import type {
 import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 
 type VerticalScreenshotInspectorProps = {
 	location: LocationDetails;
@@ -33,7 +22,6 @@ export function VerticalScreenshotInspector({
 	onScreenshotOpen,
 	screenshots,
 }: VerticalScreenshotInspectorProps) {
-	const [expanded, setExpanded] = useState(true);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [fullscreenScreenshot, setFullscreenScreenshot] =
 		useState<LocationScreenshot>();
@@ -50,103 +38,69 @@ export function VerticalScreenshotInspector({
 
 	return (
 		<>
-			<Collapsible
-				open={expanded}
-				onOpenChange={setExpanded}
-				className="shrink-0 border-border border-t bg-card"
-			>
+			<section className="shrink-0 border-border border-t bg-card">
 				<header className="flex min-h-14 items-center gap-3 px-3 sm:px-5">
-					<div className="min-w-0 flex-1">
-						<div className="flex min-w-0 items-center gap-2">
-							<Badge
-								variant="secondary"
-								className="hidden shrink-0 sm:inline-flex"
-							>
-								{location.documentName}
-							</Badge>
-							<h2 className="truncate font-heading font-medium text-sm">
-								{location.name}
-							</h2>
-						</div>
-						<p className="text-muted-foreground text-xs tabular-nums">
-							{screenshots.length === 0
-								? "No screenshots"
-								: `Screenshot ${selectedIndex + 1} of ${screenshots.length}`}
-						</p>
+					<div className="min-w-0">
+						<h2 className="min-w-0 truncate font-heading font-medium text-sm">
+							{location.name}
+						</h2>
 					</div>
 
-					{screenshots.length > 1 ? (
-						<div className="flex items-center gap-1">
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
-								disabled={!hasPrevious}
-								aria-label="Previous screenshot"
-								onClick={() =>
-									setSelectedIndex((index) => Math.max(0, index - 1))
-								}
-							>
-								<CaretLeftIcon aria-hidden="true" />
-							</Button>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
-								disabled={!hasNext}
-								aria-label="Next screenshot"
-								onClick={() =>
-									setSelectedIndex((index) =>
-										Math.min(screenshots.length - 1, index + 1),
-									)
-								}
-							>
-								<CaretRightIcon aria-hidden="true" />
-							</Button>
-						</div>
-					) : null}
-
-					{selectedScreenshot && expanded ? (
+					<div className="ml-auto flex shrink-0 items-center gap-1">
+						<Badge
+							variant="secondary"
+							className="hidden shrink-0 sm:inline-flex"
+						>
+							{location.documentName}
+						</Badge>
+						<span className="shrink-0 text-muted-foreground text-xs tabular-nums">
+							{screenshots.length === 0
+								? "No screenshots"
+								: `${selectedIndex + 1} of ${screenshots.length}`}
+						</span>
+						{screenshots.length > 1 ? (
+							<>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon-sm"
+									disabled={!hasPrevious}
+									aria-label="Previous screenshot"
+									onClick={() =>
+										setSelectedIndex((index) => Math.max(0, index - 1))
+									}
+								>
+									<CaretLeftIcon aria-hidden="true" />
+								</Button>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon-sm"
+									disabled={!hasNext}
+									aria-label="Next screenshot"
+									onClick={() =>
+										setSelectedIndex((index) =>
+											Math.min(screenshots.length - 1, index + 1),
+										)
+									}
+								>
+									<CaretRightIcon aria-hidden="true" />
+								</Button>
+							</>
+						) : null}
 						<Button
 							type="button"
 							variant="ghost"
 							size="icon-sm"
-							aria-label="Open full-size screenshot"
-							onClick={openFullscreen}
+							aria-label="Close location screenshots"
+							onClick={onClose}
 						>
-							<CornersOutIcon aria-hidden="true" />
+							<XIcon aria-hidden="true" />
 						</Button>
-					) : null}
-
-					<CollapsibleTrigger
-						render={
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
-								aria-label={
-									expanded ? "Collapse screenshots" : "Expand screenshots"
-								}
-							/>
-						}
-					>
-						<CaretDownIcon
-							aria-hidden="true"
-							className="transition-transform duration-150 group-aria-expanded/button:rotate-180 motion-reduce:transition-none"
-						/>
-					</CollapsibleTrigger>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						aria-label="Close location screenshots"
-						onClick={onClose}
-					>
-						<XIcon aria-hidden="true" />
-					</Button>
+					</div>
 				</header>
 
-				<CollapsibleContent className="h-[clamp(18rem,30dvh,36rem)] border-border border-t">
+				<div className="h-[clamp(18rem,30dvh,36rem)] border-border border-t">
 					{selectedScreenshot ? (
 						<figure className="grid size-full min-h-0 grid-rows-[minmax(0,1fr)_auto] bg-background/35">
 							<button
@@ -176,8 +130,8 @@ export function VerticalScreenshotInspector({
 							No screenshots are available for this location.
 						</div>
 					)}
-				</CollapsibleContent>
-			</Collapsible>
+				</div>
+			</section>
 
 			<LocationScreenshotDialog
 				locationName={location.name}

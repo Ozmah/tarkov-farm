@@ -18,7 +18,7 @@ export type PublicLayoutConfiguration = {
 	};
 	headerMeta?: string;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
-	verticalPanel?: ReactNode;
+	verticalLocationsControl?: ReactNode;
 };
 
 type PublicLayoutContextValue = {

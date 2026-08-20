@@ -9,7 +9,10 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { VerticalMapControls } from "./vertical-map-controls";
+import {
+	VerticalDocumentFilters,
+	VerticalLocationsControl,
+} from "./vertical-map-controls";
 
 const documents = [
 	{
@@ -32,104 +35,73 @@ const documents = [
 
 afterEach(cleanup);
 
-describe("VerticalMapControls", () => {
-	it("filters documents from a compact disclosure", async () => {
+describe("VerticalDocumentFilters", () => {
+	it("keeps document filters visible and toggles them directly", () => {
 		const onSelectedDocumentsChange = vi.fn();
-		renderControls({ onSelectedDocumentsChange });
-		fireEvent.click(screen.getByRole("button", { name: /Documents/ }));
-		const medicalFilter = await screen.findByRole("button", {
-			name: "Medical, 1 location",
-		});
-		fireEvent.click(medicalFilter);
+		render(
+			<VerticalDocumentFilters
+				documents={documents}
+				selectedDocumentIds={["financial", "medical"]}
+				onSelectedDocumentsChange={onSelectedDocumentsChange}
+			/>,
+		);
+
+		fireEvent.click(
+			screen.getByRole("button", { name: "Medical, 1 location" }),
+		);
 		expect(onSelectedDocumentsChange).toHaveBeenCalledWith(["financial"]);
+		expect(screen.queryByRole("button", { name: "Show all" })).toBeNull();
 	});
 
-	it("keeps the last filter selected without offering a bulk reset", async () => {
+	it("prevents removing the final visible document", () => {
 		const onSelectedDocumentsChange = vi.fn();
-		renderControls({
-			onSelectedDocumentsChange,
-			selectedDocumentIds: ["financial"],
-		});
-		fireEvent.click(screen.getByRole("button", { name: /Documents/ }));
-		const financialFilter = await screen.findByRole("button", {
+		render(
+			<VerticalDocumentFilters
+				documents={documents}
+				selectedDocumentIds={["financial"]}
+				onSelectedDocumentsChange={onSelectedDocumentsChange}
+			/>,
+		);
+
+		const financial = screen.getByRole("button", {
 			name: "Financial, 2 locations",
 		});
-
-		expect(financialFilter.hasAttribute("disabled")).toBe(true);
-		expect(screen.queryByRole("button", { name: "Show all" })).toBeNull();
-		fireEvent.click(financialFilter);
+		expect(financial.hasAttribute("disabled")).toBe(true);
+		fireEvent.click(financial);
 		expect(onSelectedDocumentsChange).not.toHaveBeenCalled();
-	});
-
-	it("selects a location and dismisses the location disclosure", async () => {
-		const onLocationSelect = vi.fn();
-		renderControls({ onLocationSelect });
-		fireEvent.click(screen.getByRole("button", { name: /Locations/ }));
-		await screen.findAllByRole("button", { name: /First location/ });
-		const locationButton = screen
-			.getAllByRole("button", { name: /First location/ })
-			.find((button) => button.hasAttribute("aria-pressed"));
-		expect(locationButton).toBeTruthy();
-		fireEvent.click(locationButton as HTMLButtonElement);
-		expect(onLocationSelect).toHaveBeenCalledWith("one");
-		await waitFor(() =>
-			expect(document.querySelector('button[aria-pressed="true"]')).toBeNull(),
-		);
-	});
-
-	it("keeps textual details and safe key links outside the screenshot inspector", async () => {
-		renderControls();
-		fireEvent.click(screen.getByRole("button", { name: /First location/ }));
-		const keyLink = await screen.findByRole("link", {
-			name: "Dorm room 206 key",
-		});
-		expect(keyLink.getAttribute("target")).toBe("_blank");
-		expect(keyLink.getAttribute("rel")).toBe("noopener noreferrer");
-		expect(screen.getByText("Near the truck")).toBeTruthy();
 	});
 });
 
-function renderControls({
-	onLocationSelect = vi.fn(),
-	onSelectedDocumentsChange = vi.fn(),
-	selectedDocumentIds = ["financial", "medical"],
-}: {
-	onLocationSelect?: (locationId: string) => void;
-	onSelectedDocumentsChange?: (documentIds: string[]) => void;
-	selectedDocumentIds?: string[];
-} = {}) {
-	return render(
-		<VerticalMapControls
-			documents={documents}
-			locations={[
-				{
-					documentId: "financial",
-					documentName: "Financial",
-					id: "one",
-					markerLabel: "3",
-					name: "First location",
-				},
-			]}
-			selectedDocumentIds={selectedDocumentIds}
-			selectedLocationId="one"
-			selectedLocation={{
-				description: "Near the truck",
-				documentName: "Financial",
-				name: "First location",
-				requiredKeys: [
+describe("VerticalLocationsControl", () => {
+	it("opens a location list and closes it after selection", async () => {
+		const onLocationSelect = vi.fn();
+		render(
+			<VerticalLocationsControl
+				locations={[
 					{
-						id: "dorm-206",
-						imageHeight: 64,
-						imagePath: "/keys/dorm-206.webp",
-						imageWidth: 64,
-						name: "Dorm room 206 key",
-						wikiUrl:
-							"https://escapefromtarkov.fandom.com/wiki/Dorm_room_206_key",
+						documentId: "financial",
+						documentName: "Financial",
+						id: "one",
+						markerLabel: "3",
+						name: "First location",
 					},
-				],
-			}}
-			onLocationSelect={onLocationSelect}
-			onSelectedDocumentsChange={onSelectedDocumentsChange}
-		/>,
-	);
-}
+				]}
+				selectedLocationId="one"
+				onLocationSelect={onLocationSelect}
+			/>,
+		);
+
+		fireEvent.click(screen.getByRole("button", { name: "Locations" }));
+		const location = await screen.findByRole("button", {
+			name: /First location/,
+		});
+		fireEvent.click(location);
+
+		expect(onLocationSelect).toHaveBeenCalledWith("one");
+		await waitFor(() =>
+			expect(
+				screen.queryByRole("button", { name: /First location/ }),
+			).toBeNull(),
+		);
+	});
+});

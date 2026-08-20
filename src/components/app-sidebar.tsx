@@ -142,7 +142,7 @@ export function AppSidebar({
 					className="flex min-w-0 items-center gap-2.5 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 				>
 					<TarkovFarmLogo className="size-8" />
-					<span className="flex min-w-0 items-baseline gap-1.5">
+					<span className="flex min-w-0 items-baseline gap-[var(--inline-context-gap)]">
 						<span className="font-heading font-semibold text-sidebar-primary text-sm uppercase tracking-wide">
 							Tarkov Farm
 						</span>
@@ -385,6 +385,7 @@ export function AppSidebar({
 						error={layoutModeError}
 						onLayoutModeChange={onLayoutModeChange}
 						surface="sidebar"
+						className="px-3"
 					/>
 				) : null}
 			</SidebarFooter>

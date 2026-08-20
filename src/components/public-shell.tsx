@@ -47,7 +47,7 @@ type PublicShellProps = {
 	onLayoutModeChange?: (layoutMode: LayoutMode) => void;
 	sidebarFooter?: ReactNode;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
-	verticalPanel?: ReactNode;
+	verticalLocationsControl?: ReactNode;
 	children: ReactNode;
 };
 
@@ -66,7 +66,7 @@ export function PublicShell({
 	onLayoutModeChange,
 	sidebarFooter,
 	sidebarPanel,
-	verticalPanel,
+	verticalLocationsControl,
 	children,
 }: PublicShellProps) {
 	return (
@@ -123,21 +123,19 @@ export function PublicShell({
 				className="min-h-0 min-w-0 overflow-hidden outline-none"
 			>
 				{layoutMode === "vertical" && onLayoutModeChange ? (
-					<>
-						<VerticalAppBar
-							catalog={catalog}
-							currentMapId={currentMapId}
-							editorSearch={editorSearch}
-							headerTitle={headerTitle}
-							headerMeta={headerMeta}
-							layoutMode={layoutMode}
-							layoutModeError={layoutModeError}
-							layoutModePending={layoutModePending}
-							onLayoutModeChange={onLayoutModeChange}
-							onMapNavigationStart={onMapNavigationStart}
-						/>
-						{verticalPanel}
-					</>
+					<VerticalAppBar
+						catalog={catalog}
+						currentMapId={currentMapId}
+						editorSearch={editorSearch}
+						headerTitle={headerTitle}
+						headerMeta={headerMeta}
+						layoutMode={layoutMode}
+						layoutModeError={layoutModeError}
+						layoutModePending={layoutModePending}
+						onLayoutModeChange={onLayoutModeChange}
+						onMapNavigationStart={onMapNavigationStart}
+						locationsControl={verticalLocationsControl}
+					/>
 				) : (
 					<header className="flex h-14 shrink-0 items-center gap-3 border-border border-b bg-card px-4 sm:px-6 lg:px-3">
 						<SidebarTrigger className="lg:hidden" />
