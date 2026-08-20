@@ -35,6 +35,7 @@ RUN apt-get update \
 COPY --from=production-dependencies --chown=tarkov:tarkov /app/node_modules ./node_modules
 COPY --from=builder --chown=tarkov:tarkov /app/.output ./.output
 COPY --from=builder --chown=tarkov:tarkov /app/package.json ./package.json
+COPY --from=builder --chown=tarkov:tarkov /app/tsconfig.json ./tsconfig.json
 COPY --from=builder --chown=tarkov:tarkov /app/scripts/check-env.ts ./scripts/check-env.ts
 COPY --from=builder --chown=tarkov:tarkov /app/src/lib ./src/lib
 COPY --from=builder --chown=tarkov:tarkov /app/src/server/db ./src/server/db
