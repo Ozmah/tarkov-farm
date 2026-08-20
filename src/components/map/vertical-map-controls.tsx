@@ -91,6 +91,28 @@ type VerticalLocationsControlProps = {
 	onLocationSelect: (locationId: string) => void;
 };
 
+export function PendingVerticalLocationsControl({
+	mapName,
+}: {
+	mapName: string;
+}) {
+	const label = `Loading ${mapName} locations`;
+
+	return (
+		<Button
+			type="button"
+			variant="ghost"
+			size="icon-sm"
+			disabled
+			aria-label={label}
+			title={label}
+			className="text-sidebar-foreground"
+		>
+			<MapPinIcon aria-hidden="true" />
+		</Button>
+	);
+}
+
 export function VerticalLocationsControl({
 	locations,
 	selectedLocationId,
