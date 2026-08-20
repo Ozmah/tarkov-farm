@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/tooltip";
 import { pointerToBasisPoints } from "@/lib/map-coordinates";
 import { groupOverlappingMapMarkers } from "@/lib/map-marker-groups";
+import type { MapImageSource } from "@/lib/map-master-manifest";
 import {
 	constrainView,
 	fitView,
@@ -46,6 +47,7 @@ export type MapWorkspaceImage = {
 	altText: string;
 	height: number;
 	path: string;
+	sources: MapImageSource[];
 	width: number;
 };
 
@@ -120,8 +122,15 @@ export function MapWorkspace({
 	const suppressContextMenuRef = useRef(false);
 	const centeredMarkerIdRef = useRef<string | undefined>(undefined);
 	const reportedImageErrorRef = useRef(false);
+	const pendingSourcePathsRef = useRef(new Set<string>());
+	const failedSourcePathsRef = useRef(new Set<string>());
+	const mountedRef = useRef(true);
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
+	const [sourceSelection, setSourceSelection] = useState<{
+		imagePath: string;
+		source: MapImageSource;
+	}>();
 	const [imageStatus, setImageStatus] = useState<"loading" | "ready" | "error">(
 		"loading",
 	);
@@ -183,6 +192,34 @@ export function MapWorkspace({
 	);
 	const zoomRatio = view ? view.scale / fitScaleRef.current : 1;
 	const zoomPercent = Math.round(zoomRatio * 100);
+	const responsiveSrcSet = image.sources
+		.map((source) => `${source.path} ${source.width}w`)
+		.join(", ");
+	const activeSource =
+		sourceSelection?.imagePath === image.path
+			? sourceSelection.source
+			: undefined;
+	const currentViewScale = view?.scale;
+	const registerLoadedSource = useCallback(
+		(element: HTMLImageElement) => {
+			const loadedSource = findLoadedMapSource(
+				image.sources,
+				element.currentSrc,
+			);
+
+			if (!loadedSource) return;
+
+			setSourceSelection((current) => {
+				const currentSource =
+					current?.imagePath === image.path ? current.source : undefined;
+
+				return currentSource && currentSource.width >= loadedSource.width
+					? current
+					: { imagePath: image.path, source: loadedSource };
+			});
+		},
+		[image.path, image.sources],
+	);
 
 	const scheduleView = useCallback((nextView: ViewTransform) => {
 		viewRef.current = nextView;
@@ -201,7 +238,11 @@ export function MapWorkspace({
 	}, []);
 
 	useEffect(() => {
+		mountedRef.current = true;
+
 		return () => {
+			mountedRef.current = false;
+
 			if (frameRef.current !== undefined) {
 				cancelAnimationFrame(frameRef.current);
 			}
@@ -214,12 +255,64 @@ export function MapWorkspace({
 		if (imageElement?.complete) {
 			if (imageElement.naturalWidth > 0) {
 				setImageStatus("ready");
+				registerLoadedSource(imageElement);
 			} else {
 				setImageStatus("error");
 				reportCachedImageError();
 			}
 		}
-	}, []);
+	}, [registerLoadedSource]);
+
+	useEffect(() => {
+		if (!activeSource || !isImageReady || currentViewScale === undefined)
+			return;
+
+		const requiredWidth = Math.ceil(
+			image.width *
+				currentViewScale *
+				Math.max(1, window.devicePixelRatio || 1),
+		);
+		const desiredSource =
+			image.sources.find((source) => source.width >= requiredWidth) ??
+			image.sources.at(-1);
+
+		if (
+			!desiredSource ||
+			desiredSource.width <= activeSource.width ||
+			pendingSourcePathsRef.current.size > 0 ||
+			failedSourcePathsRef.current.has(desiredSource.path)
+		) {
+			return;
+		}
+
+		pendingSourcePathsRef.current.add(desiredSource.path);
+		void preloadMapSource(desiredSource.path)
+			.then(() => {
+				if (!mountedRef.current) return;
+
+				setSourceSelection((current) => {
+					const currentSource =
+						current?.imagePath === image.path ? current.source : undefined;
+
+					return currentSource && currentSource.width >= desiredSource.width
+						? current
+						: { imagePath: image.path, source: desiredSource };
+				});
+			})
+			.catch(() => {
+				failedSourcePathsRef.current.add(desiredSource.path);
+			})
+			.finally(() => {
+				pendingSourcePathsRef.current.delete(desiredSource.path);
+			});
+	}, [
+		activeSource,
+		currentViewScale,
+		image.path,
+		image.sources,
+		image.width,
+		isImageReady,
+	]);
 
 	useEffect(() => {
 		const viewport = viewportRef.current;
@@ -787,14 +880,28 @@ export function MapWorkspace({
 					>
 						<img
 							ref={imageElementRef}
-							src={image.path}
+							src={
+								activeSource?.path ??
+								(responsiveSrcSet ? undefined : image.path)
+							}
+							srcSet={activeSource ? undefined : responsiveSrcSet || undefined}
+							sizes={
+								activeSource
+									? undefined
+									: responsiveSrcSet
+										? "100vw"
+										: undefined
+							}
 							alt={image.altText}
 							width={image.width}
 							height={image.height}
 							decoding="async"
 							fetchPriority="high"
 							draggable={false}
-							onLoad={() => setImageStatus("ready")}
+							onLoad={(event) => {
+								setImageStatus("ready");
+								registerLoadedSource(event.currentTarget);
+							}}
 							onError={() => {
 								setImageStatus("error");
 
@@ -970,6 +1077,33 @@ function getMarkerPosition(
 		x: (marker.xBasisPoints / 10_000) * image.width * scale,
 		y: (marker.yBasisPoints / 10_000) * image.height * scale,
 	};
+}
+
+function findLoadedMapSource(
+	sources: MapImageSource[],
+	currentSourceUrl: string,
+) {
+	if (!currentSourceUrl) return undefined;
+
+	const currentPath = new URL(currentSourceUrl, window.location.href).pathname;
+	return sources.find((source) => source.path === currentPath);
+}
+
+function preloadMapSource(path: string) {
+	return new Promise<void>((resolve, reject) => {
+		const candidate = new Image();
+		candidate.decoding = "async";
+		candidate.onload = () => {
+			const decoded =
+				typeof candidate.decode === "function"
+					? candidate.decode().catch(() => undefined)
+					: Promise.resolve();
+
+			void decoded.then(resolve);
+		};
+		candidate.onerror = () => reject(new Error(`Failed to preload ${path}`));
+		candidate.src = path;
+	});
 }
 
 function normalizeWheelDelta(event: WheelEvent, viewportHeight: number) {

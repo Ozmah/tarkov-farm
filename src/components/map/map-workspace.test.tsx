@@ -18,6 +18,10 @@ const DEFAULT_IMAGE = {
 	altText: "Customs map",
 	height: 1_000,
 	path: "/maps/customs.webp",
+	sources: [
+		{ height: 500, path: "/maps/customs-500w.webp", width: 500 },
+		{ height: 1_000, path: "/maps/customs.webp", width: 1_000 },
+	],
 	width: 1_000,
 };
 
@@ -80,6 +84,62 @@ afterEach(() => {
 });
 
 describe("MapWorkspace", () => {
+	it("selects responsive sources from the rendered map width", () => {
+		renderWorkspace();
+		const image = screen.getByAltText("Customs map");
+
+		expect(image.getAttribute("src")).toBeNull();
+		expect(image.getAttribute("srcset")).toBe(
+			"/maps/customs-500w.webp 500w, /maps/customs.webp 1000w",
+		);
+		expect(image.getAttribute("sizes")).toBe("100vw");
+
+		prepareViewport();
+		expect(image.getAttribute("sizes")).toBe("100vw");
+	});
+
+	it("keeps the current source visible until a sharper source is decoded", async () => {
+		let resolveDecode: () => void = () => {};
+		let preloadedPath: string | undefined;
+		vi.spyOn(HTMLImageElement.prototype, "currentSrc", "get").mockReturnValue(
+			"http://localhost/maps/customs-500w.webp",
+		);
+		vi.stubGlobal(
+			"Image",
+			class {
+				decoding = "auto";
+				onerror: (() => void) | null = null;
+				onload: (() => void) | null = null;
+
+				decode() {
+					return new Promise<void>((resolve) => {
+						resolveDecode = resolve;
+					});
+				}
+
+				set src(path: string) {
+					preloadedPath = path;
+					queueMicrotask(() => this.onload?.());
+				}
+			},
+		);
+		renderWorkspace();
+		prepareReadyViewport();
+		const image = screen.getByAltText("Customs map");
+
+		expect(image.getAttribute("src")).toBe("/maps/customs-500w.webp");
+		expect(image.getAttribute("srcset")).toBeNull();
+		fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+		flushAnimationFrames();
+		await vi.waitFor(() => expect(preloadedPath).toBe("/maps/customs.webp"));
+		expect(image.getAttribute("src")).toBe("/maps/customs-500w.webp");
+
+		resolveDecode();
+		await vi.waitFor(() =>
+			expect(image.getAttribute("src")).toBe("/maps/customs.webp"),
+		);
+	});
+
 	it("fits the image and reveals markers only after the image loads", () => {
 		renderWorkspace({
 			markers: [

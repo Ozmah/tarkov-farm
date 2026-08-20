@@ -1,6 +1,8 @@
 import "@tanstack/react-start/server-only";
 
 import { and, asc, eq } from "drizzle-orm";
+import { getMapImageSources } from "@/lib/map-master-manifest";
+import { readMapMasterManifest } from "@/server/db/map-master-manifest.server";
 
 import { getDatabase } from "./db/client.server";
 import {
@@ -121,6 +123,7 @@ export async function readPublicMap(mapId: string) {
 	if (!map) {
 		return undefined;
 	}
+	const masterManifest = await readMapMasterManifest();
 
 	const [images, locationRows, screenshotRows, requiredKeyRows] =
 		await Promise.all([
@@ -247,7 +250,10 @@ export async function readPublicMap(mapId: string) {
 
 	return {
 		map,
-		images,
+		images: images.map((image) => ({
+			...image,
+			sources: getMapImageSources(masterManifest, image.path),
+		})),
 		locations: locationRows.map((location) => ({
 			...location,
 			requiredKeys: requiredKeysByLocation.get(location.id) ?? [],

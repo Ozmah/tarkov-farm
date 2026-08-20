@@ -13,7 +13,7 @@ Except for the file identified in the next section, the map artwork in this dire
 
 - File: `The_Lab_Interactive_Map_Base.webp`
 - Source: [The Lab map — Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Map:The_Lab)
-- Modifications: none; the source WebP is copied byte for byte into the masters directory
+- Modifications: the canonical master is copied byte for byte; responsive delivery variants are proportionally resized and encoded as WebP
 - License: this image remains subject to the terms stated by its source and is not covered by this project's MIT License
 
 Interactive markers and document-location overlays are rendered separately by the application and are not embedded into the original map images.

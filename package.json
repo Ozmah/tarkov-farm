@@ -13,6 +13,7 @@
 		"start": "bun run env:check && bun run db:setup && bun .output/server/index.mjs",
 		"env:check": "bun scripts/check-env.ts",
 		"images:masters": "bun scripts/generate-map-masters.ts",
+		"images:responsive": "bun scripts/generate-map-masters.ts --responsive-only",
 		"screenshots:check": "bun scripts/check-location-screenshots.ts",
 		"updates:snapshot:check": "bun scripts/check-update-snapshot.ts",
 		"updates:snapshot:sync": "bun scripts/check-update-snapshot.ts --write",

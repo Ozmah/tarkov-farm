@@ -9,11 +9,13 @@ import type {
 	DeleteLocationInput,
 	SaveLocationFormInput,
 } from "@/lib/editor-validation";
+import { getMapImageSources } from "@/lib/map-master-manifest";
 import {
 	type PublicationData,
 	serializePublicationData,
 } from "@/lib/publication-data";
 import { getDatabase, runDatabaseTransaction } from "@/server/db/client.server";
+import { readMapMasterManifest } from "@/server/db/map-master-manifest.server";
 import { writePublicationManifest } from "@/server/db/publication-manifest";
 import {
 	assertPublicationReferences,
@@ -63,6 +65,7 @@ export async function readEditorData() {
 	assertLocalEditorAccess();
 
 	const { db } = await getDatabase();
+	const masterManifest = await readMapMasterManifest();
 	const mapRows = await db
 		.select({
 			id: maps.id,
@@ -170,7 +173,10 @@ export async function readEditorData() {
 
 	return {
 		maps: mapRows,
-		mapImages: imageRows,
+		mapImages: imageRows.map((image) => ({
+			...image,
+			sources: getMapImageSources(masterManifest, image.path),
+		})),
 		locations: locationRows,
 		locationDocuments: locationDocumentRows,
 		screenshots: screenshotRows,
