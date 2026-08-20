@@ -153,7 +153,7 @@ export function VerticalAppBar({
 							variant="ghost"
 							size="sm"
 							aria-label="Open menu"
-							className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground"
+							className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground dark:aria-expanded:hover:bg-sidebar-accent"
 						/>
 					}
 				>
