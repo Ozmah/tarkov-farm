@@ -1,4 +1,4 @@
-# Tarko-Farm for Season Documents
+# Tarkov-Farm for Season Documents
 
 Why? I just wanted to have everything on the same page, not 10 wiki tabs.
 
