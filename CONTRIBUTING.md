@@ -15,6 +15,7 @@ Before opening an issue:
 3. Attach at least one clear screenshot captured in game. The screenshot must show enough of the surroundings to recognize the location.
 4. Circle the document in red if it's difficult to see. If one image cannot show both the document and its surroundings, attach a wide shot and a close-up.
 5. Mention the required key when the location needs one and you know its name.
+6. Make sure the document is visible in the screenshot, always.
 
 Please use screenshots you captured yourself. Do not include personal information, private overlays or third-party images you do not have permission to share.
 
