@@ -847,6 +847,7 @@ export function MapWorkspace({
 					ref={viewportRef}
 					role="application"
 					aria-label={ariaLabel}
+					aria-busy={imageStatus === "loading"}
 					tabIndex={0}
 					aria-describedby={instructionsId}
 					className={cn(
@@ -870,16 +871,15 @@ export function MapWorkspace({
 					}}
 				>
 					<div
-						className="absolute top-0 left-0"
+						className={cn("absolute", view ? "top-0 left-0" : "inset-0")}
 						style={{
-							width: image.width,
-							height: image.height,
+							width: view ? image.width : undefined,
+							height: view ? image.height : undefined,
 							transform: view
 								? `translate3d(${view.x}px, ${view.y}px, 0) scale(${view.scale})`
 								: undefined,
 							transformOrigin: "top left",
-							visibility: view ? "visible" : "hidden",
-							willChange: "transform",
+							willChange: view ? "transform" : undefined,
 						}}
 					>
 						<img
@@ -915,8 +915,8 @@ export function MapWorkspace({
 								}
 							}}
 							className={cn(
-								"pointer-events-none size-full max-w-none",
-								!isImageReady && "opacity-0",
+								"pointer-events-none size-full",
+								view ? "max-w-none" : "object-contain",
 							)}
 						/>
 					</div>
@@ -987,17 +987,6 @@ export function MapWorkspace({
 								))}
 							</div>
 						</TooltipProvider>
-					) : null}
-
-					{imageStatus === "loading" ? (
-						<div
-							role="status"
-							className="pointer-events-none absolute inset-0 grid place-items-center bg-background"
-						>
-							<p className="font-heading text-muted-foreground text-sm">
-								Loading map…
-							</p>
-						</div>
 					) : null}
 
 					{imageStatus === "error" ? (

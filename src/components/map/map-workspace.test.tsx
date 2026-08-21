@@ -141,7 +141,7 @@ describe("MapWorkspace", () => {
 		);
 	});
 
-	it("fits the image and reveals markers only after the image loads", () => {
+	it("renders a static map before hydration and reveals markers after loading", () => {
 		renderWorkspace({
 			markers: [
 				{
@@ -154,20 +154,22 @@ describe("MapWorkspace", () => {
 			],
 			onSelectMarker: vi.fn(),
 		});
-		const viewport = prepareViewport();
 		const image = screen.getByRole("img", { name: "Customs map" });
 
-		expect(screen.getByRole("status").textContent).toContain("Loading map");
+		expect(image.classList.contains("object-contain")).toBe(true);
+		expect(image.parentElement?.style.transform).toBe("");
 		expect(
 			screen.queryByRole("button", { name: "Open Big Red office" }),
 		).toBeNull();
+
+		const viewport = prepareViewport();
 		expect(image.parentElement?.style.transform).toBe(
 			"translate3d(250px, 0px, 0) scale(0.5)",
 		);
 
 		fireEvent.load(image);
 
-		expect(screen.queryByRole("status")).toBeNull();
+		expect(viewport.getAttribute("aria-busy")).toBe("false");
 		expect(
 			screen.getByRole("button", { name: "Open Big Red office" }),
 		).toBeTruthy();
