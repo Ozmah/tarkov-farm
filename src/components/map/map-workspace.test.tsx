@@ -6,6 +6,7 @@ import {
 	fireEvent,
 	render,
 	screen,
+	waitFor,
 } from "@testing-library/react";
 import type { ComponentProps } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -315,6 +316,60 @@ describe("MapWorkspace", () => {
 		expect(onSelectMarker).toHaveBeenCalledWith("selected");
 		expect(onMapPress).not.toHaveBeenCalled();
 		expect(pointerCapture.set).not.toHaveBeenCalled();
+	});
+
+	it("shows the first screenshot preview on marker focus and closes it on selection", async () => {
+		const onSelectMarker = vi.fn();
+		renderWorkspace({
+			markers: [
+				{
+					id: "office",
+					label: "4",
+					name: "Office book pile",
+					preview: {
+						altText: "Books scattered across an office floor",
+						height: 600,
+						path: "/screenshots/office-preview.webp",
+						width: 1_000,
+					},
+					xBasisPoints: 5_000,
+					yBasisPoints: 5_000,
+				},
+			],
+			onSelectMarker,
+		});
+		prepareReadyViewport();
+		const marker = screen.getByRole("button", {
+			name: "Open Office book pile",
+		});
+
+		fireEvent.focus(marker);
+		await waitFor(() =>
+			expect(
+				document.querySelector('[data-slot="map-marker-preview"]'),
+			).not.toBeNull(),
+		);
+		const preview = document.querySelector('[data-slot="map-marker-preview"]');
+		const image = preview?.querySelector("img");
+		expect(preview?.textContent).toContain("Office book pile");
+		expect(image?.getAttribute("src")).toBe("/screenshots/office-preview.webp");
+		expect(image?.getAttribute("width")).toBe("1000");
+		expect(image?.getAttribute("height")).toBe("600");
+		expect(image?.getAttribute("alt")).toBe(
+			"Books scattered across an office floor",
+		);
+		expect(image?.getAttribute("decoding")).toBe("async");
+		if (!image) throw new Error("Expected the marker preview image");
+		fireEvent.error(image);
+		expect(screen.getByText("Preview unavailable")).toBeTruthy();
+
+		fireEvent.click(marker);
+		expect(onSelectMarker).toHaveBeenCalledWith("office");
+		await waitFor(() =>
+			expect(
+				document.querySelector('[data-slot="map-marker-preview"]'),
+			).toBeNull(),
+		);
 	});
 
 	it("uses the selected focus override without moving the rendered marker", () => {

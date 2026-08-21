@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PendingMapSidebarPanel } from "@/components/map/map-sidebar-panel";
+import { PendingVerticalLocationsControl } from "@/components/map/vertical-map-controls";
 import {
 	type PublicLayoutConfiguration,
 	PublicLayoutConfigurationProvider,
@@ -60,6 +61,7 @@ function PublicLayout() {
 	const [layoutModeError, setLayoutModeError] = useState<string>();
 	const [layoutModePending, setLayoutModePending] = useState(false);
 	const layoutModeRequestRef = useRef(0);
+	const initialLayoutModeRef = useRef(catalog.layoutMode);
 	const setConfiguration = useCallback(
 		(nextConfiguration?: PublicLayoutConfiguration) => {
 			setCommittedConfiguration(nextConfiguration);
@@ -82,6 +84,9 @@ function PublicLayout() {
 						onBack={closePanel}
 					/>
 				),
+				verticalLocationsControl: (
+					<PendingVerticalLocationsControl mapName={map.name} />
+				),
 			});
 		},
 		[],
@@ -99,6 +104,17 @@ function PublicLayout() {
 			setLayoutModePending(true);
 
 			void setPublicLayoutMode({ data: { layoutMode: nextLayoutMode } })
+				.then((savedLayoutMode) => {
+					if (layoutModeRequestRef.current === requestId) {
+						captureAnalyticsEvent("layout_mode_changed", {
+							layout_mode: savedLayoutMode,
+							previous_layout_mode: previousLayoutMode,
+						});
+						captureAnalyticsEvent("layout_mode_used", {
+							layout_mode: savedLayoutMode,
+						});
+					}
+				})
 				.catch(() => {
 					if (layoutModeRequestRef.current === requestId) {
 						setLayoutMode(previousLayoutMode);
@@ -113,6 +129,12 @@ function PublicLayout() {
 		},
 		[layoutMode],
 	);
+
+	useEffect(() => {
+		captureAnalyticsEvent("layout_mode_used", {
+			layout_mode: initialLayoutModeRef.current,
+		});
+	}, []);
 
 	useEffect(() => {
 		if (isRouterLoading) {

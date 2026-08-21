@@ -1,6 +1,7 @@
 import { CheckIcon, MapPinIcon } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 
+import { MapMarkerPreview } from "@/components/map/map-marker-preview";
 import {
 	Popover,
 	PopoverContent,
@@ -13,6 +14,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { MapMarkerPreview as MapMarkerPreviewData } from "@/lib/map-marker-preview";
 import type { Point } from "@/lib/map-viewport";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +22,7 @@ type ClusterMarker = {
 	id: string;
 	label?: string;
 	name: string;
+	preview?: MapMarkerPreviewData;
 	secondaryLabel?: string;
 };
 
@@ -40,8 +43,6 @@ const MAP_SHORTCUT_KEYS = new Set([
 	"-",
 	"0",
 ]);
-const TOOLTIP_LOCATION_LIMIT = 4;
-
 export function MapMarkerCluster({
 	markers,
 	onSelect,
@@ -54,8 +55,11 @@ export function MapMarkerCluster({
 	const containsSelection = markers.some(
 		(marker) => marker.id === selectedMarkerId,
 	);
-	const tooltipMarkers = markers.slice(0, TOOLTIP_LOCATION_LIMIT);
-	const hiddenTooltipMarkerCount = markers.length - tooltipMarkers.length;
+	const representativeMarkerIndex = Math.max(
+		0,
+		markers.findIndex((marker) => marker.id === selectedMarkerId),
+	);
+	const previewMarker = markers[representativeMarkerIndex];
 	const trigger = (
 		<PopoverTrigger
 			aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}`}
@@ -91,21 +95,16 @@ export function MapMarkerCluster({
 		>
 			<Tooltip open={!open && tooltipOpen} onOpenChange={setTooltipOpen}>
 				<TooltipTrigger render={trigger} />
-				<TooltipContent className="max-w-64 flex-col items-stretch gap-1 px-3 py-2">
-					<ul className="space-y-0.5">
-						{tooltipMarkers.map((marker) => (
-							<li key={marker.id} className="flex min-w-0 gap-2">
-								<span className="shrink-0 font-heading tabular-nums">
-									{marker.label}
-								</span>
-								<span className="truncate">{marker.name}</span>
-							</li>
-						))}
-					</ul>
-					{hiddenTooltipMarkerCount > 0 ? (
-						<p className="text-background/70">
-							And {hiddenTooltipMarkerCount} more…
-						</p>
+				<TooltipContent className="max-w-none flex-col items-stretch gap-0 overflow-hidden p-0">
+					{previewMarker ? (
+						<MapMarkerPreview
+							name={previewMarker.name}
+							position={{
+								index: representativeMarkerIndex + 1,
+								total: markers.length,
+							}}
+							preview={previewMarker.preview}
+						/>
 					) : null}
 				</TooltipContent>
 			</Tooltip>

@@ -1,5 +1,7 @@
 import {
+	ArrowLeftIcon,
 	ArrowSquareOutIcon,
+	CaretRightIcon,
 	FileTextIcon,
 	HandHeartIcon,
 	HouseIcon,
@@ -72,6 +74,7 @@ export function VerticalAppBar({
 	locationsControl,
 }: VerticalAppBarProps) {
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [menuView, setMenuView] = useState<"main" | "maps">("main");
 	const currentHref = useRouterState({
 		select: (state) => state.location.href,
 	});
@@ -88,6 +91,14 @@ export function VerticalAppBar({
 		currentHref,
 		mapName: currentMap?.name,
 	});
+	const closeMenu = () => {
+		setMenuOpen(false);
+		setMenuView("main");
+	};
+	const changeMenuOpen = (open: boolean) => {
+		setMenuOpen(open);
+		if (!open) setMenuView("main");
+	};
 
 	return (
 		<header className="flex min-h-16 shrink-0 items-center gap-3 border-sidebar-border border-b bg-sidebar px-3 text-sidebar-foreground sm:px-5">
@@ -135,14 +146,14 @@ export function VerticalAppBar({
 
 			{locationsControl}
 
-			<Popover open={menuOpen} onOpenChange={setMenuOpen}>
+			<Popover open={menuOpen} onOpenChange={changeMenuOpen}>
 				<PopoverTrigger
 					render={
 						<Button
 							variant="ghost"
 							size="sm"
 							aria-label="Open menu"
-							className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground"
+							className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground dark:aria-expanded:hover:bg-sidebar-accent"
 						/>
 					}
 				>
@@ -154,122 +165,164 @@ export function VerticalAppBar({
 					align="end"
 					className="flex max-h-[min(42rem,calc(100dvh-5rem))] w-[min(26rem,calc(100vw-1rem))] flex-col overflow-hidden"
 				>
-					<div className="border-border border-b p-4">
-						<PopoverTitle className="font-heading font-medium">
-							Menu
-						</PopoverTitle>
-						<PopoverDescription className="mt-1 text-muted-foreground text-sm">
-							Tarkov Farm navigation and project links.
-						</PopoverDescription>
-					</div>
-					<nav
-						aria-label="Vertical mode navigation"
-						className="overflow-auto p-2"
-					>
-						<div className="lg:hidden">
-							<p className="px-3 py-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest">
-								Maps
-							</p>
-							{catalog.maps.map((map) => {
-								const isCurrentMap = map.id === currentMapId;
-								const submaps = SUBMAP_LINKS.filter(
-									(submap) => submap.mapId === map.id,
-								);
+					{menuView === "maps" ? (
+						<>
+							<div className="flex items-start gap-2 border-border border-b p-4">
+								<Button
+									autoFocus
+									type="button"
+									variant="ghost"
+									size="icon-sm"
+									aria-label="Back to main menu"
+									onClick={() => setMenuView("main")}
+								>
+									<ArrowLeftIcon aria-hidden="true" />
+								</Button>
+								<div className="min-w-0 pt-1">
+									<PopoverTitle className="font-heading font-medium">
+										Maps
+									</PopoverTitle>
+									<PopoverDescription className="mt-1 text-muted-foreground text-sm">
+										Select a map or map view.
+									</PopoverDescription>
+								</div>
+							</div>
+							<nav aria-label="Map navigation" className="overflow-auto p-2">
+								{catalog.maps.map((map) => {
+									const isCurrentMap = map.id === currentMapId;
+									const submaps = SUBMAP_LINKS.filter(
+										(submap) => submap.mapId === map.id,
+									);
 
-								return (
-									<div key={map.id}>
-										<NavLink
-											icon={MapTrifoldIcon}
-											label={map.name}
-											to="/maps/$mapId"
-											params={{ mapId: map.id }}
-											search={{
-												documents: isCurrentMap
-													? editorSearch?.documents
-													: undefined,
-												view: undefined,
-											}}
-											isCurrent={isCurrentMap && currentViewKey === "main"}
-											onNavigate={(event) => {
-												setMenuOpen(false);
-												if (!isCurrentMap && isPlainNavigationClick(event)) {
-													onMapNavigationStart?.(map);
-												}
-											}}
-										/>
-										{submaps.map((submap) => (
+									return (
+										<div key={map.id}>
 											<NavLink
-												key={submap.targetViewKey}
 												icon={MapTrifoldIcon}
-												label={submap.navigationName}
+												label={map.name}
 												to="/maps/$mapId"
 												params={{ mapId: map.id }}
 												search={{
 													documents: isCurrentMap
 														? editorSearch?.documents
 														: undefined,
-													view: submap.targetViewKey,
+													view: undefined,
 												}}
-												isCurrent={
-													isCurrentMap &&
-													currentViewKey === submap.targetViewKey
-												}
-												className="pl-8 text-muted-foreground"
+												isCurrent={isCurrentMap && currentViewKey === "main"}
 												onNavigate={(event) => {
-													setMenuOpen(false);
+													closeMenu();
 													if (!isCurrentMap && isPlainNavigationClick(event)) {
 														onMapNavigationStart?.(map);
 													}
 												}}
 											/>
-										))}
-									</div>
-								);
-							})}
-						</div>
+											{submaps.map((submap) => (
+												<NavLink
+													key={submap.targetViewKey}
+													icon={MapTrifoldIcon}
+													label={submap.navigationName}
+													to="/maps/$mapId"
+													params={{ mapId: map.id }}
+													search={{
+														documents: isCurrentMap
+															? editorSearch?.documents
+															: undefined,
+														view: submap.targetViewKey,
+													}}
+													isCurrent={
+														isCurrentMap &&
+														currentViewKey === submap.targetViewKey
+													}
+													className="pl-8 text-muted-foreground"
+													onNavigate={(event) => {
+														closeMenu();
+														if (
+															!isCurrentMap &&
+															isPlainNavigationClick(event)
+														) {
+															onMapNavigationStart?.(map);
+														}
+													}}
+												/>
+											))}
+										</div>
+									);
+								})}
+							</nav>
+						</>
+					) : (
+						<>
+							<div className="border-border border-b p-4">
+								<PopoverTitle className="font-heading font-medium">
+									Menu
+								</PopoverTitle>
+								<PopoverDescription className="mt-1 text-muted-foreground text-sm">
+									Tarkov Farm navigation and project links.
+								</PopoverDescription>
+							</div>
+							<nav
+								aria-label="Vertical mode navigation"
+								className="overflow-auto p-2"
+							>
+								<Button
+									autoFocus
+									type="button"
+									variant="ghost"
+									onClick={() => setMenuView("maps")}
+									className="w-full justify-start px-3 font-normal text-sm normal-case tracking-normal"
+								>
+									<MapTrifoldIcon data-icon="inline-start" aria-hidden="true" />
+									<span className="min-w-0 flex-1 truncate text-left">
+										Maps
+									</span>
+									<CaretRightIcon data-icon="inline-end" aria-hidden="true" />
+								</Button>
 
-						<p className="mt-2 border-border border-t px-3 pt-4 pb-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest lg:mt-0 lg:border-t-0 lg:pt-2">
-							Project
-						</p>
-						<NavLink
-							icon={HouseIcon}
-							label="Home"
-							to="/"
-							onNavigate={() => setMenuOpen(false)}
-						/>
-						{projectLinks.map((link) => (
-							<NavLink
-								key={link.to}
-								icon={link.icon}
-								label={link.label}
-								to={link.to}
-								search={link.to === "/contribute" ? { map: currentMapId } : {}}
-								onNavigate={() => setMenuOpen(false)}
-							/>
-						))}
-						<a
-							href={problemIssueUrl}
-							target="_blank"
-							rel="noreferrer"
-							className="flex min-h-11 items-center gap-3 px-3 text-sm outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-						>
-							<WarningCircleIcon aria-hidden="true" className="size-4" />
-							<span className="min-w-0 flex-1">Something wrong?</span>
-							<ArrowSquareOutIcon
-								aria-hidden="true"
-								className="size-3 text-muted-foreground"
-							/>
-						</a>
-						{catalog.editorAvailable ? (
-							<NavLink
-								icon={PencilSimpleIcon}
-								label="Open editor"
-								to="/editor"
-								search={editorSearch ?? { map: currentMapId }}
-								onNavigate={() => setMenuOpen(false)}
-							/>
-						) : null}
-					</nav>
+								<p className="mt-2 border-border border-t px-3 pt-4 pb-2 font-semibold text-muted-foreground text-xs uppercase tracking-widest">
+									Project
+								</p>
+								<NavLink
+									icon={HouseIcon}
+									label="Home"
+									to="/"
+									onNavigate={closeMenu}
+								/>
+								{projectLinks.map((link) => (
+									<NavLink
+										key={link.to}
+										icon={link.icon}
+										label={link.label}
+										to={link.to}
+										search={
+											link.to === "/contribute" ? { map: currentMapId } : {}
+										}
+										onNavigate={closeMenu}
+									/>
+								))}
+								<a
+									href={problemIssueUrl}
+									target="_blank"
+									rel="noreferrer"
+									className="flex min-h-11 items-center gap-3 px-3 text-sm outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+								>
+									<WarningCircleIcon aria-hidden="true" className="size-4" />
+									<span className="min-w-0 flex-1">Something wrong?</span>
+									<ArrowSquareOutIcon
+										aria-hidden="true"
+										className="size-3 text-muted-foreground"
+									/>
+								</a>
+								{catalog.editorAvailable ? (
+									<NavLink
+										icon={PencilSimpleIcon}
+										label="Open editor"
+										to="/editor"
+										search={editorSearch ?? { map: currentMapId }}
+										onNavigate={closeMenu}
+									/>
+								) : null}
+							</nav>
+						</>
+					)}
 				</PopoverContent>
 			</Popover>
 		</header>

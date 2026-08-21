@@ -10,6 +10,7 @@ import {
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+	PendingVerticalLocationsControl,
 	VerticalDocumentFilters,
 	VerticalLocationsControl,
 } from "./vertical-map-controls";
@@ -73,6 +74,15 @@ describe("VerticalDocumentFilters", () => {
 });
 
 describe("VerticalLocationsControl", () => {
+	it("reserves the location control while the next map loads", () => {
+		render(<PendingVerticalLocationsControl mapName="Customs" />);
+
+		const control = screen.getByRole("button", {
+			name: "Loading Customs locations",
+		});
+		expect(control.hasAttribute("disabled")).toBe(true);
+	});
+
 	it("opens a location list and closes it after selection", async () => {
 		const onLocationSelect = vi.fn();
 		render(

@@ -13,14 +13,17 @@ import {
 } from "react";
 
 import { MapMarkerCluster } from "@/components/map/map-marker-cluster";
+import { MapMarkerPreview } from "@/components/map/map-marker-preview";
 import { Button } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
+	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { pointerToBasisPoints } from "@/lib/map-coordinates";
 import { groupOverlappingMapMarkers } from "@/lib/map-marker-groups";
+import type { MapMarkerPreview as MapMarkerPreviewData } from "@/lib/map-marker-preview";
 import type { MapImageSource } from "@/lib/map-master-manifest";
 import {
 	constrainView,
@@ -59,6 +62,7 @@ export type MapWorkspaceMarker = {
 	kind?: "location" | "submap";
 	label?: string;
 	name: string;
+	preview?: MapMarkerPreviewData;
 	secondaryLabel?: string;
 	xBasisPoints: number;
 	yBasisPoints: number;
@@ -918,14 +922,44 @@ export function MapWorkspace({
 					</div>
 
 					{isImageReady && view ? (
-						<div
-							className="pointer-events-none absolute isolate"
-							style={{ left: view.x, top: view.y }}
-						>
-							{markerGroups.map((group) => {
-								const marker = group.markers[0];
+						<TooltipProvider delay={200}>
+							<div
+								className="pointer-events-none absolute isolate"
+								style={{ left: view.x, top: view.y }}
+							>
+								{markerGroups.map((group) => {
+									const marker = group.markers[0];
 
-								return group.markers.length === 1 && marker ? (
+									return group.markers.length === 1 && marker ? (
+										<MapMarker
+											key={marker.id}
+											marker={marker}
+											position={getMarkerPosition(
+												marker,
+												imageSize,
+												view.scale,
+											)}
+											isSelected={marker.id === selectedMarkerId}
+											onClick={
+												onSelectMarker
+													? () => onSelectMarker(marker.id)
+													: undefined
+											}
+										/>
+									) : onSelectMarker ? (
+										<MapMarkerCluster
+											key={group.id}
+											markers={group.markers}
+											position={getMarkerPosition(group, imageSize, view.scale)}
+											selectedMarkerId={selectedMarkerId}
+											onSelect={(markerId) => {
+												viewportRef.current?.focus();
+												onSelectMarker(markerId);
+											}}
+										/>
+									) : null;
+								})}
+								{standaloneLocationMarkers.map((marker) => (
 									<MapMarker
 										key={marker.id}
 										marker={marker}
@@ -937,42 +971,22 @@ export function MapWorkspace({
 												: undefined
 										}
 									/>
-								) : onSelectMarker ? (
-									<MapMarkerCluster
-										key={group.id}
-										markers={group.markers}
-										position={getMarkerPosition(group, imageSize, view.scale)}
-										selectedMarkerId={selectedMarkerId}
-										onSelect={(markerId) => {
-											viewportRef.current?.focus();
-											onSelectMarker(markerId);
-										}}
+								))}
+								{submapMarkers.map((marker) => (
+									<MapMarker
+										key={marker.id}
+										marker={marker}
+										position={getMarkerPosition(marker, imageSize, view.scale)}
+										isSelected={false}
+										onClick={
+											onSelectMarker
+												? () => onSelectMarker(marker.id)
+												: undefined
+										}
 									/>
-								) : null;
-							})}
-							{standaloneLocationMarkers.map((marker) => (
-								<MapMarker
-									key={marker.id}
-									marker={marker}
-									position={getMarkerPosition(marker, imageSize, view.scale)}
-									isSelected={marker.id === selectedMarkerId}
-									onClick={
-										onSelectMarker ? () => onSelectMarker(marker.id) : undefined
-									}
-								/>
-							))}
-							{submapMarkers.map((marker) => (
-								<MapMarker
-									key={marker.id}
-									marker={marker}
-									position={getMarkerPosition(marker, imageSize, view.scale)}
-									isSelected={false}
-									onClick={
-										onSelectMarker ? () => onSelectMarker(marker.id) : undefined
-									}
-								/>
-							))}
-						</div>
+								))}
+							</div>
+						</TooltipProvider>
 					) : null}
 
 					{imageStatus === "loading" ? (
@@ -1015,6 +1029,7 @@ type MapMarkerProps = {
 };
 
 function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
+	const [tooltipOpen, setTooltipOpen] = useState(false);
 	const isSubmap = marker.kind === "submap";
 	const className = cn(
 		"group/marker pointer-events-auto absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
@@ -1051,7 +1066,10 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 			aria-label={`Open ${marker.name}`}
 			aria-pressed={isSubmap ? undefined : isSelected}
 			onPointerDown={(event) => event.stopPropagation()}
-			onClick={onClick}
+			onClick={() => {
+				setTooltipOpen(false);
+				onClick();
+			}}
 			className={className}
 			style={style}
 		>
@@ -1061,9 +1079,20 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 	);
 
 	return (
-		<Tooltip>
+		<Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
 			<TooltipTrigger render={trigger} />
-			<TooltipContent>{marker.name}</TooltipContent>
+			<TooltipContent
+				className={cn(
+					marker.preview &&
+						"max-w-none flex-col items-stretch gap-0 overflow-hidden p-0",
+				)}
+			>
+				{marker.preview ? (
+					<MapMarkerPreview name={marker.name} preview={marker.preview} />
+				) : (
+					marker.name
+				)}
+			</TooltipContent>
 		</Tooltip>
 	);
 }

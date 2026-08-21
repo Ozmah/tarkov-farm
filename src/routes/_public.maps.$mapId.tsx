@@ -1,6 +1,6 @@
 import { CrosshairIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { LocationDetailsPanel } from "@/components/map/location-details-panel";
 import { MapNavigationStrip } from "@/components/map/map-navigation-strip";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
@@ -39,6 +39,7 @@ import {
 } from "@/lib/catalog-search";
 import { getDocumentShortName } from "@/lib/document-display";
 import { numberMapLocations } from "@/lib/map-location-order";
+import { indexFirstScreenshotPreviews } from "@/lib/map-marker-preview";
 import { createSeoHead } from "@/lib/seo";
 import { SUBMAP_LINKS } from "@/lib/submap-links";
 import { Route as PublicLayoutRoute } from "./_public";
@@ -115,6 +116,10 @@ function MapPage() {
 		mapDocumentIds,
 	);
 	const selectedDocumentIdSet = new Set(selectedDocumentIds);
+	const previewByLocationId = useMemo(
+		() => indexFirstScreenshotPreviews(mapData.screenshots),
+		[mapData.screenshots],
+	);
 	const selectedImage =
 		mapData.images.find((image) => image.viewKey === search.view) ??
 		mapData.images.find((image) => image.viewKey === "main") ??
@@ -361,6 +366,7 @@ function MapPage() {
 										id: location.id,
 										label: location.markerLabel,
 										name: location.name,
+										preview: previewByLocationId.get(location.id),
 										secondaryLabel: location.documentName,
 										xBasisPoints: location.xBasisPoints,
 										yBasisPoints: location.yBasisPoints,
