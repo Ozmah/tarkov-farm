@@ -89,39 +89,89 @@ describe("MapMarkerCluster", () => {
 		expect(document.activeElement).toBe(trigger);
 	});
 
-	it("previews a limited number of nearby location names", async () => {
+	it("previews the first cluster location when none is selected", async () => {
 		render(
 			<MapMarkerCluster
-				markers={Array.from({ length: 6 }, (_, index) => ({
-					id: `location-${index + 1}`,
-					label: `${index + 1}`,
-					name: `Location ${index + 1}`,
-				}))}
+				markers={clusterMarkers}
 				onSelect={vi.fn()}
 				position={{ x: 500, y: 500 }}
 			/>,
 		);
 		const trigger = screen.getByRole("button", {
-			name: "Choose among 6 nearby locations",
+			name: "Choose among 2 nearby locations",
 		});
 
 		fireEvent.focus(trigger);
-
-		await waitFor(() =>
-			expect(
-				document.querySelector('[data-slot="tooltip-content"]'),
-			).not.toBeNull(),
+		const preview = await findMarkerPreview();
+		expect(preview.textContent).toContain("First location");
+		expect(preview.textContent).toContain("1/2");
+		expect(preview.querySelector("img")?.getAttribute("src")).toBe(
+			"/screenshots/first.webp",
 		);
-		const tooltip = document.querySelector('[data-slot="tooltip-content"]');
-		if (!tooltip) {
-			throw new Error("Expected the cluster tooltip to open");
-		}
-		expect(tooltip.textContent).toContain("Location 1");
-		expect(tooltip.textContent).toContain("Location 4");
-		expect(tooltip.textContent).not.toContain("Location 5");
-		expect(tooltip.textContent).toContain("And 2 more…");
+	});
+
+	it("previews the selected cluster location using its stable position", async () => {
+		render(
+			<MapMarkerCluster
+				markers={clusterMarkers}
+				onSelect={vi.fn()}
+				position={{ x: 500, y: 500 }}
+				selectedMarkerId="two"
+			/>,
+		);
+		fireEvent.focus(
+			screen.getByRole("button", {
+				name: /Choose among 2 nearby locations, including the selected location/,
+			}),
+		);
+
+		const preview = await findMarkerPreview();
+		expect(preview.textContent).toContain("Second location");
+		expect(preview.textContent).toContain("2/2");
+		expect(preview.querySelector("img")?.getAttribute("src")).toBe(
+			"/screenshots/second.webp",
+		);
 	});
 });
+
+const clusterMarkers = [
+	{
+		id: "one",
+		label: "7",
+		name: "First location",
+		preview: {
+			altText: "First location preview",
+			height: 600,
+			path: "/screenshots/first.webp",
+			width: 1_000,
+		},
+	},
+	{
+		id: "two",
+		label: "11",
+		name: "Second location",
+		preview: {
+			altText: "Second location preview",
+			height: 700,
+			path: "/screenshots/second.webp",
+			width: 1_000,
+		},
+	},
+];
+
+async function findMarkerPreview() {
+	await waitFor(() =>
+		expect(
+			document.querySelector('[data-slot="map-marker-preview"]'),
+		).not.toBeNull(),
+	);
+	const preview = document.querySelector('[data-slot="map-marker-preview"]');
+	if (!(preview instanceof HTMLElement)) {
+		throw new Error("Expected the marker preview to open");
+	}
+
+	return preview;
+}
 
 function renderCluster(onSelect = vi.fn()) {
 	return render(
