@@ -90,8 +90,9 @@ function ContributePage() {
 							show enough of the surroundings to recognize the location.
 						</ContributionRule>
 						<ContributionRule number="4">
-							If the document is hard to see, circle it in red. Send a wide shot
-							and a close-up when one image is not enough.
+							Make sure the document itself is visible in the screenshot. If it
+							is hard to see, circle it in red; send a wide shot and a close-up
+							when one image is not enough.
 						</ContributionRule>
 					</ol>
 

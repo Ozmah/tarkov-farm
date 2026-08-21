@@ -70,5 +70,7 @@ body:
           required: true
         - label: I attached at least one clear in-game screenshot.
           required: true
+        - label: The document is visible in the attached screenshot.
+          required: true
         - label: These are screenshots I captured myself.
           required: true
