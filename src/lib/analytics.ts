@@ -1,3 +1,5 @@
+import type { LayoutMode } from "./layout-mode";
+
 export type MapSelectionSource =
 	| "documents"
 	| "home"
@@ -8,6 +10,13 @@ export type MapSelectionSource =
 export type MapControlSource = "sidebar" | "topbar";
 
 export type LocationViewSource = "direct" | "marker" | MapControlSource;
+
+export type AnalyticsAcquisitionProperties = {
+	$referring_domain: string;
+	utm_campaign?: string;
+	utm_medium?: string;
+	utm_source?: string;
+};
 
 type AnalyticsRoute =
 	| "about"
@@ -71,6 +80,13 @@ type AnalyticsEventProperties = {
 		map_id: string;
 		source: LocationViewSource;
 	};
+	layout_mode_changed: {
+		layout_mode: LayoutMode;
+		previous_layout_mode: LayoutMode;
+	};
+	layout_mode_used: {
+		layout_mode: LayoutMode;
+	};
 	screenshot_opened: {
 		location_id: string;
 		map_id: string;
@@ -80,19 +96,27 @@ type AnalyticsEventProperties = {
 };
 
 type AnalyticsEventName = keyof AnalyticsEventProperties;
+type EnrichedAnalyticsEventProperties<EventName extends AnalyticsEventName> =
+	AnalyticsEventProperties[EventName] & Partial<AnalyticsAcquisitionProperties>;
 type AnalyticsClient = {
 	capture: (
 		eventName: AnalyticsEventName,
-		properties: AnalyticsEventProperties[AnalyticsEventName],
+		properties: EnrichedAnalyticsEventProperties<AnalyticsEventName>,
 	) => unknown;
 };
 type PendingAnalyticsEvent = {
 	[EventName in AnalyticsEventName]: {
 		eventName: EventName;
-		properties: AnalyticsEventProperties[EventName];
+		properties: EnrichedAnalyticsEventProperties<EventName>;
 	};
 }[AnalyticsEventName];
 
+const ALLOWED_CAMPAIGN_PROPERTIES = [
+	"utm_source",
+	"utm_medium",
+	"utm_campaign",
+] as const;
+const SAFE_CAMPAIGN_VALUE = /^[A-Za-z0-9][A-Za-z0-9._~-]{0,79}$/;
 const MAX_PENDING_EVENTS = 50;
 const ROUTE_BY_PATHNAME = {
 	"/": "home",
@@ -115,6 +139,7 @@ const URL_PROPERTY_NAMES = new Set([
 	"url",
 ]);
 const pendingEvents: PendingAnalyticsEvent[] = [];
+let analyticsAcquisitionContext: AnalyticsAcquisitionProperties | undefined;
 let analyticsClient: AnalyticsClient | undefined;
 let analyticsEnabled = false;
 
@@ -126,8 +151,13 @@ export function captureAnalyticsEvent<EventName extends AnalyticsEventName>(
 		return;
 	}
 
+	const enrichedProperties = {
+		...properties,
+		...analyticsAcquisitionContext,
+	};
+
 	if (analyticsClient) {
-		analyticsClient.capture(eventName, properties);
+		analyticsClient.capture(eventName, enrichedProperties);
 		return;
 	}
 
@@ -135,11 +165,20 @@ export function captureAnalyticsEvent<EventName extends AnalyticsEventName>(
 		pendingEvents.shift();
 	}
 
-	pendingEvents.push({ eventName, properties } as PendingAnalyticsEvent);
+	pendingEvents.push({
+		eventName,
+		properties: enrichedProperties,
+	} as PendingAnalyticsEvent);
 }
 
 export function enableAnalytics() {
 	analyticsEnabled = true;
+}
+
+export function setAnalyticsAcquisitionContext(
+	properties: AnalyticsAcquisitionProperties,
+) {
+	analyticsAcquisitionContext = properties;
 }
 
 export function registerAnalyticsClient(client: AnalyticsClient) {
@@ -153,7 +192,41 @@ export function registerAnalyticsClient(client: AnalyticsClient) {
 export function disableAnalytics() {
 	analyticsEnabled = false;
 	analyticsClient = undefined;
+	analyticsAcquisitionContext = undefined;
 	pendingEvents.length = 0;
+}
+
+export function isDoNotTrackEnabled(...values: unknown[]) {
+	return values.some(
+		(value) =>
+			typeof value === "string" &&
+			(value.toLowerCase() === "1" || value.toLowerCase() === "yes"),
+	);
+}
+
+export function readAnalyticsAcquisitionProperties(
+	currentUrl: string,
+	referrer: string,
+): AnalyticsAcquisitionProperties {
+	const properties: AnalyticsAcquisitionProperties = {
+		$referring_domain: readReferringDomain(currentUrl, referrer),
+	};
+
+	try {
+		const searchParams = new URL(currentUrl).searchParams;
+
+		for (const propertyName of ALLOWED_CAMPAIGN_PROPERTIES) {
+			const value = searchParams.get(propertyName)?.trim();
+
+			if (value && SAFE_CAMPAIGN_VALUE.test(value)) {
+				properties[propertyName] = value;
+			}
+		}
+	} catch {
+		// Invalid URLs contribute no campaign data.
+	}
+
+	return properties;
 }
 
 export function readAnalyticsRouteProperties(pathname: string) {
@@ -212,4 +285,26 @@ function stripNestedUrlDetails(
 			stripNestedUrlDetails(nestedValue, origin, key),
 		]),
 	);
+}
+
+function readReferringDomain(currentUrl: string, referrer: string) {
+	if (!referrer) {
+		return "$direct";
+	}
+
+	try {
+		const current = new URL(currentUrl);
+		const referring = new URL(referrer);
+
+		if (
+			(referring.protocol !== "http:" && referring.protocol !== "https:") ||
+			referring.origin === current.origin
+		) {
+			return "$direct";
+		}
+
+		return referring.hostname.toLowerCase();
+	} catch {
+		return "$direct";
+	}
 }
