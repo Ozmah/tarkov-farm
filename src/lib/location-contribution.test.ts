@@ -103,6 +103,18 @@ describe("location contribution bundle", () => {
 		);
 	});
 
+	it("rejects duplicate screenshot contents within one location", () => {
+		const input = structuredClone(validBundle);
+		const duplicate = structuredClone(input.locations[0].screenshots[0]);
+		duplicate.id = "00000000-0000-4000-8000-000000000006";
+		duplicate.entry = `locations/${LOCATION_ID}/screenshots/${duplicate.id}.png`;
+		input.locations[0].screenshots.push(duplicate);
+
+		expect(() => parseLocationContributionBundle(input)).toThrow(
+			"screenshot source hashes contain duplicates",
+		);
+	});
+
 	it("enforces the location count limit", () => {
 		const input = structuredClone(validBundle);
 		input.locations = Array.from(
@@ -174,6 +186,7 @@ function createBundleWithScreenshotBytes(byteLengths: number[]) {
 			byteLength,
 			entry: `locations/${LOCATION_ID}/screenshots/${id}.png`,
 			id,
+			sourceSha256: (index + 1).toString(16).padStart(64, "0"),
 		};
 	});
 	return bundle;

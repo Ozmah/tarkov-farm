@@ -156,6 +156,13 @@ function parseLocation(input: unknown): LocationContribution {
 			`Contribution location ${id} must contain between 1 and ${MAX_CONTRIBUTION_SCREENSHOTS_PER_LOCATION} screenshots`,
 		);
 	}
+	const parsedScreenshots = value.screenshots.map((screenshot) =>
+		parseScreenshot(screenshot, id),
+	);
+	assertUnique(
+		parsedScreenshots.map(({ sourceSha256 }) => sourceSha256),
+		`Contribution location ${id} screenshot source hashes`,
+	);
 
 	return {
 		description: readNullableText(
@@ -181,9 +188,7 @@ function parseLocation(input: unknown): LocationContribution {
 			value.requiredKeyIds,
 			"Contribution required key identifiers",
 		),
-		screenshots: value.screenshots.map((screenshot) =>
-			parseScreenshot(screenshot, id),
-		),
+		screenshots: parsedScreenshots,
 		xBasisPoints: readInteger(
 			value.xBasisPoints,
 			"Contribution X coordinate",
