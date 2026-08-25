@@ -8,11 +8,9 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
-import {
-	LocationScreenshotEditor,
-	type ScreenshotDraft,
-} from "@/components/editor/location-screenshot-editor";
-import { MapCanvas } from "@/components/editor/map-canvas";
+import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
+import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
+import { MapCanvas } from "@/components/location-composer/map-canvas";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { PublicShell } from "@/components/public-shell";
 import {
@@ -35,32 +33,13 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import {
-	Field,
-	FieldDescription,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-	FieldLegend,
-	FieldSet,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	deleteLocation,
 	type getEditorData,
@@ -818,315 +797,80 @@ function LocationWorkspace({
 				onSelectLocation={onSelectLocation}
 			/>
 
-			<aside className="min-h-0 overflow-auto bg-card p-5">
-				<form
-					onSubmit={(event) => {
-						event.preventDefault();
-						void submitLocation();
-					}}
-					onKeyDown={(event) => {
-						if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-							event.currentTarget.requestSubmit();
-						}
-					}}
-					className="flex flex-col gap-6"
-				>
-					<div>
-						<p className="font-heading text-muted-foreground text-sm uppercase tracking-wide">
-							{selectedLocation ? "Edit location" : "New location"}
-						</p>
-						<h2 className="mt-1 text-balance font-heading font-medium text-2xl tracking-tight">
-							{draft.name || "Untitled marker"}
-						</h2>
-					</div>
-
-					<FieldGroup>
-						<div className="grid gap-4 sm:grid-cols-2">
-							<Field>
-								<FieldLabel htmlFor="location-map">Map</FieldLabel>
-								<Select
-									items={editableMaps.map((map) => ({
-										value: map.id,
-										label: map.name,
-									}))}
-									value={draftImage.mapId}
-									onValueChange={(nextMapId) => {
-										if (nextMapId) updateDraftMap(nextMapId);
-									}}
-								>
-									<SelectTrigger id="location-map" className="w-full">
-										<SelectValue placeholder="Select a map" />
-									</SelectTrigger>
-									<SelectContent alignItemWithTrigger={false}>
-										<SelectGroup>
-											{editableMaps.map((map) => (
-												<SelectItem key={map.id} value={map.id}>
-													{map.name}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</Field>
-
-							{draftMapImages.length > 1 ? (
-								<Field>
-									<FieldLabel htmlFor="location-map-view">Map view</FieldLabel>
-									<Select
-										items={draftMapImages.map((item) => ({
-											value: item.id,
-											label: item.name,
-										}))}
-										value={draft.mapImageId}
-										onValueChange={(nextImageId) => {
-											if (nextImageId) updateDraft("mapImageId", nextImageId);
-										}}
-									>
-										<SelectTrigger id="location-map-view" className="w-full">
-											<SelectValue placeholder="Select a map view" />
-										</SelectTrigger>
-										<SelectContent alignItemWithTrigger={false}>
-											<SelectGroup>
-												{draftMapImages.map((item) => (
-													<SelectItem key={item.id} value={item.id}>
-														{item.name}
-													</SelectItem>
-												))}
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-								</Field>
-							) : null}
-						</div>
-						<Field>
-							<FieldLabel htmlFor="location-name">Name</FieldLabel>
-							<Input
-								id="location-name"
-								value={draft.name}
-								onChange={(event) => updateDraft("name", event.target.value)}
-								maxLength={120}
-								autoComplete="off"
-								spellCheck="false"
-								required
-							/>
-						</Field>
-
-						<Field>
-							<FieldLabel htmlFor="location-description">
-								Description
-							</FieldLabel>
-							<Textarea
-								id="location-description"
-								value={draft.description}
-								onChange={(event) =>
-									updateDraft("description", event.target.value)
-								}
-								maxLength={2_000}
-								rows={4}
-								placeholder="Landmarks, floor, container, or route notes"
-							/>
-							<FieldDescription>
-								Use Ctrl+Enter to save from this field.
-							</FieldDescription>
-						</Field>
-
-						<div className="grid grid-cols-2 gap-4">
-							<Field>
-								<FieldLabel htmlFor="location-x">X</FieldLabel>
-								<Input
-									id="location-x"
-									type="number"
-									min={0}
-									max={10_000}
-									step={1}
-									value={draft.xBasisPoints}
-									onChange={(event) => {
-										if (!Number.isNaN(event.target.valueAsNumber)) {
-											updateDraft("xBasisPoints", event.target.valueAsNumber);
-										}
-									}}
-									required
-								/>
-							</Field>
-							<Field>
-								<FieldLabel htmlFor="location-y">Y</FieldLabel>
-								<Input
-									id="location-y"
-									type="number"
-									min={0}
-									max={10_000}
-									step={1}
-									value={draft.yBasisPoints}
-									onChange={(event) => {
-										if (!Number.isNaN(event.target.valueAsNumber)) {
-											updateDraft("yBasisPoints", event.target.valueAsNumber);
-										}
-									}}
-									required
-								/>
-							</Field>
-						</div>
-						<FieldDescription>
-							Coordinates use basis points from 0 to 10000.
-						</FieldDescription>
-
-						<FieldSet>
-							<FieldLegend variant="label">Document</FieldLegend>
-							<FieldDescription>
-								Each location represents one document and keeps its own
-								description and screenshots.
-							</FieldDescription>
-							{availableDocuments.length > 0 ? (
-								<RadioGroup
-									name="documentId"
-									value={draft.documentId}
-									onValueChange={(documentId) =>
-										updateDraft("documentId", documentId)
-									}
-									required
-								>
-									{availableDocuments.map((document) => (
-										<Field key={document.id} orientation="horizontal">
-											<RadioGroupItem
-												id={`document-${document.id}`}
-												value={document.id}
-											/>
-											<FieldLabel
-												htmlFor={`document-${document.id}`}
-												className="cursor-pointer normal-case tracking-normal"
-											>
-												{document.name}
-											</FieldLabel>
-										</Field>
-									))}
-								</RadioGroup>
-							) : (
-								<FieldDescription>
-									No farmable documents are assigned to this map.
-								</FieldDescription>
-							)}
-						</FieldSet>
-
-						<FieldSet>
-							<FieldLegend variant="label">Required keys</FieldLegend>
-							<FieldDescription>
-								Select every key needed to access this location. Leave empty
-								when no key is required.
-							</FieldDescription>
-							{availableKeys.length > 0 ? (
-								<div className="grid max-h-72 gap-1 overflow-auto border p-2">
-									{availableKeys.map((key) => {
-										const checked = draft.requiredKeyIds.includes(key.id);
-										return (
-											<Field
-												key={key.id}
-												orientation="horizontal"
-												className="p-2"
-											>
-												<Checkbox
-													id={`required-key-${key.id}`}
-													checked={checked}
-													onCheckedChange={(nextChecked) =>
-														updateDraft(
-															"requiredKeyIds",
-															nextChecked
-																? [...draft.requiredKeyIds, key.id]
-																: draft.requiredKeyIds.filter(
-																		(id) => id !== key.id,
-																	),
-														)
-													}
-												/>
-												<img
-													src={key.imagePath}
-													alt=""
-													width={key.imageWidth}
-													height={key.imageHeight}
-													loading="lazy"
-													decoding="async"
-													className="size-8 object-contain"
-												/>
-												<FieldLabel
-													htmlFor={`required-key-${key.id}`}
-													className="cursor-pointer normal-case tracking-normal"
-												>
-													{key.name}
-												</FieldLabel>
-											</Field>
-										);
-									})}
-								</div>
-							) : (
-								<FieldDescription>
-									No keys are cataloged for this map.
-								</FieldDescription>
-							)}
-						</FieldSet>
-
-						<LocationScreenshotEditor
-							disabled={isSaving || isDeleting}
-							screenshots={screenshotDrafts}
-							onFilesAdded={addScreenshotFiles}
-							onMove={moveScreenshotDraft}
-							onRemove={removeScreenshotDraft}
-							onUpdate={updateScreenshotDraft}
+			<LocationComposerForm
+				additionalFields={
+					<Field orientation="horizontal">
+						<Checkbox
+							id="location-active"
+							checked={draft.isActive}
+							onCheckedChange={(checked) => updateDraft("isActive", checked)}
 						/>
-
-						<Field orientation="horizontal">
-							<Checkbox
-								id="location-active"
-								checked={draft.isActive}
-								onCheckedChange={(checked) => updateDraft("isActive", checked)}
-							/>
-							<FieldLabel
-								htmlFor="location-active"
-								className="cursor-pointer normal-case tracking-normal"
+						<FieldLabel
+							htmlFor="location-active"
+							className="cursor-pointer normal-case tracking-normal"
+						>
+							Active location
+						</FieldLabel>
+					</Field>
+				}
+				availableDocuments={availableDocuments}
+				availableKeys={availableKeys}
+				disabled={isSaving || isDeleting}
+				draft={draft}
+				draftMapId={draftImage.mapId}
+				error={error}
+				eyebrow={selectedLocation ? "Edit location" : "New location"}
+				keyboardSubmitHint="Use Ctrl+Enter to save from this field."
+				mapImages={draftMapImages}
+				maps={editableMaps}
+				maxScreenshots={MAX_SCREENSHOTS_PER_LOCATION}
+				screenshots={screenshotDrafts}
+				secondaryActions={
+					selectedLocation ? (
+						<AlertDialog>
+							<AlertDialogTrigger
+								render={
+									<Button
+										type="button"
+										variant="ghost"
+										disabled={isSaving || isDeleting}
+									/>
+								}
 							>
-								Active location
-							</FieldLabel>
-						</Field>
-
-						{error && <FieldError>{error}</FieldError>}
-					</FieldGroup>
-
-					<div className="flex flex-wrap items-center gap-3">
-						<Button type="submit" disabled={isSaving || isDeleting}>
-							{isSaving ? "Processing…" : "Save location"}
-						</Button>
-
-						{selectedLocation && (
-							<AlertDialog>
-								<AlertDialogTrigger
-									render={
-										<Button
-											type="button"
-											variant="ghost"
-											disabled={isSaving || isDeleting}
-										/>
-									}
-								>
-									Delete
-								</AlertDialogTrigger>
-								<AlertDialogContent size="sm">
-									<AlertDialogHeader>
-										<AlertDialogTitle>Delete this location?</AlertDialogTitle>
-										<AlertDialogDescription>
-											This permanently removes the marker, screenshots, and its
-											document link.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
-										<AlertDialogAction onClick={() => void removeLocation()}>
-											{isDeleting ? "Deleting…" : "Delete location"}
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
-						)}
-					</div>
-				</form>
-			</aside>
+								Delete
+							</AlertDialogTrigger>
+							<AlertDialogContent size="sm">
+								<AlertDialogHeader>
+									<AlertDialogTitle>Delete this location?</AlertDialogTitle>
+									<AlertDialogDescription>
+										This permanently removes the marker, screenshots, and its
+										document link.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={() => void removeLocation()}>
+										{isDeleting ? "Deleting…" : "Delete location"}
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					) : undefined
+				}
+				submitLabel="Save location"
+				submitting={isSaving}
+				submittingLabel="Processing…"
+				title={draft.name || "Untitled marker"}
+				onDraftChange={(key, value) =>
+					setDraft((current) => ({ ...current, [key]: value }))
+				}
+				onMapChange={updateDraftMap}
+				onScreenshotFilesAdded={addScreenshotFiles}
+				onScreenshotMove={moveScreenshotDraft}
+				onScreenshotRemove={removeScreenshotDraft}
+				onScreenshotUpdate={updateScreenshotDraft}
+				onSubmit={() => void submitLocation()}
+			/>
 		</>
 	);
 }

@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MAX_SCREENSHOTS_PER_LOCATION } from "@/lib/editor-validation";
 import { cn } from "@/lib/utils";
 
 export type ScreenshotDraft = {
@@ -32,7 +31,9 @@ export type ScreenshotDraft = {
 
 type LocationScreenshotEditorProps = {
 	className?: string;
+	description?: string;
 	disabled: boolean;
+	maxScreenshots: number;
 	screenshots: ScreenshotDraft[];
 	onFilesAdded: (files: File[]) => void;
 	onMove: (index: number, offset: -1 | 1) => void;
@@ -42,7 +43,9 @@ type LocationScreenshotEditorProps = {
 
 export function LocationScreenshotEditor({
 	className,
+	description = "Add at least one JPEG, PNG, or WebP image. Saving generates 1000px and 1920px WebP variants without cropping.",
 	disabled,
+	maxScreenshots,
 	screenshots,
 	onFilesAdded,
 	onMove,
@@ -53,8 +56,7 @@ export function LocationScreenshotEditor({
 		<FieldSet className={cn(className)}>
 			<FieldLegend variant="label">Screenshots</FieldLegend>
 			<FieldDescription id="location-screenshots-description">
-				Add at least one JPEG, PNG, or WebP image. Saving generates 1000px and
-				1920px WebP variants without cropping.
+				{description}
 			</FieldDescription>
 
 			<Field>
@@ -65,9 +67,7 @@ export function LocationScreenshotEditor({
 					accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
 					multiple
 					aria-describedby="location-screenshots-description"
-					disabled={
-						disabled || screenshots.length >= MAX_SCREENSHOTS_PER_LOCATION
-					}
+					disabled={disabled || screenshots.length >= maxScreenshots}
 					onChange={(event) => {
 						onFilesAdded(Array.from(event.target.files ?? []));
 						event.target.value = "";
