@@ -3,10 +3,11 @@ import {
 	GithubLogoIcon,
 	XLogoIcon,
 } from "@phosphor-icons/react";
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { getContributionCatalog } from "@/functions/contributions";
 import { readCatalogId } from "@/lib/catalog-search";
 import {
 	buildLocationIssueUrl,
@@ -16,24 +17,24 @@ import {
 import { createSeoHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-const publicRoute = getRouteApi("/_public");
-
 export const Route = createFileRoute("/_public/contribute")({
 	validateSearch: (search: Record<string, unknown>) => ({
 		map: readCatalogId(search.map),
 	}),
+	loader: () => getContributionCatalog(),
 	head: () =>
 		createSeoHead({
 			title: "Contribute | Tarkov Farm",
 			description: "Share a new seasonal document location with Tarkov Farm.",
 			pathname: "/contribute",
 		}),
+	staleTime: 30_000,
 	component: ContributePage,
 });
 
 function ContributePage() {
 	const { map: mapId } = Route.useSearch();
-	const catalog = publicRoute.useLoaderData();
+	const catalog = Route.useLoaderData();
 	const map = mapId
 		? catalog.maps.find((item) => item.id === mapId)
 		: undefined;
