@@ -6,6 +6,16 @@ import {
 } from "@phosphor-icons/react";
 import { useState } from "react";
 
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Dialog,
@@ -45,6 +55,8 @@ export function ContributionReviewDialog({
 	);
 	const [error, setError] = useState<string>();
 	const [archiveBytes, setArchiveBytes] = useState<number>();
+	const [largeDownloadWarningOpen, setLargeDownloadWarningOpen] =
+		useState(false);
 	const exceedsGitHubLimit =
 		archiveBytes !== undefined && archiveBytes > GITHUB_ATTACHMENT_LIMIT_BYTES;
 	const mayExceedGitHubLimit =
@@ -151,7 +163,7 @@ export function ContributionReviewDialog({
 						<p>
 							GitHub attachments are public and limited to 25 MiB.
 							{exceedsGitHubLimit
-								? ` This ${formatBytes(archiveBytes)} ZIP is too large; upload it privately elsewhere and share the link in the issue.`
+								? ` This ${formatBytes(archiveBytes)} ZIP is too large for GitHub. Arrange the transfer with the maintainer through a trusted private channel. Do not paste private download links into a public issue.`
 								: mayExceedGitHubLimit
 									? " The final ZIP may exceed that limit; its exact size will be checked after download."
 									: " Attach the downloaded ZIP only if you are comfortable making it public."}
@@ -165,8 +177,9 @@ export function ContributionReviewDialog({
 					) : null}
 					{status === "downloaded" ? (
 						<p role="status" className="text-sm">
-							ZIP downloaded. Attach it to a GitHub issue to send the
-							contribution.
+							{exceedsGitHubLimit
+								? "ZIP downloaded, but it is too large for GitHub. Arrange a private transfer with the maintainer."
+								: "ZIP downloaded. Attach it to a GitHub issue to send the contribution."}
 						</p>
 					) : null}
 
@@ -179,7 +192,7 @@ export function ContributionReviewDialog({
 						>
 							Back to editor
 						</Button>
-						{status === "downloaded" ? (
+						{status === "downloaded" && !exceedsGitHubLimit ? (
 							<a
 								href={buildContributionBundleIssueUrl()}
 								target="_blank"
@@ -193,7 +206,17 @@ export function ContributionReviewDialog({
 						<Button
 							type="button"
 							disabled={status === "downloading"}
-							onClick={() => void handleDownload()}
+							onClick={() => {
+								if (
+									archiveBytes === undefined &&
+									totalBytes >= GITHUB_ATTACHMENT_WARNING_BYTES
+								) {
+									setLargeDownloadWarningOpen(true);
+									return;
+								}
+
+								void handleDownload();
+							}}
 						>
 							{status === "downloading" ? (
 								<CircleNotchIcon
@@ -216,6 +239,34 @@ export function ContributionReviewDialog({
 					</div>
 				</div>
 			</DialogContent>
+			<AlertDialog
+				open={largeDownloadWarningOpen}
+				onOpenChange={setLargeDownloadWarningOpen}
+			>
+				<AlertDialogContent size="sm">
+					<AlertDialogHeader>
+						<AlertDialogTitle>ZIP may exceed GitHub's limit</AlertDialogTitle>
+						<AlertDialogDescription>
+							This contribution already contains {formatBytes(totalBytes)} of
+							screenshots before ZIP metadata. You can download it, but GitHub
+							may not accept it. Arrange an oversized transfer with the
+							maintainer through a trusted private channel; never paste private
+							download links into a public issue.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							onClick={() => {
+								setLargeDownloadWarningOpen(false);
+								void handleDownload();
+							}}
+						>
+							Download anyway
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</Dialog>
 	);
 }

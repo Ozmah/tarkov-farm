@@ -13,10 +13,10 @@ import {
 	getLocationContributionWorkspaceBundle,
 	type LocationContributionWorkspace,
 } from "./location-contribution-workspace";
+import { LOCATION_CONTRIBUTION_ZIP_MTIME } from "./location-contribution-zip-metadata";
 
 const MANIFEST_ENTRY = "manifest.json";
 const ZIP_MEDIA_TYPE = "application/zip";
-const ZIP_MTIME = new Date(1980, 0, 1, 0, 0, 0);
 const OBJECT_URL_LIFETIME_MS = 60_000;
 
 export type LocationContributionArchive = {
@@ -189,7 +189,7 @@ async function pushFile(zip: Zip, path: string, file: File) {
 
 function createEntry(path: string) {
 	const entry = new ZipPassThrough(path);
-	entry.mtime = ZIP_MTIME;
+	entry.mtime = LOCATION_CONTRIBUTION_ZIP_MTIME;
 	entry.os = 0;
 	entry.attrs = 0;
 	return entry;

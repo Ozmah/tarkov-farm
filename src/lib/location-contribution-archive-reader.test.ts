@@ -9,6 +9,7 @@ import {
 import { readLocationContributionArchive } from "./location-contribution-archive-reader";
 import type { LocationContributionCatalog } from "./location-contribution-catalog";
 import { sha256Hex } from "./location-contribution-image";
+import { LOCATION_CONTRIBUTION_ZIP_MTIME } from "./location-contribution-zip-metadata";
 
 const BUNDLE_ID = "00000000-0000-4000-8000-000000000001";
 const LOCATION_ID = "00000000-0000-4000-8000-000000000002";
@@ -195,7 +196,7 @@ function createArchive(
 	});
 	for (const [name, bytes] of entries) {
 		const entry = new ZipPassThrough(name);
-		entry.mtime = new Date(1980, 0, 1);
+		entry.mtime = LOCATION_CONTRIBUTION_ZIP_MTIME;
 		entry.os = 0;
 		entry.attrs = 0;
 		zip.add(entry);

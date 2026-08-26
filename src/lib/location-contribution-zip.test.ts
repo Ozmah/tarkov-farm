@@ -5,6 +5,7 @@ import {
 	indexLocationContributionZip,
 	readLocationContributionZipEntry,
 } from "./location-contribution-zip";
+import { LOCATION_CONTRIBUTION_ZIP_MTIME } from "./location-contribution-zip-metadata";
 
 const LOCATION_ID = "5b79d7e8-fd87-4c8c-a08a-53791777876b";
 const SCREENSHOT_ID = "15bccba8-db3c-4363-8a61-424d77918b03";
@@ -101,7 +102,7 @@ function createZip(entries: ReadonlyArray<readonly [string, Uint8Array]>) {
 
 	for (const [name, bytes] of entries) {
 		const entry = new ZipPassThrough(name);
-		entry.mtime = new Date(1980, 0, 1);
+		entry.mtime = LOCATION_CONTRIBUTION_ZIP_MTIME;
 		entry.os = 0;
 		entry.attrs = 0;
 		zip.add(entry);

@@ -51,9 +51,46 @@ describe("ContributionReviewDialog", () => {
 		);
 		expect(screen.getByRole("dialog")).toBeTruthy();
 	});
+
+	it("warns before downloading an oversized contribution", async () => {
+		const oversizedBytes = 26 * 1_048_576;
+		const onDownload = vi.fn().mockResolvedValue(oversizedBytes);
+		renderReviewDialog(onDownload, oversizedBytes);
+
+		fireEvent.click(screen.getByRole("button", { name: "Review & download" }));
+		fireEvent.click(screen.getByRole("button", { name: "Download ZIP" }));
+
+		expect(onDownload).not.toHaveBeenCalled();
+		expect(
+			screen.getByRole("alertdialog", {
+				name: "ZIP may exceed GitHub's limit",
+			}),
+		).toBeTruthy();
+		fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+		await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+		expect(onDownload).not.toHaveBeenCalled();
+
+		fireEvent.click(screen.getByRole("button", { name: "Download ZIP" }));
+		fireEvent.click(screen.getByRole("button", { name: "Download anyway" }));
+
+		await waitFor(() => expect(onDownload).toHaveBeenCalledOnce());
+		await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+		expect(screen.getByRole("status").textContent).toContain(
+			"Arrange a private transfer",
+		);
+		expect(
+			screen.getByText(/Do not paste private download links/),
+		).toBeTruthy();
+		expect(
+			screen.queryByRole("link", { name: "Open GitHub issue" }),
+		).toBeNull();
+	});
 });
 
-function renderReviewDialog(onDownload: () => Promise<number>) {
+function renderReviewDialog(
+	onDownload: () => Promise<number>,
+	totalBytes?: number,
+) {
 	const file = new File(["screenshot"], "location.png", { type: "image/png" });
 
 	return render(
@@ -88,7 +125,7 @@ function renderReviewDialog(onDownload: () => Promise<number>) {
 			]}
 			mapImages={[{ id: "woods-main", mapId: "woods", name: "Main map" }]}
 			maps={[{ id: "woods", name: "Woods" }]}
-			totalBytes={file.size}
+			totalBytes={totalBytes ?? file.size}
 			onDownload={onDownload}
 		/>,
 	);
