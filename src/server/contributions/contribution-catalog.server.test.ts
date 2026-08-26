@@ -6,7 +6,12 @@ import { afterEach, describe, expect, it } from "vitest";
 import { readMapMasterManifest } from "@/server/db/map-master-manifest.server";
 import { migrateDatabase } from "@/server/db/migrate";
 import { openDatabase } from "@/server/db/open";
-import { maps } from "@/server/db/schema";
+import {
+	documentMaps,
+	locationDocuments,
+	locations,
+	maps,
+} from "@/server/db/schema";
 import { seedCatalog } from "@/server/db/seed";
 import { queryContributionCatalog } from "./contribution-catalog.server";
 
@@ -34,6 +39,50 @@ describe("contribution catalog", () => {
 		try {
 			await migrateDatabase(db, resolve(process.cwd(), "drizzle"));
 			await seedCatalog(db);
+			const documentAssignment = await db
+				.select({ documentId: documentMaps.documentId })
+				.from(documentMaps)
+				.where(eq(documentMaps.mapId, "customs"))
+				.get();
+
+			if (!documentAssignment) {
+				throw new Error("Expected a Customs document assignment");
+			}
+
+			await db
+				.insert(locations)
+				.values([
+					{
+						id: "visible-location",
+						isActive: true,
+						mapImageId: "customs-main",
+						name: "Visible location",
+						xBasisPoints: 4_000,
+						yBasisPoints: 6_000,
+					},
+					{
+						id: "hidden-location",
+						isActive: false,
+						mapImageId: "customs-main",
+						name: "Hidden location",
+						xBasisPoints: 5_000,
+						yBasisPoints: 5_000,
+					},
+				])
+				.run();
+			await db
+				.insert(locationDocuments)
+				.values([
+					{
+						documentId: documentAssignment.documentId,
+						locationId: "visible-location",
+					},
+					{
+						documentId: documentAssignment.documentId,
+						locationId: "hidden-location",
+					},
+				])
+				.run();
 			await db
 				.update(maps)
 				.set({ isActive: false })
@@ -84,6 +133,7 @@ describe("contribution catalog", () => {
 				"documents",
 				"keyMaps",
 				"keys",
+				"locations",
 				"mapImages",
 				"maps",
 			]);
@@ -106,6 +156,21 @@ describe("contribution catalog", () => {
 				"imageWidth",
 				"name",
 			]);
+			expect(catalog.locations.map(({ id }) => id)).toEqual([
+				"visible-location",
+			]);
+			expect(Object.keys(catalog.locations[0] ?? {}).sort()).toEqual([
+				"id",
+				"mapImageId",
+				"name",
+				"xBasisPoints",
+				"yBasisPoints",
+			]);
+			expect(
+				catalog.locations.every((location) =>
+					catalog.mapImages.some(({ id }) => id === location.mapImageId),
+				),
+			).toBe(true);
 		} finally {
 			await client.close();
 		}

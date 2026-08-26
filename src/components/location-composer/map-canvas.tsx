@@ -31,6 +31,9 @@ export function MapCanvas({
 	onPositionChange,
 	onSelectLocation,
 }: MapCanvasProps) {
+	const publishedLocationCount = locations.filter(
+		({ appearance }) => appearance === "reference",
+	).length;
 	const selectedLocation = selectedLocationId
 		? locations.find((location) => location.id === selectedLocationId)
 		: undefined;
@@ -64,6 +67,17 @@ export function MapCanvas({
 			markers={markers}
 			selectedMarkerId={selectedLocationId ?? "new-location"}
 			selectedMarkerPosition={selectedLocation}
+			toolbarStart={
+				publishedLocationCount > 0 ? (
+					<span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums">
+						<span
+							aria-hidden="true"
+							className="relative size-3 rounded-full border border-cosmic-ink bg-milk-mustache ring-1 ring-milk-mustache after:absolute after:inset-1 after:rounded-full after:bg-blue-opal"
+						/>
+						{publishedLocationCount} existing locations
+					</span>
+				) : undefined
+			}
 			onMapPress={onPositionChange}
 			onSelectMarker={(markerId) => {
 				if (markerId !== "new-location") {

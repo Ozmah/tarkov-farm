@@ -1,3 +1,4 @@
+import { useBlocker } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { ContributionTray } from "@/components/contributions/contribution-tray";
@@ -8,6 +9,16 @@ import type {
 } from "@/components/location-composer/location-draft";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
 import { MapCanvas } from "@/components/location-composer/map-canvas";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
 	Empty,
@@ -68,18 +79,46 @@ export function LocationContributionEditor({
 			.map(({ keyId }) => keyId),
 	);
 	const availableKeys = catalog.keys.filter(({ id }) => keyIds.has(id));
-	const canvasLocations = workspace.locations.flatMap((location, index) =>
-		location.mapImageId === draftImage?.id || location.id === editingLocationId
-			? [
-					{
-						...location,
-						isActive: true,
-						markerLabel: String(index + 1),
-					},
-				]
-			: [],
-	);
+	const canvasLocations = [
+		...workspace.locations.flatMap((location, index) =>
+			location.mapImageId === draftImage?.id ||
+			location.id === editingLocationId
+				? [
+						{
+							...location,
+							isActive: true,
+							markerLabel: String(index + 1),
+						},
+					]
+				: [],
+		),
+		...catalog.locations.flatMap((location) =>
+			location.mapImageId === draftImage?.id
+				? [
+						{
+							...location,
+							appearance: "reference" as const,
+							clusterable: false,
+							id: `published:${location.id}`,
+							isActive: true,
+							markerLabel: "",
+							selectable: false,
+						},
+					]
+				: [],
+		),
+	];
 	const workspaceBytes = getLocationContributionWorkspaceBytes(workspace);
+	const hasInMemoryWork =
+		workspace.locations.length > 0 ||
+		screenshots.length > 0 ||
+		!areDraftsEqual(draft, createDraft(catalog, undefined, draft.mapImageId));
+	const navigationBlocker = useBlocker({
+		disabled: !hasInMemoryWork,
+		enableBeforeUnload: () => hasInMemoryWork,
+		shouldBlockFn: ({ next }) => next.pathname !== "/contribute/editor",
+		withResolver: true,
+	});
 
 	if (!draftImage) {
 		return (
@@ -255,95 +294,130 @@ export function LocationContributionEditor({
 		if (editingLocationId === locationId) resetComposer();
 	};
 
+	const downloadContribution = async () => {
+		const {
+			createLocationContributionArchive,
+			downloadLocationContributionArchive,
+		} = await import("@/lib/location-contribution-archive");
+		const archive = await createLocationContributionArchive(workspace);
+		downloadLocationContributionArchive(archive);
+		return archive.blob.size;
+	};
+
 	return (
-		<div className="flex min-h-0 flex-1 flex-col overflow-auto lg:overflow-hidden">
-			<header className="border-border border-b bg-background px-5 py-5 sm:px-8">
-				<h1 className="text-balance font-heading font-medium text-2xl tracking-tight sm:text-3xl">
-					Build a contribution bundle
-				</h1>
-				<p className="mt-2 max-w-[70ch] text-pretty text-muted-foreground text-sm leading-relaxed">
-					Add new document locations, review them in the tray, then download one
-					bundle. Nothing is uploaded.
-				</p>
-			</header>
+		<>
+			<div className="flex min-h-0 flex-1 flex-col overflow-auto lg:overflow-hidden">
+				<h1 className="sr-only">Contribution editor</h1>
+				<div className="grid flex-none lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_26rem] lg:grid-rows-[minmax(0,1fr)_auto]">
+					<MapCanvas
+						key={draftImage.id}
+						draftMarker={{ ...draft, isActive: true }}
+						image={draftImage}
+						locations={canvasLocations}
+						selectedLocationId={editingLocationId}
+						onPositionChange={(position) => {
+							if (!isStaging) {
+								setDraft((current) => ({ ...current, ...position }));
+							}
+						}}
+						onSelectLocation={editLocation}
+					/>
 
-			<div className="grid flex-none lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_26rem] lg:grid-rows-[minmax(0,1fr)_auto]">
-				<MapCanvas
-					key={draftImage.id}
-					draftMarker={{ ...draft, isActive: true }}
-					image={draftImage}
-					locations={canvasLocations}
-					selectedLocationId={editingLocationId}
-					onPositionChange={(position) => {
-						if (!isStaging) {
-							setDraft((current) => ({ ...current, ...position }));
+					<LocationComposerForm
+						availableDocuments={availableDocuments}
+						availableKeys={availableKeys}
+						className="overflow-visible border-border border-t lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-auto lg:border-t-0"
+						disabled={isStaging}
+						draft={draft}
+						draftMapId={draftMapId}
+						error={error}
+						eyebrow={editingLocationId ? "Editing tray item" : "New location"}
+						keyboardSubmitHint="Use Ctrl+Enter to add this location to the tray."
+						mapImages={mapImages}
+						maps={catalog.maps}
+						maxScreenshots={MAX_CONTRIBUTION_SCREENSHOTS_PER_LOCATION}
+						screenshots={screenshots}
+						screenshotDescription="Add JPEG, PNG, or WebP files up to 20 MiB each. They remain in this browser."
+						secondaryActions={
+							editingLocationId ? (
+								<Button
+									type="button"
+									variant="ghost"
+									disabled={isStaging}
+									onClick={() => resetComposer()}
+								>
+									Cancel edit
+								</Button>
+							) : undefined
 						}
-					}}
-					onSelectLocation={editLocation}
-				/>
+						submitLabel={editingLocationId ? "Update tray" : "Add to tray"}
+						submitting={isStaging}
+						submittingLabel="Checking screenshots…"
+						title={draft.name || "Untitled location"}
+						onDraftChange={updateDraft}
+						onMapChange={updateDraftMap}
+						onScreenshotFilesAdded={addScreenshotFiles}
+						onScreenshotMove={moveScreenshot}
+						onScreenshotRemove={(key) => {
+							setScreenshots((current) =>
+								current.filter((screenshot) => screenshot.key !== key),
+							);
+							setError(undefined);
+						}}
+						onScreenshotUpdate={updateScreenshot}
+						onSubmit={() => void stageLocation()}
+					/>
 
-				<LocationComposerForm
-					availableDocuments={availableDocuments}
-					availableKeys={availableKeys}
-					className="overflow-visible border-border border-t lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-auto lg:border-t-0"
-					disabled={isStaging}
-					draft={draft}
-					draftMapId={draftMapId}
-					error={error}
-					eyebrow={editingLocationId ? "Editing tray item" : "New location"}
-					keyboardSubmitHint="Use Ctrl+Enter to add this location to the tray."
-					mapImages={mapImages}
-					maps={catalog.maps}
-					maxScreenshots={MAX_CONTRIBUTION_SCREENSHOTS_PER_LOCATION}
-					screenshots={screenshots}
-					screenshotDescription="Add JPEG, PNG, or WebP files up to 20 MiB each. They remain in this browser."
-					secondaryActions={
-						editingLocationId ? (
-							<Button
-								type="button"
-								variant="ghost"
-								disabled={isStaging}
-								onClick={() => resetComposer()}
-							>
-								Cancel edit
-							</Button>
-						) : undefined
-					}
-					submitLabel={editingLocationId ? "Update tray" : "Add to tray"}
-					submitting={isStaging}
-					submittingLabel="Checking screenshots…"
-					title={draft.name || "Untitled location"}
-					onDraftChange={updateDraft}
-					onMapChange={updateDraftMap}
-					onScreenshotFilesAdded={addScreenshotFiles}
-					onScreenshotMove={moveScreenshot}
-					onScreenshotRemove={(key) => {
-						setScreenshots((current) =>
-							current.filter((screenshot) => screenshot.key !== key),
-						);
-						setError(undefined);
-					}}
-					onScreenshotUpdate={updateScreenshot}
-					onSubmit={() => void stageLocation()}
-				/>
-
-				<ContributionTray
-					disabled={isStaging}
-					documents={catalog.documents}
-					editingLocationId={editingLocationId}
-					locations={workspace.locations}
-					mapImages={catalog.mapImages}
-					maps={catalog.maps}
-					totalBytes={workspaceBytes}
-					warnAboutSize={shouldWarnAboutLocationContributionBundleSize(
-						workspace,
-					)}
-					onCreate={() => resetComposer()}
-					onEdit={editLocation}
-					onRemove={removeLocation}
-				/>
+					<ContributionTray
+						disabled={isStaging}
+						documents={catalog.documents}
+						editingLocationId={editingLocationId}
+						locations={workspace.locations}
+						mapImages={catalog.mapImages}
+						maps={catalog.maps}
+						totalBytes={workspaceBytes}
+						warnAboutSize={shouldWarnAboutLocationContributionBundleSize(
+							workspace,
+						)}
+						onCreate={() => resetComposer()}
+						onDownload={downloadContribution}
+						onEdit={editLocation}
+						onRemove={removeLocation}
+					/>
+				</div>
 			</div>
-		</div>
+
+			<AlertDialog
+				open={navigationBlocker.status === "blocked"}
+				onOpenChange={(open) => {
+					if (!open && navigationBlocker.status === "blocked") {
+						navigationBlocker.reset();
+					}
+				}}
+			>
+				<AlertDialogContent size="sm">
+					<AlertDialogHeader>
+						<AlertDialogTitle>Leave the contribution editor?</AlertDialogTitle>
+						<AlertDialogDescription>
+							Your locations, draft changes, and screenshots will be lost.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Stay here</AlertDialogCancel>
+						<AlertDialogAction
+							variant="destructive"
+							onClick={() => {
+								if (navigationBlocker.status === "blocked") {
+									navigationBlocker.proceed();
+								}
+							}}
+						>
+							Leave editor
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		</>
 	);
 }
 
@@ -376,6 +450,22 @@ function isAcceptedScreenshot(file: File) {
 		file.size > 0 &&
 		file.size <= MAX_CONTRIBUTION_SCREENSHOT_BYTES &&
 		["image/jpeg", "image/png", "image/webp"].includes(file.type)
+	);
+}
+
+function areDraftsEqual(
+	left: LocationComposerDraft,
+	right: LocationComposerDraft,
+) {
+	return (
+		left.description === right.description &&
+		left.documentId === right.documentId &&
+		left.mapImageId === right.mapImageId &&
+		left.name === right.name &&
+		left.xBasisPoints === right.xBasisPoints &&
+		left.yBasisPoints === right.yBasisPoints &&
+		left.requiredKeyIds.length === right.requiredKeyIds.length &&
+		left.requiredKeyIds.every((id, index) => id === right.requiredKeyIds[index])
 	);
 }
 

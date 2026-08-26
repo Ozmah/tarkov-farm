@@ -18,6 +18,10 @@ export function buildLocationIssueUrl(context: IssueContext = {}) {
 	return buildIssueUrl("new-location.yml", "Location", context);
 }
 
+export function buildContributionBundleIssueUrl() {
+	return buildIssueUrl("contribution-bundle.yml", "Contribution bundle", {});
+}
+
 function buildIssueUrl(
 	template: string,
 	issueType: string,

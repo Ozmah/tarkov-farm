@@ -5,6 +5,7 @@ import {
 	TrashIcon,
 } from "@phosphor-icons/react";
 
+import { ContributionReviewDialog } from "@/components/contributions/contribution-review-dialog";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,11 +34,12 @@ type ContributionTrayProps = {
 	documents: Array<{ id: string; name: string }>;
 	editingLocationId?: string;
 	locations: StagedContributionLocation[];
-	mapImages: Array<{ id: string; mapId: string }>;
+	mapImages: Array<{ id: string; mapId: string; name: string }>;
 	maps: Array<{ id: string; name: string }>;
 	totalBytes: number;
 	warnAboutSize: boolean;
 	onCreate: () => void;
+	onDownload: () => Promise<number>;
 	onEdit: (locationId: string) => void;
 	onRemove: (locationId: string) => void;
 };
@@ -52,15 +54,16 @@ export function ContributionTray({
 	totalBytes,
 	warnAboutSize,
 	onCreate,
+	onDownload,
 	onEdit,
 	onRemove,
 }: ContributionTrayProps) {
 	return (
 		<section
 			aria-labelledby="contribution-tray-title"
-			className="border-border border-t bg-card"
+			className="flex min-h-64 flex-col border-border border-t bg-card lg:min-h-[30svh]"
 		>
-			<div className="flex min-h-16 items-center gap-4 px-4 py-2 sm:px-5">
+			<div className="flex min-h-16 flex-wrap items-center gap-3 px-4 py-2 sm:flex-nowrap sm:px-5">
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
 						<h2
@@ -85,20 +88,34 @@ export function ContributionTray({
 							: "Files stay in this browser until you download the bundle."}
 					</p>
 				</div>
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					disabled={disabled || locations.length >= MAX_CONTRIBUTION_LOCATIONS}
-					onClick={onCreate}
-				>
-					<PlusIcon data-icon="inline-start" aria-hidden="true" />
-					New
-				</Button>
+				<div className="flex w-full gap-2 sm:w-auto">
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						className="flex-1 sm:flex-none"
+						disabled={
+							disabled || locations.length >= MAX_CONTRIBUTION_LOCATIONS
+						}
+						onClick={onCreate}
+					>
+						<PlusIcon data-icon="inline-start" aria-hidden="true" />
+						New
+					</Button>
+					<ContributionReviewDialog
+						disabled={disabled}
+						documents={documents}
+						locations={locations}
+						mapImages={mapImages}
+						maps={maps}
+						totalBytes={totalBytes}
+						onDownload={onDownload}
+					/>
+				</div>
 			</div>
 
 			{locations.length === 0 ? (
-				<Empty className="min-h-40 border-border border-t p-6">
+				<Empty className="min-h-40 flex-1 border-border border-t p-6">
 					<EmptyHeader>
 						<EmptyMedia variant="icon">
 							<MapPinIcon aria-hidden="true" />
@@ -110,7 +127,7 @@ export function ContributionTray({
 					</EmptyHeader>
 				</Empty>
 			) : (
-				<ol className="max-h-56 overflow-auto border-border border-t">
+				<ol className="min-h-0 flex-1 overflow-auto border-border border-t">
 					{locations.map((location, index) => {
 						const image = mapImages.find(
 							({ id }) => id === location.mapImageId,

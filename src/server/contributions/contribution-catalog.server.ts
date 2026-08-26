@@ -13,6 +13,8 @@ import {
 	documents,
 	keyMaps,
 	keys,
+	locationDocuments,
+	locations,
 	mapImages,
 	maps,
 } from "@/server/db/schema";
@@ -39,6 +41,7 @@ export async function queryContributionCatalog(
 		documentMapRows,
 		keyRows,
 		keyMapRows,
+		locationRows,
 	] = await Promise.all([
 		db
 			.select({ id: maps.id, name: maps.name })
@@ -111,6 +114,48 @@ export async function queryContributionCatalog(
 			.innerJoin(maps, and(eq(maps.id, keyMaps.mapId), eq(maps.isActive, true)))
 			.orderBy(asc(keyMaps.mapId), asc(keyMaps.keyId))
 			.all(),
+		db
+			.select({
+				id: locations.id,
+				mapImageId: locations.mapImageId,
+				name: locations.name,
+				xBasisPoints: locations.xBasisPoints,
+				yBasisPoints: locations.yBasisPoints,
+			})
+			.from(locations)
+			.innerJoin(
+				mapImages,
+				and(
+					eq(locations.mapImageId, mapImages.id),
+					eq(mapImages.isCurrent, true),
+				),
+			)
+			.innerJoin(
+				locationDocuments,
+				eq(locationDocuments.locationId, locations.id),
+			)
+			.innerJoin(
+				documents,
+				and(
+					eq(locationDocuments.documentId, documents.id),
+					eq(documents.isActive, true),
+					eq(documents.isFilterable, true),
+				),
+			)
+			.innerJoin(
+				documentMaps,
+				and(
+					eq(documentMaps.documentId, locationDocuments.documentId),
+					eq(documentMaps.mapId, mapImages.mapId),
+				),
+			)
+			.innerJoin(
+				maps,
+				and(eq(mapImages.mapId, maps.id), eq(maps.isActive, true)),
+			)
+			.where(eq(locations.isActive, true))
+			.orderBy(asc(mapImages.mapId), asc(locations.name))
+			.all(),
 	]);
 	const contributableMapIds = new Set(imageRows.map(({ mapId }) => mapId));
 	const visibleDocumentMaps = documentMapRows.filter(({ mapId }) =>
@@ -129,6 +174,7 @@ export async function queryContributionCatalog(
 		documents: documentRows.filter(({ id }) => visibleDocumentIds.has(id)),
 		keyMaps: visibleKeyMaps,
 		keys: keyRows.filter(({ id }) => visibleKeyIds.has(id)),
+		locations: locationRows,
 		mapImages: imageRows.map((image) => ({
 			...image,
 			sources: getMapImageSources(masterManifest, image.path),

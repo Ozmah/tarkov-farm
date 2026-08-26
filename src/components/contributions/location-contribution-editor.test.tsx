@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import { useBlocker } from "@tanstack/react-router";
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,6 +11,11 @@ import { LocationContributionEditor } from "./location-contribution-editor";
 
 vi.mock("@/components/location-composer/location-composer-form", () => ({
 	LocationComposerForm: vi.fn(() => null),
+}));
+
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+	...(await importOriginal<typeof import("@tanstack/react-router")>()),
+	useBlocker: vi.fn(() => ({ status: "idle" })),
 }));
 
 vi.mock("@/components/location-composer/map-canvas", () => ({
@@ -34,6 +40,15 @@ describe("LocationContributionEditor", () => {
 
 		expect(latestComposerProps().draft.mapImageId).toBe("woods-main");
 		expect(latestMapProps().image.path).toBe("/woods.webp");
+		expect(latestMapProps().locations).toContainEqual(
+			expect.objectContaining({
+				appearance: "reference",
+				clusterable: false,
+				id: "published:published-location",
+				markerLabel: "",
+				selectable: false,
+			}),
+		);
 
 		act(() => {
 			latestComposerProps().onDraftChange("name", "USEC camp");
@@ -77,6 +92,31 @@ describe("LocationContributionEditor", () => {
 		expect(latestComposerProps().screenshots).toHaveLength(0);
 		expect(latestComposerProps().error).toContain("JPEG, PNG, or WebP");
 	});
+
+	it("enables navigation protection only after in-memory work begins", () => {
+		render(<LocationContributionEditor catalog={catalog} />);
+
+		expect(latestBlockerOptions().disabled).toBe(true);
+
+		act(() => {
+			latestComposerProps().onDraftChange("name", "Unsaved location");
+		});
+
+		expect(latestBlockerOptions().disabled).toBe(false);
+		const enableBeforeUnload = latestBlockerOptions().enableBeforeUnload;
+		expect(
+			typeof enableBeforeUnload === "function"
+				? enableBeforeUnload()
+				: enableBeforeUnload,
+		).toBe(true);
+		expect(
+			latestBlockerOptions().shouldBlockFn({
+				action: "PUSH",
+				current: { pathname: "/contribute/editor" },
+				next: { pathname: "/maps/customs" },
+			} as never),
+		).toBe(true);
+	});
 });
 
 const catalog: React.ComponentProps<
@@ -86,6 +126,15 @@ const catalog: React.ComponentProps<
 	documents: [{ id: "technical", name: "Technical manual" }],
 	keyMaps: [],
 	keys: [],
+	locations: [
+		{
+			id: "published-location",
+			mapImageId: "woods-main",
+			name: "Published location",
+			xBasisPoints: 4_000,
+			yBasisPoints: 6_000,
+		},
+	],
 	mapImages: [
 		{
 			altText: "Woods map",
@@ -118,6 +167,16 @@ function latestTrayProps() {
 	const props = vi.mocked(ContributionTray).mock.calls.at(-1)?.[0];
 	if (!props) throw new Error("ContributionTray was not rendered");
 	return props;
+}
+
+function latestBlockerOptions() {
+	const options = vi.mocked(useBlocker).mock.calls.at(-1)?.[0];
+	if (!options) throw new Error("useBlocker was not called");
+	return options as unknown as {
+		disabled?: boolean;
+		enableBeforeUnload?: boolean | (() => boolean);
+		shouldBlockFn: (options: unknown) => boolean | Promise<boolean>;
+	};
 }
 
 function createScreenshot() {

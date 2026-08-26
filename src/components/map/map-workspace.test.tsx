@@ -448,6 +448,7 @@ describe("MapWorkspace", () => {
 	});
 
 	it("groups overlapping locations while keeping standalone markers separate", () => {
+		const onSelectMarker = vi.fn();
 		renderWorkspace({
 			markers: [
 				{
@@ -472,8 +473,17 @@ describe("MapWorkspace", () => {
 					xBasisPoints: 5_000,
 					yBasisPoints: 5_000,
 				},
+				{
+					appearance: "reference",
+					id: "published",
+					label: "",
+					name: "Published location",
+					selectable: false,
+					xBasisPoints: 5_000,
+					yBasisPoints: 5_000,
+				},
 			],
-			onSelectMarker: vi.fn(),
+			onSelectMarker,
 		});
 		prepareReadyViewport();
 
@@ -488,6 +498,11 @@ describe("MapWorkspace", () => {
 		expect(
 			screen.queryByRole("button", { name: "Open First location" }),
 		).toBeNull();
+		const publishedLocation = screen.getByRole("img", {
+			name: "Existing location: Published location",
+		});
+		fireEvent.click(publishedLocation);
+		expect(onSelectMarker).not.toHaveBeenCalled();
 	});
 
 	it("reports an image failure once and exposes an alert", () => {

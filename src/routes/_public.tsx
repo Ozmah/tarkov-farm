@@ -183,10 +183,12 @@ function PublicLayout() {
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={(map) =>
-					prepareMapNavigation(
-						map,
-						layoutMode === "vertical" ? "topbar" : "sidebar",
-					)
+					currentPathname === "/contribute/editor"
+						? undefined
+						: prepareMapNavigation(
+								map,
+								layoutMode === "vertical" ? "topbar" : "sidebar",
+							)
 				}
 				onLayoutModeChange={changeLayoutMode}
 				sidebarPanel={configuration?.sidebarPanel}
