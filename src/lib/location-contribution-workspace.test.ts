@@ -68,8 +68,6 @@ describe("location contribution workspace", () => {
 				empty,
 				createInput(file, {
 					screenshots: Array.from({ length: 11 }, () => ({
-						altText: "",
-						caption: "",
 						file,
 					})),
 				}),
@@ -93,8 +91,6 @@ describe("location contribution workspace", () => {
 				empty,
 				createInput(firstFile, {
 					screenshots: duplicateFiles.map((file) => ({
-						altText: "",
-						caption: "",
 						file,
 					})),
 				}),
@@ -174,7 +170,7 @@ function createInput(
 		mapImageSha256: MAP_SHA256,
 		name: "White Pawn",
 		requiredKeyIds: [],
-		screenshots: [{ altText: "", caption: "", file }],
+		screenshots: [{ file }],
 		xBasisPoints: 3_193,
 		yBasisPoints: 1_527,
 		...overrides,

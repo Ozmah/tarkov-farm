@@ -85,6 +85,16 @@ afterEach(() => {
 });
 
 describe("MapWorkspace", () => {
+	it("uses flex sizing when the workspace height comes from min-height", () => {
+		renderWorkspace();
+		const viewport = screen.getByRole("application", { name: "Test map" });
+		const viewportFrame = viewport.parentElement;
+
+		expect(viewport.classList.contains("flex-1")).toBe(true);
+		expect(viewportFrame?.classList.contains("flex")).toBe(true);
+		expect(viewportFrame?.classList.contains("flex-col")).toBe(true);
+	});
+
 	it("selects responsive sources from the rendered map width", () => {
 		renderWorkspace();
 		const image = screen.getByAltText("Customs map");

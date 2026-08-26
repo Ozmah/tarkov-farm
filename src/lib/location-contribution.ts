@@ -6,9 +6,18 @@ const UUID_V4_PATTERN =
 export const LOCATION_CONTRIBUTION_FORMAT_VERSION = 1;
 export const MAX_CONTRIBUTION_LOCATIONS = 20;
 export const MAX_CONTRIBUTION_SCREENSHOTS_PER_LOCATION = 10;
+export const MAX_CONTRIBUTION_REQUIRED_KEYS_PER_LOCATION = 256;
 export const MAX_CONTRIBUTION_SCREENSHOT_BYTES = 20 * 1_048_576;
 export const CONTRIBUTION_BUNDLE_WARNING_BYTES = 75 * 1_048_576;
 export const MAX_CONTRIBUTION_BUNDLE_BYTES = 100 * 1_048_576;
+export const MAX_CONTRIBUTION_MANIFEST_BYTES = 2 * 1_048_576;
+export const MAX_CONTRIBUTION_ARCHIVE_METADATA_BYTES = 64 * 1_024;
+export const MAX_CONTRIBUTION_ARCHIVE_ENTRIES =
+	1 + MAX_CONTRIBUTION_LOCATIONS * MAX_CONTRIBUTION_SCREENSHOTS_PER_LOCATION;
+export const MAX_CONTRIBUTION_ARCHIVE_BYTES =
+	MAX_CONTRIBUTION_BUNDLE_BYTES +
+	MAX_CONTRIBUTION_MANIFEST_BYTES +
+	MAX_CONTRIBUTION_ARCHIVE_METADATA_BYTES;
 
 export type LocationContributionScreenshot = {
 	altText: string;
@@ -296,7 +305,10 @@ function readCatalogId(value: unknown, label: string) {
 }
 
 function readCatalogIdArray(value: unknown, label: string) {
-	if (!Array.isArray(value)) {
+	if (
+		!Array.isArray(value) ||
+		value.length > MAX_CONTRIBUTION_REQUIRED_KEYS_PER_LOCATION
+	) {
 		throw new Error(`${label} must be an array`);
 	}
 

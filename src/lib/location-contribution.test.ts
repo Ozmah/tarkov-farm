@@ -6,6 +6,7 @@ import {
 	type LocationContributionBundle,
 	MAX_CONTRIBUTION_BUNDLE_BYTES,
 	MAX_CONTRIBUTION_LOCATIONS,
+	MAX_CONTRIBUTION_REQUIRED_KEYS_PER_LOCATION,
 	MAX_CONTRIBUTION_SCREENSHOT_BYTES,
 	parseLocationContributionBundle,
 	serializeLocationContributionBundle,
@@ -124,6 +125,18 @@ describe("location contribution bundle", () => {
 
 		expect(() => parseLocationContributionBundle(input)).toThrow(
 			`between 1 and ${MAX_CONTRIBUTION_LOCATIONS} locations`,
+		);
+	});
+
+	it("limits required keys so manifests remain bounded", () => {
+		const input = structuredClone(validBundle);
+		input.locations[0].requiredKeyIds = Array.from(
+			{ length: MAX_CONTRIBUTION_REQUIRED_KEYS_PER_LOCATION + 1 },
+			(_, index) => `key-${index}`,
+		);
+
+		expect(() => parseLocationContributionBundle(input)).toThrow(
+			"Contribution required key identifiers must be an array",
 		);
 	});
 

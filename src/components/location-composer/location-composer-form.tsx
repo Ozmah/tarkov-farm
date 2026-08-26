@@ -46,11 +46,6 @@ type LocationComposerFormProps = {
 	onScreenshotFilesAdded: (files: File[]) => void;
 	onScreenshotMove: (index: number, offset: -1 | 1) => void;
 	onScreenshotRemove: (key: string) => void;
-	onScreenshotUpdate: (
-		key: string,
-		field: "altText" | "caption",
-		value: string,
-	) => void;
 	onSubmit: () => void;
 };
 
@@ -80,7 +75,6 @@ export function LocationComposerForm({
 	onScreenshotFilesAdded,
 	onScreenshotMove,
 	onScreenshotRemove,
-	onScreenshotUpdate,
 	onSubmit,
 }: LocationComposerFormProps) {
 	const titleId = useId();
@@ -144,7 +138,6 @@ export function LocationComposerForm({
 							onFilesAdded={onScreenshotFilesAdded}
 							onMove={onScreenshotMove}
 							onRemove={onScreenshotRemove}
-							onUpdate={onScreenshotUpdate}
 						/>
 
 						{additionalFields}

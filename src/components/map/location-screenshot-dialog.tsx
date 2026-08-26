@@ -5,27 +5,34 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
 
 type LocationScreenshotDialogProps = {
+	locationDescription: string | null;
 	locationName: string;
 	onOpenChange: (open: boolean) => void;
 	screenshot?: LocationScreenshot;
 };
 
 export function LocationScreenshotDialog({
+	locationDescription,
 	locationName,
 	onOpenChange,
 	screenshot,
 }: LocationScreenshotDialogProps) {
+	const altText = screenshot
+		? getLocationScreenshotAltText(
+				{ description: locationDescription, name: locationName },
+				screenshot.altText,
+			)
+		: `${locationName} screenshot`;
 	return (
 		<Dialog open={Boolean(screenshot)} onOpenChange={onOpenChange}>
 			<DialogContent
 				overlayClassName="bg-black/85"
 				className="w-auto max-w-[calc(100vw-2rem)] gap-0 bg-transparent p-0 shadow-none ring-0 sm:max-w-[calc(100vw-2rem)]"
 			>
-				<DialogTitle className="sr-only">
-					{screenshot?.altText || `${locationName} screenshot`}
-				</DialogTitle>
+				<DialogTitle className="sr-only">{altText}</DialogTitle>
 				<DialogDescription className="sr-only">
 					Full-size location screenshot. Press Escape or click outside to close.
 				</DialogDescription>
@@ -33,7 +40,7 @@ export function LocationScreenshotDialog({
 					<figure className="flex max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)] flex-col bg-background">
 						<img
 							src={screenshot.path}
-							alt={screenshot.altText}
+							alt={altText}
 							width={screenshot.width}
 							height={screenshot.height}
 							decoding="async"

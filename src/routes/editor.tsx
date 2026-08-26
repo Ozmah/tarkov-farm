@@ -10,7 +10,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
-	section?: "updates";
+	section?: "import" | "updates";
 };
 
 export const Route = createFileRoute("/editor")({
@@ -28,7 +28,10 @@ export const Route = createFileRoute("/editor")({
 			map: readSearchValue(search.map),
 			image: readSearchValue(search.image),
 			location: readSearchValue(search.location),
-			section: search.section === "updates" ? "updates" : undefined,
+			section:
+				search.section === "updates" || search.section === "import"
+					? search.section
+					: undefined,
 		};
 	},
 	loaderDeps: () => ({}),

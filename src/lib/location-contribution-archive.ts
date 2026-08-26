@@ -1,6 +1,14 @@
 import { strToU8, Zip, ZipPassThrough } from "fflate";
 
-import { serializeLocationContributionBundle } from "./location-contribution";
+import {
+	MAX_CONTRIBUTION_ARCHIVE_BYTES,
+	MAX_CONTRIBUTION_MANIFEST_BYTES,
+	serializeLocationContributionBundle,
+} from "./location-contribution";
+import {
+	sha256Hex,
+	verifyLocationContributionImage,
+} from "./location-contribution-image";
 import {
 	getLocationContributionWorkspaceBundle,
 	type LocationContributionWorkspace,
@@ -21,13 +29,13 @@ export async function createLocationContributionArchive(
 ): Promise<LocationContributionArchive> {
 	const bundle = getLocationContributionWorkspaceBundle(workspace);
 	await verifyWorkspaceFiles(workspace, bundle);
+	const manifestBytes = strToU8(serializeLocationContributionBundle(bundle));
+	if (manifestBytes.byteLength > MAX_CONTRIBUTION_MANIFEST_BYTES) {
+		throw new Error("Contribution manifest is too large");
+	}
 
 	const blob = await createZip(async (zip) => {
-		pushBytes(
-			zip,
-			MANIFEST_ENTRY,
-			strToU8(serializeLocationContributionBundle(bundle)),
-		);
+		pushBytes(zip, MANIFEST_ENTRY, manifestBytes);
 
 		for (const location of workspace.locations) {
 			for (const screenshot of location.screenshots) {
@@ -35,6 +43,9 @@ export async function createLocationContributionArchive(
 			}
 		}
 	});
+	if (blob.size > MAX_CONTRIBUTION_ARCHIVE_BYTES) {
+		throw new Error("Contribution archive is too large");
+	}
 
 	return {
 		blob,
@@ -100,13 +111,19 @@ async function verifyWorkspaceFiles(
 				throw new Error("A contribution screenshot changed before export");
 			}
 
-			if (!(await hasExpectedImageSignature(file))) {
+			const bytes = new Uint8Array(await file.arrayBuffer());
+			try {
+				await verifyLocationContributionImage(
+					bytes,
+					manifestScreenshot.mediaType,
+				);
+			} catch {
 				throw new Error(
 					"A screenshot's contents do not match its JPEG, PNG, or WebP type",
 				);
 			}
 
-			if ((await hashFile(file)) !== manifestScreenshot.sourceSha256) {
+			if ((await sha256Hex(bytes)) !== manifestScreenshot.sourceSha256) {
 				throw new Error(
 					"A contribution screenshot failed integrity verification",
 				);
@@ -176,37 +193,6 @@ function createEntry(path: string) {
 	entry.os = 0;
 	entry.attrs = 0;
 	return entry;
-}
-
-async function hashFile(file: File) {
-	const digest = await crypto.subtle.digest(
-		"SHA-256",
-		await file.arrayBuffer(),
-	);
-	return Array.from(new Uint8Array(digest), (byte) =>
-		byte.toString(16).padStart(2, "0"),
-	).join("");
-}
-
-async function hasExpectedImageSignature(file: File) {
-	const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-
-	if (file.type === "image/jpeg") {
-		return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-	}
-
-	if (file.type === "image/png") {
-		return matches(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-	}
-
-	return (
-		matches(bytes, [0x52, 0x49, 0x46, 0x46]) &&
-		matches(bytes, [0x57, 0x45, 0x42, 0x50], 8)
-	);
-}
-
-function matches(bytes: Uint8Array, signature: number[], offset = 0) {
-	return signature.every((byte, index) => bytes[offset + index] === byte);
 }
 
 function toError(error: unknown) {

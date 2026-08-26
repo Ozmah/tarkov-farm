@@ -849,7 +849,7 @@ export function MapWorkspace({
 				to zoom, or zero to fit.
 			</p>
 
-			<div className="min-h-0 flex-1 bg-muted/20 p-2 sm:p-4">
+			<div className="flex min-h-0 flex-1 flex-col bg-muted/20 p-2 sm:p-4">
 				<div
 					ref={viewportRef}
 					role="application"
@@ -858,7 +858,7 @@ export function MapWorkspace({
 					tabIndex={0}
 					aria-describedby={instructionsId}
 					className={cn(
-						"relative size-full touch-none select-none overflow-hidden overscroll-contain bg-background",
+						"relative min-h-0 w-full flex-1 touch-none select-none overflow-hidden overscroll-contain bg-background",
 						isPanning
 							? "cursor-grabbing"
 							: onMapPress
@@ -1036,7 +1036,7 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 			"z-20 size-11 bg-rowdy-orange text-rowdy-orange-foreground ring-4 after:bg-rowdy-orange",
 		marker.isActive === false && "opacity-60",
 		marker.appearance === "reference" &&
-			"size-5 border-2 border-cosmic-ink bg-milk-mustache text-transparent opacity-95 shadow-[0_2px_6px_rgb(0_0_0/0.9)] ring-1 ring-milk-mustache before:size-1.5 before:rounded-full before:bg-blue-opal after:-bottom-0.5 after:size-1.5 after:border-r after:border-b after:bg-milk-mustache",
+			"size-6 border-2 border-cosmic-ink bg-milk-mustache text-transparent opacity-95 shadow-[0_2px_6px_rgb(0_0_0/0.9)] ring-1 ring-milk-mustache before:size-2 before:rounded-full before:bg-blue-opal after:-bottom-1 after:size-2 after:border-r after:border-b after:bg-milk-mustache",
 	);
 	const style = {
 		left: position.x,

@@ -184,25 +184,10 @@ export function LocationContributionEditor({
 		setScreenshots((current) => [
 			...current,
 			...files.map((file) => ({
-				altText: "",
-				caption: "",
 				file,
 				key: crypto.randomUUID(),
 			})),
 		]);
-	};
-
-	const updateScreenshot = (
-		key: string,
-		field: "altText" | "caption",
-		value: string,
-	) => {
-		setScreenshots((current) =>
-			current.map((screenshot) =>
-				screenshot.key === key ? { ...screenshot, [field]: value } : screenshot,
-			),
-		);
-		setError(undefined);
 	};
 
 	const moveScreenshot = (index: number, offset: -1 | 1) => {
@@ -242,8 +227,6 @@ export function LocationContributionEditor({
 		});
 		setScreenshots(
 			location.screenshots.map((screenshot) => ({
-				altText: screenshot.altText,
-				caption: screenshot.caption ?? "",
 				file: screenshot.file,
 				key: screenshot.id,
 			})),
@@ -268,8 +251,6 @@ export function LocationContributionEditor({
 						}
 
 						return {
-							altText: screenshot.altText,
-							caption: screenshot.caption,
 							file: screenshot.file,
 						};
 					}),
@@ -364,7 +345,6 @@ export function LocationContributionEditor({
 							);
 							setError(undefined);
 						}}
-						onScreenshotUpdate={updateScreenshot}
 						onSubmit={() => void stageLocation()}
 					/>
 

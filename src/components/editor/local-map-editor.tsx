@@ -1,12 +1,14 @@
 import {
 	ArrowLeftIcon,
 	CrosshairIcon,
+	FileZipIcon,
 	NewspaperClippingIcon,
 	PlusIcon,
 } from "@phosphor-icons/react";
 import { Link, useRouter } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
+import { LocalContributionImporter } from "@/components/editor/local-contribution-importer";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
@@ -64,7 +66,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
-	section?: "updates";
+	section?: "import" | "updates";
 };
 type EditorLocation = EditorData["locations"][number];
 type EditorScreenshot = EditorData["screenshots"][number];
@@ -224,13 +226,67 @@ export function LocalMapEditor({
 		documentMaps: data.documentMaps,
 		editorAvailable: false,
 	};
+	let editorContent: ReactNode;
+	switch (search.section) {
+		case "import":
+			editorContent = (
+				<LocalContributionImporter
+					data={data}
+					onImported={async () => {
+						await router.invalidate({ sync: true });
+					}}
+				/>
+			);
+			break;
+		case "updates":
+			editorContent = (
+				<LocalUpdatesEditor
+					releaseContext={releaseContext}
+					updates={updates}
+					onRefresh={async () => {
+						await router.invalidate({ sync: true });
+					}}
+				/>
+			);
+			break;
+		default:
+			editorContent = (
+				<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[minmax(0,1fr)_26rem] lg:overflow-hidden">
+					{selectedMap && selectedImage ? (
+						<LocationWorkspace
+							key={selectedImage.id}
+							data={data}
+							draftVersion={newDraftVersion}
+							image={selectedImage}
+							locations={visibleLocations}
+							selectedLocation={selectedLocation}
+							onSelectLocation={(locationId) =>
+								void onSearchChange({ location: locationId }, true)
+							}
+							onSaved={refreshAndSelect}
+						/>
+					) : (
+						<Empty className="min-h-[50svh] lg:col-span-2">
+							<EmptyHeader>
+								<EmptyMedia variant="icon">
+									<CrosshairIcon aria-hidden="true" />
+								</EmptyMedia>
+								<EmptyTitle>No map image</EmptyTitle>
+								<EmptyDescription>
+									Add a current image record before creating locations for this
+									map.
+								</EmptyDescription>
+							</EmptyHeader>
+						</Empty>
+					)}
+				</div>
+			);
+	}
 	return (
 		<PublicShell
 			catalog={editorCatalog}
 			currentMapId={selectedMap?.id}
-			headerTitle={
-				search.section === "updates" ? "Updates editor" : "Location editor"
-			}
+			headerTitle={getEditorHeaderTitle(search.section)}
 			headerMeta="Local only"
 			onMapNavigate={selectMap}
 			onHomeNavigate={() =>
@@ -242,6 +298,7 @@ export function LocalMapEditor({
 			sidebarFooter={
 				<EditorSidebarFooter
 					documentSearch={documentSearch}
+					isContributionsSelected={search.section === "import"}
 					isUpdatesSelected={search.section === "updates"}
 					selectedLocationId={selectedLocation?.id}
 					selectedMap={selectedMap}
@@ -252,10 +309,16 @@ export function LocalMapEditor({
 							true,
 						)
 					}
+					onContributionsSelect={() =>
+						void onSearchChange(
+							{ location: undefined, section: "import" },
+							true,
+						)
+					}
 				/>
 			}
 			sidebarPanel={
-				search.section === "updates"
+				search.section
 					? undefined
 					: (closePanel) => (
 							<EditorMapSidebarPanel
@@ -294,64 +357,41 @@ export function LocalMapEditor({
 						)
 			}
 		>
-			{search.section === "updates" ? (
-				<LocalUpdatesEditor
-					releaseContext={releaseContext}
-					updates={updates}
-					onRefresh={async () => {
-						await router.invalidate({ sync: true });
-					}}
-				/>
-			) : (
-				<div className="grid min-h-0 flex-1 grid-cols-1 overflow-auto lg:grid-cols-[minmax(0,1fr)_26rem] lg:overflow-hidden">
-					{selectedMap && selectedImage ? (
-						<LocationWorkspace
-							key={selectedImage.id}
-							data={data}
-							draftVersion={newDraftVersion}
-							image={selectedImage}
-							locations={visibleLocations}
-							selectedLocation={selectedLocation}
-							onSelectLocation={(locationId) =>
-								void onSearchChange({ location: locationId }, true)
-							}
-							onSaved={refreshAndSelect}
-						/>
-					) : (
-						<Empty className="min-h-[50svh] lg:col-span-2">
-							<EmptyHeader>
-								<EmptyMedia variant="icon">
-									<CrosshairIcon aria-hidden="true" />
-								</EmptyMedia>
-								<EmptyTitle>No map image</EmptyTitle>
-								<EmptyDescription>
-									Add a current image record before creating locations for this
-									map.
-								</EmptyDescription>
-							</EmptyHeader>
-						</Empty>
-					)}
-				</div>
-			)}
+			{editorContent}
 		</PublicShell>
 	);
 }
 
+function getEditorHeaderTitle(section: EditorSearch["section"]) {
+	switch (section) {
+		case "import":
+			return "Contribution reviewer";
+		case "updates":
+			return "Updates editor";
+		default:
+			return "Location editor";
+	}
+}
+
 type EditorSidebarFooterProps = {
 	documentSearch?: string;
+	isContributionsSelected: boolean;
 	isUpdatesSelected: boolean;
 	selectedLocationId?: string;
 	selectedMap?: EditorData["maps"][number];
 	selectedViewKey?: string;
+	onContributionsSelect: () => void;
 	onUpdatesSelect: () => void;
 };
 
 function EditorSidebarFooter({
 	documentSearch,
+	isContributionsSelected,
 	isUpdatesSelected,
 	selectedLocationId,
 	selectedMap,
 	selectedViewKey,
+	onContributionsSelect,
 	onUpdatesSelect,
 }: EditorSidebarFooterProps) {
 	const { isMobile, setOpenMobile } = useSidebar();
@@ -362,6 +402,23 @@ function EditorSidebarFooter({
 
 	return (
 		<SidebarMenu>
+			<SidebarMenuItem>
+				<SidebarMenuButton
+					render={
+						<button
+							type="button"
+							onClick={() => {
+								closeMobileSidebar();
+								onContributionsSelect();
+							}}
+						/>
+					}
+					isActive={isContributionsSelected}
+				>
+					<FileZipIcon aria-hidden="true" />
+					<span>Review contributions</span>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
 			<SidebarMenuItem>
 				<SidebarMenuButton
 					render={
@@ -647,26 +704,12 @@ function LocationWorkspace({
 		const additions = files.map(
 			(file) =>
 				({
-					altText: "",
-					caption: "",
 					file,
 					key: crypto.randomUUID(),
 				}) satisfies ScreenshotDraft,
 		);
 
 		setScreenshotDrafts((current) => [...current, ...additions]);
-	};
-
-	const updateScreenshotDraft = (
-		key: string,
-		field: "altText" | "caption",
-		value: string,
-	) => {
-		setScreenshotDrafts((current) =>
-			current.map((screenshot) =>
-				screenshot.key === key ? { ...screenshot, [field]: value } : screenshot,
-			),
-		);
 	};
 
 	const moveScreenshotDraft = (index: number, offset: -1 | 1) => {
@@ -709,8 +752,8 @@ function LocationWorkspace({
 			const files: File[] = [];
 			const screenshotPayload = screenshotDrafts.map((screenshot) => {
 				const base = {
-					altText: screenshot.altText,
-					caption: screenshot.caption,
+					altText: "",
+					caption: null,
 				};
 
 				if (screenshot.id) {
@@ -869,7 +912,6 @@ function LocationWorkspace({
 				onScreenshotFilesAdded={addScreenshotFiles}
 				onScreenshotMove={moveScreenshotDraft}
 				onScreenshotRemove={removeScreenshotDraft}
-				onScreenshotUpdate={updateScreenshotDraft}
 				onSubmit={() => void submitLocation()}
 			/>
 		</>
@@ -909,8 +951,6 @@ function createScreenshotDrafts(
 	return screenshots
 		.filter((screenshot) => screenshot.locationId === locationId)
 		.map((screenshot) => ({
-			altText: screenshot.altText,
-			caption: screenshot.caption ?? "",
 			height: screenshot.previewHeight,
 			id: screenshot.id,
 			key: screenshot.id,

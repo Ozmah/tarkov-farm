@@ -25,8 +25,6 @@ export type ContributionLocationInput = Omit<
 > & {
 	description: string;
 	screenshots: Array<{
-		altText: string;
-		caption: string;
 		file: File;
 	}>;
 };
@@ -104,9 +102,9 @@ export async function stageContributionLocation(
 			if (!sourceSha256) throw new Error("Screenshot hashing failed");
 
 			return {
-				altText: screenshot.altText.trim(),
+				altText: "",
 				byteLength: screenshot.file.size,
-				caption: normalizeNullableText(screenshot.caption),
+				caption: null,
 				entry: `locations/${locationId}/screenshots/${id}.${SCREENSHOT_EXTENSIONS[mediaType]}`,
 				file: screenshot.file,
 				id,

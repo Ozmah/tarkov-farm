@@ -51,6 +51,23 @@ describe("LocationComposerForm", () => {
 		).toBeTruthy();
 	});
 
+	it("offers a clear screenshot button and accepts dropped files", () => {
+		const onScreenshotFilesAdded = vi.fn();
+		renderComposer({ onScreenshotFilesAdded });
+		const file = new File(["image"], "location.png", { type: "image/png" });
+
+		expect(
+			screen.getByRole("button", { name: "Choose screenshots" }),
+		).toBeTruthy();
+		fireEvent.drop(screen.getByRole("region", { name: "Screenshot upload" }), {
+			dataTransfer: { dropEffect: "none", files: [file] },
+		});
+
+		expect(onScreenshotFilesAdded).toHaveBeenCalledWith([file]);
+		expect(screen.queryByRole("textbox", { name: /alt text/i })).toBeNull();
+		expect(screen.queryByRole("textbox", { name: /caption/i })).toBeNull();
+	});
+
 	it("disables every composer control while an operation is pending", () => {
 		renderComposer({ disabled: true, submitting: true });
 
@@ -98,7 +115,6 @@ function renderComposer(
 			onScreenshotFilesAdded={vi.fn()}
 			onScreenshotMove={vi.fn()}
 			onScreenshotRemove={vi.fn()}
-			onScreenshotUpdate={vi.fn()}
 			onSubmit={vi.fn()}
 			{...overrides}
 		/>,

@@ -10,9 +10,12 @@ import {
 } from "./location-contribution-workspace";
 
 const MAP_SHA256 = "a".repeat(64);
-const PNG_SIGNATURE = new Uint8Array([
-	0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-]);
+const PNG_BYTES = Uint8Array.from(
+	Buffer.from(
+		"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+		"base64",
+	),
+);
 
 describe("location contribution archive", () => {
 	it("writes the canonical manifest and original screenshot bytes", async () => {
@@ -100,12 +103,12 @@ function createInput(file: File) {
 		mapImageSha256: MAP_SHA256,
 		name: "White Pawn",
 		requiredKeyIds: [],
-		screenshots: [{ altText: "Desk", caption: "", file }],
+		screenshots: [{ file }],
 		xBasisPoints: 3_193,
 		yBasisPoints: 1_527,
 	};
 }
 
-function createPngFile(name: string, content: string) {
-	return new File([PNG_SIGNATURE, content], name, { type: "image/png" });
+function createPngFile(name: string, _content: string) {
+	return new File([PNG_BYTES], name, { type: "image/png" });
 }
