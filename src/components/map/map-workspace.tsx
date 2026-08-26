@@ -55,6 +55,7 @@ export type MapWorkspaceImage = {
 };
 
 export type MapWorkspaceMarker = {
+	appearance?: "default" | "reference";
 	clusterable?: boolean;
 	focusOnSelect?: boolean;
 	id: string;
@@ -64,6 +65,7 @@ export type MapWorkspaceMarker = {
 	name: string;
 	preview?: MapMarkerPreviewData;
 	secondaryLabel?: string;
+	selectable?: boolean;
 	xBasisPoints: number;
 	yBasisPoints: number;
 };
@@ -170,14 +172,19 @@ export function MapWorkspace({
 	const clusterableLocationMarkers = useMemo(
 		() =>
 			markers.filter(
-				(marker) => marker.kind !== "submap" && marker.clusterable !== false,
+				(marker) =>
+					marker.kind !== "submap" &&
+					marker.clusterable !== false &&
+					marker.selectable !== false,
 			),
 		[markers],
 	);
 	const standaloneLocationMarkers = useMemo(
 		() =>
 			markers.filter(
-				(marker) => marker.kind !== "submap" && marker.clusterable === false,
+				(marker) =>
+					marker.kind !== "submap" &&
+					(marker.clusterable === false || marker.selectable === false),
 			),
 		[markers],
 	);
@@ -842,7 +849,7 @@ export function MapWorkspace({
 				to zoom, or zero to fit.
 			</p>
 
-			<div className="min-h-0 flex-1 bg-muted/20 p-2 sm:p-4">
+			<div className="flex min-h-0 flex-1 flex-col bg-muted/20 p-2 sm:p-4">
 				<div
 					ref={viewportRef}
 					role="application"
@@ -851,7 +858,7 @@ export function MapWorkspace({
 					tabIndex={0}
 					aria-describedby={instructionsId}
 					className={cn(
-						"relative size-full touch-none select-none overflow-hidden overscroll-contain bg-background",
+						"relative min-h-0 w-full flex-1 touch-none select-none overflow-hidden overscroll-contain bg-background",
 						isPanning
 							? "cursor-grabbing"
 							: onMapPress
@@ -941,7 +948,7 @@ export function MapWorkspace({
 											)}
 											isSelected={marker.id === selectedMarkerId}
 											onClick={
-												onSelectMarker
+												onSelectMarker && marker.selectable !== false
 													? () => onSelectMarker(marker.id)
 													: undefined
 											}
@@ -966,7 +973,7 @@ export function MapWorkspace({
 										position={getMarkerPosition(marker, imageSize, view.scale)}
 										isSelected={marker.id === selectedMarkerId}
 										onClick={
-											onSelectMarker
+											onSelectMarker && marker.selectable !== false
 												? () => onSelectMarker(marker.id)
 												: undefined
 										}
@@ -979,7 +986,7 @@ export function MapWorkspace({
 										position={getMarkerPosition(marker, imageSize, view.scale)}
 										isSelected={false}
 										onClick={
-											onSelectMarker
+											onSelectMarker && marker.selectable !== false
 												? () => onSelectMarker(marker.id)
 												: undefined
 										}
@@ -1028,6 +1035,8 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 			!isSubmap &&
 			"z-20 size-11 bg-rowdy-orange text-rowdy-orange-foreground ring-4 after:bg-rowdy-orange",
 		marker.isActive === false && "opacity-60",
+		marker.appearance === "reference" &&
+			"size-6 border-2 border-cosmic-ink bg-milk-mustache text-transparent opacity-95 shadow-[0_2px_6px_rgb(0_0_0/0.9)] ring-1 ring-milk-mustache before:size-2 before:rounded-full before:bg-blue-opal after:-bottom-1 after:size-2 after:border-r after:border-b after:bg-milk-mustache",
 	);
 	const style = {
 		left: position.x,
@@ -1037,6 +1046,25 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 	};
 
 	if (!onClick) {
+		if (marker.appearance === "reference") {
+			const referenceMarker = (
+				<span
+					data-map-marker
+					role="img"
+					aria-label={`Existing location: ${marker.name}`}
+					className={className}
+					style={style}
+				/>
+			);
+
+			return (
+				<Tooltip>
+					<TooltipTrigger render={referenceMarker} />
+					<TooltipContent>{marker.name}</TooltipContent>
+				</Tooltip>
+			);
+		}
+
 		return (
 			<span
 				aria-hidden="true"

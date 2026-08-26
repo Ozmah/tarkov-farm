@@ -43,7 +43,7 @@ export function MapMarkerPreview({
 					) : (
 						<img
 							src={preview.path}
-							alt={preview.altText}
+							alt={preview.altText || `${name} screenshot`}
 							width={preview.width}
 							height={preview.height}
 							loading="lazy"

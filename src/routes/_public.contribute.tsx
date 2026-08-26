@@ -1,12 +1,14 @@
 import {
+	ArrowRightIcon,
 	ArrowSquareOutIcon,
 	GithubLogoIcon,
 	XLogoIcon,
 } from "@phosphor-icons/react";
-import { createFileRoute, getRouteApi } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
+import { getContributionCatalog } from "@/functions/contributions";
 import { readCatalogId } from "@/lib/catalog-search";
 import {
 	buildLocationIssueUrl,
@@ -16,24 +18,24 @@ import {
 import { createSeoHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-const publicRoute = getRouteApi("/_public");
-
 export const Route = createFileRoute("/_public/contribute")({
 	validateSearch: (search: Record<string, unknown>) => ({
 		map: readCatalogId(search.map),
 	}),
+	loader: () => getContributionCatalog(),
 	head: () =>
 		createSeoHead({
 			title: "Contribute | Tarkov Farm",
 			description: "Share a new seasonal document location with Tarkov Farm.",
 			pathname: "/contribute",
 		}),
+	staleTime: 30_000,
 	component: ContributePage,
 });
 
 function ContributePage() {
 	const { map: mapId } = Route.useSearch();
-	const catalog = publicRoute.useLoaderData();
+	const catalog = Route.useLoaderData();
 	const map = mapId
 		? catalog.maps.find((item) => item.id === mapId)
 		: undefined;
@@ -134,6 +136,27 @@ function ContributePage() {
 							icon={<XLogoIcon aria-hidden="true" />}
 						/>
 					</div>
+				</section>
+
+				<section className="border border-border bg-card p-6 sm:p-8">
+					<p className="font-heading font-medium text-xl">
+						Want to go one step further?
+					</p>
+					<p className="mt-2 max-w-[60ch] text-muted-foreground text-sm leading-relaxed">
+						The experimental contribution editor lets contributors prepare
+						multiple locations and screenshots for one GitHub submission.
+					</p>
+					<Link
+						to="/contribute/editor"
+						search={{ map: map?.id }}
+						className={cn(
+							buttonVariants({ variant: "outline", size: "sm" }),
+							"mt-5",
+						)}
+					>
+						Open experimental editor
+						<ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
+					</Link>
 				</section>
 
 				<section className="border border-primary/40 bg-card p-6 sm:p-8">

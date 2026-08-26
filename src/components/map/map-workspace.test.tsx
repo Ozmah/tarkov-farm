@@ -85,6 +85,16 @@ afterEach(() => {
 });
 
 describe("MapWorkspace", () => {
+	it("uses flex sizing when the workspace height comes from min-height", () => {
+		renderWorkspace();
+		const viewport = screen.getByRole("application", { name: "Test map" });
+		const viewportFrame = viewport.parentElement;
+
+		expect(viewport.classList.contains("flex-1")).toBe(true);
+		expect(viewportFrame?.classList.contains("flex")).toBe(true);
+		expect(viewportFrame?.classList.contains("flex-col")).toBe(true);
+	});
+
 	it("selects responsive sources from the rendered map width", () => {
 		renderWorkspace();
 		const image = screen.getByAltText("Customs map");
@@ -448,6 +458,7 @@ describe("MapWorkspace", () => {
 	});
 
 	it("groups overlapping locations while keeping standalone markers separate", () => {
+		const onSelectMarker = vi.fn();
 		renderWorkspace({
 			markers: [
 				{
@@ -472,8 +483,17 @@ describe("MapWorkspace", () => {
 					xBasisPoints: 5_000,
 					yBasisPoints: 5_000,
 				},
+				{
+					appearance: "reference",
+					id: "published",
+					label: "",
+					name: "Published location",
+					selectable: false,
+					xBasisPoints: 5_000,
+					yBasisPoints: 5_000,
+				},
 			],
-			onSelectMarker: vi.fn(),
+			onSelectMarker,
 		});
 		prepareReadyViewport();
 
@@ -488,6 +508,11 @@ describe("MapWorkspace", () => {
 		expect(
 			screen.queryByRole("button", { name: "Open First location" }),
 		).toBeNull();
+		const publishedLocation = screen.getByRole("img", {
+			name: "Existing location: Published location",
+		});
+		fireEvent.click(publishedLocation);
+		expect(onSelectMarker).not.toHaveBeenCalled();
 	});
 
 	it("reports an image failure once and exposes an alert", () => {

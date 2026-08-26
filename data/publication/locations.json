@@ -853,6 +853,39 @@
 			"yBasisPoints": 3867
 		},
 		{
+			"description": "In the utility room before the helipad, on the top shelf next to the red containers",
+			"documentId": "pmc-personnel",
+			"id": "23ff5735-c5ee-416c-afd2-a43e583f8b61",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Heliipad Utility Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 928,
+						"path": "/screenshots/23ff5735-c5ee-416c-afd2-a43e583f8b61/61c94494319ecf8675d4fc2598ec8696b2de4c44716733ec61fc5503991c78bc-1920.webp",
+						"sha256": "a46dd9b69c83c6290a07f6b69c3944404f243e479ea47d8689fae40128f804ee",
+						"width": 1920
+					},
+					"id": "176b1cb5-58aa-4891-9c1e-319d9149b2e5",
+					"isActive": true,
+					"preview": {
+						"height": 484,
+						"path": "/screenshots/23ff5735-c5ee-416c-afd2-a43e583f8b61/61c94494319ecf8675d4fc2598ec8696b2de4c44716733ec61fc5503991c78bc-1000.webp",
+						"sha256": "caafc299fa7b59101eeb02044f9844771a27e074c1a9d5cd514b612f04cee265",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "61c94494319ecf8675d4fc2598ec8696b2de4c44716733ec61fc5503991c78bc"
+				}
+			],
+			"xBasisPoints": 6173,
+			"yBasisPoints": 2499
+		},
+		{
 			"description": "On the third floor of the offices, in the room locked by the factory emergency exit key, in a wooden drawer next to the door.",
 			"documentId": "project",
 			"id": "2614583a-9dbf-44b6-b577-45acb1278e1a",
@@ -1517,6 +1550,72 @@
 			"yBasisPoints": 4422
 		},
 		{
+			"description": "On a corpse next to barrels and a minotaur painting",
+			"documentId": "medical",
+			"id": "375fc54d-2bea-4c55-9e2d-748b5158d92a",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Toxic Pool Chamber Hallway",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1122,
+						"path": "/screenshots/375fc54d-2bea-4c55-9e2d-748b5158d92a/991b75dc0d46d1c51445bea82632cdb3c15599e5b0ce19a2a02e2c27438c5839-1920.webp",
+						"sha256": "d9b5432ecdd5cd229cedd060f618c7331b1f024a9dfa9091c410c5c29db3b5c6",
+						"width": 1920
+					},
+					"id": "783accae-1b07-4353-9587-0c00b44de5b0",
+					"isActive": true,
+					"preview": {
+						"height": 585,
+						"path": "/screenshots/375fc54d-2bea-4c55-9e2d-748b5158d92a/991b75dc0d46d1c51445bea82632cdb3c15599e5b0ce19a2a02e2c27438c5839-1000.webp",
+						"sha256": "aca4944457c8e1734e3abfa3c8a4f474274a9499feb41c117e0a19a73f627c20",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "991b75dc0d46d1c51445bea82632cdb3c15599e5b0ce19a2a02e2c27438c5839"
+				}
+			],
+			"xBasisPoints": 7481,
+			"yBasisPoints": 2801
+		},
+		{
+			"description": "On top of a patient corpse between the observation room and the torture room.",
+			"documentId": "medical",
+			"id": "37804444-5582-450f-ae57-cd2c0b32a0a3",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Patient Corpse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1161,
+						"path": "/screenshots/37804444-5582-450f-ae57-cd2c0b32a0a3/6deb835d2f9c2db9aec434a683aeafd886d3576f94aaffdc84890eeab9136e1b-1920.webp",
+						"sha256": "ad885319075572ea8ba05dca4d8be6c6cb212e8a1194f780113c263186a5f0f1",
+						"width": 1920
+					},
+					"id": "690f623f-5e66-4b69-b1a7-120ed44bc2ff",
+					"isActive": true,
+					"preview": {
+						"height": 605,
+						"path": "/screenshots/37804444-5582-450f-ae57-cd2c0b32a0a3/6deb835d2f9c2db9aec434a683aeafd886d3576f94aaffdc84890eeab9136e1b-1000.webp",
+						"sha256": "d1564f3a8a7f107cb1f792cf5ddbc297043ae59970ea1b2b8777ec1e4b1533ae",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "6deb835d2f9c2db9aec434a683aeafd886d3576f94aaffdc84890eeab9136e1b"
+				}
+			],
+			"xBasisPoints": 5328,
+			"yBasisPoints": 5817
+		},
+		{
 			"description": "Inside crackhouse on the floor near the bookshelves",
 			"documentId": "financial",
 			"id": "38a104fc-4286-4a4a-9d92-b43328010d38",
@@ -1614,6 +1713,39 @@
 			],
 			"xBasisPoints": 2890,
 			"yBasisPoints": 2993
+		},
+		{
+			"description": "The store that connects Goshan with the mall area on the first floor. Inside the shopping cart in the middle of the store.",
+			"documentId": "blueprints-technical",
+			"id": "3a69a9e2-77a6-4141-b8ec-2fff6009d09a",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "Bizarro  Store",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 980,
+						"path": "/screenshots/3a69a9e2-77a6-4141-b8ec-2fff6009d09a/9f48272299751aec835f9ff2068adedba32427ab02a443ec922ab31e80903ff7-1920.webp",
+						"sha256": "f1942dd3bd1daefc85580bd07b9e3d5ae84567ae70a5c706a35bf3231cca6357",
+						"width": 1920
+					},
+					"id": "e4fe30d6-e75b-4fbb-b05b-95e0eb79aca7",
+					"isActive": true,
+					"preview": {
+						"height": 511,
+						"path": "/screenshots/3a69a9e2-77a6-4141-b8ec-2fff6009d09a/9f48272299751aec835f9ff2068adedba32427ab02a443ec922ab31e80903ff7-1000.webp",
+						"sha256": "e05474ca78d95417d2ecc32067d08fb6ef24f96939b0861d5de2348a42876055",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9f48272299751aec835f9ff2068adedba32427ab02a443ec922ab31e80903ff7"
+				}
+			],
+			"xBasisPoints": 8191,
+			"yBasisPoints": 4636
 		},
 		{
 			"description": "On the top floor in on of the drawers in the file cabinet between the locked and the blocked room",
@@ -3279,6 +3411,59 @@
 			"yBasisPoints": 5920
 		},
 		{
+			"description": "On the chair inside the secret room below the engine room where you fight the first wave of black division",
+			"documentId": "pmc-personnel",
+			"id": "78d86958-ae6d-4994-9313-6cac2b5d8ed5",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Engine Secret Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1004,
+						"path": "/screenshots/78d86958-ae6d-4994-9313-6cac2b5d8ed5/a22e4738f3ba4c1d7f853acda6101e6d93277dcde93ff0451f33e992e61fe4af-1920.webp",
+						"sha256": "6675e67d37682bb8e441a72d479c9866a974b06cb9586738d7b727ba8c635a0d",
+						"width": 1920
+					},
+					"id": "9bca4683-fdb3-4fb4-86f7-f69ff23eab52",
+					"isActive": true,
+					"preview": {
+						"height": 523,
+						"path": "/screenshots/78d86958-ae6d-4994-9313-6cac2b5d8ed5/a22e4738f3ba4c1d7f853acda6101e6d93277dcde93ff0451f33e992e61fe4af-1000.webp",
+						"sha256": "4b3407ab0d59bd6d43f01cdfe83bb8fd486a5b490154d91978a70c523919f64b",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a22e4738f3ba4c1d7f853acda6101e6d93277dcde93ff0451f33e992e61fe4af"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 983,
+						"path": "/screenshots/78d86958-ae6d-4994-9313-6cac2b5d8ed5/e3779d98cf044ebd3f83a34fae81d42f4bfe7c9ab677e335a6610f648555aa90-1920.webp",
+						"sha256": "2776f78699d3a43b92920e9226091f230efb945589220f7310aefe36cb8d1d12",
+						"width": 1920
+					},
+					"id": "3e33d43f-cb82-4b81-bfba-06b3a8916944",
+					"isActive": true,
+					"preview": {
+						"height": 512,
+						"path": "/screenshots/78d86958-ae6d-4994-9313-6cac2b5d8ed5/e3779d98cf044ebd3f83a34fae81d42f4bfe7c9ab677e335a6610f648555aa90-1000.webp",
+						"sha256": "f0a3affebf4769505d5c430be07d6bf6c622b958073329eebe73a8aa932141c3",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "e3779d98cf044ebd3f83a34fae81d42f4bfe7c9ab677e335a6610f648555aa90"
+				}
+			],
+			"xBasisPoints": 9554,
+			"yBasisPoints": 2603
+		},
+		{
 			"description": "Terragroup building, front facing office, on a sofa near the entrance",
 			"documentId": "medical",
 			"id": "796d1122-6f17-4780-adca-aad59658962e",
@@ -3621,6 +3806,39 @@
 			],
 			"xBasisPoints": 7669,
 			"yBasisPoints": 2569
+		},
+		{
+			"description": "Next to the dead cientist in the middle of the room",
+			"documentId": "medical",
+			"id": "8347f0f9-e347-4012-9568-d9df08bc9124",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Assembly Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1152,
+						"path": "/screenshots/8347f0f9-e347-4012-9568-d9df08bc9124/9477221cf8860e87888e3eb3f5ebfa259eb4d92c1d4fb8f9143a7b4dcb141830-1920.webp",
+						"sha256": "60299dbf9241281ee0e0f8c43909593203c6cd66569427c5a7717e9b49171122",
+						"width": 1920
+					},
+					"id": "e4d7fc08-2eef-4a1a-80f5-54cb780fbffc",
+					"isActive": true,
+					"preview": {
+						"height": 600,
+						"path": "/screenshots/8347f0f9-e347-4012-9568-d9df08bc9124/9477221cf8860e87888e3eb3f5ebfa259eb4d92c1d4fb8f9143a7b4dcb141830-1000.webp",
+						"sha256": "454d67a4122f066956770b8b0004c598f8fa1a6200c9d56a88f463b31f17b763",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9477221cf8860e87888e3eb3f5ebfa259eb4d92c1d4fb8f9143a7b4dcb141830"
+				}
+			],
+			"xBasisPoints": 6750,
+			"yBasisPoints": 4210
 		},
 		{
 			"description": "In a pile of books in the corner open office, next to the open window",
@@ -5367,6 +5585,39 @@
 			"yBasisPoints": 3479
 		},
 		{
+			"description": "Inside the small control room in front of the spawn area before entering the infirmary, on top of the surface next to the window, next to the main control panels.",
+			"documentId": "pmc-personnel",
+			"id": "c93ff454-d804-49cb-a2c0-a62ce0ddca51",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Starting Point",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1234,
+						"path": "/screenshots/c93ff454-d804-49cb-a2c0-a62ce0ddca51/671a88e23adee0cd0c1db990cf78deaf7ff9e5d8bc6d0fa426d140a8bb5c7ef8-1920.webp",
+						"sha256": "590b2d67899c5b81d760503bac59e9a99a873e998f09bf6ef3e094fbd916c708",
+						"width": 1920
+					},
+					"id": "615ef7f1-a127-4319-8ad4-cfaeabf0b4ea",
+					"isActive": true,
+					"preview": {
+						"height": 643,
+						"path": "/screenshots/c93ff454-d804-49cb-a2c0-a62ce0ddca51/671a88e23adee0cd0c1db990cf78deaf7ff9e5d8bc6d0fa426d140a8bb5c7ef8-1000.webp",
+						"sha256": "11a374975942facc4339c130627a8892ec46b57a8d82488becfcd5e63f796b55",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "671a88e23adee0cd0c1db990cf78deaf7ff9e5d8bc6d0fa426d140a8bb5c7ef8"
+				}
+			],
+			"xBasisPoints": 6741,
+			"yBasisPoints": 5545
+		},
+		{
 			"description": "On top of a box in a corner in the room west of the north omega room",
 			"documentId": "medical",
 			"id": "ca77fe7d-52f6-47f1-a9ba-47827e6e8407",
@@ -5438,6 +5689,39 @@
 			],
 			"xBasisPoints": 5320,
 			"yBasisPoints": 2620
+		},
+		{
+			"description": "Inside the small control room in front of the spawn area before entering the infirmary, on a shelf below the toolbox.",
+			"documentId": "test",
+			"id": "cb3e018f-d489-4af0-8849-b3eed1e6345c",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Starting Point",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1038,
+						"path": "/screenshots/cb3e018f-d489-4af0-8849-b3eed1e6345c/e48e6a94c4767a2f5dabd2eea0aa7a944a6e9af2b16d68183f61063a86426a39-1920.webp",
+						"sha256": "a4280689d77fa23e5d544ffde05092d0f7fa5c7212cdb9bdb045622abdee8bb8",
+						"width": 1920
+					},
+					"id": "6136fcd4-dd0b-4a1f-9dda-6143827cec20",
+					"isActive": true,
+					"preview": {
+						"height": 541,
+						"path": "/screenshots/cb3e018f-d489-4af0-8849-b3eed1e6345c/e48e6a94c4767a2f5dabd2eea0aa7a944a6e9af2b16d68183f61063a86426a39-1000.webp",
+						"sha256": "9b31f1359f0908688355d07c8e7132bd5b822a79d2a8e770040f9a3ac67d2d88",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "e48e6a94c4767a2f5dabd2eea0aa7a944a6e9af2b16d68183f61063a86426a39"
+				}
+			],
+			"xBasisPoints": 6753,
+			"yBasisPoints": 5425
 		},
 		{
 			"description": "Inside the residential unit using the card, over the desk next to the laptop",
@@ -5561,6 +5845,79 @@
 			"yBasisPoints": 6649
 		},
 		{
+			"description": "From Goshan, walk into the staff only hallway, office in front, turn right once in the office, on the last desk next to the wall.",
+			"documentId": "blueprints-technical",
+			"id": "cf7e1813-5015-4837-92bd-8870e258f47c",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "Goshan/IDEA Office",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/845c03dae17c43d71666b5fa31906a9f0dd0cd967ec6f85d6b0483f8771373de-1920.webp",
+						"sha256": "62167f2cfe31cbfa932680de6eef186c9217ce06cbc2d3320fe30e86fd8aa90f",
+						"width": 1920
+					},
+					"id": "a3d6e0f5-677a-4c65-8943-cf39cdff96f2",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/845c03dae17c43d71666b5fa31906a9f0dd0cd967ec6f85d6b0483f8771373de-1000.webp",
+						"sha256": "b6116f6f59b44800ce5f2247dde7e928eb92e142bda2aeaf2dcb376d52050318",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "845c03dae17c43d71666b5fa31906a9f0dd0cd967ec6f85d6b0483f8771373de"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1119,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/b545687b3994ccf71ec9723fbe2a42783bd02dff8bf402b00d88615b9347e056-1920.webp",
+						"sha256": "5a91e6469e7f1098106a7b07439e16099d0c7fd0229c0ff371cdeb8678a6e073",
+						"width": 1920
+					},
+					"id": "d1d86ef4-c8b1-4c01-a176-57b0bc41498b",
+					"isActive": true,
+					"preview": {
+						"height": 583,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/b545687b3994ccf71ec9723fbe2a42783bd02dff8bf402b00d88615b9347e056-1000.webp",
+						"sha256": "942ed061c21daa2de3cd1ca3794f7a1bb308d200c4a584ae40fe1b821e0fdc8a",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "b545687b3994ccf71ec9723fbe2a42783bd02dff8bf402b00d88615b9347e056"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 970,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1920.webp",
+						"sha256": "a5ab9daca96f315d3bfd354bc934030c0be10277850ed029ccf0626d4804cf8a",
+						"width": 1920
+					},
+					"id": "71e35729-d265-468d-82b4-025404328c07",
+					"isActive": true,
+					"preview": {
+						"height": 505,
+						"path": "/screenshots/cf7e1813-5015-4837-92bd-8870e258f47c/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1000.webp",
+						"sha256": "7db10a295767dc3a05491a173ea5783164e4ac8fd67436dd796d96ef3018d0be",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e"
+				}
+			],
+			"xBasisPoints": 8278,
+			"yBasisPoints": 4208
+		},
+		{
 			"description": "On top of the pallet next to a whiteboard",
 			"documentId": "blueprints-technical",
 			"id": "d1161601-8c91-49c0-8274-df1cf3ca0696",
@@ -5592,6 +5949,59 @@
 			],
 			"xBasisPoints": 7186,
 			"yBasisPoints": 4275
+		},
+		{
+			"description": "Next to the dead scientist south of the assembly room",
+			"documentId": "medical",
+			"id": "d273028c-22ad-4409-b6c6-eb93a7bc7657",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Dead Scientist",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1157,
+						"path": "/screenshots/d273028c-22ad-4409-b6c6-eb93a7bc7657/7d1c3e513f6a02013e26d95fcd9eef20d50696218f714e0fa20f91d0ae359d8c-1920.webp",
+						"sha256": "3291f09803b368cafc02534d115c8bf0b3b4c1dcc30b64b6e50473e680e80c20",
+						"width": 1920
+					},
+					"id": "90f72096-8df3-4208-af46-e5cfa0b0d4de",
+					"isActive": true,
+					"preview": {
+						"height": 602,
+						"path": "/screenshots/d273028c-22ad-4409-b6c6-eb93a7bc7657/7d1c3e513f6a02013e26d95fcd9eef20d50696218f714e0fa20f91d0ae359d8c-1000.webp",
+						"sha256": "4c6a6055fe8e0752d9bd8dd047ce62fde12e0a6de280a51eb7ac353d2789628f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "7d1c3e513f6a02013e26d95fcd9eef20d50696218f714e0fa20f91d0ae359d8c"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1176,
+						"path": "/screenshots/d273028c-22ad-4409-b6c6-eb93a7bc7657/494402dd2d4a79fd29edf2b081c5d6e39f10ac7971a3773410fcd4c3313c64fe-1920.webp",
+						"sha256": "6df8995cc90dc5c728dfc9e418bce1b95fe18ea204a7fdf613152ea5f1f23635",
+						"width": 1920
+					},
+					"id": "3d56bb8e-9b42-41d2-a8aa-f49774dea5e1",
+					"isActive": true,
+					"preview": {
+						"height": 612,
+						"path": "/screenshots/d273028c-22ad-4409-b6c6-eb93a7bc7657/494402dd2d4a79fd29edf2b081c5d6e39f10ac7971a3773410fcd4c3313c64fe-1000.webp",
+						"sha256": "f932c23139634210ee45bfecc4bd322315b05ad55ffcfca38a7e96b948919e5f",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "494402dd2d4a79fd29edf2b081c5d6e39f10ac7971a3773410fcd4c3313c64fe"
+				}
+			],
+			"xBasisPoints": 6930,
+			"yBasisPoints": 5650
 		},
 		{
 			"description": "On the side of the desk, next to a shelf",
@@ -5713,6 +6123,79 @@
 			],
 			"xBasisPoints": 8605,
 			"yBasisPoints": 3398
+		},
+		{
+			"description": "From Goshan, walk into the staff only hallway, office in front, go into the inner office, next to the broken tv.",
+			"documentId": "blueprints-technical",
+			"id": "d89f6a98-5f7d-4de0-a38d-0191f96915ad",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "Goshan/IDEA Inner Office",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1120,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/5f6796281185ec22a48cf768b8992b5309aa1a9514eb9286ce64bb03ca655f6a-1920.webp",
+						"sha256": "42090e64b29b0309bd1419ebafc38deaa27525f21762811cd3fdea36416ae8d0",
+						"width": 1920
+					},
+					"id": "47b16628-58aa-4475-9d63-792f5e1e3a00",
+					"isActive": true,
+					"preview": {
+						"height": 584,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/5f6796281185ec22a48cf768b8992b5309aa1a9514eb9286ce64bb03ca655f6a-1000.webp",
+						"sha256": "a3f2c623c6439015c7dd3a89edbbda9b59bcfdeef6425a3eb124daaab058434a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "5f6796281185ec22a48cf768b8992b5309aa1a9514eb9286ce64bb03ca655f6a"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1040,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e-1920.webp",
+						"sha256": "617a0d809bd26e74318ea2f90caaa3ac29c5e39872569abba8b623af85248a1f",
+						"width": 1920
+					},
+					"id": "3837e282-81f5-4eab-b01e-6ec31462d660",
+					"isActive": true,
+					"preview": {
+						"height": 542,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e-1000.webp",
+						"sha256": "5203042dd2974fbf34d346e33ae384e56ffec40d0342c8bbcef28c4770b5a213",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 970,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1920.webp",
+						"sha256": "a5ab9daca96f315d3bfd354bc934030c0be10277850ed029ccf0626d4804cf8a",
+						"width": 1920
+					},
+					"id": "bb17b1c1-bd67-4e6f-87f6-351b7fabb54d",
+					"isActive": true,
+					"preview": {
+						"height": 505,
+						"path": "/screenshots/d89f6a98-5f7d-4de0-a38d-0191f96915ad/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1000.webp",
+						"sha256": "7db10a295767dc3a05491a173ea5783164e4ac8fd67436dd796d96ef3018d0be",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e"
+				}
+			],
+			"xBasisPoints": 8223,
+			"yBasisPoints": 4108
 		},
 		{
 			"description": "On the table with the empty pizza box in the south end of the camp",
@@ -6535,6 +7018,79 @@
 			],
 			"xBasisPoints": 6356,
 			"yBasisPoints": 3407
+		},
+		{
+			"description": "From Goshan, walk into the staff only hallway, office in front, go into the inner office, on the corner desk under the painting.",
+			"documentId": "financial",
+			"id": "f51b7601-b134-4b69-a4d1-4ba69223749c",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "Goshan/IDEA Inner Office",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1017,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/6499331555cd250f0c6f6f7afdc57dad7f182307058ce28b706f830b55da33a5-1920.webp",
+						"sha256": "6bf4cf199577ccc4daaa7b072acd65a013876fbaa7a13d2df1d73082ae7e2c91",
+						"width": 1920
+					},
+					"id": "2a13adec-2271-4d0d-a656-286d35cac8b3",
+					"isActive": true,
+					"preview": {
+						"height": 530,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/6499331555cd250f0c6f6f7afdc57dad7f182307058ce28b706f830b55da33a5-1000.webp",
+						"sha256": "08181a630cd4798966889301bab0f637106a1fd6fd84c91be261e427109d0240",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "6499331555cd250f0c6f6f7afdc57dad7f182307058ce28b706f830b55da33a5"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1040,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e-1920.webp",
+						"sha256": "617a0d809bd26e74318ea2f90caaa3ac29c5e39872569abba8b623af85248a1f",
+						"width": 1920
+					},
+					"id": "d8e7ce16-4d79-45f8-bdda-153620bc4543",
+					"isActive": true,
+					"preview": {
+						"height": 542,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e-1000.webp",
+						"sha256": "5203042dd2974fbf34d346e33ae384e56ffec40d0342c8bbcef28c4770b5a213",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "9fc5fd252d7810b420e0a3934c335604ef2373fc3e8ff98905279a7fe69b1e8e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 970,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1920.webp",
+						"sha256": "a5ab9daca96f315d3bfd354bc934030c0be10277850ed029ccf0626d4804cf8a",
+						"width": 1920
+					},
+					"id": "1ec73b0e-2f28-447a-a572-ca622ee8ceec",
+					"isActive": true,
+					"preview": {
+						"height": 505,
+						"path": "/screenshots/f51b7601-b134-4b69-a4d1-4ba69223749c/1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e-1000.webp",
+						"sha256": "7db10a295767dc3a05491a173ea5783164e4ac8fd67436dd796d96ef3018d0be",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "1e88fbfa813c15b62005fbdd6b913c68ac2038e3f169e82054b9a139657cb73e"
+				}
+			],
+			"xBasisPoints": 8202,
+			"yBasisPoints": 4086
 		},
 		{
 			"description": "In the basement, inside the Polikhim keycard room, on the wooden pallet on the right of the room, leaning against a box.",
