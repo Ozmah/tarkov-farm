@@ -50,6 +50,27 @@ describe("LocationComposerForm", () => {
 			screen.getByText("Original images remain in this browser."),
 		).toBeTruthy();
 	});
+
+	it("disables every composer control while an operation is pending", () => {
+		renderComposer({ disabled: true, submitting: true });
+
+		expect(
+			screen
+				.getByRole("form", { name: "White Pawn" })
+				.getAttribute("aria-busy"),
+		).toBe("true");
+		expect(
+			screen.getByRole("textbox", { name: "Name" }).matches(":disabled"),
+		).toBe(true);
+		expect(
+			screen
+				.getByRole("radio", { name: "Technical" })
+				.getAttribute("aria-disabled"),
+		).toBe("true");
+		expect(
+			screen.getByRole("button", { name: "Processing…" }).matches(":disabled"),
+		).toBe(true);
+	});
 });
 
 function renderComposer(

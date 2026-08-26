@@ -802,6 +802,7 @@ function LocationWorkspace({
 					<Field orientation="horizontal">
 						<Checkbox
 							id="location-active"
+							disabled={isSaving || isDeleting}
 							checked={draft.isActive}
 							onCheckedChange={(checked) => updateDraft("isActive", checked)}
 						/>

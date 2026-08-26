@@ -15,6 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 type LocationDetailsFieldsProps = {
+	disabled: boolean;
 	draft: LocationComposerDraft;
 	draftMapId: string;
 	keyboardSubmitHint: string;
@@ -25,6 +26,7 @@ type LocationDetailsFieldsProps = {
 };
 
 export function LocationDetailsFields({
+	disabled,
 	draft,
 	draftMapId,
 	keyboardSubmitHint,
@@ -39,6 +41,7 @@ export function LocationDetailsFields({
 				<Field>
 					<FieldLabel htmlFor="location-map">Map</FieldLabel>
 					<Select
+						disabled={disabled}
 						items={maps.map((map) => ({
 							value: map.id,
 							label: map.name,
@@ -67,6 +70,7 @@ export function LocationDetailsFields({
 					<Field>
 						<FieldLabel htmlFor="location-map-view">Map view</FieldLabel>
 						<Select
+							disabled={disabled}
 							items={mapImages.map((item) => ({
 								value: item.id,
 								label: item.name,
@@ -98,6 +102,7 @@ export function LocationDetailsFields({
 			<Field>
 				<FieldLabel htmlFor="location-name">Name</FieldLabel>
 				<Input
+					disabled={disabled}
 					id="location-name"
 					value={draft.name}
 					onChange={(event) => onDraftChange("name", event.target.value)}
@@ -111,6 +116,7 @@ export function LocationDetailsFields({
 			<Field>
 				<FieldLabel htmlFor="location-description">Description</FieldLabel>
 				<Textarea
+					disabled={disabled}
 					id="location-description"
 					value={draft.description}
 					onChange={(event) => onDraftChange("description", event.target.value)}
@@ -124,11 +130,13 @@ export function LocationDetailsFields({
 			<div className="grid grid-cols-2 gap-4">
 				<CoordinateField
 					axis="X"
+					disabled={disabled}
 					value={draft.xBasisPoints}
 					onChange={(value) => onDraftChange("xBasisPoints", value)}
 				/>
 				<CoordinateField
 					axis="Y"
+					disabled={disabled}
 					value={draft.yBasisPoints}
 					onChange={(value) => onDraftChange("yBasisPoints", value)}
 				/>
@@ -142,10 +150,12 @@ export function LocationDetailsFields({
 
 function CoordinateField({
 	axis,
+	disabled,
 	value,
 	onChange,
 }: {
 	axis: "X" | "Y";
+	disabled: boolean;
 	value: number;
 	onChange: (value: number) => void;
 }) {
@@ -155,6 +165,7 @@ function CoordinateField({
 		<Field>
 			<FieldLabel htmlFor={id}>{axis}</FieldLabel>
 			<Input
+				disabled={disabled}
 				id={id}
 				type="number"
 				min={0}

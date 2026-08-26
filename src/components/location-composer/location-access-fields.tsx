@@ -21,6 +21,7 @@ type LocationAccessFieldsProps = {
 		imageWidth: number;
 		name: string;
 	}>;
+	disabled: boolean;
 	draft: LocationComposerDraft;
 	onDraftChange: LocationDraftChange;
 };
@@ -28,6 +29,7 @@ type LocationAccessFieldsProps = {
 export function LocationAccessFields({
 	availableDocuments,
 	availableKeys,
+	disabled,
 	draft,
 	onDraftChange,
 }: LocationAccessFieldsProps) {
@@ -43,6 +45,7 @@ export function LocationAccessFields({
 				</FieldDescription>
 				{availableDocuments.length > 0 ? (
 					<RadioGroup
+						disabled={disabled}
 						name="documentId"
 						value={draft.documentId}
 						onValueChange={(documentId) =>
@@ -85,6 +88,7 @@ export function LocationAccessFields({
 							return (
 								<Field key={key.id} orientation="horizontal" className="p-2">
 									<Checkbox
+										disabled={disabled}
 										id={`required-key-${key.id}`}
 										checked={checked}
 										onCheckedChange={(nextChecked) =>
