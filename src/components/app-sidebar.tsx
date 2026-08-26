@@ -78,7 +78,7 @@ export function AppSidebar({
 	const hasSidebarPanel = Boolean(sidebarPanel);
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const isContributeRoute = Boolean(
-		matchRoute({ to: "/contribute", fuzzy: false }),
+		matchRoute({ to: "/contribute", fuzzy: true }),
 	);
 	const isDocumentsRoute = Boolean(
 		matchRoute({ to: "/documents", fuzzy: false }),

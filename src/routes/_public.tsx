@@ -49,7 +49,7 @@ function PublicLayout() {
 		select: (state) => state.location.pathname,
 	});
 	const isAboutRoute = currentPathname === "/about";
-	const isContributeRoute = currentPathname === "/contribute";
+	const isContributeRoute = currentPathname.startsWith("/contribute");
 	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
