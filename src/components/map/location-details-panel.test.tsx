@@ -22,6 +22,14 @@ const screenshot = {
 	previewWidth: 1000,
 	width: 1920,
 };
+const secondScreenshot = {
+	...screenshot,
+	altText: "Document beside a filing cabinet",
+	caption: "Third floor",
+	id: "screenshot-2",
+	path: "/screenshots/second-full.webp",
+	previewPath: "/screenshots/second-preview.webp",
+};
 const documentArtwork = {
 	imageHeight: 559,
 	imagePath: "/documents/financial.webp",
@@ -159,6 +167,71 @@ describe("LocationDetailsPanel", () => {
 		);
 	});
 
+	it("navigates full-size screenshots with A, D, and arrow keys", () => {
+		const onScreenshotOpen = vi.fn();
+		renderPanel(vi.fn(), onScreenshotOpen, [screenshot, secondScreenshot]);
+		fireEvent.click(
+			screen.getByRole("button", {
+				name: `View ${screenshot.altText} screenshot`,
+			}),
+		);
+
+		const dialog = screen.getByRole("dialog", { name: screenshot.altText });
+		fireEvent.keyDown(dialog, { key: "D" });
+		expect(
+			screen.getByRole("img", { name: secondScreenshot.altText }),
+		).toHaveProperty("src", expect.stringContaining(secondScreenshot.path));
+
+		fireEvent.keyDown(dialog, { key: "ArrowLeft" });
+		expect(
+			screen.getByRole("img", { name: screenshot.altText }),
+		).toHaveProperty("src", expect.stringContaining(screenshot.path));
+
+		fireEvent.keyDown(dialog, { key: "ArrowRight" });
+		expect(
+			screen.getByRole("img", { name: secondScreenshot.altText }),
+		).toBeTruthy();
+		fireEvent.keyDown(dialog, { key: "A" });
+		expect(screen.getByRole("img", { name: screenshot.altText })).toBeTruthy();
+
+		fireEvent.keyDown(dialog, { key: "ArrowLeft" });
+		expect(onScreenshotOpen).toHaveBeenCalledTimes(5);
+
+		fireEvent.keyDown(dialog, { ctrlKey: true, key: "d" });
+		expect(screen.getByRole("img", { name: screenshot.altText })).toBeTruthy();
+		expect(onScreenshotOpen.mock.calls).toEqual([[0], [1], [0], [1], [0]]);
+	});
+
+	it("navigates full-size screenshots with horizontal touch swipes", () => {
+		setViewportWidth(800);
+		const onScreenshotOpen = vi.fn();
+		renderPanel(vi.fn(), onScreenshotOpen, [screenshot, secondScreenshot]);
+		fireEvent.click(
+			screen.getByRole("button", {
+				name: `View ${screenshot.altText} screenshot`,
+			}),
+		);
+
+		const surface = document.querySelector<HTMLElement>(
+			'[data-slot="screenshot-swipe-surface"]',
+		);
+		expect(surface).not.toBeNull();
+		swipe(surface as HTMLElement, 240, 80, 1);
+		expect(
+			screen.getByRole("dialog", { name: secondScreenshot.altText }),
+		).toBeTruthy();
+
+		swipe(surface as HTMLElement, 80, 240, 2);
+		expect(
+			screen.getByRole("dialog", { name: screenshot.altText }),
+		).toBeTruthy();
+		swipe(surface as HTMLElement, 240, 80, 3, "mouse");
+		expect(
+			screen.getByRole("dialog", { name: screenshot.altText }),
+		).toBeTruthy();
+		expect(onScreenshotOpen.mock.calls).toEqual([[0], [1], [0]]);
+	});
+
 	it("closes from the backdrop without closing the location panel", async () => {
 		const onClose = vi.fn();
 		renderPanel(onClose);
@@ -204,7 +277,11 @@ describe("LocationDetailsPanel", () => {
 	});
 });
 
-function renderPanel(onClose = vi.fn(), onScreenshotOpen = vi.fn()) {
+function renderPanel(
+	onClose = vi.fn(),
+	onScreenshotOpen = vi.fn(),
+	screenshots = [screenshot],
+) {
 	return render(
 		<LocationDetailsPanel
 			documentArtwork={documentArtwork}
@@ -216,7 +293,7 @@ function renderPanel(onClose = vi.fn(), onScreenshotOpen = vi.fn()) {
 			}}
 			onClose={onClose}
 			onScreenshotOpen={onScreenshotOpen}
-			screenshots={[screenshot]}
+			screenshots={screenshots}
 		/>,
 	);
 }
@@ -237,4 +314,17 @@ function setViewportWidth(width: number) {
 			removeEventListener: vi.fn(),
 		})),
 	});
+}
+
+function swipe(
+	element: HTMLElement,
+	startX: number,
+	endX: number,
+	pointerId: number,
+	pointerType = "touch",
+) {
+	const pointer = { isPrimary: true, pointerId, pointerType };
+	fireEvent.pointerDown(element, { ...pointer, clientX: startX, clientY: 100 });
+	fireEvent.pointerMove(element, { ...pointer, clientX: endX, clientY: 104 });
+	fireEvent.pointerUp(element, { ...pointer, clientX: endX, clientY: 104 });
 }

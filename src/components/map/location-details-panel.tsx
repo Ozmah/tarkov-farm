@@ -61,8 +61,22 @@ export function LocationDetailsPanel({
 	screenshots,
 }: LocationDetailsPanelProps) {
 	const isMobile = useIsMobile();
-	const [selectedScreenshot, setSelectedScreenshot] =
-		useState<LocationScreenshot>();
+	const [selectedScreenshotIndex, setSelectedScreenshotIndex] =
+		useState<number>();
+	const selectedScreenshot =
+		selectedScreenshotIndex === undefined
+			? undefined
+			: screenshots[selectedScreenshotIndex];
+	const hasPreviousScreenshot =
+		selectedScreenshotIndex !== undefined && selectedScreenshotIndex > 0;
+	const hasNextScreenshot =
+		selectedScreenshotIndex !== undefined &&
+		selectedScreenshotIndex < screenshots.length - 1;
+
+	function showScreenshot(screenshotIndex: number) {
+		onScreenshotOpen?.(screenshotIndex);
+		setSelectedScreenshotIndex(screenshotIndex);
+	}
 
 	return (
 		<>
@@ -71,7 +85,7 @@ export function LocationDetailsPanel({
 				modal={isMobile}
 				disablePointerDismissal={!isMobile}
 				onOpenChange={(open) => {
-					if (!open && !selectedScreenshot) onClose();
+					if (!open && selectedScreenshotIndex === undefined) onClose();
 				}}
 			>
 				<SheetContent
@@ -177,8 +191,7 @@ export function LocationDetailsPanel({
 												<button
 													type="button"
 													onClick={() => {
-														onScreenshotOpen?.(screenshotIndex);
-														setSelectedScreenshot(screenshot);
+														showScreenshot(screenshotIndex);
 													}}
 													aria-label={`View ${altText} screenshot`}
 													className="block w-full cursor-zoom-in bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -216,8 +229,28 @@ export function LocationDetailsPanel({
 				locationDescription={location.description}
 				locationName={location.name}
 				screenshot={selectedScreenshot}
+				previousScreenshot={
+					hasPreviousScreenshot
+						? screenshots[selectedScreenshotIndex - 1]
+						: undefined
+				}
+				nextScreenshot={
+					hasNextScreenshot
+						? screenshots[selectedScreenshotIndex + 1]
+						: undefined
+				}
+				onPrevious={
+					hasPreviousScreenshot
+						? () => showScreenshot(selectedScreenshotIndex - 1)
+						: undefined
+				}
+				onNext={
+					hasNextScreenshot
+						? () => showScreenshot(selectedScreenshotIndex + 1)
+						: undefined
+				}
 				onOpenChange={(open) => {
-					if (!open) setSelectedScreenshot(undefined);
+					if (!open) setSelectedScreenshotIndex(undefined);
 				}}
 			/>
 		</>

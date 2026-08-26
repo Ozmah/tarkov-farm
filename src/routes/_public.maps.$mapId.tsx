@@ -422,6 +422,7 @@ function MapPage() {
 
 						{selectedLocation && layoutMode === "standard" ? (
 							<LocationDetailsPanel
+								key={selectedLocation.id}
 								documentArtwork={documentById.get(selectedLocation.documentId)}
 								location={selectedLocation}
 								screenshots={selectedScreenshots}

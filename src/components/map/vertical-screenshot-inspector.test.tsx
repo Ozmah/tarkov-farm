@@ -59,6 +59,22 @@ describe("VerticalScreenshotInspector", () => {
 		).toBeTruthy();
 	});
 
+	it("navigates the focused inspector with A, D, and arrow keys", () => {
+		renderInspector();
+		const preview = screen.getByRole("button", {
+			name: `View ${screenshots[0].altText} screenshot full size`,
+		});
+
+		fireEvent.keyDown(preview, { key: "d" });
+		expect(screen.getByText("2 of 2")).toBeTruthy();
+		fireEvent.keyDown(preview, { key: "ArrowLeft" });
+		expect(screen.getByText("1 of 2")).toBeTruthy();
+		fireEvent.keyDown(preview, { key: "ArrowRight" });
+		expect(screen.getByText("2 of 2")).toBeTruthy();
+		fireEvent.keyDown(preview, { key: "A" });
+		expect(screen.getByText("1 of 2")).toBeTruthy();
+	});
+
 	it("stays open until the location is closed", () => {
 		renderInspector();
 
@@ -84,15 +100,21 @@ describe("VerticalScreenshotInspector", () => {
 		);
 
 		expect(onScreenshotOpen).toHaveBeenCalledWith(0);
+		const dialog = screen.getByRole("dialog", {
+			name: screenshots[0].altText,
+		});
+		fireEvent.keyDown(dialog, { key: "d" });
 		expect(
-			screen.getByRole("dialog", { name: screenshots[0].altText }),
+			screen.getByRole("dialog", { name: screenshots[1].altText }),
 		).toBeTruthy();
+		expect(onScreenshotOpen.mock.calls).toEqual([[0], [1]]);
 		fireEvent.keyDown(document, { key: "Escape" });
 		await waitFor(() =>
 			expect(
-				screen.queryByRole("dialog", { name: screenshots[0].altText }),
+				screen.queryByRole("dialog", { name: screenshots[1].altText }),
 			).toBeNull(),
 		);
+		expect(screen.getByText("2 of 2")).toBeTruthy();
 		expect(onClose).not.toHaveBeenCalled();
 	});
 
