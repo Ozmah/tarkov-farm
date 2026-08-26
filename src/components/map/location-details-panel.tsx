@@ -14,6 +14,7 @@ import {
 	SheetTitle,
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
 import { cn } from "@/lib/utils";
 
 export type LocationDetails = {
@@ -166,34 +167,40 @@ export function LocationDetailsPanel({
 
 							{screenshots.length > 0 ? (
 								<ul className="flex flex-col gap-4">
-									{screenshots.map((screenshot, screenshotIndex) => (
-										<li key={screenshot.id} className="flex flex-col gap-2">
-											<button
-												type="button"
-												onClick={() => {
-													onScreenshotOpen?.(screenshotIndex);
-													setSelectedScreenshot(screenshot);
-												}}
-												aria-label={`View ${screenshot.altText || location.name} screenshot`}
-												className="block w-full cursor-zoom-in bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-											>
-												<img
-													src={screenshot.previewPath}
-													alt={screenshot.altText}
-													width={screenshot.previewWidth}
-													height={screenshot.previewHeight}
-													loading="lazy"
-													decoding="async"
-													className="aspect-video w-full object-contain outline-1 outline-foreground/10 -outline-offset-1"
-												/>
-											</button>
-											{screenshot.caption ? (
-												<p className="text-pretty text-base text-muted-foreground sm:text-sm">
-													{screenshot.caption}
-												</p>
-											) : null}
-										</li>
-									))}
+									{screenshots.map((screenshot, screenshotIndex) => {
+										const altText = getLocationScreenshotAltText(
+											location,
+											screenshot.altText,
+										);
+										return (
+											<li key={screenshot.id} className="flex flex-col gap-2">
+												<button
+													type="button"
+													onClick={() => {
+														onScreenshotOpen?.(screenshotIndex);
+														setSelectedScreenshot(screenshot);
+													}}
+													aria-label={`View ${altText} screenshot`}
+													className="block w-full cursor-zoom-in bg-muted/30 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+												>
+													<img
+														src={screenshot.previewPath}
+														alt={altText}
+														width={screenshot.previewWidth}
+														height={screenshot.previewHeight}
+														loading="lazy"
+														decoding="async"
+														className="aspect-video w-full object-contain outline-1 outline-foreground/10 -outline-offset-1"
+													/>
+												</button>
+												{screenshot.caption ? (
+													<p className="text-pretty text-base text-muted-foreground sm:text-sm">
+														{screenshot.caption}
+													</p>
+												) : null}
+											</li>
+										);
+									})}
 								</ul>
 							) : (
 								<p className="text-base text-muted-foreground sm:text-sm">
@@ -206,6 +213,7 @@ export function LocationDetailsPanel({
 			</Sheet>
 
 			<LocationScreenshotDialog
+				locationDescription={location.description}
 				locationName={location.name}
 				screenshot={selectedScreenshot}
 				onOpenChange={(open) => {

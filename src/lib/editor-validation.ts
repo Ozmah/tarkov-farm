@@ -1,4 +1,5 @@
 const ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
+const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const SCREENSHOT_MIME_TYPES = new Set([
 	"image/jpeg",
 	"image/png",
@@ -36,6 +37,40 @@ export type SaveLocationFormInput = {
 	screenshots: SaveScreenshotInput[];
 	files: File[];
 };
+
+export type ImportContributionLocationFormInput = {
+	expectedMapImageSha256: string;
+	input: SaveLocationFormInput;
+};
+
+export function parseImportContributionLocationFormData(
+	formData: unknown,
+): ImportContributionLocationFormInput {
+	if (!(formData instanceof FormData)) {
+		throw new Error("Invalid contribution import request");
+	}
+	const hashValues = formData.getAll("mapImageSha256");
+	const expectedMapImageSha256 = hashValues[0];
+	if (
+		hashValues.length !== 1 ||
+		typeof expectedMapImageSha256 !== "string" ||
+		!SHA256_PATTERN.test(expectedMapImageSha256)
+	) {
+		throw new Error("Contribution map image hash is invalid");
+	}
+	const input = parseSaveLocationFormData(formData);
+	if (
+		input.location.id !== undefined ||
+		input.location.isActive !== true ||
+		input.screenshots.some(({ id }) => id !== undefined)
+	) {
+		throw new Error(
+			"Contribution imports must contain only new active locations and screenshots",
+		);
+	}
+
+	return { expectedMapImageSha256, input };
+}
 
 export function parseSaveLocationInput(input: unknown): SaveLocationInput {
 	const value = readObject(input);

@@ -7,21 +7,11 @@ import {
 import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-	Field,
-	FieldDescription,
-	FieldLabel,
-	FieldLegend,
-	FieldSet,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { MAX_SCREENSHOTS_PER_LOCATION } from "@/lib/editor-validation";
+import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
+import { FilePicker } from "@/components/ui/file-picker";
 import { cn } from "@/lib/utils";
 
 export type ScreenshotDraft = {
-	altText: string;
-	caption: string;
 	file?: File;
 	height?: number;
 	id?: string;
@@ -32,71 +22,80 @@ export type ScreenshotDraft = {
 
 type LocationScreenshotEditorProps = {
 	className?: string;
+	description?: string;
 	disabled: boolean;
+	maxScreenshots: number;
 	screenshots: ScreenshotDraft[];
 	onFilesAdded: (files: File[]) => void;
 	onMove: (index: number, offset: -1 | 1) => void;
 	onRemove: (key: string) => void;
-	onUpdate: (key: string, field: "altText" | "caption", value: string) => void;
 };
 
 export function LocationScreenshotEditor({
 	className,
+	description = "Add at least one JPEG, PNG, or WebP image. Saving generates 1000px and 1920px WebP variants without cropping.",
 	disabled,
+	maxScreenshots,
 	screenshots,
 	onFilesAdded,
 	onMove,
 	onRemove,
-	onUpdate,
 }: LocationScreenshotEditorProps) {
+	const pickerDisabled = disabled || screenshots.length >= maxScreenshots;
+
 	return (
 		<FieldSet className={cn(className)}>
 			<FieldLegend variant="label">Screenshots</FieldLegend>
 			<FieldDescription id="location-screenshots-description">
-				Add at least one JPEG, PNG, or WebP image. Saving generates 1000px and
-				1920px WebP variants without cropping.
+				{description}
 			</FieldDescription>
 
-			<Field>
-				<FieldLabel htmlFor="location-screenshots">Add images</FieldLabel>
-				<Input
-					id="location-screenshots"
-					type="file"
-					accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-					multiple
-					aria-describedby="location-screenshots-description"
-					disabled={
-						disabled || screenshots.length >= MAX_SCREENSHOTS_PER_LOCATION
-					}
-					onChange={(event) => {
-						onFilesAdded(Array.from(event.target.files ?? []));
-						event.target.value = "";
-					}}
-				/>
-			</Field>
-
 			{screenshots.length > 0 ? (
-				<ol className="flex flex-col gap-4">
-					{screenshots.map((screenshot, index) => (
-						<ScreenshotItem
-							key={screenshot.key}
-							disabled={disabled}
-							index={index}
-							screenshot={screenshot}
-							total={screenshots.length}
-							onMove={onMove}
-							onRemove={onRemove}
-							onUpdate={onUpdate}
+				<>
+					<div className="flex items-center justify-between gap-3">
+						<FilePicker
+							accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+							buttonLabel="Add screenshots"
+							buttonVariant="outline"
+							describedBy="location-screenshots-description"
+							disabled={pickerDisabled}
+							multiple
+							variant="button"
+							onFilesSelected={onFilesAdded}
 						/>
-					))}
-				</ol>
+						<span className="text-muted-foreground text-xs tabular-nums">
+							{screenshots.length} of {maxScreenshots}
+						</span>
+					</div>
+					<ol className="flex flex-col gap-4">
+						{screenshots.map((screenshot, index) => (
+							<ScreenshotItem
+								key={screenshot.key}
+								disabled={disabled}
+								index={index}
+								screenshot={screenshot}
+								total={screenshots.length}
+								onMove={onMove}
+								onRemove={onRemove}
+							/>
+						))}
+					</ol>
+				</>
 			) : (
-				<div className="flex min-h-32 flex-col items-center justify-center gap-2 border border-input border-dashed bg-background p-4 text-center">
-					<ImageIcon aria-hidden="true" className="text-muted-foreground" />
-					<p className="text-muted-foreground text-sm">
-						No screenshots added yet.
-					</p>
-				</div>
+				<FilePicker
+					accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+					buttonLabel="Choose screenshots"
+					describedBy="location-screenshots-description"
+					disabled={pickerDisabled}
+					dropLabel="Drop screenshots here"
+					helpText="JPEG, PNG, or WebP. You can select more than one file."
+					icon={
+						<ImageIcon aria-hidden="true" className="text-muted-foreground" />
+					}
+					multiple
+					regionLabel="Screenshot upload"
+					onFilesSelected={onFilesAdded}
+				/>
 			)}
 		</FieldSet>
 	);
@@ -109,7 +108,6 @@ type ScreenshotItemProps = {
 	total: number;
 	onMove: (index: number, offset: -1 | 1) => void;
 	onRemove: (key: string) => void;
-	onUpdate: LocationScreenshotEditorProps["onUpdate"];
 };
 
 function ScreenshotItem({
@@ -119,10 +117,7 @@ function ScreenshotItem({
 	total,
 	onMove,
 	onRemove,
-	onUpdate,
 }: ScreenshotItemProps) {
-	const altInputId = `screenshot-${screenshot.key}-alt`;
-	const captionInputId = `screenshot-${screenshot.key}-caption`;
 	const previewImageRef = useRef<HTMLImageElement>(null);
 	const file = screenshot.file;
 
@@ -142,7 +137,7 @@ function ScreenshotItem({
 				<img
 					ref={previewImageRef}
 					src={file ? undefined : screenshot.previewUrl}
-					alt={screenshot.altText}
+					alt=""
 					width={screenshot.width}
 					height={screenshot.height}
 					draggable={false}
@@ -150,38 +145,7 @@ function ScreenshotItem({
 				/>
 			</div>
 
-			<div className="flex flex-col gap-4 p-3">
-				<Field>
-					<FieldLabel htmlFor={altInputId}>Alt text (optional)</FieldLabel>
-					<Input
-						id={altInputId}
-						value={screenshot.altText}
-						onChange={(event) =>
-							onUpdate(screenshot.key, "altText", event.target.value)
-						}
-						maxLength={240}
-						placeholder="Only when the image adds information"
-					/>
-					<FieldDescription>
-						Leave blank when the location description already explains the
-						image.
-					</FieldDescription>
-				</Field>
-
-				<Field>
-					<FieldLabel htmlFor={captionInputId}>Caption</FieldLabel>
-					<Textarea
-						id={captionInputId}
-						value={screenshot.caption}
-						onChange={(event) =>
-							onUpdate(screenshot.key, "caption", event.target.value)
-						}
-						maxLength={500}
-						rows={2}
-						placeholder="Optional route or viewpoint note"
-					/>
-				</Field>
-
+			<div className="p-3">
 				<div className="flex items-center gap-1">
 					<span className="mr-auto text-muted-foreground text-xs tabular-nums">
 						{index + 1} of {total}

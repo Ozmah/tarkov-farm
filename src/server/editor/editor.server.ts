@@ -84,6 +84,7 @@ export async function readEditorData() {
 			viewKey: mapImages.viewKey,
 			name: mapImages.name,
 			path: mapImages.path,
+			contentHash: mapImages.contentHash,
 			altText: mapImages.altText,
 			width: mapImages.width,
 			height: mapImages.height,
@@ -188,23 +189,27 @@ export async function readEditorData() {
 	};
 }
 
-export async function saveEditorLocation(input: SaveLocationFormInput) {
+export async function saveEditorLocation(
+	input: SaveLocationFormInput,
+	options: { expectedMapImageSha256?: string } = {},
+) {
 	assertLocalEditorAccess({ mutation: true });
 	const locationId = input.location.id ?? randomUUID();
 
 	return withLocationMutationLock(locationId, () =>
-		saveEditorLocationLocked(input, locationId),
+		saveEditorLocationLocked(input, locationId, options),
 	);
 }
 
 async function saveEditorLocationLocked(
 	input: SaveLocationFormInput,
 	locationId: string,
+	options: { expectedMapImageSha256?: string },
 ) {
 	const { db } = await getDatabase();
 	const { location } = input;
 	const image = await db
-		.select({ mapId: mapImages.mapId })
+		.select({ contentHash: mapImages.contentHash, mapId: mapImages.mapId })
 		.from(mapImages)
 		.innerJoin(maps, eq(maps.id, mapImages.mapId))
 		.where(
@@ -218,6 +223,12 @@ async function saveEditorLocationLocked(
 
 	if (!image) {
 		throw new Error("The selected map image does not exist");
+	}
+	if (
+		options.expectedMapImageSha256 !== undefined &&
+		image.contentHash !== options.expectedMapImageSha256
+	) {
+		throw new Error("The contribution map image changed after review");
 	}
 
 	const allowedDocument = await db

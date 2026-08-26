@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 
 import {
 	parseDeleteLocationInput,
+	parseImportContributionLocationFormData,
 	parseSaveLocationFormData,
 } from "@/lib/editor-validation";
 
@@ -21,6 +22,18 @@ export const saveLocation = createServerFn({ method: "POST" })
 		);
 
 		return saveEditorLocation(data);
+	});
+
+export const importContributionLocation = createServerFn({ method: "POST" })
+	.validator(parseImportContributionLocationFormData)
+	.handler(async ({ data }) => {
+		const { saveEditorLocation } = await import(
+			"@/server/editor/editor.server"
+		);
+
+		return saveEditorLocation(data.input, {
+			expectedMapImageSha256: data.expectedMapImageSha256,
+		});
 	});
 
 export const deleteLocation = createServerFn({ method: "POST" })

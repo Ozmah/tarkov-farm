@@ -8,6 +8,7 @@ import type {
 import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
 
 type VerticalScreenshotInspectorProps = {
 	location: LocationDetails;
@@ -26,6 +27,9 @@ export function VerticalScreenshotInspector({
 	const [fullscreenScreenshot, setFullscreenScreenshot] =
 		useState<LocationScreenshot>();
 	const selectedScreenshot = screenshots[selectedIndex];
+	const selectedAltText = selectedScreenshot
+		? getLocationScreenshotAltText(location, selectedScreenshot.altText)
+		: "";
 	const hasPrevious = selectedIndex > 0;
 	const hasNext = selectedIndex < screenshots.length - 1;
 
@@ -106,12 +110,12 @@ export function VerticalScreenshotInspector({
 							<button
 								type="button"
 								onClick={openFullscreen}
-								aria-label={`View ${selectedScreenshot.altText || location.name} screenshot full size`}
+								aria-label={`View ${selectedAltText} screenshot full size`}
 								className="group min-h-0 overflow-hidden p-3 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
 							>
 								<img
 									src={selectedScreenshot.previewPath}
-									alt={selectedScreenshot.altText}
+									alt={selectedAltText}
 									width={selectedScreenshot.previewWidth}
 									height={selectedScreenshot.previewHeight}
 									loading="eager"
@@ -134,6 +138,7 @@ export function VerticalScreenshotInspector({
 			</section>
 
 			<LocationScreenshotDialog
+				locationDescription={location.description}
 				locationName={location.name}
 				screenshot={fullscreenScreenshot}
 				onOpenChange={(open) => {

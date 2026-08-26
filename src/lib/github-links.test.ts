@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { buildLocationIssueUrl, buildProblemIssueUrl } from "./github-links";
+import {
+	buildContributionBundleIssueUrl,
+	buildLocationIssueUrl,
+	buildProblemIssueUrl,
+} from "./github-links";
 
 describe("GitHub contribution links", () => {
 	it("prefills map and page context for problem reports", () => {
@@ -30,5 +34,13 @@ describe("GitHub contribution links", () => {
 
 		expect(url.searchParams.get("template")).toBe("new-location.yml");
 		expect(url.searchParams.has("page")).toBe(false);
+	});
+
+	it("opens the dedicated multi-location bundle form", () => {
+		const url = new URL(buildContributionBundleIssueUrl());
+
+		expect(url.pathname).toBe("/Ozmah/tarkov-farm/issues/new");
+		expect(url.searchParams.get("template")).toBe("contribution-bundle.yml");
+		expect(url.searchParams.has("map")).toBe(false);
 	});
 });

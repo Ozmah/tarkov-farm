@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+	parseImportContributionLocationFormData,
 	parseSaveLocationFormData,
 	parseSaveLocationInput,
 } from "./editor-validation";
@@ -166,6 +167,36 @@ describe("parseSaveLocationFormData", () => {
 	});
 });
 
+describe("parseImportContributionLocationFormData", () => {
+	it("accepts only new active locations with one lowercase map hash", () => {
+		const formData = createImportFormData(validLocation);
+
+		expect(parseImportContributionLocationFormData(formData)).toMatchObject({
+			expectedMapImageSha256: "a".repeat(64),
+			input: { location: { id: undefined, isActive: true } },
+		});
+	});
+
+	it("rejects malformed hashes, updates, and inactive imports", () => {
+		const malformedHash = createImportFormData(validLocation);
+		malformedHash.set("mapImageSha256", "A".repeat(64));
+		expect(() =>
+			parseImportContributionLocationFormData(malformedHash),
+		).toThrow("map image hash is invalid");
+
+		expect(() =>
+			parseImportContributionLocationFormData(
+				createImportFormData({ ...validLocation, id: "existing-location" }),
+			),
+		).toThrow("only new active locations and screenshots");
+		expect(() =>
+			parseImportContributionLocationFormData(
+				createImportFormData({ ...validLocation, isActive: false }),
+			),
+		).toThrow("only new active locations and screenshots");
+	});
+});
+
 function createLocationFormData(screenshots: unknown[], files: File[] = []) {
 	const formData = new FormData();
 	formData.set(
@@ -177,5 +208,20 @@ function createLocationFormData(screenshots: unknown[], files: File[] = []) {
 		formData.append("screenshots", file);
 	}
 
+	return formData;
+}
+
+function createImportFormData(location: unknown) {
+	const formData = new FormData();
+	const file = new File(["image"], "view.png", { type: "image/png" });
+	formData.set("mapImageSha256", "a".repeat(64));
+	formData.set(
+		"payload",
+		JSON.stringify({
+			location,
+			screenshots: [{ uploadIndex: 0, altText: "Desk", caption: null }],
+		}),
+	);
+	formData.append("screenshots", file);
 	return formData;
 }
