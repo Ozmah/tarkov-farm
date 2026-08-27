@@ -88,6 +88,7 @@ export function LocationContributionEditor({
 							...location,
 							isActive: true,
 							markerLabel: String(index + 1),
+							requiredKeyCount: location.requiredKeyIds.length,
 						},
 					]
 				: [],
@@ -102,6 +103,7 @@ export function LocationContributionEditor({
 							id: `published:${location.id}`,
 							isActive: true,
 							markerLabel: "",
+							requiredKeyCount: location.requiredKeyCount ?? 0,
 							selectable: false,
 						},
 					]
@@ -288,11 +290,14 @@ export function LocationContributionEditor({
 	return (
 		<>
 			<div className="flex min-h-0 flex-1 flex-col overflow-auto lg:overflow-hidden">
-				<h1 className="sr-only">Contribution editor</h1>
 				<div className="grid flex-none lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_26rem] lg:grid-rows-[minmax(0,1fr)_auto]">
 					<MapCanvas
 						key={draftImage.id}
-						draftMarker={{ ...draft, isActive: true }}
+						draftMarker={{
+							...draft,
+							isActive: true,
+							requiredKeyCount: draft.requiredKeyIds.length,
+						}}
 						image={draftImage}
 						locations={canvasLocations}
 						selectedLocationId={editingLocationId}

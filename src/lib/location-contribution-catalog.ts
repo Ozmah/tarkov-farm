@@ -9,6 +9,7 @@ export type LocationContributionCatalog = {
 		id: string;
 		mapImageId: string;
 		name: string;
+		requiredKeyCount?: number;
 		xBasisPoints: number;
 		yBasisPoints: number;
 	}>;

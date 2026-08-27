@@ -14,6 +14,7 @@ import {
 	keyMaps,
 	keys,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	mapImages,
 	maps,
@@ -42,6 +43,7 @@ export async function queryContributionCatalog(
 		keyRows,
 		keyMapRows,
 		locationRows,
+		locationRequiredKeyRows,
 	] = await Promise.all([
 		db
 			.select({ id: maps.id, name: maps.name })
@@ -156,6 +158,24 @@ export async function queryContributionCatalog(
 			.where(eq(locations.isActive, true))
 			.orderBy(asc(mapImages.mapId), asc(locations.name))
 			.all(),
+		db
+			.select({ locationId: locationRequiredKeys.locationId })
+			.from(locationRequiredKeys)
+			.innerJoin(locations, eq(locations.id, locationRequiredKeys.locationId))
+			.innerJoin(
+				mapImages,
+				and(
+					eq(mapImages.id, locations.mapImageId),
+					eq(mapImages.isCurrent, true),
+				),
+			)
+			.innerJoin(
+				maps,
+				and(eq(maps.id, mapImages.mapId), eq(maps.isActive, true)),
+			)
+			.where(eq(locations.isActive, true))
+			.orderBy(asc(locationRequiredKeys.locationId))
+			.all(),
 	]);
 	const contributableMapIds = new Set(imageRows.map(({ mapId }) => mapId));
 	const visibleDocumentMaps = documentMapRows.filter(({ mapId }) =>
@@ -168,13 +188,23 @@ export async function queryContributionCatalog(
 		contributableMapIds.has(mapId),
 	);
 	const visibleKeyIds = new Set(visibleKeyMaps.map(({ keyId }) => keyId));
+	const requiredKeyCountByLocation = new Map<string, number>();
+	for (const { locationId } of locationRequiredKeyRows) {
+		requiredKeyCountByLocation.set(
+			locationId,
+			(requiredKeyCountByLocation.get(locationId) ?? 0) + 1,
+		);
+	}
 
 	return {
 		documentMaps: visibleDocumentMaps,
 		documents: documentRows.filter(({ id }) => visibleDocumentIds.has(id)),
 		keyMaps: visibleKeyMaps,
 		keys: keyRows.filter(({ id }) => visibleKeyIds.has(id)),
-		locations: locationRows,
+		locations: locationRows.map((location) => ({
+			...location,
+			requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
+		})),
 		mapImages: imageRows.map((image) => ({
 			...image,
 			sources: getMapImageSources(masterManifest, image.path),

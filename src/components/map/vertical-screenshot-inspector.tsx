@@ -8,6 +8,7 @@ import type {
 import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useGlobalScreenshotNavigation } from "@/hooks/use-global-screenshot-navigation";
 import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
 
 type VerticalScreenshotInspectorProps = {
@@ -24,25 +25,52 @@ export function VerticalScreenshotInspector({
 	screenshots,
 }: VerticalScreenshotInspectorProps) {
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const [fullscreenScreenshot, setFullscreenScreenshot] =
-		useState<LocationScreenshot>();
+	const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 	const selectedScreenshot = screenshots[selectedIndex];
 	const selectedAltText = selectedScreenshot
 		? getLocationScreenshotAltText(location, selectedScreenshot.altText)
 		: "";
 	const hasPrevious = selectedIndex > 0;
 	const hasNext = selectedIndex < screenshots.length - 1;
+	useGlobalScreenshotNavigation({
+		active: screenshots.length > 1 && !isFullscreenOpen,
+		onNext: hasNext ? () => showNextScreenshot() : undefined,
+		onPrevious: hasPrevious ? () => showPreviousScreenshot() : undefined,
+	});
 
 	function openFullscreen() {
 		if (!selectedScreenshot) return;
 
 		onScreenshotOpen?.(selectedIndex);
-		setFullscreenScreenshot(selectedScreenshot);
+		setIsFullscreenOpen(true);
+	}
+
+	function showPreviousScreenshot(reportView = false) {
+		if (!hasPrevious) return;
+
+		const nextIndex = selectedIndex - 1;
+		setSelectedIndex(nextIndex);
+		if (reportView) onScreenshotOpen?.(nextIndex);
+	}
+
+	function showNextScreenshot(reportView = false) {
+		if (!hasNext) return;
+
+		const nextIndex = selectedIndex + 1;
+		setSelectedIndex(nextIndex);
+		if (reportView) onScreenshotOpen?.(nextIndex);
 	}
 
 	return (
 		<>
-			<section className="shrink-0 border-border border-t bg-card">
+			<section
+				aria-keyshortcuts={
+					screenshots.length > 1 && !isFullscreenOpen
+						? "A ArrowLeft D ArrowRight"
+						: undefined
+				}
+				className="shrink-0 border-border border-t bg-card"
+			>
 				<header className="flex min-h-14 items-center gap-3 px-3 sm:px-5">
 					<div className="min-w-0">
 						<h2 className="min-w-0 truncate font-heading font-medium text-sm">
@@ -70,9 +98,7 @@ export function VerticalScreenshotInspector({
 									size="icon-sm"
 									disabled={!hasPrevious}
 									aria-label="Previous screenshot"
-									onClick={() =>
-										setSelectedIndex((index) => Math.max(0, index - 1))
-									}
+									onClick={() => showPreviousScreenshot()}
 								>
 									<CaretLeftIcon aria-hidden="true" />
 								</Button>
@@ -82,11 +108,7 @@ export function VerticalScreenshotInspector({
 									size="icon-sm"
 									disabled={!hasNext}
 									aria-label="Next screenshot"
-									onClick={() =>
-										setSelectedIndex((index) =>
-											Math.min(screenshots.length - 1, index + 1),
-										)
-									}
+									onClick={() => showNextScreenshot()}
 								>
 									<CaretRightIcon aria-hidden="true" />
 								</Button>
@@ -140,9 +162,17 @@ export function VerticalScreenshotInspector({
 			<LocationScreenshotDialog
 				locationDescription={location.description}
 				locationName={location.name}
-				screenshot={fullscreenScreenshot}
+				screenshot={isFullscreenOpen ? selectedScreenshot : undefined}
+				previousScreenshot={
+					hasPrevious ? screenshots[selectedIndex - 1] : undefined
+				}
+				nextScreenshot={hasNext ? screenshots[selectedIndex + 1] : undefined}
+				onPrevious={
+					hasPrevious ? () => showPreviousScreenshot(true) : undefined
+				}
+				onNext={hasNext ? () => showNextScreenshot(true) : undefined}
 				onOpenChange={(open) => {
-					if (!open) setFullscreenScreenshot(undefined);
+					if (!open) setIsFullscreenOpen(false);
 				}}
 			/>
 		</>

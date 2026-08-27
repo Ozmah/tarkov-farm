@@ -15,7 +15,7 @@ import {
 import { VerticalAppBar } from "@/components/vertical-app-bar";
 import type { LayoutMode } from "@/lib/layout-mode";
 
-type PublicShellProps = {
+export type CatalogShellProps = {
 	catalog: {
 		maps: ReadonlyArray<{ id: string; name: string }>;
 		documents: ReadonlyArray<{
@@ -45,13 +45,14 @@ type PublicShellProps = {
 	onMapNavigationStart?: (map: { id: string; name: string }) => void;
 	onHomeNavigate?: () => void;
 	onLayoutModeChange?: (layoutMode: LayoutMode) => void;
-	sidebarFooter?: ReactNode;
+	sidebarNavigation?: ReactNode;
+	sidebarNavigationLabel?: string;
 	sidebarPanel?: (closePanel: () => void) => ReactNode;
 	verticalLocationsControl?: ReactNode;
 	children: ReactNode;
 };
 
-export function PublicShell({
+export function CatalogShell({
 	catalog,
 	currentMapId,
 	editorSearch,
@@ -64,11 +65,12 @@ export function PublicShell({
 	onMapNavigationStart,
 	onHomeNavigate,
 	onLayoutModeChange,
-	sidebarFooter,
+	sidebarNavigation,
+	sidebarNavigationLabel,
 	sidebarPanel,
 	verticalLocationsControl,
 	children,
-}: PublicShellProps) {
+}: CatalogShellProps) {
 	return (
 		<SidebarProvider
 			open
@@ -90,9 +92,10 @@ export function PublicShell({
 					layoutMode={layoutMode}
 					layoutModeError={layoutModeError}
 					layoutModePending={layoutModePending}
-					footer={
-						sidebarFooter ??
-						(catalog.editorAvailable ? (
+					footerNavigation={sidebarNavigation}
+					footerNavigationLabel={sidebarNavigationLabel}
+					footerAddon={
+						catalog.editorAvailable ? (
 							<SidebarMenu>
 								<SidebarMenuItem>
 									<SidebarMenuButton
@@ -108,7 +111,7 @@ export function PublicShell({
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							</SidebarMenu>
-						) : undefined)
+						) : undefined
 					}
 					onMapNavigate={onMapNavigate}
 					onMapNavigationStart={onMapNavigationStart}

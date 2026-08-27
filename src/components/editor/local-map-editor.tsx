@@ -1,20 +1,14 @@
-import {
-	ArrowLeftIcon,
-	CrosshairIcon,
-	FileZipIcon,
-	NewspaperClippingIcon,
-	PlusIcon,
-} from "@phosphor-icons/react";
-import { Link, useRouter } from "@tanstack/react-router";
+import { CrosshairIcon, PlusIcon } from "@phosphor-icons/react";
+import { useRouter } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useState } from "react";
 import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
+import { EditorSidebarNavigation } from "@/components/editor/editor-sidebar-navigation";
 import { LocalContributionImporter } from "@/components/editor/local-contribution-importer";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
 import { MapCanvas } from "@/components/location-composer/map-canvas";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
-import { PublicShell } from "@/components/public-shell";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -36,12 +30,8 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { Field, FieldLabel } from "@/components/ui/field";
-import {
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	useSidebar,
-} from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
+import { WorkspaceShell } from "@/components/workspace-shell";
 import {
 	deleteLocation,
 	type getEditorData,
@@ -137,6 +127,15 @@ export function LocalMapEditor({
 	const locationDocumentIds = new Map(
 		data.locationDocuments.map((item) => [item.locationId, item.documentId]),
 	);
+	const requiredKeyCountByLocation = useMemo(() => {
+		const counts = new Map<string, number>();
+
+		for (const { locationId } of data.locationRequiredKeys) {
+			counts.set(locationId, (counts.get(locationId) ?? 0) + 1);
+		}
+
+		return counts;
+	}, [data.locationRequiredKeys]);
 	const visibleLocations = imageLocations.filter((location) => {
 		const documentId = locationDocumentIds.get(location.id);
 
@@ -215,6 +214,7 @@ export function LocalMapEditor({
 			id: location.id,
 			markerLabel: location.markerLabel,
 			name: location.name,
+			requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
 		};
 	});
 	const editorCatalog = {
@@ -259,6 +259,7 @@ export function LocalMapEditor({
 							draftVersion={newDraftVersion}
 							image={selectedImage}
 							locations={visibleLocations}
+							requiredKeyCountByLocation={requiredKeyCountByLocation}
 							selectedLocation={selectedLocation}
 							onSelectLocation={(locationId) =>
 								void onSearchChange({ location: locationId }, true)
@@ -283,7 +284,7 @@ export function LocalMapEditor({
 			);
 	}
 	return (
-		<PublicShell
+		<WorkspaceShell
 			catalog={editorCatalog}
 			currentMapId={selectedMap?.id}
 			headerTitle={getEditorHeaderTitle(search.section)}
@@ -295,28 +296,23 @@ export function LocalMapEditor({
 					search: {},
 				})
 			}
-			sidebarFooter={
-				<EditorSidebarFooter
+			navigation={
+				<EditorSidebarNavigation
+					activeSection={search.section ?? "locations"}
 					documentSearch={documentSearch}
-					isContributionsSelected={search.section === "import"}
-					isUpdatesSelected={search.section === "updates"}
 					selectedLocationId={selectedLocation?.id}
 					selectedMap={selectedMap}
 					selectedViewKey={selectedImage?.viewKey}
-					onUpdatesSelect={() =>
+					onSectionSelect={(section) => {
+						const nextSection = section === "locations" ? undefined : section;
 						void onSearchChange(
-							{ location: undefined, section: "updates" },
+							{ location: undefined, section: nextSection },
 							true,
-						)
-					}
-					onContributionsSelect={() =>
-						void onSearchChange(
-							{ location: undefined, section: "import" },
-							true,
-						)
-					}
+						);
+					}}
 				/>
 			}
+			navigationLabel="Editor navigation"
 			sidebarPanel={
 				search.section
 					? undefined
@@ -358,7 +354,7 @@ export function LocalMapEditor({
 			}
 		>
 			{editorContent}
-		</PublicShell>
+		</WorkspaceShell>
 	);
 }
 
@@ -371,100 +367,6 @@ function getEditorHeaderTitle(section: EditorSearch["section"]) {
 		default:
 			return "Location editor";
 	}
-}
-
-type EditorSidebarFooterProps = {
-	documentSearch?: string;
-	isContributionsSelected: boolean;
-	isUpdatesSelected: boolean;
-	selectedLocationId?: string;
-	selectedMap?: EditorData["maps"][number];
-	selectedViewKey?: string;
-	onContributionsSelect: () => void;
-	onUpdatesSelect: () => void;
-};
-
-function EditorSidebarFooter({
-	documentSearch,
-	isContributionsSelected,
-	isUpdatesSelected,
-	selectedLocationId,
-	selectedMap,
-	selectedViewKey,
-	onContributionsSelect,
-	onUpdatesSelect,
-}: EditorSidebarFooterProps) {
-	const { isMobile, setOpenMobile } = useSidebar();
-
-	function closeMobileSidebar() {
-		if (isMobile) setOpenMobile(false);
-	}
-
-	return (
-		<SidebarMenu>
-			<SidebarMenuItem>
-				<SidebarMenuButton
-					render={
-						<button
-							type="button"
-							onClick={() => {
-								closeMobileSidebar();
-								onContributionsSelect();
-							}}
-						/>
-					}
-					isActive={isContributionsSelected}
-				>
-					<FileZipIcon aria-hidden="true" />
-					<span>Review contributions</span>
-				</SidebarMenuButton>
-			</SidebarMenuItem>
-			<SidebarMenuItem>
-				<SidebarMenuButton
-					render={
-						<button
-							type="button"
-							onClick={() => {
-								closeMobileSidebar();
-								onUpdatesSelect();
-							}}
-						/>
-					}
-					isActive={isUpdatesSelected}
-				>
-					<NewspaperClippingIcon aria-hidden="true" />
-					<span>Manage updates</span>
-				</SidebarMenuButton>
-			</SidebarMenuItem>
-			<SidebarMenuItem>
-				<SidebarMenuButton
-					render={
-						selectedMap?.isActive ? (
-							<Link
-								to="/maps/$mapId"
-								params={{ mapId: selectedMap.id }}
-								search={{
-									documents: documentSearch,
-									location: selectedLocationId,
-									view: selectedViewKey,
-								}}
-								onClick={closeMobileSidebar}
-							/>
-						) : (
-							<Link
-								to="/"
-								search={{ documents: documentSearch }}
-								onClick={closeMobileSidebar}
-							/>
-						)
-					}
-				>
-					<ArrowLeftIcon aria-hidden="true" />
-					<span>Exit editor</span>
-				</SidebarMenuButton>
-			</SidebarMenuItem>
-		</SidebarMenu>
-	);
 }
 
 type EditorMapSidebarPanelProps = Omit<
@@ -541,6 +443,7 @@ type LocationWorkspaceProps = {
 	draftVersion: number;
 	image: MapImage;
 	locations: EditorLocation[];
+	requiredKeyCountByLocation: ReadonlyMap<string, number>;
 	selectedLocation?: EditorLocation;
 	onSelectLocation: (locationId: string) => void;
 	onSaved: (target?: SavedLocationTarget) => Promise<void>;
@@ -551,6 +454,7 @@ function LocationWorkspace({
 	draftVersion,
 	image,
 	locations,
+	requiredKeyCountByLocation,
 	selectedLocation,
 	onSelectLocation,
 	onSaved,
@@ -646,6 +550,10 @@ function LocationWorkspace({
 			: selectedLocation
 				? [selectedLocation]
 				: [];
+	const canvasLocationsWithKeyCounts = canvasLocations.map((location) => ({
+		...location,
+		requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
+	}));
 
 	const updateDraft = <Key extends keyof Draft>(
 		key: Key,
@@ -826,10 +734,11 @@ function LocationWorkspace({
 			<MapCanvas
 				key={draftImage.id}
 				image={draftImage}
-				locations={canvasLocations}
+				locations={canvasLocationsWithKeyCounts}
 				selectedLocationId={selectedLocation?.id}
 				draftMarker={{
 					name: draft.name,
+					requiredKeyCount: draft.requiredKeyIds.length,
 					xBasisPoints: draft.xBasisPoints,
 					yBasisPoints: draft.yBasisPoints,
 					isActive: draft.isActive,

@@ -5,6 +5,7 @@ import {
 	type DocumentArtwork,
 	DocumentThumbnail,
 } from "@/components/document-thumbnail";
+import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import { Button } from "@/components/ui/button";
 import {
 	Empty,
@@ -21,6 +22,7 @@ export type SidebarLocation = {
 	id: string;
 	markerLabel?: string;
 	name: string;
+	requiredKeyCount?: number;
 };
 
 export type SidebarDocument = DocumentArtwork & {
@@ -169,11 +171,13 @@ export function MapSidebarPanel({
 					{locations.map((location, index) => {
 						const selected = selectedLocationId === location.id;
 						const document = documentById.get(location.documentId);
+						const requiresKeyAccess = (location.requiredKeyCount ?? 0) > 0;
 
 						return (
 							<li key={location.id}>
 								<button
 									type="button"
+									aria-label={`Open ${location.name}${requiresKeyAccess ? ", requires key access" : ""}`}
 									aria-pressed={selected}
 									onClick={() => onLocationSelect(location.id)}
 									className={cn(
@@ -182,8 +186,11 @@ export function MapSidebarPanel({
 											"border-sidebar-primary bg-sidebar-accent text-sidebar-accent-foreground",
 									)}
 								>
-									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-sidebar-border font-heading text-xs tabular-nums">
+									<span className="relative flex size-7 shrink-0 items-center justify-center rounded-full border border-sidebar-border font-heading text-xs tabular-nums">
 										{location.markerLabel ?? index + 1}
+										{requiresKeyAccess ? (
+											<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+										) : null}
 									</span>
 									{document ? (
 										<DocumentThumbnail

@@ -2,6 +2,7 @@ import { CheckIcon, MapPinIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { DocumentThumbnail } from "@/components/document-thumbnail";
+import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import type {
 	SidebarDocument,
 	SidebarLocation,
@@ -150,26 +151,34 @@ export function VerticalLocationsControl({
 				</div>
 				{locations.length > 0 ? (
 					<ul className="min-h-0 overflow-auto p-2">
-						{locations.map((location, index) => (
-							<li key={location.id}>
-								<button
-									type="button"
-									aria-pressed={location.id === selectedLocationId}
-									onClick={() => {
-										onLocationSelect(location.id);
-										setOpen(false);
-									}}
-									className="flex min-h-14 w-full items-center gap-3 border-transparent border-l-2 px-3 py-2 text-left outline-none hover:border-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-muted"
-								>
-									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border font-heading text-xs tabular-nums">
-										{location.markerLabel ?? index + 1}
-									</span>
-									<span className="min-w-0 flex-1 truncate text-sm">
-										{location.name}
-									</span>
-								</button>
-							</li>
-						))}
+						{locations.map((location, index) => {
+							const requiresKeyAccess = (location.requiredKeyCount ?? 0) > 0;
+
+							return (
+								<li key={location.id}>
+									<button
+										type="button"
+										aria-label={`Open ${location.name}${requiresKeyAccess ? ", requires key access" : ""}`}
+										aria-pressed={location.id === selectedLocationId}
+										onClick={() => {
+											onLocationSelect(location.id);
+											setOpen(false);
+										}}
+										className="flex min-h-14 w-full items-center gap-3 border-transparent border-l-2 px-3 py-2 text-left outline-none hover:border-primary hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-primary aria-pressed:bg-muted"
+									>
+										<span className="relative flex size-7 shrink-0 items-center justify-center rounded-full border font-heading text-xs tabular-nums">
+											{location.markerLabel ?? index + 1}
+											{requiresKeyAccess ? (
+												<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+											) : null}
+										</span>
+										<span className="min-w-0 flex-1 truncate text-sm">
+											{location.name}
+										</span>
+									</button>
+								</li>
+							);
+						})}
 					</ul>
 				) : (
 					<p className="p-5 text-muted-foreground text-sm">

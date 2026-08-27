@@ -94,6 +94,7 @@ describe("VerticalLocationsControl", () => {
 						id: "one",
 						markerLabel: "3",
 						name: "First location",
+						requiredKeyCount: 1,
 					},
 				]}
 				selectedLocationId="one"
@@ -103,8 +104,11 @@ describe("VerticalLocationsControl", () => {
 
 		fireEvent.click(screen.getByRole("button", { name: "Locations" }));
 		const location = await screen.findByRole("button", {
-			name: /First location/,
+			name: "Open First location, requires key access",
 		});
+		expect(
+			location.querySelectorAll("[data-key-requirement-indicator]"),
+		).toHaveLength(1);
 		fireEvent.click(location);
 
 		expect(onLocationSelect).toHaveBeenCalledWith("one");
