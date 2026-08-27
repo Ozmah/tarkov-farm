@@ -17,6 +17,7 @@ describe("MapCanvas selection centering", () => {
 				draftMarker={{
 					isActive: true,
 					name: "Previous draft",
+					requiredKeyCount: 2,
 					xBasisPoints: 1_000,
 					yBasisPoints: 2_000,
 				}}
@@ -33,6 +34,7 @@ describe("MapCanvas selection centering", () => {
 						isActive: true,
 						markerLabel: "4",
 						name: "Location C",
+						requiredKeyCount: 1,
 						xBasisPoints: 1_000,
 						yBasisPoints: 2_000,
 					},
@@ -57,6 +59,15 @@ describe("MapCanvas selection centering", () => {
 			yBasisPoints: 8_000,
 		});
 		expect(props?.markers.map(({ label }) => label)).toEqual(["4", "9"]);
+		expect(
+			props?.markers.map(({ id, requiredKeyCount }) => ({
+				id,
+				requiredKeyCount,
+			})),
+		).toEqual([
+			{ id: "location-c", requiredKeyCount: 1 },
+			{ id: "location-d", requiredKeyCount: 2 },
+		]);
 	});
 
 	it("keeps the new-location draft outside overlap groups", () => {

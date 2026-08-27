@@ -186,6 +186,45 @@ describe("MapWorkspace", () => {
 		expect(viewport.getAttribute("aria-describedby")).toBeTruthy();
 	});
 
+	it("shows key access on keyed markers without replacing their labels", () => {
+		renderWorkspace({
+			markers: [
+				{
+					id: "locked-office",
+					label: "4",
+					name: "Locked office",
+					requiredKeyCount: 2,
+					xBasisPoints: 4_000,
+					yBasisPoints: 4_000,
+				},
+				{
+					id: "open-office",
+					label: "5",
+					name: "Open office",
+					xBasisPoints: 6_000,
+					yBasisPoints: 6_000,
+				},
+			],
+			onSelectMarker: vi.fn(),
+		});
+		prepareReadyViewport();
+
+		const keyedMarker = screen.getByRole("button", {
+			name: "Open Locked office, requires key access",
+		});
+		const unkeyedMarker = screen.getByRole("button", {
+			name: "Open Open office",
+		});
+
+		expect(keyedMarker.textContent).toContain("4");
+		expect(
+			keyedMarker.querySelectorAll("[data-key-requirement-indicator]"),
+		).toHaveLength(1);
+		expect(
+			unkeyedMarker.querySelector("[data-key-requirement-indicator]"),
+		).toBeNull();
+	});
+
 	it("zooms only over the image and preserves the zoom ratio after resize", () => {
 		renderWorkspace();
 		const viewport = prepareReadyViewport();
@@ -488,6 +527,7 @@ describe("MapWorkspace", () => {
 					id: "published",
 					label: "",
 					name: "Published location",
+					requiredKeyCount: 1,
 					selectable: false,
 					xBasisPoints: 5_000,
 					yBasisPoints: 5_000,
@@ -509,8 +549,11 @@ describe("MapWorkspace", () => {
 			screen.queryByRole("button", { name: "Open First location" }),
 		).toBeNull();
 		const publishedLocation = screen.getByRole("img", {
-			name: "Existing location: Published location",
+			name: "Existing location: Published location, requires key access",
 		});
+		expect(
+			publishedLocation.querySelector("[data-key-requirement-indicator]"),
+		).not.toBeNull();
 		fireEvent.click(publishedLocation);
 		expect(onSelectMarker).not.toHaveBeenCalled();
 	});

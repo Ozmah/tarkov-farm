@@ -69,6 +69,45 @@ describe("MapMarkerCluster", () => {
 		);
 	});
 
+	it("summarizes keyed locations and identifies them in the chooser", async () => {
+		render(
+			<MapMarkerCluster
+				markers={[
+					{
+						id: "locked",
+						label: "2",
+						name: "Locked location",
+						requiredKeyCount: 1,
+					},
+					{ id: "open", label: "3", name: "Open location" },
+				]}
+				onSelect={vi.fn()}
+				position={{ x: 500, y: 500 }}
+			/>,
+		);
+
+		const trigger = screen.getByRole("button", {
+			name: "Choose among 2 nearby locations, 1 location requires key access",
+		});
+		expect(
+			trigger.querySelectorAll("[data-key-requirement-indicator]"),
+		).toHaveLength(1);
+		fireEvent.click(trigger);
+
+		const keyedOption = await screen.findByRole("button", {
+			name: "Open location 2: Locked location, requires key access",
+		});
+		const unkeyedOption = screen.getByRole("button", {
+			name: "Open location 3: Open location",
+		});
+		expect(
+			keyedOption.querySelectorAll("[data-key-requirement-indicator]"),
+		).toHaveLength(1);
+		expect(
+			unkeyedOption.querySelector("[data-key-requirement-indicator]"),
+		).toBeNull();
+	});
+
 	it("closes with Escape and restores focus to the hotspot", async () => {
 		renderCluster();
 		const trigger = screen.getByRole("button", {

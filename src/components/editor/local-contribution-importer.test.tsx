@@ -9,7 +9,7 @@ import {
 	waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
+import { MapWorkspace } from "@/components/map/map-workspace";
 import { getEditorData, importContributionLocation } from "@/functions/editor";
 import { readLocationContributionArchive } from "@/lib/location-contribution-archive-reader";
 import { LocalContributionImporter } from "./local-contribution-importer";
@@ -68,6 +68,19 @@ describe("LocalContributionImporter", () => {
 
 		await waitFor(() =>
 			expect(screen.getAllByText("White Pawn").length).toBeGreaterThan(0),
+		);
+		const mapProps = vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0];
+		expect(mapProps?.markers).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					id: "existing:existing-location",
+					requiredKeyCount: 1,
+				}),
+				expect.objectContaining({
+					id: "review:00000000-0000-4000-8000-000000000002",
+					requiredKeyCount: 1,
+				}),
+			]),
 		);
 		expect(
 			screen.getByRole("button", { name: "Import approved (0)" }),
@@ -135,7 +148,7 @@ const reviewedArchive = {
 			mapImageId: "reserve-main",
 			mapImageSha256: "a".repeat(64),
 			name: "White Pawn",
-			requiredKeyIds: [],
+			requiredKeyIds: ["reserve-key"],
 			screenshots: [
 				{
 					altText: "Desk",
@@ -162,11 +175,32 @@ const editorData = {
 			name: "Technical manual",
 		},
 	],
-	keyMaps: [],
-	keys: [],
+	keyMaps: [{ keyId: "reserve-key", mapId: "reserve" }],
+	keys: [
+		{
+			id: "reserve-key",
+			imageHeight: 64,
+			imagePath: "/keys/reserve.webp",
+			imageWidth: 64,
+			name: "Reserve key",
+			usedInQuest: false,
+		},
+	],
 	locationDocuments: [],
-	locationRequiredKeys: [],
-	locations: [],
+	locationRequiredKeys: [
+		{ keyId: "reserve-key", locationId: "existing-location" },
+	],
+	locations: [
+		{
+			description: "Existing reference",
+			id: "existing-location",
+			isActive: true,
+			mapImageId: "reserve-main",
+			name: "Existing location",
+			xBasisPoints: 3_000,
+			yBasisPoints: 1_500,
+		},
+	],
 	mapImages: [
 		{
 			altText: "Reserve map",

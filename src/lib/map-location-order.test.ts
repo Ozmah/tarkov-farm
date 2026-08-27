@@ -33,4 +33,17 @@ describe("numberMapLocations", () => {
 			["three", "3"],
 		]);
 	});
+
+	it("preserves key access metadata while numbering", () => {
+		const [numbered] = numberMapLocations([
+			{
+				id: "locked",
+				requiredKeyCount: 2,
+				xBasisPoints: 100,
+				yBasisPoints: 100,
+			},
+		]);
+
+		expect(numbered).toMatchObject({ markerLabel: "1", requiredKeyCount: 2 });
+	});
 });

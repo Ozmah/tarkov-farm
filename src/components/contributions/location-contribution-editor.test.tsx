@@ -46,18 +46,24 @@ describe("LocationContributionEditor", () => {
 				clusterable: false,
 				id: "published:published-location",
 				markerLabel: "",
+				requiredKeyCount: 1,
 				selectable: false,
 			}),
 		);
 
 		act(() => {
 			latestComposerProps().onDraftChange("name", "USEC camp");
+			latestComposerProps().onDraftChange("requiredKeyIds", ["woods-key"]);
 			latestComposerProps().onScreenshotFilesAdded([createScreenshot()]);
 		});
+		expect(latestMapProps().draftMarker.requiredKeyCount).toBe(1);
 
 		act(() => latestComposerProps().onSubmit());
 
 		await waitFor(() => expect(latestTrayProps().locations).toHaveLength(1));
+		expect(latestMapProps().locations).toContainEqual(
+			expect.objectContaining({ requiredKeyCount: 1 }),
+		);
 		const [staged] = latestTrayProps().locations;
 		expect(staged?.name).toBe("USEC camp");
 		expect(latestComposerProps().draft.name).toBe("");
@@ -124,13 +130,22 @@ const catalog: React.ComponentProps<
 >["catalog"] = {
 	documentMaps: [{ documentId: "technical", mapId: "woods" }],
 	documents: [{ id: "technical", name: "Technical manual" }],
-	keyMaps: [],
-	keys: [],
+	keyMaps: [{ keyId: "woods-key", mapId: "woods" }],
+	keys: [
+		{
+			id: "woods-key",
+			imageHeight: 64,
+			imagePath: "/keys/woods.webp",
+			imageWidth: 64,
+			name: "Woods key",
+		},
+	],
 	locations: [
 		{
 			id: "published-location",
 			mapImageId: "woods-main",
 			name: "Published location",
+			requiredKeyCount: 1,
 			xBasisPoints: 4_000,
 			yBasisPoints: 6_000,
 		},

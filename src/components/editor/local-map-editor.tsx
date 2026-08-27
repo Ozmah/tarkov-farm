@@ -127,6 +127,15 @@ export function LocalMapEditor({
 	const locationDocumentIds = new Map(
 		data.locationDocuments.map((item) => [item.locationId, item.documentId]),
 	);
+	const requiredKeyCountByLocation = useMemo(() => {
+		const counts = new Map<string, number>();
+
+		for (const { locationId } of data.locationRequiredKeys) {
+			counts.set(locationId, (counts.get(locationId) ?? 0) + 1);
+		}
+
+		return counts;
+	}, [data.locationRequiredKeys]);
 	const visibleLocations = imageLocations.filter((location) => {
 		const documentId = locationDocumentIds.get(location.id);
 
@@ -205,6 +214,7 @@ export function LocalMapEditor({
 			id: location.id,
 			markerLabel: location.markerLabel,
 			name: location.name,
+			requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
 		};
 	});
 	const editorCatalog = {
@@ -249,6 +259,7 @@ export function LocalMapEditor({
 							draftVersion={newDraftVersion}
 							image={selectedImage}
 							locations={visibleLocations}
+							requiredKeyCountByLocation={requiredKeyCountByLocation}
 							selectedLocation={selectedLocation}
 							onSelectLocation={(locationId) =>
 								void onSearchChange({ location: locationId }, true)
@@ -432,6 +443,7 @@ type LocationWorkspaceProps = {
 	draftVersion: number;
 	image: MapImage;
 	locations: EditorLocation[];
+	requiredKeyCountByLocation: ReadonlyMap<string, number>;
 	selectedLocation?: EditorLocation;
 	onSelectLocation: (locationId: string) => void;
 	onSaved: (target?: SavedLocationTarget) => Promise<void>;
@@ -442,6 +454,7 @@ function LocationWorkspace({
 	draftVersion,
 	image,
 	locations,
+	requiredKeyCountByLocation,
 	selectedLocation,
 	onSelectLocation,
 	onSaved,
@@ -537,6 +550,10 @@ function LocationWorkspace({
 			: selectedLocation
 				? [selectedLocation]
 				: [];
+	const canvasLocationsWithKeyCounts = canvasLocations.map((location) => ({
+		...location,
+		requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
+	}));
 
 	const updateDraft = <Key extends keyof Draft>(
 		key: Key,
@@ -717,10 +734,11 @@ function LocationWorkspace({
 			<MapCanvas
 				key={draftImage.id}
 				image={draftImage}
-				locations={canvasLocations}
+				locations={canvasLocationsWithKeyCounts}
 				selectedLocationId={selectedLocation?.id}
 				draftMarker={{
 					name: draft.name,
+					requiredKeyCount: draft.requiredKeyIds.length,
 					xBasisPoints: draft.xBasisPoints,
 					yBasisPoints: draft.yBasisPoints,
 					isActive: draft.isActive,

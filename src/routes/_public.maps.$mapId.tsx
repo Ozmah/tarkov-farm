@@ -287,10 +287,14 @@ function MapPage() {
 			replace: true,
 		});
 	}
+	const locationControlItems = visibleLocations.map((location) => ({
+		...location,
+		requiredKeyCount: location.requiredKeys.length,
+	}));
 
 	const sharedMapControlProps = {
 		documents: sidebarDocuments,
-		locations: visibleLocations,
+		locations: locationControlItems,
 		selectedLocationId: selectedLocation?.id,
 		selectedDocumentIds,
 	};
@@ -308,7 +312,7 @@ function MapPage() {
 	);
 	const verticalLocationsControl = (
 		<VerticalLocationsControl
-			locations={visibleLocations}
+			locations={locationControlItems}
 			selectedLocationId={selectedLocation?.id}
 			onLocationSelect={(locationId) => selectLocation(locationId, "topbar")}
 		/>
@@ -367,6 +371,7 @@ function MapPage() {
 										label: location.markerLabel,
 										name: location.name,
 										preview: previewByLocationId.get(location.id),
+										requiredKeyCount: location.requiredKeys.length,
 										secondaryLabel: location.documentName,
 										xBasisPoints: location.xBasisPoints,
 										yBasisPoints: location.yBasisPoints,

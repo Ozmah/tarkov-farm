@@ -8,7 +8,9 @@ import { migrateDatabase } from "@/server/db/migrate";
 import { openDatabase } from "@/server/db/open";
 import {
 	documentMaps,
+	keyMaps,
 	locationDocuments,
+	locationRequiredKeys,
 	locations,
 	maps,
 } from "@/server/db/schema";
@@ -44,9 +46,14 @@ describe("contribution catalog", () => {
 				.from(documentMaps)
 				.where(eq(documentMaps.mapId, "customs"))
 				.get();
+			const keyAssignment = await db
+				.select({ keyId: keyMaps.keyId })
+				.from(keyMaps)
+				.where(eq(keyMaps.mapId, "customs"))
+				.get();
 
-			if (!documentAssignment) {
-				throw new Error("Expected a Customs document assignment");
+			if (!documentAssignment || !keyAssignment) {
+				throw new Error("Expected Customs document and key assignments");
 			}
 
 			await db
@@ -82,6 +89,13 @@ describe("contribution catalog", () => {
 						locationId: "hidden-location",
 					},
 				])
+				.run();
+			await db
+				.insert(locationRequiredKeys)
+				.values({
+					keyId: keyAssignment.keyId,
+					locationId: "visible-location",
+				})
 				.run();
 			await db
 				.update(maps)
@@ -163,9 +177,11 @@ describe("contribution catalog", () => {
 				"id",
 				"mapImageId",
 				"name",
+				"requiredKeyCount",
 				"xBasisPoints",
 				"yBasisPoints",
 			]);
+			expect(catalog.locations[0]?.requiredKeyCount).toBe(1);
 			expect(
 				catalog.locations.every((location) =>
 					catalog.mapImages.some(({ id }) => id === location.mapImageId),

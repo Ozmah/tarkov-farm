@@ -1,6 +1,6 @@
 import { CheckIcon, MapPinIcon } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
-
+import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import { MapMarkerPreview } from "@/components/map/map-marker-preview";
 import {
 	Popover,
@@ -23,6 +23,7 @@ type ClusterMarker = {
 	label?: string;
 	name: string;
 	preview?: MapMarkerPreviewData;
+	requiredKeyCount?: number;
 	secondaryLabel?: string;
 };
 
@@ -60,9 +61,16 @@ export function MapMarkerCluster({
 		markers.findIndex((marker) => marker.id === selectedMarkerId),
 	);
 	const previewMarker = markers[representativeMarkerIndex];
+	const keyedLocationCount = markers.filter(
+		(marker) => (marker.requiredKeyCount ?? 0) > 0,
+	).length;
+	const keyAccessLabel =
+		keyedLocationCount > 0
+			? `, ${keyedLocationCount} ${keyedLocationCount === 1 ? "location requires" : "locations require"} key access`
+			: "";
 	const trigger = (
 		<PopoverTrigger
-			aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}`}
+			aria-label={`Choose among ${markers.length} nearby locations${containsSelection ? ", including the selected location" : ""}${keyAccessLabel}`}
 			onPointerDown={(event) => event.stopPropagation()}
 			className={cn(
 				"group/cluster pointer-events-auto absolute z-20 flex size-11 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-sm shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache before:absolute before:-z-10 before:size-10 before:-translate-x-1.5 before:-translate-y-1.5 before:rounded-full before:border-2 before:border-cosmic-ink before:bg-milk-mustache before:content-[''] focus-visible:ring-4 focus-visible:ring-rowdy-orange",
@@ -77,6 +85,9 @@ export function MapMarkerCluster({
 			}}
 		>
 			<span className="tabular-nums">{markers.length}</span>
+			{keyedLocationCount > 0 ? (
+				<KeyRequirementIndicator className="absolute -top-1 -right-1" />
+			) : null}
 		</PopoverTrigger>
 	);
 
@@ -131,12 +142,13 @@ export function MapMarkerCluster({
 				<ul className="max-h-72 overflow-y-auto p-1.5">
 					{markers.map((marker) => {
 						const selected = marker.id === selectedMarkerId;
+						const requiresKeyAccess = (marker.requiredKeyCount ?? 0) > 0;
 
 						return (
 							<li key={marker.id}>
 								<button
 									type="button"
-									aria-label={`Open location ${marker.label}: ${marker.name}${marker.secondaryLabel ? `, ${marker.secondaryLabel}` : ""}`}
+									aria-label={`Open location ${marker.label}: ${marker.name}${marker.secondaryLabel ? `, ${marker.secondaryLabel}` : ""}${requiresKeyAccess ? ", requires key access" : ""}`}
 									aria-pressed={selected}
 									onClick={() => {
 										restoreFocusRef.current = false;
@@ -148,8 +160,11 @@ export function MapMarkerCluster({
 										selected && "bg-accent text-accent-foreground",
 									)}
 								>
-									<span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border font-heading text-xs tabular-nums">
+									<span className="relative flex size-7 shrink-0 items-center justify-center rounded-full border border-border font-heading text-xs tabular-nums">
 										{marker.label}
+										{requiresKeyAccess ? (
+											<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+										) : null}
 									</span>
 									<span className="min-w-0 flex-1">
 										<span className="block truncate text-sm">

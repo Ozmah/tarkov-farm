@@ -450,6 +450,13 @@ function LocationReview({
 	const requiredKeys = location.requiredKeyIds.map(
 		(id) => data.keys.find((key) => key.id === id)?.name ?? id,
 	);
+	const requiredKeyCountByLocation = new Map<string, number>();
+	for (const { locationId } of data.locationRequiredKeys) {
+		requiredKeyCountByLocation.set(
+			locationId,
+			(requiredKeyCountByLocation.get(locationId) ?? 0) + 1,
+		);
+	}
 	const referenceMarkers = data.locations
 		.filter(({ mapImageId }) => mapImageId === location.mapImageId)
 		.map((existing) => ({
@@ -458,6 +465,7 @@ function LocationReview({
 			clusterable: false,
 			id: `existing:${existing.id}`,
 			label: "",
+			requiredKeyCount: requiredKeyCountByLocation.get(existing.id) ?? 0,
 			selectable: false,
 		}));
 	const markerId = `review:${location.id}`;
@@ -526,6 +534,7 @@ function LocationReview({
 									id: markerId,
 									label: "+",
 									name: location.name,
+									requiredKeyCount: location.requiredKeyIds.length,
 									xBasisPoints: location.xBasisPoints,
 									yBasisPoints: location.yBasisPoints,
 								},

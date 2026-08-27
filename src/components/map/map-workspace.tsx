@@ -11,7 +11,7 @@ import {
 	useRef,
 	useState,
 } from "react";
-
+import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import { MapMarkerCluster } from "@/components/map/map-marker-cluster";
 import { MapMarkerPreview } from "@/components/map/map-marker-preview";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,7 @@ export type MapWorkspaceMarker = {
 	label?: string;
 	name: string;
 	preview?: MapMarkerPreviewData;
+	requiredKeyCount?: number;
 	secondaryLabel?: string;
 	selectable?: boolean;
 	xBasisPoints: number;
@@ -1027,6 +1028,8 @@ type MapMarkerProps = {
 function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 	const [tooltipOpen, setTooltipOpen] = useState(false);
 	const isSubmap = marker.kind === "submap";
+	const requiresKeyAccess = (marker.requiredKeyCount ?? 0) > 0;
+	const keyAccessLabel = requiresKeyAccess ? ", requires key access" : "";
 	const className = cn(
 		"group/marker pointer-events-auto absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
 		isSubmap &&
@@ -1051,10 +1054,14 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 				<span
 					data-map-marker
 					role="img"
-					aria-label={`Existing location: ${marker.name}`}
+					aria-label={`Existing location: ${marker.name}${keyAccessLabel}`}
 					className={className}
 					style={style}
-				/>
+				>
+					{requiresKeyAccess ? (
+						<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+					) : null}
+				</span>
 			);
 
 			return (
@@ -1072,6 +1079,9 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 				style={style}
 			>
 				{marker.label}
+				{requiresKeyAccess && !isSubmap ? (
+					<KeyRequirementIndicator className="absolute -top-1 -right-1" />
+				) : null}
 			</span>
 		);
 	}
@@ -1080,7 +1090,7 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 		<button
 			type="button"
 			data-map-marker
-			aria-label={`Open ${marker.name}`}
+			aria-label={`Open ${marker.name}${keyAccessLabel}`}
 			aria-pressed={isSubmap ? undefined : isSelected}
 			onPointerDown={(event) => event.stopPropagation()}
 			onClick={() => {
@@ -1092,6 +1102,9 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 		>
 			{isSubmap ? <MapTrifoldIcon aria-hidden="true" weight="fill" /> : null}
 			<span className="tabular-nums">{marker.label}</span>
+			{requiresKeyAccess && !isSubmap ? (
+				<KeyRequirementIndicator className="absolute -top-1 -right-1" />
+			) : null}
 		</button>
 	);
 

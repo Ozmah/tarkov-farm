@@ -130,6 +130,25 @@ describe("MapSidebarPanel document filters", () => {
 			),
 		).toBeTruthy();
 	});
+
+	it("identifies locations that require key access", () => {
+		renderPanel({
+			selectedDocumentIds: documents.map((document) => document.id),
+		});
+
+		const keyedLocation = screen.getByRole("button", {
+			name: "Open First location, requires key access",
+		});
+		const unkeyedLocation = screen.getByRole("button", {
+			name: "Open Second location",
+		});
+		expect(
+			keyedLocation.querySelectorAll("[data-key-requirement-indicator]"),
+		).toHaveLength(1);
+		expect(
+			unkeyedLocation.querySelector("[data-key-requirement-indicator]"),
+		).toBeNull();
+	});
 });
 
 function renderPanel({
@@ -149,6 +168,7 @@ function renderPanel({
 					id: "one",
 					markerLabel: "3",
 					name: "First location",
+					requiredKeyCount: 1,
 				},
 				{
 					documentId: "project",
