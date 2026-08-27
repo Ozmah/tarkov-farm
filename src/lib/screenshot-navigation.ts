@@ -1,6 +1,4 @@
-import type { KeyboardEvent } from "react";
-
-type ScreenshotNavigationCallbacks = {
+export type ScreenshotNavigationCallbacks = {
 	onNext?: () => void;
 	onPrevious?: () => void;
 };
@@ -9,13 +7,13 @@ const EDITABLE_SELECTOR =
 	"input, textarea, select, [contenteditable]:not([contenteditable='false']), [role='textbox']";
 
 export function handleScreenshotNavigationKeyDown(
-	event: KeyboardEvent<HTMLElement>,
+	event: KeyboardEvent,
 	{ onNext, onPrevious }: ScreenshotNavigationCallbacks,
 ) {
 	if (
 		(!onNext && !onPrevious) ||
 		event.defaultPrevented ||
-		event.nativeEvent.isComposing ||
+		event.isComposing ||
 		event.altKey ||
 		event.ctrlKey ||
 		event.metaKey ||

@@ -8,8 +8,8 @@ import type {
 import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useGlobalScreenshotNavigation } from "@/hooks/use-global-screenshot-navigation";
 import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
-import { handleScreenshotNavigationKeyDown } from "@/lib/screenshot-navigation";
 
 type VerticalScreenshotInspectorProps = {
 	location: LocationDetails;
@@ -32,6 +32,11 @@ export function VerticalScreenshotInspector({
 		: "";
 	const hasPrevious = selectedIndex > 0;
 	const hasNext = selectedIndex < screenshots.length - 1;
+	useGlobalScreenshotNavigation({
+		active: screenshots.length > 1 && !isFullscreenOpen,
+		onNext: hasNext ? () => showNextScreenshot() : undefined,
+		onPrevious: hasPrevious ? () => showPreviousScreenshot() : undefined,
+	});
 
 	function openFullscreen() {
 		if (!selectedScreenshot) return;
@@ -60,15 +65,9 @@ export function VerticalScreenshotInspector({
 		<>
 			<section
 				aria-keyshortcuts={
-					screenshots.length > 1 ? "A ArrowLeft D ArrowRight" : undefined
-				}
-				onKeyDownCapture={(event) =>
-					handleScreenshotNavigationKeyDown(event, {
-						onNext: hasNext ? () => showNextScreenshot() : undefined,
-						onPrevious: hasPrevious
-							? () => showPreviousScreenshot()
-							: undefined,
-					})
+					screenshots.length > 1 && !isFullscreenOpen
+						? "A ArrowLeft D ArrowRight"
+						: undefined
 				}
 				className="shrink-0 border-border border-t bg-card"
 			>

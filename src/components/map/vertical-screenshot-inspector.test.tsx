@@ -59,20 +59,42 @@ describe("VerticalScreenshotInspector", () => {
 		).toBeTruthy();
 	});
 
-	it("navigates the focused inspector with A, D, and arrow keys", () => {
-		renderInspector();
-		const preview = screen.getByRole("button", {
-			name: `View ${screenshots[0].altText} screenshot full size`,
-		});
+	it("navigates globally with A, D, and arrow keys before the map handles them", () => {
+		const onMapKeyDown = vi.fn();
+		renderInspector(vi.fn(), vi.fn(), onMapKeyDown);
+		const mapMarker = screen.getByRole("button", { name: "Map marker" });
+		mapMarker.focus();
 
-		fireEvent.keyDown(preview, { key: "d" });
+		fireEvent.keyDown(mapMarker, { key: "d" });
 		expect(screen.getByText("2 of 2")).toBeTruthy();
-		fireEvent.keyDown(preview, { key: "ArrowLeft" });
+		fireEvent.keyDown(mapMarker, { key: "ArrowLeft" });
 		expect(screen.getByText("1 of 2")).toBeTruthy();
-		fireEvent.keyDown(preview, { key: "ArrowRight" });
+		fireEvent.keyDown(mapMarker, { key: "ArrowRight" });
 		expect(screen.getByText("2 of 2")).toBeTruthy();
-		fireEvent.keyDown(preview, { key: "A" });
+		fireEvent.keyDown(mapMarker, { key: "A" });
 		expect(screen.getByText("1 of 2")).toBeTruthy();
+		expect(document.activeElement).toBe(mapMarker);
+		expect(onMapKeyDown).not.toHaveBeenCalled();
+	});
+
+	it("does not intercept screenshot shortcuts from editable controls", () => {
+		renderInspector();
+		const input = screen.getByRole("textbox", { name: "Map search" });
+
+		fireEvent.keyDown(input, { key: "d" });
+
+		expect(screen.getByText("1 of 2")).toBeTruthy();
+	});
+
+	it("leaves application shortcuts alone when only one screenshot exists", () => {
+		const onMapKeyDown = vi.fn();
+		renderInspector(vi.fn(), vi.fn(), onMapKeyDown, [screenshots[0]]);
+		const mapMarker = screen.getByRole("button", { name: "Map marker" });
+
+		fireEvent.keyDown(mapMarker, { key: "d" });
+
+		expect(screen.getByText("1 of 1")).toBeTruthy();
+		expect(onMapKeyDown).toHaveBeenCalledOnce();
 	});
 
 	it("stays open until the location is closed", () => {
@@ -128,13 +150,27 @@ describe("VerticalScreenshotInspector", () => {
 	});
 });
 
-function renderInspector(onClose = vi.fn(), onScreenshotOpen = vi.fn()) {
+function renderInspector(
+	onClose = vi.fn(),
+	onScreenshotOpen = vi.fn(),
+	onMapKeyDown = vi.fn(),
+	inspectorScreenshots = screenshots,
+) {
 	return render(
-		<VerticalScreenshotInspector
-			location={location}
-			onClose={onClose}
-			onScreenshotOpen={onScreenshotOpen}
-			screenshots={screenshots}
-		/>,
+		<>
+			<button type="button" onKeyDown={onMapKeyDown}>
+				Map marker
+			</button>
+			<label>
+				Map search
+				<input />
+			</label>
+			<VerticalScreenshotInspector
+				location={location}
+				onClose={onClose}
+				onScreenshotOpen={onScreenshotOpen}
+				screenshots={inspectorScreenshots}
+			/>
+		</>,
 	);
 }

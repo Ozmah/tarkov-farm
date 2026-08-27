@@ -176,28 +176,29 @@ describe("LocationDetailsPanel", () => {
 			}),
 		);
 
-		const dialog = screen.getByRole("dialog", { name: screenshot.altText });
-		fireEvent.keyDown(dialog, { key: "D" });
+		screen.getByRole("dialog", { name: screenshot.altText });
+		const shortcutTarget = document.body;
+		fireEvent.keyDown(shortcutTarget, { key: "D" });
 		expect(
 			screen.getByRole("img", { name: secondScreenshot.altText }),
 		).toHaveProperty("src", expect.stringContaining(secondScreenshot.path));
 
-		fireEvent.keyDown(dialog, { key: "ArrowLeft" });
+		fireEvent.keyDown(shortcutTarget, { key: "ArrowLeft" });
 		expect(
 			screen.getByRole("img", { name: screenshot.altText }),
 		).toHaveProperty("src", expect.stringContaining(screenshot.path));
 
-		fireEvent.keyDown(dialog, { key: "ArrowRight" });
+		fireEvent.keyDown(shortcutTarget, { key: "ArrowRight" });
 		expect(
 			screen.getByRole("img", { name: secondScreenshot.altText }),
 		).toBeTruthy();
-		fireEvent.keyDown(dialog, { key: "A" });
+		fireEvent.keyDown(shortcutTarget, { key: "A" });
 		expect(screen.getByRole("img", { name: screenshot.altText })).toBeTruthy();
 
-		fireEvent.keyDown(dialog, { key: "ArrowLeft" });
+		fireEvent.keyDown(shortcutTarget, { key: "ArrowLeft" });
 		expect(onScreenshotOpen).toHaveBeenCalledTimes(5);
 
-		fireEvent.keyDown(dialog, { ctrlKey: true, key: "d" });
+		fireEvent.keyDown(shortcutTarget, { ctrlKey: true, key: "d" });
 		expect(screen.getByRole("img", { name: screenshot.altText })).toBeTruthy();
 		expect(onScreenshotOpen.mock.calls).toEqual([[0], [1], [0], [1], [0]]);
 	});

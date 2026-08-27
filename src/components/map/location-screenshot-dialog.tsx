@@ -7,9 +7,9 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { useGlobalScreenshotNavigation } from "@/hooks/use-global-screenshot-navigation";
 import { useSwipeNavigation } from "@/hooks/use-swipe-navigation";
 import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
-import { handleScreenshotNavigationKeyDown } from "@/lib/screenshot-navigation";
 import { cn } from "@/lib/utils";
 
 type LocationScreenshotDialogProps = {
@@ -34,6 +34,11 @@ export function LocationScreenshotDialog({
 	screenshot,
 }: LocationScreenshotDialogProps) {
 	const hasNavigation = Boolean(onPrevious || onNext);
+	useGlobalScreenshotNavigation({
+		active: Boolean(screenshot) && hasNavigation,
+		onNext,
+		onPrevious,
+	});
 	const { isActive, isTransitioning, ...swipeProps } = useSwipeNavigation({
 		active: Boolean(screenshot),
 		onNext,
@@ -59,9 +64,6 @@ export function LocationScreenshotDialog({
 			<DialogContent
 				aria-keyshortcuts={
 					hasNavigation ? "A ArrowLeft D ArrowRight" : undefined
-				}
-				onKeyDownCapture={(event) =>
-					handleScreenshotNavigationKeyDown(event, { onNext, onPrevious })
 				}
 				overlayClassName="bg-black/85"
 				className="w-auto max-w-[calc(100vw-2rem)] gap-0 overflow-hidden bg-transparent p-0 shadow-none ring-0 sm:max-w-[calc(100vw-2rem)]"
