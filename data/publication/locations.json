@@ -55,6 +55,92 @@
 			"yBasisPoints": 1248
 		},
 		{
+			"description": "Second floor, last bedroom at the end of the hallway, on top of the bed on the right.",
+			"documentId": "pmc-personnel",
+			"id": "01bc232d-1658-4a53-80f7-f9a27692c3b3",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Resort Secondary Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/01bc232d-1658-4a53-80f7-f9a27692c3b3/f7ba3d9bb9cc112e0ffda91c157be17cd8f318fc22848edcd7f8f13aef2861c5-1920.webp",
+						"sha256": "4a35763b5f9579370475a4cd95cd90a630d1819c0e8c4344f36c50ccfe0ad31b",
+						"width": 1920
+					},
+					"id": "589ea234-5f78-4d22-996b-803566c00c3c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/01bc232d-1658-4a53-80f7-f9a27692c3b3/f7ba3d9bb9cc112e0ffda91c157be17cd8f318fc22848edcd7f8f13aef2861c5-1000.webp",
+						"sha256": "337101d28a6ac0ddc9ba9b6bf8c568850e18d8a8709910d3f83257b79539efce",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f7ba3d9bb9cc112e0ffda91c157be17cd8f318fc22848edcd7f8f13aef2861c5"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 888,
+						"path": "/screenshots/01bc232d-1658-4a53-80f7-f9a27692c3b3/297dccac812b432b42c215d478d70c69048ce5f476531dd067740d7b1f11a646-1920.webp",
+						"sha256": "f1fb8ebbc1e1bafa156bbf599ad51e41122eac4d7691f99a99cb3cf0fe56f18d",
+						"width": 1920
+					},
+					"id": "9aa3f958-2bb0-45ba-89bc-12de0fbb7a23",
+					"isActive": true,
+					"preview": {
+						"height": 463,
+						"path": "/screenshots/01bc232d-1658-4a53-80f7-f9a27692c3b3/297dccac812b432b42c215d478d70c69048ce5f476531dd067740d7b1f11a646-1000.webp",
+						"sha256": "6d3a049191661ed8996fd204d73f80e42087f40ef4c4f4bd6972adf4764a66e0",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "297dccac812b432b42c215d478d70c69048ce5f476531dd067740d7b1f11a646"
+				}
+			],
+			"xBasisPoints": 7248,
+			"yBasisPoints": 5484
+		},
+		{
+			"description": "Computer room on third floor on top of the large wooden card catalog cabinet, below the sandbagged window.",
+			"documentId": "pmc-personnel",
+			"id": "027f216d-3cdf-47c6-b667-a2401e9f5254",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Horse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/027f216d-3cdf-47c6-b667-a2401e9f5254/017cd4a5078399cda20fd0d30bdd1fbe9f7678fb139363155ade589d87acd0f9-1920.webp",
+						"sha256": "5186ed34657f60ca628e854651fa7d0032d67d01f5dd76aea3e1474cdc19f483",
+						"width": 1920
+					},
+					"id": "dc1058e2-25a9-4ada-b704-35960391b012",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/027f216d-3cdf-47c6-b667-a2401e9f5254/017cd4a5078399cda20fd0d30bdd1fbe9f7678fb139363155ade589d87acd0f9-1000.webp",
+						"sha256": "68418ad59705282c4414f28b0ed71faf0426dbc392bbe94ff312f9c08dd96130",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "017cd4a5078399cda20fd0d30bdd1fbe9f7678fb139363155ade589d87acd0f9"
+				}
+			],
+			"xBasisPoints": 4777,
+			"yBasisPoints": 2727
+		},
+		{
 			"description": "Take a left from the entrance of the room, desk at the end, in the shelf under it.",
 			"documentId": "user",
 			"id": "0357b69c-4e8b-4a2a-bc4b-4ce5f935fdb8",
@@ -421,6 +507,79 @@
 			"yBasisPoints": 1627
 		},
 		{
+			"description": "Inside a box on the ground that has another box inside, next to two pallets, east of The Way Up",
+			"documentId": "blueprints-technical",
+			"id": "0ebcc8c9-74d1-4145-b648-e97b35e4edfd",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Box in a Box",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/334abbe7e353e77ae235ec33397f80d94ffea67aec5d8e4e074477edff17feb8-1920.webp",
+						"sha256": "5779d9310b44b6ed929d1e7a38929ae84e22342745f056e125ed04a5d56c493f",
+						"width": 1555
+					},
+					"id": "a32b86be-3037-4455-a350-0042f16ea845",
+					"isActive": true,
+					"preview": {
+						"height": 694,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/334abbe7e353e77ae235ec33397f80d94ffea67aec5d8e4e074477edff17feb8-1000.webp",
+						"sha256": "935d12bc9ac8539811e4303626b415e5937980d184ef34f098fd23463c7f2698",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "334abbe7e353e77ae235ec33397f80d94ffea67aec5d8e4e074477edff17feb8"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/82dc7e5a952fb18c6b344e8c8882cff773d38520963bfe72016e67ee578831f7-1920.webp",
+						"sha256": "57440bf732e73b9699b370201018dad7615d752ab30668fc817294d6a7771506",
+						"width": 1562
+					},
+					"id": "bab0102f-2a43-4c06-9ad2-cbd3b2b6278d",
+					"isActive": true,
+					"preview": {
+						"height": 691,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/82dc7e5a952fb18c6b344e8c8882cff773d38520963bfe72016e67ee578831f7-1000.webp",
+						"sha256": "a759219ff350aea3740649d156691b0505499bbe23f7230e277b03e0d2cbe49a",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "82dc7e5a952fb18c6b344e8c8882cff773d38520963bfe72016e67ee578831f7"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1079,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/5dc6f290e1a929cb51a60d7c113a33cfd36ea2b550e9a0642a9ab568cbffec42-1920.webp",
+						"sha256": "1b22fdbe57856846bc5d1f7b6c6f4eff75101877a3459bfde80cec1e97c2ad37",
+						"width": 1559
+					},
+					"id": "964a17e6-ffc1-4cee-a29e-6fb12f52261c",
+					"isActive": true,
+					"preview": {
+						"height": 692,
+						"path": "/screenshots/0ebcc8c9-74d1-4145-b648-e97b35e4edfd/5dc6f290e1a929cb51a60d7c113a33cfd36ea2b550e9a0642a9ab568cbffec42-1000.webp",
+						"sha256": "042f835f9cafa868751e7255edf53143b765b612f5b1db531af5114d931807ed",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "5dc6f290e1a929cb51a60d7c113a33cfd36ea2b550e9a0642a9ab568cbffec42"
+				}
+			],
+			"xBasisPoints": 8465,
+			"yBasisPoints": 4631
+		},
+		{
 			"description": "In a shelf near the entrance of Gate 2 room",
 			"documentId": "blueprints-technical",
 			"id": "1039fb6f-456f-486a-8030-ceb7b6b2b842",
@@ -485,6 +644,132 @@
 			],
 			"xBasisPoints": 917,
 			"yBasisPoints": 6825
+		},
+		{
+			"description": "Second floor, bedroom with the large round table overlooking the resort front entrance",
+			"documentId": "pmc-personnel",
+			"id": "1154de2a-392a-4448-bb8f-270b7747614e",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Resort",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/e6f5ac40989fe0062f851d4b6306e9fb538031b5505fda1b2cd820fe87f6ef3a-1920.webp",
+						"sha256": "57b7ab77c87f247333fc9ec708fb5f349c575e0237aef9fd5d9e0be70d935bd0",
+						"width": 1920
+					},
+					"id": "2d2e81e7-515d-4f8d-8d9b-f5f959206cce",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/e6f5ac40989fe0062f851d4b6306e9fb538031b5505fda1b2cd820fe87f6ef3a-1000.webp",
+						"sha256": "d784c0965c24da27187503a5cf0892bb66def878bfc696d8ac35cc73234b6d06",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "e6f5ac40989fe0062f851d4b6306e9fb538031b5505fda1b2cd820fe87f6ef3a"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 935,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/be4b6afd80ce7d0a091eb40d4bdf382d6e8d5fc7a738050b321307c08f7a2d9a-1920.webp",
+						"sha256": "adf4dcf9d1a5ed800781d626cab3eec502936b91b810cbcbac753129748e1cdb",
+						"width": 1920
+					},
+					"id": "8222c12a-25bd-4221-b89b-5a6ba616498a",
+					"isActive": true,
+					"preview": {
+						"height": 487,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/be4b6afd80ce7d0a091eb40d4bdf382d6e8d5fc7a738050b321307c08f7a2d9a-1000.webp",
+						"sha256": "1592e860b9b65f0e47f0d5ad8b1b325fc317adbc0297aca34b3491ac3f7274a2",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "be4b6afd80ce7d0a091eb40d4bdf382d6e8d5fc7a738050b321307c08f7a2d9a"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 836,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/a5823703e8e6e43b55748c1e0b7079b6dde55e0b536b91c8d3c01863259428e5-1920.webp",
+						"sha256": "3362ee0cda4ea314426ec3d746e2aece993b4d37534c48a9382724d12f579592",
+						"width": 1920
+					},
+					"id": "e60557a3-56d1-42f9-b2fd-629f8a502616",
+					"isActive": true,
+					"preview": {
+						"height": 436,
+						"path": "/screenshots/1154de2a-392a-4448-bb8f-270b7747614e/a5823703e8e6e43b55748c1e0b7079b6dde55e0b536b91c8d3c01863259428e5-1000.webp",
+						"sha256": "1c5a14c3c927a5e9bd050ae3174974885ffec913e23a211c8792de8396ff519c",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "a5823703e8e6e43b55748c1e0b7079b6dde55e0b536b91c8d3c01863259428e5"
+				}
+			],
+			"xBasisPoints": 7018,
+			"yBasisPoints": 5229
+		},
+		{
+			"description": "In a display with a round table in front of the south wall right next to the broken sheet rock wall.",
+			"documentId": "blueprints-technical",
+			"id": "143e7da6-0a1c-4c94-8606-d9854daac96b",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "IDEA Display",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 438,
+						"path": "/screenshots/143e7da6-0a1c-4c94-8606-d9854daac96b/a3a7250bfb0e307d939a25cb36ad05fd605a0cbfa36e1617947df3006a547319-1920.webp",
+						"sha256": "7050170b660be5f962e0b98f3792dad2d35ea605c9ff91671204e6610d95ee9a",
+						"width": 809
+					},
+					"id": "e6c23f9c-33e6-4974-8c15-bd568a38290c",
+					"isActive": true,
+					"preview": {
+						"height": 438,
+						"path": "/screenshots/143e7da6-0a1c-4c94-8606-d9854daac96b/a3a7250bfb0e307d939a25cb36ad05fd605a0cbfa36e1617947df3006a547319-1000.webp",
+						"sha256": "b2ca226e3b2addb5ec61ae1ed35736f9142c06a3b7f24eacc913e2567632c4b4",
+						"width": 809
+					},
+					"sortOrder": 0,
+					"sourceSha256": "a3a7250bfb0e307d939a25cb36ad05fd605a0cbfa36e1617947df3006a547319"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1016,
+						"path": "/screenshots/143e7da6-0a1c-4c94-8606-d9854daac96b/a400b3a4acc86b10f7e580c92eb945e8915072b465ae4833f419a1ec4cc8dfe8-1920.webp",
+						"sha256": "7c33eea7e7536587280e6b228014fa1e4767222b9a8d039538c31dfeb62daa30",
+						"width": 1920
+					},
+					"id": "585fc8a6-b9ea-4b2f-b6a2-87c1231988dc",
+					"isActive": true,
+					"preview": {
+						"height": 529,
+						"path": "/screenshots/143e7da6-0a1c-4c94-8606-d9854daac96b/a400b3a4acc86b10f7e580c92eb945e8915072b465ae4833f419a1ec4cc8dfe8-1000.webp",
+						"sha256": "ca2772a69f14c0119098de3c642477251a5515cd9889d9886a21884c205f2781",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a400b3a4acc86b10f7e580c92eb945e8915072b465ae4833f419a1ec4cc8dfe8"
+				}
+			],
+			"xBasisPoints": 7994,
+			"yBasisPoints": 3729
 		},
 		{
 			"description": "On the ground, next to one of the bunk beds, inside the tent",
@@ -664,6 +949,39 @@
 			],
 			"xBasisPoints": 3575,
 			"yBasisPoints": 8033
+		},
+		{
+			"description": "To the east of the torture room on the left side of the minotaur altar",
+			"documentId": "medical",
+			"id": "1a3e016f-4364-43ce-9120-2a3b380aa31e",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "South Omega Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1018,
+						"path": "/screenshots/1a3e016f-4364-43ce-9120-2a3b380aa31e/50e34160c2d6019097d48f3da3784a3c7cf9daccb8a5b60936ce85561f2bc8e7-1920.webp",
+						"sha256": "e01920611022330988c0b225f6edd736911eaae02f1c0a8f7572043ef61697b4",
+						"width": 1920
+					},
+					"id": "bfeb38a7-1f17-4b3f-ba40-2e8499c4d6a8",
+					"isActive": true,
+					"preview": {
+						"height": 530,
+						"path": "/screenshots/1a3e016f-4364-43ce-9120-2a3b380aa31e/50e34160c2d6019097d48f3da3784a3c7cf9daccb8a5b60936ce85561f2bc8e7-1000.webp",
+						"sha256": "e85adc2d0e36d2c4aba82894f2d86d9b70d04bb68743cd5f6f04788b96abdc5c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "50e34160c2d6019097d48f3da3784a3c7cf9daccb8a5b60936ce85561f2bc8e7"
+				}
+			],
+			"xBasisPoints": 5812,
+			"yBasisPoints": 5929
 		},
 		{
 			"description": "Main living room overlooking the playground, on the coffee table",
@@ -1616,6 +1934,59 @@
 			"yBasisPoints": 5817
 		},
 		{
+			"description": "Second floor west office next to the bookshelf and the wall",
+			"documentId": "technical",
+			"id": "38658498-795b-4970-b58b-a08b0ff18900",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Water Treatment Plant Building 3",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/38658498-795b-4970-b58b-a08b0ff18900/135369bac2076a8fee2db458a9e035c4c2eb7408fec2f87f59257603db794e5d-1920.webp",
+						"sha256": "3012416b485be50a5b67bfeeb0ddfdc3797279ffc51f17d9dea8fc80426c34fd",
+						"width": 1920
+					},
+					"id": "a2701e78-4025-4087-b8b3-35e0627ec5b2",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/38658498-795b-4970-b58b-a08b0ff18900/135369bac2076a8fee2db458a9e035c4c2eb7408fec2f87f59257603db794e5d-1000.webp",
+						"sha256": "e4e495039a6c35a827ed013cec561e626dd475f65b90a4ef59cbc85cb647e307",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "135369bac2076a8fee2db458a9e035c4c2eb7408fec2f87f59257603db794e5d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 931,
+						"path": "/screenshots/38658498-795b-4970-b58b-a08b0ff18900/4c433865f58499e9725aace2ca73b546af0b3b020ddb05bb636d85817620d7a4-1920.webp",
+						"sha256": "f2fac1665b941c01a5c6646035a146737d363d4f945766ff4f752094f97ba088",
+						"width": 1920
+					},
+					"id": "ef6f84f2-ffcf-4895-9421-d1bbcab8ea54",
+					"isActive": true,
+					"preview": {
+						"height": 485,
+						"path": "/screenshots/38658498-795b-4970-b58b-a08b0ff18900/4c433865f58499e9725aace2ca73b546af0b3b020ddb05bb636d85817620d7a4-1000.webp",
+						"sha256": "b89a5b68fedacb1eebc3c79e0024084b42029cb553941d2d71fb7211c96f4ea1",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "4c433865f58499e9725aace2ca73b546af0b3b020ddb05bb636d85817620d7a4"
+				}
+			],
+			"xBasisPoints": 7635,
+			"yBasisPoints": 2180
+		},
+		{
 			"description": "Inside crackhouse on the floor near the bookshelves",
 			"documentId": "financial",
 			"id": "38a104fc-4286-4a4a-9d92-b43328010d38",
@@ -1872,7 +2243,7 @@
 			"id": "418318f1-63dc-4c93-9ca1-d10156c2592e",
 			"isActive": true,
 			"mapImageId": "lighthouse-main",
-			"name": "Beach Houses",
+			"name": "South Beach House",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -2718,6 +3089,59 @@
 			"yBasisPoints": 2563
 		},
 		{
+			"description": "On the shelf behind the desk in the middle part of the warehouse",
+			"documentId": "pmc-personnel",
+			"id": "5cda96ac-7314-48f4-9276-344aba9d24a1",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Trains Station Warehouse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/5cda96ac-7314-48f4-9276-344aba9d24a1/8adf43f98bc945a1212a50a92c0a67f45695b2ba69987517575525e1ce9b1dd1-1920.webp",
+						"sha256": "039c839423b7f789c9bae725e9b7f217f3f2c6182143a03c8f959d878ee8f028",
+						"width": 1920
+					},
+					"id": "c5caa0d8-e650-49da-a637-5508c2515d61",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/5cda96ac-7314-48f4-9276-344aba9d24a1/8adf43f98bc945a1212a50a92c0a67f45695b2ba69987517575525e1ce9b1dd1-1000.webp",
+						"sha256": "cc5e008eed6457c58b08a834daf28c37015e1742f33689f55757adff036156b3",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "8adf43f98bc945a1212a50a92c0a67f45695b2ba69987517575525e1ce9b1dd1"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 868,
+						"path": "/screenshots/5cda96ac-7314-48f4-9276-344aba9d24a1/ac231b335f2ceaf3ebcb60fe7c7233009ff703c1f9b3c70dba96f448a943e4d3-1920.webp",
+						"sha256": "ce64221d8898686579b8d0b4f1fa79a2fb6c025f5fd87ad5acbc25630702eb45",
+						"width": 1920
+					},
+					"id": "457fc549-c79b-47d8-ac75-29463e459bdd",
+					"isActive": true,
+					"preview": {
+						"height": 452,
+						"path": "/screenshots/5cda96ac-7314-48f4-9276-344aba9d24a1/ac231b335f2ceaf3ebcb60fe7c7233009ff703c1f9b3c70dba96f448a943e4d3-1000.webp",
+						"sha256": "22f0fa79dc725c10454cd9f8d785f918e8b879a64885bcaeab703484e1b377c5",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "ac231b335f2ceaf3ebcb60fe7c7233009ff703c1f9b3c70dba96f448a943e4d3"
+				}
+			],
+			"xBasisPoints": 6289,
+			"yBasisPoints": 968
+		},
+		{
 			"description": "Second floor, archives room, in the back of the room between a file cabinet and a water dispenser",
 			"documentId": "project",
 			"id": "5d5fba7c-e474-4511-b003-76ca0d43580e",
@@ -3171,6 +3595,39 @@
 			"yBasisPoints": 3490
 		},
 		{
+			"description": "First shack on the north side, on top of a stool next to the fridge.",
+			"documentId": "technical",
+			"id": "7316a912-1969-4e42-8041-eb4b3c8cbab3",
+			"isActive": true,
+			"mapImageId": "woods-main",
+			"name": "Sawmill Shacks",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/7316a912-1969-4e42-8041-eb4b3c8cbab3/be81d15330d50675c14e9635dc8df23558c6b61fdad703188ef35d5dac483063-1920.webp",
+						"sha256": "cb9413078adaf604af9f3ffcdfc2bc2ca9c236c1145b6707651982271d30688f",
+						"width": 1920
+					},
+					"id": "810aac5e-dd29-4150-b420-4aa6fe08729d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/7316a912-1969-4e42-8041-eb4b3c8cbab3/be81d15330d50675c14e9635dc8df23558c6b61fdad703188ef35d5dac483063-1000.webp",
+						"sha256": "db13dd91ce01ee0a2c137eac870278f35ee712c44a295e0685c36e0aab12aae4",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "be81d15330d50675c14e9635dc8df23558c6b61fdad703188ef35d5dac483063"
+				}
+			],
+			"xBasisPoints": 4704,
+			"yBasisPoints": 4889
+		},
+		{
 			"description": "On a desk inside the mecanic",
 			"documentId": "project",
 			"id": "7376aa0a-24d6-4ef7-bbf2-b2705036eb75",
@@ -3235,6 +3692,79 @@
 			],
 			"xBasisPoints": 7031,
 			"yBasisPoints": 5257
+		},
+		{
+			"description": "Among the bags and cardboard boxes just northeast of The Way Up",
+			"documentId": "blueprints-technical",
+			"id": "7535ef12-229e-434b-b862-41725e3d8e12",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Pile of Garbage",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 968,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/20d6c4fea4a5bcc07e6b89cb521b0d91e5c4d5b71a0711913a0e9963afb6bca2-1920.webp",
+						"sha256": "4c19c2aa947775e3b936605ec190239d53123e31f9985b87a1bd440acd8f9c34",
+						"width": 1920
+					},
+					"id": "06ef374c-a640-4277-9ec6-f05f04534a0f",
+					"isActive": true,
+					"preview": {
+						"height": 504,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/20d6c4fea4a5bcc07e6b89cb521b0d91e5c4d5b71a0711913a0e9963afb6bca2-1000.webp",
+						"sha256": "318dc0b43c47cd7984388f5e763e00dbde7e4728f88b7f40769d097437149e59",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "20d6c4fea4a5bcc07e6b89cb521b0d91e5c4d5b71a0711913a0e9963afb6bca2"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 933,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/6684f7778a570c3ceed621eeca3e6700d23fbb3d9d1dd2e5561454f955284118-1920.webp",
+						"sha256": "7c97ad6188bd1dc77944ad79c1b83e2a5efc6c1339a24c566b26600b27a2927f",
+						"width": 1920
+					},
+					"id": "16e4fee1-b409-4f2a-949d-60fa6fbe83ba",
+					"isActive": true,
+					"preview": {
+						"height": 486,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/6684f7778a570c3ceed621eeca3e6700d23fbb3d9d1dd2e5561454f955284118-1000.webp",
+						"sha256": "969219556b3e54e83b46cb4783b03fdf183e537d4289b4583d9e5e51f86090ea",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "6684f7778a570c3ceed621eeca3e6700d23fbb3d9d1dd2e5561454f955284118"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 916,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/4802fa3a410fdbd013e4f0b66def857e9ff7b2392f88ca61c74cde67a964fb65-1920.webp",
+						"sha256": "3c40f796676d44041e04ad554bb246ff7629e16adafccebd5ec99d44b5e0f2aa",
+						"width": 1920
+					},
+					"id": "75b9596c-f900-416a-820b-3aab0d7b17de",
+					"isActive": true,
+					"preview": {
+						"height": 477,
+						"path": "/screenshots/7535ef12-229e-434b-b862-41725e3d8e12/4802fa3a410fdbd013e4f0b66def857e9ff7b2392f88ca61c74cde67a964fb65-1000.webp",
+						"sha256": "0855c4b6b0057220c7b2481d67dc663d008e262065b1780ddbc91fc5196bea48",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "4802fa3a410fdbd013e4f0b66def857e9ff7b2392f88ca61c74cde67a964fb65"
+				}
+			],
+			"xBasisPoints": 8285,
+			"yBasisPoints": 3628
 		},
 		{
 			"description": "At the base of the antena, on top of the two stacked white radios",
@@ -4472,6 +5002,39 @@
 			"yBasisPoints": 4508
 		},
 		{
+			"description": "Inside the shack between the file cabinet and the table on the ground",
+			"documentId": "project",
+			"id": "955867dc-0c3d-4545-ac78-3af2cc975659",
+			"isActive": true,
+			"mapImageId": "customs-main",
+			"name": "South Blue Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/955867dc-0c3d-4545-ac78-3af2cc975659/d0746841ee9ae07a71720d9821f6212a92d227cb243a3a640083850861db2d58-1920.webp",
+						"sha256": "14d1cf0d7723af19ae579347076781b3873e624f594f37892c55fe57b304f032",
+						"width": 1920
+					},
+					"id": "5a97a67c-7f19-4b3c-80b5-d7a490db26b0",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/955867dc-0c3d-4545-ac78-3af2cc975659/d0746841ee9ae07a71720d9821f6212a92d227cb243a3a640083850861db2d58-1000.webp",
+						"sha256": "9ef74d20df1edc37ba6f26c4b82433691c80141e8b5c1e27b54972c97b0ec9e2",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "d0746841ee9ae07a71720d9821f6212a92d227cb243a3a640083850861db2d58"
+				}
+			],
+			"xBasisPoints": 8484,
+			"yBasisPoints": 4853
+		},
+		{
 			"description": "Corner office near the entrance, on the bookshelf",
 			"documentId": "user",
 			"id": "966df40c-c958-4b4e-9d50-708458aad806",
@@ -5277,7 +5840,7 @@
 			"id": "bd5376e6-2ebf-43f7-b1dd-f3265bdbe35f",
 			"isActive": true,
 			"mapImageId": "customs-main",
-			"name": "Blue Shack",
+			"name": "South Blue Shack",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -6004,6 +6567,59 @@
 			"yBasisPoints": 5650
 		},
 		{
+			"description": "Second floor office, just outside the door leading to the hallway on the floor on the left side next to the tipped-over bookshelf",
+			"documentId": "pmc-personnel",
+			"id": "d27e3b64-cd2f-4e79-b661-38541c30bb92",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Water Treatment Plant Building 3",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/d27e3b64-cd2f-4e79-b661-38541c30bb92/45b1d0420ca5207b038fc327594c4bf4c85d7434898ff7b8a5bb94845251d21b-1920.webp",
+						"sha256": "a2eae3f73321bc83988717879d621bc5cb337729e078bb9aa3c6b15b38766935",
+						"width": 1920
+					},
+					"id": "0cd30c57-f488-4ae0-a314-2a6781395481",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/d27e3b64-cd2f-4e79-b661-38541c30bb92/45b1d0420ca5207b038fc327594c4bf4c85d7434898ff7b8a5bb94845251d21b-1000.webp",
+						"sha256": "49ab3710d7c552a3a30b834df6b47d01c3de35712c9c8fc6d00cd6d7d1c96eda",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "45b1d0420ca5207b038fc327594c4bf4c85d7434898ff7b8a5bb94845251d21b"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1025,
+						"path": "/screenshots/d27e3b64-cd2f-4e79-b661-38541c30bb92/84c347e40965ef785c974d1b280eb918263966b2c96d59a82822fac0079a5969-1920.webp",
+						"sha256": "535638e0d1ecd1357e6b8c444fd2878c6d594a9756753999cfe4f0618812c9a6",
+						"width": 1920
+					},
+					"id": "a07db456-f3b6-42db-95e9-01153131ecff",
+					"isActive": true,
+					"preview": {
+						"height": 534,
+						"path": "/screenshots/d27e3b64-cd2f-4e79-b661-38541c30bb92/84c347e40965ef785c974d1b280eb918263966b2c96d59a82822fac0079a5969-1000.webp",
+						"sha256": "91c640f3590848471c24a43cc558fad082c5cded0a70212a5f884b2d089e6fb4",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "84c347e40965ef785c974d1b280eb918263966b2c96d59a82822fac0079a5969"
+				}
+			],
+			"xBasisPoints": 7648,
+			"yBasisPoints": 2200
+		},
+		{
 			"description": "On the side of the desk, next to a shelf",
 			"documentId": "financial",
 			"id": "d4eac4a5-ccd3-4358-9d18-31497cc50151",
@@ -6557,6 +7173,59 @@
 			"yBasisPoints": 2752
 		},
 		{
+			"description": "test",
+			"documentId": "technical",
+			"id": "e873a601-4125-4991-b7c8-73ae3252f469",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "North Beach House",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e873a601-4125-4991-b7c8-73ae3252f469/090d48d603466df8cac8e18b37e6e6765d449e159bd27f94e6cf455752e73432-1920.webp",
+						"sha256": "195be10daa17bb1a3e573fc9ded3b935f5076bd0c3352443587de268cbeea18c",
+						"width": 1920
+					},
+					"id": "f00f42ee-0d5c-42f8-b3f4-58706aa04628",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e873a601-4125-4991-b7c8-73ae3252f469/090d48d603466df8cac8e18b37e6e6765d449e159bd27f94e6cf455752e73432-1000.webp",
+						"sha256": "c4703df45b250d8f9363edb0c691b83919d67a9ed7878555b80cfe9f17585aad",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "090d48d603466df8cac8e18b37e6e6765d449e159bd27f94e6cf455752e73432"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 994,
+						"path": "/screenshots/e873a601-4125-4991-b7c8-73ae3252f469/a8eca77a37e5a92461e3f2aeda1be765cb117bbef3ac21a4044369b721ed0724-1920.webp",
+						"sha256": "6c8686d8e9233fdf4a9afe20f44bbac36393f34fb9c2585f2175d88275c740eb",
+						"width": 1920
+					},
+					"id": "30cc5912-c568-4f39-8169-c90ed9604a63",
+					"isActive": true,
+					"preview": {
+						"height": 518,
+						"path": "/screenshots/e873a601-4125-4991-b7c8-73ae3252f469/a8eca77a37e5a92461e3f2aeda1be765cb117bbef3ac21a4044369b721ed0724-1000.webp",
+						"sha256": "316ad51b5d482dad356ac53914447f0848efdc06cf2f8ee5f18c9b31ec17ff0d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a8eca77a37e5a92461e3f2aeda1be765cb117bbef3ac21a4044369b721ed0724"
+				}
+			],
+			"xBasisPoints": 5681,
+			"yBasisPoints": 4707
+		},
+		{
 			"description": "Inside the locked office in the office building ground floor, between the filing cabinet and the desk.",
 			"documentId": "project",
 			"id": "e920b99d-65b6-4f40-a728-b15dab21990f",
@@ -6846,6 +7515,59 @@
 			],
 			"xBasisPoints": 3794,
 			"yBasisPoints": 1700
+		},
+		{
+			"description": "Next to a patient corpse just outside of the assembly room in the main area",
+			"documentId": "medical",
+			"id": "f20a57fa-bdd9-431f-93f2-4f05f9517678",
+			"isActive": true,
+			"mapImageId": "the-labyrinth-main",
+			"name": "Patient Corpse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1000,
+						"path": "/screenshots/f20a57fa-bdd9-431f-93f2-4f05f9517678/ae080d758e6b08994f621299a49960e04e206c414a7dad5902aeeb19f580efc3-1920.webp",
+						"sha256": "a3cc183be63f99be8d191f32d6f7072b37a59934c1418bb6692ce8f868c1ac6c",
+						"width": 1920
+					},
+					"id": "baae6de3-e4bc-4d99-af07-1f8e72f8c046",
+					"isActive": true,
+					"preview": {
+						"height": 521,
+						"path": "/screenshots/f20a57fa-bdd9-431f-93f2-4f05f9517678/ae080d758e6b08994f621299a49960e04e206c414a7dad5902aeeb19f580efc3-1000.webp",
+						"sha256": "cc3beb5fe158b25aa9478bb2c3972288839ab97a6498233c605e0e246dba8efb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ae080d758e6b08994f621299a49960e04e206c414a7dad5902aeeb19f580efc3"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1141,
+						"path": "/screenshots/f20a57fa-bdd9-431f-93f2-4f05f9517678/f19426c6cc877173ba5d64a36e6dc3a9c66b958774126faa2dfdb7eeaae2b541-1920.webp",
+						"sha256": "861757d3bffe8bc277f16b53cdb8fb82588d2f293667fe0550d6089a5f035ad8",
+						"width": 1920
+					},
+					"id": "85706182-cbe5-4e78-9aed-3410562c40f0",
+					"isActive": true,
+					"preview": {
+						"height": 594,
+						"path": "/screenshots/f20a57fa-bdd9-431f-93f2-4f05f9517678/f19426c6cc877173ba5d64a36e6dc3a9c66b958774126faa2dfdb7eeaae2b541-1000.webp",
+						"sha256": "b7c764e40546ecf3523ee786fdeb76bf3b548b20c657cf353b291394fd05f068",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "f19426c6cc877173ba5d64a36e6dc3a9c66b958774126faa2dfdb7eeaae2b541"
+				}
+			],
+			"xBasisPoints": 7066,
+			"yBasisPoints": 4611
 		},
 		{
 			"description": "Next to the soldier's body between torture room and ariadne's path",
