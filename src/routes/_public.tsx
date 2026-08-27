@@ -5,13 +5,13 @@ import {
 	useRouterState,
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BrowseShell } from "@/components/browse-shell";
 import { PendingMapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { PendingVerticalLocationsControl } from "@/components/map/vertical-map-controls";
 import {
 	type PublicLayoutConfiguration,
 	PublicLayoutConfigurationProvider,
 } from "@/components/public-layout-context";
-import { PublicShell } from "@/components/public-shell";
 import { RouteError } from "@/components/route-error";
 import { getCatalog } from "@/functions/catalog";
 import { setPublicLayoutMode } from "@/functions/layout-mode";
@@ -49,7 +49,7 @@ function PublicLayout() {
 		select: (state) => state.location.pathname,
 	});
 	const isAboutRoute = currentPathname === "/about";
-	const isContributeRoute = currentPathname.startsWith("/contribute");
+	const isContributeRoute = currentPathname === "/contribute";
 	const isDocumentsRoute = currentPathname === "/documents";
 	const isUpdatesRoute = currentPathname === "/updates";
 	const navigationStartedRef = useRef(false);
@@ -160,7 +160,7 @@ function PublicLayout() {
 			prepareMapNavigation={prepareMapNavigation}
 			setConfiguration={setConfiguration}
 		>
-			<PublicShell
+			<BrowseShell
 				catalog={catalog}
 				currentMapId={currentMap?.id}
 				layoutMode={layoutMode}
@@ -183,19 +183,17 @@ function PublicLayout() {
 				}
 				headerMeta={configuration?.headerMeta}
 				onMapNavigationStart={(map) =>
-					currentPathname === "/contribute/editor"
-						? undefined
-						: prepareMapNavigation(
-								map,
-								layoutMode === "vertical" ? "topbar" : "sidebar",
-							)
+					prepareMapNavigation(
+						map,
+						layoutMode === "vertical" ? "topbar" : "sidebar",
+					)
 				}
 				onLayoutModeChange={changeLayoutMode}
 				sidebarPanel={configuration?.sidebarPanel}
 				verticalLocationsControl={configuration?.verticalLocationsControl}
 			>
 				<Outlet />
-			</PublicShell>
+			</BrowseShell>
 		</PublicLayoutConfigurationProvider>
 	);
 }

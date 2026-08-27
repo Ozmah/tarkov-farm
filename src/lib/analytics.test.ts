@@ -24,6 +24,9 @@ describe("analytics privacy helpers", () => {
 		expect(readAnalyticsRouteProperties("/contribute")).toEqual({
 			route: "contribute",
 		});
+		expect(readAnalyticsRouteProperties("/contribute/editor")).toEqual({
+			route: "contribution_editor",
+		});
 		expect(readAnalyticsRouteProperties("/unknown")).toEqual({
 			route: "other",
 		});

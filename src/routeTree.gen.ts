@@ -18,7 +18,7 @@ import { Route as PublicAboutRouteImport } from './routes/_public.about'
 import { Route as PublicContributeRouteImport } from './routes/_public.contribute'
 import { Route as PublicDocumentsRouteImport } from './routes/_public.documents'
 import { Route as PublicUpdatesRouteImport } from './routes/_public.updates'
-import { Route as PublicContributeEditorRouteImport } from './routes/_public.contribute_.editor'
+import { Route as ContributeEditorRouteImport } from './routes/contribute.editor'
 import { Route as PublicMapsMapIdRouteImport } from './routes/_public.maps.$mapId'
 
 const PublicRoute = PublicRouteImport.update({
@@ -65,10 +65,10 @@ const PublicUpdatesRoute = PublicUpdatesRouteImport.update({
   path: '/updates',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicContributeEditorRoute = PublicContributeEditorRouteImport.update({
-  id: '/contribute_/editor',
+const ContributeEditorRoute = ContributeEditorRouteImport.update({
+  id: '/contribute/editor',
   path: '/contribute/editor',
-  getParentRoute: () => PublicRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PublicMapsMapIdRoute = PublicMapsMapIdRouteImport.update({
   id: '/maps/$mapId',
@@ -85,7 +85,7 @@ export interface FileRoutesByFullPath {
   '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
-  '/contribute/editor': typeof PublicContributeEditorRoute
+  '/contribute/editor': typeof ContributeEditorRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRoutesByTo {
@@ -96,8 +96,8 @@ export interface FileRoutesByTo {
   '/contribute': typeof PublicContributeRoute
   '/documents': typeof PublicDocumentsRoute
   '/updates': typeof PublicUpdatesRoute
+  '/contribute/editor': typeof ContributeEditorRoute
   '/': typeof PublicIndexRoute
-  '/contribute/editor': typeof PublicContributeEditorRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRoutesById {
@@ -110,8 +110,8 @@ export interface FileRoutesById {
   '/_public/contribute': typeof PublicContributeRoute
   '/_public/documents': typeof PublicDocumentsRoute
   '/_public/updates': typeof PublicUpdatesRoute
+  '/contribute/editor': typeof ContributeEditorRoute
   '/_public/': typeof PublicIndexRoute
-  '/_public/contribute_/editor': typeof PublicContributeEditorRoute
   '/_public/maps/$mapId': typeof PublicMapsMapIdRoute
 }
 export interface FileRouteTypes {
@@ -136,8 +136,8 @@ export interface FileRouteTypes {
     | '/contribute'
     | '/documents'
     | '/updates'
-    | '/'
     | '/contribute/editor'
+    | '/'
     | '/maps/$mapId'
   id:
     | '__root__'
@@ -149,8 +149,8 @@ export interface FileRouteTypes {
     | '/_public/contribute'
     | '/_public/documents'
     | '/_public/updates'
+    | '/contribute/editor'
     | '/_public/'
-    | '/_public/contribute_/editor'
     | '/_public/maps/$mapId'
   fileRoutesById: FileRoutesById
 }
@@ -159,6 +159,7 @@ export interface RootRouteChildren {
   EditorRoute: typeof EditorRoute
   HealthRoute: typeof HealthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ContributeEditorRoute: typeof ContributeEditorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -226,12 +227,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicUpdatesRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/_public/contribute_/editor': {
-      id: '/_public/contribute_/editor'
+    '/contribute/editor': {
+      id: '/contribute/editor'
       path: '/contribute/editor'
       fullPath: '/contribute/editor'
-      preLoaderRoute: typeof PublicContributeEditorRouteImport
-      parentRoute: typeof PublicRoute
+      preLoaderRoute: typeof ContributeEditorRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_public/maps/$mapId': {
       id: '/_public/maps/$mapId'
@@ -249,7 +250,6 @@ interface PublicRouteChildren {
   PublicDocumentsRoute: typeof PublicDocumentsRoute
   PublicUpdatesRoute: typeof PublicUpdatesRoute
   PublicIndexRoute: typeof PublicIndexRoute
-  PublicContributeEditorRoute: typeof PublicContributeEditorRoute
   PublicMapsMapIdRoute: typeof PublicMapsMapIdRoute
 }
 
@@ -259,7 +259,6 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicDocumentsRoute: PublicDocumentsRoute,
   PublicUpdatesRoute: PublicUpdatesRoute,
   PublicIndexRoute: PublicIndexRoute,
-  PublicContributeEditorRoute: PublicContributeEditorRoute,
   PublicMapsMapIdRoute: PublicMapsMapIdRoute,
 }
 
@@ -271,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditorRoute: EditorRoute,
   HealthRoute: HealthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ContributeEditorRoute: ContributeEditorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

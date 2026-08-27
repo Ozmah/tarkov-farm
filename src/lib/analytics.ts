@@ -21,6 +21,7 @@ export type AnalyticsAcquisitionProperties = {
 type AnalyticsRoute =
 	| "about"
 	| "contribute"
+	| "contribution_editor"
 	| "documents"
 	| "home"
 	| "map"
@@ -122,6 +123,7 @@ const ROUTE_BY_PATHNAME = {
 	"/": "home",
 	"/about": "about",
 	"/contribute": "contribute",
+	"/contribute/editor": "contribution_editor",
 	"/documents": "documents",
 	"/updates": "updates",
 } as const;

@@ -44,7 +44,9 @@ type AppSidebarProps = {
 		mapId: string;
 	}>;
 	currentMapId?: string;
-	footer?: ReactNode;
+	footerAddon?: ReactNode;
+	footerNavigation?: ReactNode;
+	footerNavigationLabel?: string;
 	layoutMode?: LayoutMode;
 	layoutModeError?: string;
 	layoutModePending?: boolean;
@@ -60,7 +62,9 @@ export function AppSidebar({
 	documents,
 	documentMaps,
 	currentMapId,
-	footer,
+	footerAddon,
+	footerNavigation,
+	footerNavigationLabel = "Project navigation",
 	layoutMode,
 	layoutModeError,
 	layoutModePending,
@@ -76,9 +80,10 @@ export function AppSidebar({
 		select: (state) => state.location.href,
 	});
 	const hasSidebarPanel = Boolean(sidebarPanel);
+	const hasFooterNavigation = footerNavigation !== undefined;
 	const isAboutRoute = Boolean(matchRoute({ to: "/about", fuzzy: false }));
 	const isContributeRoute = Boolean(
-		matchRoute({ to: "/contribute", fuzzy: true }),
+		matchRoute({ to: "/contribute", fuzzy: false }),
 	);
 	const isDocumentsRoute = Boolean(
 		matchRoute({ to: "/documents", fuzzy: false }),
@@ -273,109 +278,118 @@ export function AppSidebar({
 				) : null}
 			</div>
 			<SidebarFooter className="border-sidebar-border border-t">
-				<nav aria-label="Project navigation" className="flex flex-col gap-2">
-					<SidebarMenu>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<Link
-										to="/documents"
-										search={{}}
-										onClick={() => {
-											setIsSidebarPanelOpen(false);
-											closeMobileSidebar();
-										}}
+				<nav
+					aria-label={
+						hasFooterNavigation ? footerNavigationLabel : "Project navigation"
+					}
+					className="flex flex-col gap-2"
+				>
+					{hasFooterNavigation ? (
+						footerNavigation
+					) : (
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									render={
+										<Link
+											to="/documents"
+											search={{}}
+											onClick={() => {
+												setIsSidebarPanelOpen(false);
+												closeMobileSidebar();
+											}}
+										/>
+									}
+									isActive={isDocumentsRoute}
+									aria-current={isDocumentsRoute ? "page" : undefined}
+									className="border-transparent border-l data-active:border-sidebar-primary"
+								>
+									<FileTextIcon aria-hidden="true" />
+									<span>Documents</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									render={
+										<Link
+											to="/updates"
+											search={{}}
+											onClick={() => {
+												setIsSidebarPanelOpen(false);
+												closeMobileSidebar();
+											}}
+										/>
+									}
+									isActive={isUpdatesRoute}
+									aria-current={isUpdatesRoute ? "page" : undefined}
+									className="border-transparent border-l data-active:border-sidebar-primary"
+								>
+									<NewspaperClippingIcon aria-hidden="true" />
+									<span>Updates</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									render={
+										<Link
+											to="/about"
+											search={{}}
+											onClick={() => {
+												setIsSidebarPanelOpen(false);
+												closeMobileSidebar();
+											}}
+										/>
+									}
+									isActive={isAboutRoute}
+									aria-current={isAboutRoute ? "page" : undefined}
+									className="border-transparent border-l data-active:border-sidebar-primary"
+								>
+									<InfoIcon aria-hidden="true" />
+									<span>About</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									render={
+										<a
+											href={problemIssueUrl}
+											target="_blank"
+											rel="noreferrer"
+											onClick={closeMobileSidebar}
+										/>
+									}
+								>
+									<WarningCircleIcon aria-hidden="true" />
+									<span>Something wrong?</span>
+									<ArrowSquareOutIcon
+										aria-hidden="true"
+										className="ml-auto size-3! text-sidebar-foreground/60"
 									/>
-								}
-								isActive={isDocumentsRoute}
-								aria-current={isDocumentsRoute ? "page" : undefined}
-								className="border-transparent border-l data-active:border-sidebar-primary"
-							>
-								<FileTextIcon aria-hidden="true" />
-								<span>Documents</span>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<Link
-										to="/updates"
-										search={{}}
-										onClick={() => {
-											setIsSidebarPanelOpen(false);
-											closeMobileSidebar();
-										}}
-									/>
-								}
-								isActive={isUpdatesRoute}
-								aria-current={isUpdatesRoute ? "page" : undefined}
-								className="border-transparent border-l data-active:border-sidebar-primary"
-							>
-								<NewspaperClippingIcon aria-hidden="true" />
-								<span>Updates</span>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<Link
-										to="/about"
-										search={{}}
-										onClick={() => {
-											setIsSidebarPanelOpen(false);
-											closeMobileSidebar();
-										}}
-									/>
-								}
-								isActive={isAboutRoute}
-								aria-current={isAboutRoute ? "page" : undefined}
-								className="border-transparent border-l data-active:border-sidebar-primary"
-							>
-								<InfoIcon aria-hidden="true" />
-								<span>About</span>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<a
-										href={problemIssueUrl}
-										target="_blank"
-										rel="noreferrer"
-										onClick={closeMobileSidebar}
-									/>
-								}
-							>
-								<WarningCircleIcon aria-hidden="true" />
-								<span>Something wrong?</span>
-								<ArrowSquareOutIcon
-									aria-hidden="true"
-									className="ml-auto size-3! text-sidebar-foreground/60"
-								/>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<Link
-										to="/contribute"
-										search={{ map: currentMapId }}
-										onClick={() => {
-											setIsSidebarPanelOpen(false);
-											closeMobileSidebar();
-										}}
-									/>
-								}
-								isActive={isContributeRoute}
-								aria-current={isContributeRoute ? "page" : undefined}
-								className="border-transparent border-l data-active:border-sidebar-primary"
-							>
-								<HandHeartIcon aria-hidden="true" />
-								<span>Want to help?</span>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					</SidebarMenu>
-					{footer}
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									render={
+										<Link
+											to="/contribute"
+											search={{ map: currentMapId }}
+											onClick={() => {
+												setIsSidebarPanelOpen(false);
+												closeMobileSidebar();
+											}}
+										/>
+									}
+									isActive={isContributeRoute}
+									aria-current={isContributeRoute ? "page" : undefined}
+									className="border-transparent border-l data-active:border-sidebar-primary"
+								>
+									<HandHeartIcon aria-hidden="true" />
+									<span>Want to help?</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					)}
+					{hasFooterNavigation ? null : footerAddon}
 				</nav>
 				{layoutMode && onLayoutModeChange ? (
 					<LayoutModeToggle
