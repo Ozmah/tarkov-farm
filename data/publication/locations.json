@@ -3994,7 +3994,7 @@
 			"yBasisPoints": 2603
 		},
 		{
-			"description": "Terragroup building, front facing office, on a sofa near the entrance",
+			"description": "Terragroup building, unlocked front facing office, on a sofa near the entrance",
 			"documentId": "medical",
 			"id": "796d1122-6f17-4780-adca-aad59658962e",
 			"isActive": true,
@@ -4581,6 +4581,39 @@
 			],
 			"xBasisPoints": 6166,
 			"yBasisPoints": 2464
+		},
+		{
+			"description": "Terragroup building, unlocked front facing office, on one of the desks next to the windows.",
+			"documentId": "medical",
+			"id": "8848ae9c-b3b3-41c9-874f-9c65ce3d33d3",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Office 3",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/8848ae9c-b3b3-41c9-874f-9c65ce3d33d3/ce9b5e2e87309653ee6f4ea00b344e00ecef94cdd3e8a6f124167ce1b1f36f7c-1920.webp",
+						"sha256": "3536272ca24b9518050ace7d5aee5440c31c67c77932d12a687063e0d9fd3de1",
+						"width": 1920
+					},
+					"id": "84f8d963-5c42-4784-993e-24ff43026407",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/8848ae9c-b3b3-41c9-874f-9c65ce3d33d3/ce9b5e2e87309653ee6f4ea00b344e00ecef94cdd3e8a6f124167ce1b1f36f7c-1000.webp",
+						"sha256": "d35b5fb0f1d14ebc8a41a6398fbae463f9ec8625037285c166b22c342b92207f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ce9b5e2e87309653ee6f4ea00b344e00ecef94cdd3e8a6f124167ce1b1f36f7c"
+				}
+			],
+			"xBasisPoints": 8579,
+			"yBasisPoints": 3901
 		},
 		{
 			"description": "On a wooden plank, south of the blue tractor cart",
@@ -5242,6 +5275,39 @@
 			"yBasisPoints": 6315
 		},
 		{
+			"description": "On one of the spaces of the wardrobe of room 212 east wing",
+			"documentId": "technical",
+			"id": "9903af3f-004a-4e1c-84a7-062c87f3c9a5",
+			"isActive": true,
+			"mapImageId": "shoreline-resort",
+			"name": "Resort East Wing",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1020,
+						"path": "/screenshots/9903af3f-004a-4e1c-84a7-062c87f3c9a5/733c05cd8a05c1f46ba152f4dc2a98c6087f0ddda326b1df8707c28c121fe96e-1920.webp",
+						"sha256": "49cdffa57cfcf5a6876b520ea56184e0cb23bce30430c70ea2a78eb5eb41d66e",
+						"width": 1920
+					},
+					"id": "59e9d611-f138-40bd-a7b7-9717152732e4",
+					"isActive": true,
+					"preview": {
+						"height": 531,
+						"path": "/screenshots/9903af3f-004a-4e1c-84a7-062c87f3c9a5/733c05cd8a05c1f46ba152f4dc2a98c6087f0ddda326b1df8707c28c121fe96e-1000.webp",
+						"sha256": "6c87fa4e1af2237a8afbeddc0543524e434332680969d9f0c1b84ec7615127e9",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "733c05cd8a05c1f46ba152f4dc2a98c6087f0ddda326b1df8707c28c121fe96e"
+				}
+			],
+			"xBasisPoints": 7070,
+			"yBasisPoints": 5911
+		},
+		{
 			"description": "On a pile of boxes next to a cabinet with a fan on top",
 			"documentId": "user",
 			"id": "9bfe1c5c-841c-4a53-bad3-72f900d910e1",
@@ -5734,6 +5800,39 @@
 			],
 			"xBasisPoints": 8279,
 			"yBasisPoints": 6052
+		},
+		{
+			"description": "On top of the bed of room 211 west wing",
+			"documentId": "test",
+			"id": "b50dffad-5106-4e06-938b-8cb7e2906f38",
+			"isActive": true,
+			"mapImageId": "shoreline-resort",
+			"name": "Resort West Wing",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1001,
+						"path": "/screenshots/b50dffad-5106-4e06-938b-8cb7e2906f38/95e74952bf26d3c1b5ca7e77cefa2c9a5c913da0afda4dfb5ca9bc55f13cc23b-1920.webp",
+						"sha256": "e4a7400d5060af3aff05c09e956e268555de06e9cc5e2d2f1fdafe3a9aec2947",
+						"width": 1920
+					},
+					"id": "df773648-8878-4dd1-a735-93e612c89c37",
+					"isActive": true,
+					"preview": {
+						"height": 521,
+						"path": "/screenshots/b50dffad-5106-4e06-938b-8cb7e2906f38/95e74952bf26d3c1b5ca7e77cefa2c9a5c913da0afda4dfb5ca9bc55f13cc23b-1000.webp",
+						"sha256": "ce1abe2d944c212aa80c69bcd5d24402cbf21cb510e00694e09391adf61b1085",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "95e74952bf26d3c1b5ca7e77cefa2c9a5c913da0afda4dfb5ca9bc55f13cc23b"
+				}
+			],
+			"xBasisPoints": 3056,
+			"yBasisPoints": 5980
 		},
 		{
 			"description": "On a shelf in the workshop in front of gate 3 exit",
