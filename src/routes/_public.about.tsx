@@ -1,8 +1,4 @@
-import {
-	ArrowSquareOutIcon,
-	GithubLogoIcon,
-	XLogoIcon,
-} from "@phosphor-icons/react";
+import { ArrowSquareOutIcon, GithubLogoIcon } from "@phosphor-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -58,23 +54,12 @@ function AboutPage() {
 						className="flex flex-wrap gap-3"
 					>
 						<a
-							href="https://github.com/Ozmah"
+							href="https://ozmah.dev"
 							target="_blank"
 							rel="noreferrer"
 							className={buttonVariants({ variant: "default", size: "sm" })}
 						>
-							<GithubLogoIcon aria-hidden="true" data-icon="inline-start" />
-							GitHub profile
-							<ArrowSquareOutIcon aria-hidden="true" data-icon="inline-end" />
-						</a>
-						<a
-							href="https://x.com/OzmahG"
-							target="_blank"
-							rel="noreferrer"
-							className={buttonVariants({ variant: "outline", size: "sm" })}
-						>
-							<XLogoIcon aria-hidden="true" data-icon="inline-start" />
-							Twitter / X
+							Visit ozmah.dev
 							<ArrowSquareOutIcon aria-hidden="true" data-icon="inline-end" />
 						</a>
 						<a
@@ -83,6 +68,7 @@ function AboutPage() {
 							rel="noreferrer"
 							className={buttonVariants({ variant: "outline", size: "sm" })}
 						>
+							<GithubLogoIcon aria-hidden="true" data-icon="inline-start" />
 							Source code
 							<ArrowSquareOutIcon aria-hidden="true" data-icon="inline-end" />
 						</a>
