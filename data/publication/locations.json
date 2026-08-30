@@ -5040,7 +5040,7 @@
 			"id": "955867dc-0c3d-4545-ac78-3af2cc975659",
 			"isActive": true,
 			"mapImageId": "customs-main",
-			"name": "South Blue Shack",
+			"name": "North Blue Shack",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -5064,8 +5064,8 @@
 					"sourceSha256": "d0746841ee9ae07a71720d9821f6212a92d227cb243a3a640083850861db2d58"
 				}
 			],
-			"xBasisPoints": 8484,
-			"yBasisPoints": 4853
+			"xBasisPoints": 8315,
+			"yBasisPoints": 3249
 		},
 		{
 			"description": "Corner office near the entrance, on the bookshelf",
@@ -5874,7 +5874,9 @@
 			"isActive": true,
 			"mapImageId": "customs-main",
 			"name": "Tarcone Computer Room",
-			"requiredKeyIds": [],
+			"requiredKeyIds": [
+				"tarcone-directors-office-key"
+			],
 			"screenshots": [
 				{
 					"altText": "",
@@ -7442,6 +7444,39 @@
 			],
 			"xBasisPoints": 7023,
 			"yBasisPoints": 4101
+		},
+		{
+			"description": "Just outside the main building on top of the stretcher.",
+			"documentId": "test",
+			"id": "e9b0cb89-1d0a-4282-ae69-d7fdee98fef2",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Pier",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e9b0cb89-1d0a-4282-ae69-d7fdee98fef2/fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6-1920.webp",
+						"sha256": "ec3f1470ab597a08f784e2ef208416aa7dca093df30ec4a5f8167e030febc070",
+						"width": 1920
+					},
+					"id": "20c778f3-9808-4d0e-b897-fa0ab41b7d9c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e9b0cb89-1d0a-4282-ae69-d7fdee98fef2/fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6-1000.webp",
+						"sha256": "5589e8e2a95effa48fd9c50222399810b10a5013bbed611aae442713bd5c48bb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6"
+				}
+			],
+			"xBasisPoints": 5523,
+			"yBasisPoints": 6575
 		},
 		{
 			"description": "In the back of the house near the garage exit, on the ground near the corner of the room",
