@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
 	MapWorkspace,
 	type MapWorkspaceImage,
@@ -16,6 +17,7 @@ type MapCanvasProps = {
 	image: MapWorkspaceImage;
 	locations: MapCanvasLocation[];
 	selectedLocationId?: string;
+	toolbarEnd?: ReactNode;
 	onPositionChange: (position: {
 		xBasisPoints: number;
 		yBasisPoints: number;
@@ -28,6 +30,7 @@ export function MapCanvas({
 	image,
 	locations,
 	selectedLocationId,
+	toolbarEnd,
 	onPositionChange,
 	onSelectLocation,
 }: MapCanvasProps) {
@@ -67,6 +70,7 @@ export function MapCanvas({
 			markers={markers}
 			selectedMarkerId={selectedLocationId ?? "new-location"}
 			selectedMarkerPosition={selectedLocation}
+			toolbarEnd={toolbarEnd}
 			toolbarStart={
 				publishedLocationCount > 0 ? (
 					<span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums">
