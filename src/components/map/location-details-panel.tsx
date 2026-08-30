@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import {
 	type DocumentArtwork,
@@ -47,6 +47,7 @@ type LocationDetailsPanelProps = {
 	className?: string;
 	documentArtwork?: DocumentArtwork;
 	location: LocationDetails;
+	mobileActions?: ReactNode;
 	onClose: () => void;
 	onScreenshotOpen?: (screenshotIndex: number) => void;
 	screenshots: LocationScreenshot[];
@@ -56,6 +57,7 @@ export function LocationDetailsPanel({
 	className,
 	documentArtwork,
 	location,
+	mobileActions,
 	onClose,
 	onScreenshotOpen,
 	screenshots,
@@ -118,6 +120,11 @@ export function LocationDetailsPanel({
 						</div>
 					</header>
 					<Separator />
+					{mobileActions ? (
+						<div className="shrink-0 border-border border-b p-3 lg:hidden">
+							{mobileActions}
+						</div>
+					) : null}
 
 					<div className="flex min-h-0 flex-1 flex-col gap-6 overflow-auto p-5">
 						{location.description ? (

@@ -3003,6 +3003,59 @@
 			"yBasisPoints": 2509
 		},
 		{
+			"description": "In the terragroup building front entrance, behind the counter.",
+			"documentId": "financial",
+			"id": "57745baa-c1ef-49d3-ae2f-1dcf4fd77a50",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Terragroup Security Post Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/57745baa-c1ef-49d3-ae2f-1dcf4fd77a50/2d4047f7ec05084276d73d2a1b86fbf6cd7bd38a9ae4819257d08e10c9152d11-1920.webp",
+						"sha256": "4b7be26888e4c526939005abfe2b879d28eb30f975a2265ff0a5d94a68375252",
+						"width": 1920
+					},
+					"id": "4e9e496e-d645-4071-be30-d654c9ce7f69",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/57745baa-c1ef-49d3-ae2f-1dcf4fd77a50/2d4047f7ec05084276d73d2a1b86fbf6cd7bd38a9ae4819257d08e10c9152d11-1000.webp",
+						"sha256": "296391ff5af591a279037f383be0faf712eed2cca53d75ed0833cbadbfdc2cdd",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2d4047f7ec05084276d73d2a1b86fbf6cd7bd38a9ae4819257d08e10c9152d11"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/57745baa-c1ef-49d3-ae2f-1dcf4fd77a50/a2714b37f604b97120ab6cfe0dc0a0e0b795144b9b80fce27297a7b219cad926-1920.webp",
+						"sha256": "40fd159de905c5cacb9f766d42bbcd00ddd6d68758f67002f3b0137ce8201afa",
+						"width": 1920
+					},
+					"id": "c9496764-6906-47c3-82c4-324b1c49e701",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/57745baa-c1ef-49d3-ae2f-1dcf4fd77a50/a2714b37f604b97120ab6cfe0dc0a0e0b795144b9b80fce27297a7b219cad926-1000.webp",
+						"sha256": "9b0fe4cff68e49a6c36cdda821aaa94243849e7d3fc3ce06180f3f7dee7362c6",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a2714b37f604b97120ab6cfe0dc0a0e0b795144b9b80fce27297a7b219cad926"
+				}
+			],
+			"xBasisPoints": 6762,
+			"yBasisPoints": 2872
+		},
+		{
 			"description": "The bench across capital insight building",
 			"documentId": "medical",
 			"id": "59079e80-cf57-4554-8db2-7451c71cf5ae",
@@ -4879,7 +4932,7 @@
 			"id": "8f6e93b0-6e75-46b9-b3c0-8c848951d7cd",
 			"isActive": true,
 			"mapImageId": "streets-of-tarkov-main",
-			"name": "TerraGroup Security Post Building",
+			"name": "Terragroup Security Post Building",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -5040,7 +5093,7 @@
 			"id": "955867dc-0c3d-4545-ac78-3af2cc975659",
 			"isActive": true,
 			"mapImageId": "customs-main",
-			"name": "South Blue Shack",
+			"name": "North Blue Shack",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -5064,8 +5117,8 @@
 					"sourceSha256": "d0746841ee9ae07a71720d9821f6212a92d227cb243a3a640083850861db2d58"
 				}
 			],
-			"xBasisPoints": 8484,
-			"yBasisPoints": 4853
+			"xBasisPoints": 8315,
+			"yBasisPoints": 3249
 		},
 		{
 			"description": "Corner office near the entrance, on the bookshelf",
@@ -5394,59 +5447,6 @@
 			],
 			"xBasisPoints": 6559,
 			"yBasisPoints": 4435
-		},
-		{
-			"description": "Medican second floor, west room, on the keyboard holder of the desk with the fan on top",
-			"documentId": "blueprints-technical",
-			"id": "a22db3c4-73c9-4172-a281-b28bd0d8fdce",
-			"isActive": true,
-			"mapImageId": "factory-main",
-			"name": "Medical West Room",
-			"requiredKeyIds": [],
-			"screenshots": [
-				{
-					"altText": "",
-					"caption": null,
-					"full": {
-						"height": 1080,
-						"path": "/screenshots/a22db3c4-73c9-4172-a281-b28bd0d8fdce/4c31eeca05f58514c874a66d9ef5ec5b5362efe21641ee317789252c580862ef-1920.webp",
-						"sha256": "c32b6044fdcc640f5b2f325d75320bfd1b0c480da725cd7f0ae9e6271afdda88",
-						"width": 1920
-					},
-					"id": "11d60e93-f5cd-48c5-a482-e19edb236c36",
-					"isActive": true,
-					"preview": {
-						"height": 563,
-						"path": "/screenshots/a22db3c4-73c9-4172-a281-b28bd0d8fdce/4c31eeca05f58514c874a66d9ef5ec5b5362efe21641ee317789252c580862ef-1000.webp",
-						"sha256": "3a3ad63b866098da102504ffea977750861cd90daea9cd329e280c5b9aec5db7",
-						"width": 1000
-					},
-					"sortOrder": 0,
-					"sourceSha256": "4c31eeca05f58514c874a66d9ef5ec5b5362efe21641ee317789252c580862ef"
-				},
-				{
-					"altText": "",
-					"caption": null,
-					"full": {
-						"height": 1103,
-						"path": "/screenshots/a22db3c4-73c9-4172-a281-b28bd0d8fdce/e73cfd32792c92ba498ade55b88a92b277b5dbc68690e90c6987edbdde0d1b95-1920.webp",
-						"sha256": "86b17067c1845dfc89d9ea1c617df33d557fcf9a92aaa7181cdecec74b05f961",
-						"width": 1920
-					},
-					"id": "274cd239-f09f-4c7c-ab70-0645bd643e6a",
-					"isActive": true,
-					"preview": {
-						"height": 574,
-						"path": "/screenshots/a22db3c4-73c9-4172-a281-b28bd0d8fdce/e73cfd32792c92ba498ade55b88a92b277b5dbc68690e90c6987edbdde0d1b95-1000.webp",
-						"sha256": "f4b9981653529a302dfac728f2c6e69fac1137495d705c3610adf2d4ebb6800a",
-						"width": 1000
-					},
-					"sortOrder": 1,
-					"sourceSha256": "e73cfd32792c92ba498ade55b88a92b277b5dbc68690e90c6987edbdde0d1b95"
-				}
-			],
-			"xBasisPoints": 4090,
-			"yBasisPoints": 3038
 		},
 		{
 			"description": "On top of a file cabinet right in front of the office safe in third floor",
@@ -5874,7 +5874,9 @@
 			"isActive": true,
 			"mapImageId": "customs-main",
 			"name": "Tarcone Computer Room",
-			"requiredKeyIds": [],
+			"requiredKeyIds": [
+				"tarcone-directors-office-key"
+			],
 			"screenshots": [
 				{
 					"altText": "",
@@ -5967,12 +5969,12 @@
 			"yBasisPoints": 4837
 		},
 		{
-			"description": "In the finance building second floor, in the office to the right, on the desk",
+			"description": "In the financial institution building second floor, in the office to the right, on the desk",
 			"documentId": "user",
 			"id": "be27e27e-582b-4645-8d9d-7412222807a1",
 			"isActive": true,
 			"mapImageId": "streets-of-tarkov-main",
-			"name": "Finance Building",
+			"name": "Financial Institution Building",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -7092,7 +7094,7 @@
 			"id": "ddb7e993-450c-435f-a631-11c43794dd22",
 			"isActive": true,
 			"mapImageId": "streets-of-tarkov-main",
-			"name": "TerraGroup Security Post Building",
+			"name": "Terragroup Security Post Building",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -7136,8 +7138,8 @@
 					"sourceSha256": "d7598f76f943bd41e322c5f0183d1935096c582263ec42d354dc4d6c2cae87c4"
 				}
 			],
-			"xBasisPoints": 6894,
-			"yBasisPoints": 2907
+			"xBasisPoints": 6904,
+			"yBasisPoints": 2847
 		},
 		{
 			"description": "Behind electric panels, above the tunnel entrance",
@@ -7444,6 +7446,39 @@
 			"yBasisPoints": 4101
 		},
 		{
+			"description": "Just outside the main building on top of the stretcher.",
+			"documentId": "test",
+			"id": "e9b0cb89-1d0a-4282-ae69-d7fdee98fef2",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Pier",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e9b0cb89-1d0a-4282-ae69-d7fdee98fef2/fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6-1920.webp",
+						"sha256": "ec3f1470ab597a08f784e2ef208416aa7dca093df30ec4a5f8167e030febc070",
+						"width": 1920
+					},
+					"id": "20c778f3-9808-4d0e-b897-fa0ab41b7d9c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e9b0cb89-1d0a-4282-ae69-d7fdee98fef2/fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6-1000.webp",
+						"sha256": "5589e8e2a95effa48fd9c50222399810b10a5013bbed611aae442713bd5c48bb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "fa7dbeb6d7a741adc74120a81ad6e2ec183a60f1357ebba605a32b7fcbd7b4e6"
+				}
+			],
+			"xBasisPoints": 5523,
+			"yBasisPoints": 6575
+		},
+		{
 			"description": "In the back of the house near the garage exit, on the ground near the corner of the room",
 			"documentId": "test",
 			"id": "eb362e2d-d7ff-4e4a-a731-66c71254d322",
@@ -7581,6 +7616,41 @@
 			],
 			"xBasisPoints": 9450,
 			"yBasisPoints": 5944
+		},
+		{
+			"description": "Financial institution building, second floor, door at the end in one of the cubicles on the desk.",
+			"documentId": "financial",
+			"id": "ede93392-7a75-4ca3-934d-c1ff81a86007",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Financial Institution Building",
+			"requiredKeyIds": [
+				"financial-institution-office-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/ede93392-7a75-4ca3-934d-c1ff81a86007/36887f7998ea0d07143e637520c604388cb472d27871ed90c60945eb4533f370-1920.webp",
+						"sha256": "c5cbcd5cd61ab8712980b933696bf6d7604128f96d0ae2a9fe70bfba066336b3",
+						"width": 1920
+					},
+					"id": "141c8f69-d5cf-47dd-81b3-592c24b7e4a9",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/ede93392-7a75-4ca3-934d-c1ff81a86007/36887f7998ea0d07143e637520c604388cb472d27871ed90c60945eb4533f370-1000.webp",
+						"sha256": "76cbcf1011171a83ce4b6696a75decaccd72e24e013bb0230845e2bbd5874273",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "36887f7998ea0d07143e637520c604388cb472d27871ed90c60945eb4533f370"
+				}
+			],
+			"xBasisPoints": 8465,
+			"yBasisPoints": 6714
 		},
 		{
 			"description": "In a table next to the entrance of the restaurant across Tarbank",
