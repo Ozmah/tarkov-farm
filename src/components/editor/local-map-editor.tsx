@@ -5,6 +5,7 @@ import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
 import { EditorSidebarNavigation } from "@/components/editor/editor-sidebar-navigation";
 import { LocalContributionImporter } from "@/components/editor/local-contribution-importer";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
+import { LocationReplyImageDialog } from "@/components/editor/location-reply-image-dialog";
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
 import { MapCanvas } from "@/components/location-composer/map-canvas";
@@ -58,7 +59,7 @@ type EditorSearch = {
 	location?: string;
 	section?: "import" | "updates";
 };
-type EditorLocation = EditorData["locations"][number];
+type EditorLocation = EditorData["locations"][number] & { markerLabel: string };
 type EditorScreenshot = EditorData["screenshots"][number];
 type MapImage = EditorData["mapImages"][number];
 type SavedLocationTarget = {
@@ -554,6 +555,65 @@ function LocationWorkspace({
 		...location,
 		requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
 	}));
+	const savedScreenshots = selectedLocation
+		? data.screenshots.filter(
+				(screenshot) => screenshot.locationId === selectedLocation.id,
+			)
+		: [];
+	const savedMapImage = selectedLocation
+		? data.mapImages.find((item) => item.id === selectedLocation.mapImageId)
+		: undefined;
+	const savedMap = savedMapImage
+		? data.maps.find((item) => item.id === savedMapImage.mapId)
+		: undefined;
+	const savedDocument = selectedLocation
+		? data.documents.find((item) => item.id === selectedDocumentId)
+		: undefined;
+	const savedRequiredKeyNames = selectedRequiredKeyIds.flatMap((keyId) => {
+		const key = data.keys.find((item) => item.id === keyId);
+		return key ? [key.name] : [];
+	});
+	const hasUnsavedChanges = selectedLocation
+		? !isSavedLocationDraft({
+				draft,
+				screenshotDrafts,
+				selectedDocumentId,
+				selectedLocation,
+				selectedRequiredKeyIds,
+				savedScreenshotIds: savedScreenshots.map(({ id }) => id),
+			})
+		: false;
+	const replyImageInput =
+		selectedLocation &&
+		savedMapImage &&
+		savedMap &&
+		savedDocument &&
+		savedScreenshots[0]
+			? {
+					documentName: savedDocument.name,
+					map: {
+						height: savedMapImage.height,
+						name: savedMap.name,
+						path: savedMapImage.path,
+						sources: savedMapImage.sources,
+						viewKey: savedMapImage.viewKey,
+						viewName: savedMapImage.name,
+						width: savedMapImage.width,
+					},
+					location: {
+						markerLabel: selectedLocation.markerLabel,
+						name: selectedLocation.name,
+						xBasisPoints: selectedLocation.xBasisPoints,
+						yBasisPoints: selectedLocation.yBasisPoints,
+					},
+					requiredKeyNames: savedRequiredKeyNames,
+					screenshot: {
+						height: savedScreenshots[0].height,
+						path: savedScreenshots[0].path,
+						width: savedScreenshots[0].width,
+					},
+				}
+			: undefined;
 
 	const updateDraft = <Key extends keyof Draft>(
 		key: Key,
@@ -736,6 +796,16 @@ function LocationWorkspace({
 				image={draftImage}
 				locations={canvasLocationsWithKeyCounts}
 				selectedLocationId={selectedLocation?.id}
+				toolbarEnd={
+					replyImageInput ? (
+						<LocationReplyImageDialog
+							key={selectedLocation?.id}
+							disabled={isSaving || isDeleting}
+							input={replyImageInput}
+							requiresSave={hasUnsavedChanges}
+						/>
+					) : undefined
+				}
 				draftMarker={{
 					name: draft.name,
 					requiredKeyCount: draft.requiredKeyIds.length,
@@ -873,5 +943,38 @@ function isAcceptedScreenshotFile(file: File) {
 		file.size > 0 &&
 		file.size <= MAX_SCREENSHOT_BYTES &&
 		["image/jpeg", "image/png", "image/webp"].includes(file.type)
+	);
+}
+
+function isSavedLocationDraft(input: {
+	draft: Draft;
+	screenshotDrafts: ScreenshotDraft[];
+	selectedDocumentId: string;
+	selectedLocation: EditorLocation;
+	selectedRequiredKeyIds: string[];
+	savedScreenshotIds: string[];
+}) {
+	const requiredKeyIds = [...input.draft.requiredKeyIds].sort();
+	const screenshotIds = input.screenshotDrafts.flatMap((screenshot) =>
+		screenshot.id && !screenshot.file ? [screenshot.id] : [],
+	);
+
+	return (
+		input.draft.name === input.selectedLocation.name &&
+		input.draft.description === (input.selectedLocation.description ?? "") &&
+		input.draft.mapImageId === input.selectedLocation.mapImageId &&
+		input.draft.xBasisPoints === input.selectedLocation.xBasisPoints &&
+		input.draft.yBasisPoints === input.selectedLocation.yBasisPoints &&
+		input.draft.isActive === input.selectedLocation.isActive &&
+		input.draft.documentId === input.selectedDocumentId &&
+		requiredKeyIds.length === input.selectedRequiredKeyIds.length &&
+		requiredKeyIds.every(
+			(keyId, index) => keyId === input.selectedRequiredKeyIds[index],
+		) &&
+		screenshotIds.length === input.screenshotDrafts.length &&
+		screenshotIds.length === input.savedScreenshotIds.length &&
+		screenshotIds.every(
+			(screenshotId, index) => screenshotId === input.savedScreenshotIds[index],
+		)
 	);
 }

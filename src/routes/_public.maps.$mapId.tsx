@@ -2,6 +2,7 @@ import { CrosshairIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef } from "react";
 import { LocationDetailsPanel } from "@/components/map/location-details-panel";
+import { LocationShareControls } from "@/components/map/location-share-controls";
 import { MapNavigationStrip } from "@/components/map/map-navigation-strip";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import { MapWorkspace } from "@/components/map/map-workspace";
@@ -140,6 +141,35 @@ function MapPage() {
 				(screenshot) => screenshot.locationId === selectedLocation.id,
 			)
 		: [];
+	const selectedShareImageInput =
+		selectedLocation && selectedImage && selectedScreenshots[0]
+			? {
+					documentName: selectedLocation.documentName,
+					map: {
+						height: selectedImage.height,
+						name: mapData.map.name,
+						path: selectedImage.path,
+						sources: selectedImage.sources,
+						viewKey: selectedImage.viewKey,
+						viewName: selectedImage.name,
+						width: selectedImage.width,
+					},
+					location: {
+						markerLabel: selectedLocation.markerLabel,
+						name: selectedLocation.name,
+						xBasisPoints: selectedLocation.xBasisPoints,
+						yBasisPoints: selectedLocation.yBasisPoints,
+					},
+					requiredKeyNames: selectedLocation.requiredKeys.map(
+						({ name }) => name,
+					),
+					screenshot: {
+						height: selectedScreenshots[0].height,
+						path: selectedScreenshots[0].path,
+						width: selectedScreenshots[0].width,
+					},
+				}
+			: undefined;
 	const submapMarkers =
 		selectedImage?.viewKey === "main"
 			? SUBMAP_LINKS.filter((link) => link.mapId === mapData.map.id).flatMap(
@@ -380,6 +410,18 @@ function MapPage() {
 								]}
 								rightViewportInset={rightViewportInset}
 								selectedMarkerId={selectedLocation?.id}
+								toolbarEnd={
+									selectedLocation && selectedShareImageInput ? (
+										<LocationShareControls
+											key={selectedLocation.id}
+											className="hidden lg:flex"
+											imageInput={selectedShareImageInput}
+											locationId={selectedLocation.id}
+											mapId={mapData.map.id}
+											viewKey={selectedImage.viewKey}
+										/>
+									) : undefined
+								}
 								onImageError={() =>
 									captureAnalyticsEvent("app_error", {
 										error_code: "map_image_unavailable",
@@ -430,6 +472,17 @@ function MapPage() {
 								key={selectedLocation.id}
 								documentArtwork={documentById.get(selectedLocation.documentId)}
 								location={selectedLocation}
+								mobileActions={
+									selectedShareImageInput ? (
+										<LocationShareControls
+											className="[&_[data-slot=button]]:flex-1"
+											imageInput={selectedShareImageInput}
+											locationId={selectedLocation.id}
+											mapId={mapData.map.id}
+											viewKey={selectedImage.viewKey}
+										/>
+									) : undefined
+								}
 								screenshots={selectedScreenshots}
 								onScreenshotOpen={(screenshotIndex) =>
 									captureAnalyticsEvent("screenshot_opened", {

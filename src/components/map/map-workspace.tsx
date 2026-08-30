@@ -1,4 +1,9 @@
-import { MapTrifoldIcon, MinusIcon, PlusIcon } from "@phosphor-icons/react";
+import {
+	CornersInIcon,
+	MapTrifoldIcon,
+	MinusIcon,
+	PlusIcon,
+} from "@phosphor-icons/react";
 import {
 	type KeyboardEvent as ReactKeyboardEvent,
 	type ReactNode,
@@ -84,6 +89,7 @@ type MapWorkspaceProps = {
 		xBasisPoints: number;
 		yBasisPoints: number;
 	};
+	toolbarEnd?: ReactNode;
 	toolbarStart?: ReactNode;
 	onMapPress?: (position: {
 		xBasisPoints: number;
@@ -112,6 +118,7 @@ export function MapWorkspace({
 	rightViewportInset = 0,
 	selectedMarkerId,
 	selectedMarkerPosition,
+	toolbarEnd,
 	toolbarStart,
 	onImageError,
 	onMapPress,
@@ -816,33 +823,46 @@ export function MapWorkspace({
 				<p className="hidden min-w-0 flex-1 truncate text-muted-foreground text-sm xl:block">
 					{instructions}
 				</p>
-				<div className="ml-auto flex shrink-0 items-center gap-1">
+				<div
+					className="ml-auto flex shrink-0 items-center gap-2"
+					style={{ marginRight: rightViewportInset }}
+				>
 					<Button type="button" variant="ghost" size="sm" onClick={fitMap}>
-						Fit
+						<CornersInIcon data-icon="inline-start" aria-hidden="true" />
+						Fit map
 					</Button>
 					<Button
 						type="button"
 						variant="ghost"
 						size="icon-sm"
+						className="lg:hidden"
 						aria-label="Zoom out"
 						onClick={() => zoomFromCenter(zoomRatio - ZOOM_BUTTON_STEP)}
 						disabled={zoomRatio <= MIN_ZOOM_RATIO}
 					>
 						<MinusIcon />
 					</Button>
-					<p className="w-12 text-center text-muted-foreground text-sm tabular-nums">
+					<p className="w-12 text-center text-muted-foreground text-sm tabular-nums lg:hidden">
 						{zoomPercent}%
 					</p>
 					<Button
 						type="button"
 						variant="ghost"
 						size="icon-sm"
+						className="lg:hidden"
 						aria-label="Zoom in"
 						onClick={() => zoomFromCenter(zoomRatio + ZOOM_BUTTON_STEP)}
 						disabled={zoomRatio >= MAX_ZOOM_RATIO}
 					>
 						<PlusIcon />
 					</Button>
+					{toolbarEnd ? (
+						<span
+							aria-hidden="true"
+							className="mx-2 hidden h-6 w-px bg-border lg:block"
+						/>
+					) : null}
+					{toolbarEnd}
 				</div>
 			</div>
 			<p id={instructionsId} className="sr-only">
