@@ -898,6 +898,59 @@
 			"yBasisPoints": 4424
 		},
 		{
+			"description": "Inside the building, get to the northwestern most part of the building, inside a tipped over file cabinet.",
+			"documentId": "user",
+			"id": "17405043-aa15-4e8f-8fe1-77d2b66e8576",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Concordia Building 9",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 821,
+						"path": "/screenshots/17405043-aa15-4e8f-8fe1-77d2b66e8576/6bf6a0d9dc2622587fcefa55ef0bc1df6c17961d9c264763f6c5f84c4a6bb479-1920.webp",
+						"sha256": "c4d7c0385217b9399ea20b93151ef31bf4db16fc976b78b79657c64605bd7aa6",
+						"width": 1920
+					},
+					"id": "95235ded-1034-4069-9c5e-dc4f01452f76",
+					"isActive": true,
+					"preview": {
+						"height": 428,
+						"path": "/screenshots/17405043-aa15-4e8f-8fe1-77d2b66e8576/6bf6a0d9dc2622587fcefa55ef0bc1df6c17961d9c264763f6c5f84c4a6bb479-1000.webp",
+						"sha256": "988096f54896c07f9464c7c3189373a98218fb3a0cbf08082268255c661b46ab",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "6bf6a0d9dc2622587fcefa55ef0bc1df6c17961d9c264763f6c5f84c4a6bb479"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/17405043-aa15-4e8f-8fe1-77d2b66e8576/6f3d8642ea76c38c9935114f49807f7ace2152406284f670fe55cae51fd9e9ec-1920.webp",
+						"sha256": "1074c2fc4719511d1675375c37531142eff4dea42d9a140cb3ce2f5981812cf6",
+						"width": 1920
+					},
+					"id": "eca48ebf-8f49-4b7d-bb60-a62318e1aa2d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/17405043-aa15-4e8f-8fe1-77d2b66e8576/6f3d8642ea76c38c9935114f49807f7ace2152406284f670fe55cae51fd9e9ec-1000.webp",
+						"sha256": "97b95494a0e51fc0516183d182e5c089edff9e12c3a889034cf22882e0d8199c",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "6f3d8642ea76c38c9935114f49807f7ace2152406284f670fe55cae51fd9e9ec"
+				}
+			],
+			"xBasisPoints": 5301,
+			"yBasisPoints": 7462
+		},
+		{
 			"description": "On a lab surface next to the blue key card entrance room",
 			"documentId": "medical",
 			"id": "19d67714-3eb1-4d02-be7e-da8aed91a87f",
@@ -1480,6 +1533,59 @@
 			],
 			"xBasisPoints": 544,
 			"yBasisPoints": 3571
+		},
+		{
+			"description": "Go to second floor, apartment 3 on the far right, on top of the bedroom desk.",
+			"documentId": "user",
+			"id": "29191ab5-d15e-4951-b3d9-49459db0c34a",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Concordia Building 9",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/29191ab5-d15e-4951-b3d9-49459db0c34a/547d5aa363f4aede0e66b2e6e23279e47ddd00d317fb1a90aa444868eab2c6a5-1920.webp",
+						"sha256": "c91e9a143e4cb156ab8c0bbfc13a5ae53f24ef34b517b398ff01e0980f956f14",
+						"width": 1920
+					},
+					"id": "b5033bbb-01f1-449b-8bc4-14d2d0c89fdd",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/29191ab5-d15e-4951-b3d9-49459db0c34a/547d5aa363f4aede0e66b2e6e23279e47ddd00d317fb1a90aa444868eab2c6a5-1000.webp",
+						"sha256": "c0355e47cb92e9c206b702046455ee9ab7ff39972fd026ecc97e2059101df40f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "547d5aa363f4aede0e66b2e6e23279e47ddd00d317fb1a90aa444868eab2c6a5"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1029,
+						"path": "/screenshots/29191ab5-d15e-4951-b3d9-49459db0c34a/a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb-1920.webp",
+						"sha256": "67f8d9d3b611e89a194d736a23a33bfe27d9e7f4ce1e17fc9cdb6904b9c2ad59",
+						"width": 1920
+					},
+					"id": "f1abadaf-969a-483b-adfe-eed9db3cc3f3",
+					"isActive": true,
+					"preview": {
+						"height": 536,
+						"path": "/screenshots/29191ab5-d15e-4951-b3d9-49459db0c34a/a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb-1000.webp",
+						"sha256": "3648bfe2f42072130a27d03ff4800895e56fe06bff52d7bb68f520281ca5344d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb"
+				}
+			],
+			"xBasisPoints": 5273,
+			"yBasisPoints": 7702
 		},
 		{
 			"description": "On a sofa inside the café in the terragroup building front area",
@@ -2291,6 +2397,59 @@
 			"yBasisPoints": 5010
 		},
 		{
+			"description": "Go to second floor, apartment 3 on the far right, once inside on the right on the ground among other books and magazines.",
+			"documentId": "financial",
+			"id": "43514b4e-2c89-43ea-b685-4786f0958136",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Concordia Building 9",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/43514b4e-2c89-43ea-b685-4786f0958136/287b647d25dbcef5b0e2a3b7e5d01a828c21e68bbaf72f10a6a24601b3fa89e6-1920.webp",
+						"sha256": "df711d0710a56f4333d5dd5391a8e4e64150aa0fb94e73ca0abc5951f8e6acab",
+						"width": 1920
+					},
+					"id": "4e5e4ae0-53a5-42c7-b618-0d5a3190480b",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/43514b4e-2c89-43ea-b685-4786f0958136/287b647d25dbcef5b0e2a3b7e5d01a828c21e68bbaf72f10a6a24601b3fa89e6-1000.webp",
+						"sha256": "e7e73eec740321dad7c703c6e560f3a713b974de95c7d0c4a859a505d28c54a3",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "287b647d25dbcef5b0e2a3b7e5d01a828c21e68bbaf72f10a6a24601b3fa89e6"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1029,
+						"path": "/screenshots/43514b4e-2c89-43ea-b685-4786f0958136/a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb-1920.webp",
+						"sha256": "67f8d9d3b611e89a194d736a23a33bfe27d9e7f4ce1e17fc9cdb6904b9c2ad59",
+						"width": 1920
+					},
+					"id": "3f3a842e-9f62-4e98-8f88-95e7ed215cce",
+					"isActive": true,
+					"preview": {
+						"height": 536,
+						"path": "/screenshots/43514b4e-2c89-43ea-b685-4786f0958136/a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb-1000.webp",
+						"sha256": "3648bfe2f42072130a27d03ff4800895e56fe06bff52d7bb68f520281ca5344d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a0156e374e2bee3fae1ad4d6ae82ddce496ab333f61e5f3516a26200615f9ebb"
+				}
+			],
+			"xBasisPoints": 5254,
+			"yBasisPoints": 7684
+		},
+		{
 			"description": "On a table at the end of the room in front of the yellow sofas",
 			"documentId": "user",
 			"id": "44344ee5-fe9e-4959-a391-64958f00c832",
@@ -2655,6 +2814,39 @@
 			],
 			"xBasisPoints": 5735,
 			"yBasisPoints": 7387
+		},
+		{
+			"description": "In the room behind the meetings room, on the ground next to a pile of books and a bookshelf.",
+			"documentId": "financial",
+			"id": "4b6b7314-2377-4069-957a-8d5c67c96bb9",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Zmeisky 6 (Relaxation)",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/4b6b7314-2377-4069-957a-8d5c67c96bb9/bfe456c2d7e75186fac82f5ec033fc60f840c0551afe35ba86f1e4bb2ee9213e-1920.webp",
+						"sha256": "2772a6f15a69ebb7399958430ce88596d8a1815984154aefb8c728f9493a145e",
+						"width": 1920
+					},
+					"id": "09916847-2e84-4aac-8a7a-3a9349057e0a",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/4b6b7314-2377-4069-957a-8d5c67c96bb9/bfe456c2d7e75186fac82f5ec033fc60f840c0551afe35ba86f1e4bb2ee9213e-1000.webp",
+						"sha256": "eb59cb11d3e5bcb189e25c1c6921fd2d5cd878b615de100a47d8820f22477d0a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "bfe456c2d7e75186fac82f5ec033fc60f840c0551afe35ba86f1e4bb2ee9213e"
+				}
+			],
+			"xBasisPoints": 5426,
+			"yBasisPoints": 5306
 		},
 		{
 			"description": "On the ground in front of the entrance of the room, next to the dead scientist",
@@ -5641,6 +5833,59 @@
 			"yBasisPoints": 4333
 		},
 		{
+			"description": "In the shack next to the closed black gate.",
+			"documentId": "technical",
+			"id": "a6e417e0-daed-41ee-934f-ca7d6a01433f",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Car Exit",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/a6e417e0-daed-41ee-934f-ca7d6a01433f/317e6ac66ac4d068930f1d1de4ab878c8f0741819a69e3b8a20ec77f61c82b4d-1920.webp",
+						"sha256": "31abc04aa6d66c0fb35529cc54a1dd723a79e86d844781373128f7cc144b7e78",
+						"width": 1920
+					},
+					"id": "688842ac-293b-4922-8ae4-8f41f60be5f5",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/a6e417e0-daed-41ee-934f-ca7d6a01433f/317e6ac66ac4d068930f1d1de4ab878c8f0741819a69e3b8a20ec77f61c82b4d-1000.webp",
+						"sha256": "570ac25e673f4ac201a6878dba62e7e03e8f0c1adf6e17b867b05fc61f744264",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "317e6ac66ac4d068930f1d1de4ab878c8f0741819a69e3b8a20ec77f61c82b4d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/a6e417e0-daed-41ee-934f-ca7d6a01433f/8c32a35b144c8b85dff1144a7aac1f89b7b4679180583b36ca19afaf842f9146-1920.webp",
+						"sha256": "e457b24a2ccd6b6d2e858ed674efe6ce9eaee2cd54ea56d448581f864786893f",
+						"width": 1920
+					},
+					"id": "769cd5b1-c2b8-46cb-bff2-05d5090d321d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/a6e417e0-daed-41ee-934f-ca7d6a01433f/8c32a35b144c8b85dff1144a7aac1f89b7b4679180583b36ca19afaf842f9146-1000.webp",
+						"sha256": "4d77068e60348550d6f244b76735d3eade591e66f16b87d4af6aab167616bae4",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "8c32a35b144c8b85dff1144a7aac1f89b7b4679180583b36ca19afaf842f9146"
+				}
+			],
+			"xBasisPoints": 6478,
+			"yBasisPoints": 1061
+		},
+		{
 			"description": "Walk north from the tractor to the curved hallway, take the first left, on a pallet in that room",
 			"documentId": "blueprints-technical",
 			"id": "a6e61e69-7465-49b6-adf6-f403d45b689b",
@@ -6214,6 +6459,59 @@
 			],
 			"xBasisPoints": 6434,
 			"yBasisPoints": 6093
+		},
+		{
+			"description": "North east corner of the building, on a shelf over a desk.",
+			"documentId": "financial",
+			"id": "c31638b1-918c-4549-97c7-8830feeecb3e",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Concordia Building 9",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/c31638b1-918c-4549-97c7-8830feeecb3e/e60c3f51724d47a96d6911090c484526cb0f2cabf05d0c019373ff61f5e2bf31-1920.webp",
+						"sha256": "6e9cc167b0f30d294bf498e3c12fbcad8766092a42fa85ab1282a587eead0ff0",
+						"width": 1920
+					},
+					"id": "3509e9ed-f870-463f-95eb-acab8394e069",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/c31638b1-918c-4549-97c7-8830feeecb3e/e60c3f51724d47a96d6911090c484526cb0f2cabf05d0c019373ff61f5e2bf31-1000.webp",
+						"sha256": "bc0557786adacb53d214225cd17c0c0ae641bab726cc83ba56f256c83a7caaaa",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "e60c3f51724d47a96d6911090c484526cb0f2cabf05d0c019373ff61f5e2bf31"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1070,
+						"path": "/screenshots/c31638b1-918c-4549-97c7-8830feeecb3e/a0276cc55b8b79d07e60bf28cb1e40ab4067bb34c886dbcf829530086b008123-1920.webp",
+						"sha256": "cb6525181ecaefe6e2ea011536b2ac8f57fd9613ee833411f2852fb7a07eda94",
+						"width": 1912
+					},
+					"id": "f51b7bf6-6c83-4c00-8faa-6a3e920d2d3f",
+					"isActive": true,
+					"preview": {
+						"height": 560,
+						"path": "/screenshots/c31638b1-918c-4549-97c7-8830feeecb3e/a0276cc55b8b79d07e60bf28cb1e40ab4067bb34c886dbcf829530086b008123-1000.webp",
+						"sha256": "2b79b286cb7f7ffd7e05b471b769b5432d83ef9ce2769ed556eab3d16ce535da",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "a0276cc55b8b79d07e60bf28cb1e40ab4067bb34c886dbcf829530086b008123"
+				}
+			],
+			"xBasisPoints": 5371,
+			"yBasisPoints": 7507
 		},
 		{
 			"description": "Third floor, opposite of the armory door on the bookshelf near the stairs door.",
@@ -7272,6 +7570,39 @@
 			],
 			"xBasisPoints": 8202,
 			"yBasisPoints": 6116
+		},
+		{
+			"description": "Office in the middle, on top of the desk closest to the door.",
+			"documentId": "user",
+			"id": "e6da387e-addf-43bf-b472-517b7724f348",
+			"isActive": true,
+			"mapImageId": "streets-of-tarkov-main",
+			"name": "Zmeisky 6 (Relaxation)",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e6da387e-addf-43bf-b472-517b7724f348/f9482327b8ec00d89d812421543b62352fcef6d0544a8ae59d70934289218165-1920.webp",
+						"sha256": "b0ec2e6aa1db56dbd73dae1cb85f69bae2780d0389867f5152436b8f038515c4",
+						"width": 1920
+					},
+					"id": "b8067821-f13a-47f0-8134-50b01151863c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e6da387e-addf-43bf-b472-517b7724f348/f9482327b8ec00d89d812421543b62352fcef6d0544a8ae59d70934289218165-1000.webp",
+						"sha256": "eec4542ac9134eaf04dd46b204087f7060022d31b563468cd755d0b3bc915c7c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f9482327b8ec00d89d812421543b62352fcef6d0544a8ae59d70934289218165"
+				}
+			],
+			"xBasisPoints": 5476,
+			"yBasisPoints": 5171
 		},
 		{
 			"description": "On one of the desks in line on the side of the room",
