@@ -3697,16 +3697,34 @@
 			"yBasisPoints": 6266
 		},
 		{
-			"description": "On the window inside the RB-KPRL room, in the dome area",
+			"description": "On the window inside the RB-KPRL room, in the dome area. No key needed, can be taken from the outside.",
 			"documentId": "pmc-personnel",
 			"id": "6f3cc1bc-9357-4577-b220-2688b67ce826",
 			"isActive": true,
 			"mapImageId": "reserve-main",
 			"name": "Safe Window",
-			"requiredKeyIds": [
-				"rb-kprl-key"
-			],
+			"requiredKeyIds": [],
 			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/6f3cc1bc-9357-4577-b220-2688b67ce826/ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b-1920.webp",
+						"sha256": "11d0c733dc2cd12dce4d1c946f94489cb99f781c2ee9b3b6b22f84328ffb969c",
+						"width": 1920
+					},
+					"id": "f1bc10df-26a7-4165-b746-682ef720b0ab",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/6f3cc1bc-9357-4577-b220-2688b67ce826/ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b-1000.webp",
+						"sha256": "9a875f6868ce2f759cd9b053f5ea94ca13b0c50d1b423698098d12ff3448f495",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b"
+				},
 				{
 					"altText": "",
 					"caption": null,
@@ -3724,7 +3742,7 @@
 						"sha256": "96f69fce733c873619d606bf6c0a75f497a2f59fad9aecdf1bc1b6db96c065fa",
 						"width": 1000
 					},
-					"sortOrder": 0,
+					"sortOrder": 1,
 					"sourceSha256": "36475b5a7b23e2d0ed8233cc339b7b0687bf31f729a0f8b31735fbc3810a4981"
 				}
 			],
