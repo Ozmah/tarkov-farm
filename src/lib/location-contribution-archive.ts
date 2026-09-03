@@ -1,5 +1,6 @@
 import { strToU8, Zip, ZipPassThrough } from "fflate";
 
+import { downloadBrowserBlob } from "./browser-download";
 import {
 	MAX_CONTRIBUTION_ARCHIVE_BYTES,
 	MAX_CONTRIBUTION_MANIFEST_BYTES,
@@ -17,7 +18,6 @@ import { LOCATION_CONTRIBUTION_ZIP_MTIME } from "./location-contribution-zip-met
 
 const MANIFEST_ENTRY = "manifest.json";
 const ZIP_MEDIA_TYPE = "application/zip";
-const OBJECT_URL_LIFETIME_MS = 60_000;
 
 export type LocationContributionArchive = {
 	blob: Blob;
@@ -56,22 +56,7 @@ export async function createLocationContributionArchive(
 export function downloadLocationContributionArchive(
 	archive: LocationContributionArchive,
 ) {
-	const objectUrl = URL.createObjectURL(archive.blob);
-	const anchor = document.createElement("a");
-	anchor.href = objectUrl;
-	anchor.download = archive.filename;
-	anchor.hidden = true;
-	document.body.append(anchor);
-
-	try {
-		anchor.click();
-	} finally {
-		anchor.remove();
-		window.setTimeout(
-			() => URL.revokeObjectURL(objectUrl),
-			OBJECT_URL_LIFETIME_MS,
-		);
-	}
+	downloadBrowserBlob(archive.blob, archive.filename);
 }
 
 async function verifyWorkspaceFiles(

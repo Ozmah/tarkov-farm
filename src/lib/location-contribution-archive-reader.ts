@@ -26,12 +26,10 @@ const SCREENSHOT_EXTENSIONS = {
 	"image/webp": "webp",
 } as const;
 
-export type ReviewedContributionScreenshot = {
-	altText: string;
-	caption: string | null;
-	file: File;
-	id: string;
-};
+export type ReviewedContributionScreenshot =
+	LocationContributionBundle["locations"][number]["screenshots"][number] & {
+		file: File;
+	};
 
 export type ReviewedContributionLocation = Omit<
 	LocationContributionBundle["locations"][number],
@@ -126,12 +124,10 @@ export async function readLocationContributionArchive(
 				);
 			}
 			screenshots.push({
-				altText: screenshot.altText,
-				caption: screenshot.caption,
+				...screenshot,
 				file: new File([entry.data], controlledFilename(screenshot), {
 					type: screenshot.mediaType,
 				}),
-				id: screenshot.id,
 			});
 		}
 

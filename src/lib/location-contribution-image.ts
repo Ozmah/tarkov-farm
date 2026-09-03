@@ -1,4 +1,7 @@
-import type { LocationContributionScreenshot } from "./location-contribution";
+import {
+	type LocationContributionScreenshot,
+	MAX_CONTRIBUTION_SCREENSHOT_BYTES,
+} from "./location-contribution";
 
 export const MAX_CONTRIBUTION_IMAGE_DIMENSION = 8_192;
 export const MAX_CONTRIBUTION_IMAGE_PIXELS = 40_000_000;
@@ -12,6 +15,50 @@ type DecodedImage = {
 };
 
 export type ContributionImageDecoder = (blob: Blob) => Promise<DecodedImage>;
+
+export type VerifiedContributionImageFile = {
+	file: File;
+	height: number;
+	mediaType: ScreenshotMediaType;
+	sourceSha256: string;
+	width: number;
+};
+
+export async function verifyLocationContributionImageFile(
+	file: File,
+	options: {
+		decode?: ContributionImageDecoder;
+		signal?: AbortSignal;
+	} = {},
+): Promise<VerifiedContributionImageFile> {
+	if (
+		file.size === 0 ||
+		file.size > MAX_CONTRIBUTION_SCREENSHOT_BYTES ||
+		!isScreenshotMediaType(file.type)
+	) {
+		throw new Error(
+			"Screenshot must be a JPEG, PNG, or WebP file up to 20 MiB",
+		);
+	}
+
+	options.signal?.throwIfAborted();
+	const bytes = new Uint8Array(await file.arrayBuffer());
+	const dimensions = await verifyLocationContributionImage(
+		bytes,
+		file.type,
+		options,
+	);
+
+	const sourceSha256 = await sha256Hex(bytes);
+	options.signal?.throwIfAborted();
+
+	return {
+		file,
+		...dimensions,
+		mediaType: file.type,
+		sourceSha256,
+	};
+}
 
 export async function verifyLocationContributionImage(
 	bytes: Uint8Array,
@@ -28,10 +75,9 @@ export async function verifyLocationContributionImage(
 	const decoded = options.decode
 		? await options.decode(blob)
 		: await decodeInBrowser(blob);
-	options.signal?.throwIfAborted();
-
-	if (decoded) {
-		try {
+	try {
+		options.signal?.throwIfAborted();
+		if (decoded) {
 			assertSafeDimensions(decoded.width, decoded.height);
 			if (
 				decoded.width !== dimensions.width ||
@@ -41,9 +87,9 @@ export async function verifyLocationContributionImage(
 					"Decoded screenshot dimensions do not match its header",
 				);
 			}
-		} finally {
-			decoded.close?.();
 		}
+	} finally {
+		decoded?.close?.();
 	}
 
 	return dimensions;
@@ -63,6 +109,12 @@ function inspectImage(bytes: Uint8Array, mediaType: ScreenshotMediaType) {
 	if (mediaType === "image/png") return inspectPng(bytes);
 	if (mediaType === "image/jpeg") return inspectJpeg(bytes);
 	return inspectWebp(bytes);
+}
+
+function isScreenshotMediaType(value: string): value is ScreenshotMediaType {
+	return (
+		value === "image/jpeg" || value === "image/png" || value === "image/webp"
+	);
 }
 
 function inspectPng(bytes: Uint8Array) {
