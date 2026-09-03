@@ -2,6 +2,7 @@
 
 import { useBlocker } from "@tanstack/react-router";
 import {
+	act,
 	cleanup,
 	fireEvent,
 	render,
@@ -51,7 +52,10 @@ beforeEach(() => {
 	});
 });
 
-afterEach(cleanup);
+afterEach(() => {
+	cleanup();
+	Reflect.deleteProperty(globalThis, "createImageBitmap");
+});
 
 describe("LocalContributionImporter", () => {
 	it("requires explicit approval and saves through the contribution wrapper", async () => {
@@ -77,20 +81,23 @@ describe("LocalContributionImporter", () => {
 					requiredKeyCount: 1,
 				}),
 				expect.objectContaining({
+					accessibleLabel: "Proposed position for White Pawn: 3193, 1527",
 					id: "review:00000000-0000-4000-8000-000000000002",
 					requiredKeyCount: 1,
 				}),
 			]),
 		);
 		expect(
-			screen.getByRole("button", { name: "Import approved (0)" }),
+			screen.getByRole("button", { name: "Import selected (0)" }),
 		).toHaveProperty("disabled", true);
 
 		fireEvent.click(
-			screen.getAllByRole("checkbox", { name: "Approve White Pawn" })[0],
+			screen.getAllByRole("checkbox", {
+				name: "Include White Pawn in import",
+			})[0],
 		);
 		fireEvent.click(
-			screen.getByRole("button", { name: "Import approved (1)" }),
+			screen.getByRole("button", { name: "Import selected (1)" }),
 		);
 
 		await waitFor(() =>
@@ -117,6 +124,235 @@ describe("LocalContributionImporter", () => {
 		expect(screen.getByText("Saved locally")).toBeTruthy();
 	});
 
+	it("shows field diffs and restores the ZIP value", async () => {
+		render(
+			<LocalContributionImporter
+				data={editorData}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+
+		fireEvent.click(screen.getByRole("button", { name: "Edit Name" }));
+		fireEvent.change(
+			screen.getByRole("textbox", {
+				name: "Edit contribution location name",
+			}),
+			{ target: { value: "White Pawn cabinet" } },
+		);
+
+		expect(screen.getAllByText("White Pawn cabinet").length).toBeGreaterThan(0);
+		expect(screen.getByText("1 modified")).toBeTruthy();
+		fireEvent.click(screen.getByRole("button", { name: "Revert Name" }));
+		expect(screen.getByText("0 modified")).toBeTruthy();
+		expect(
+			screen.getByRole("textbox", {
+				name: "Edit contribution location name",
+			}),
+		).toHaveProperty("value", "White Pawn");
+	});
+
+	it("flags possible duplicates by proximity, not by name", async () => {
+		const dataWithRepeatedName = {
+			...editorData,
+			locations: [
+				...editorData.locations,
+				{
+					description: "Another location with an intentionally repeated name",
+					id: "same-name-far-away",
+					isActive: true,
+					mapImageId: "reserve-main",
+					name: "White Pawn",
+					xBasisPoints: 8_000,
+					yBasisPoints: 8_000,
+				},
+			],
+		};
+		vi.mocked(getEditorData).mockResolvedValue(dataWithRepeatedName);
+		render(
+			<LocalContributionImporter
+				data={dataWithRepeatedName}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+
+		expect(screen.queryByText("Possible duplicate location")).toBeNull();
+		fireEvent.click(screen.getByRole("button", { name: "Edit position" }));
+		act(() =>
+			vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0].onMapPress?.({
+				xBasisPoints: 3_030,
+				yBasisPoints: 1_500,
+			}),
+		);
+		expect(screen.getByText("Possible duplicate location")).toBeTruthy();
+		expect(screen.getByText(/Existing location/)).toBeTruthy();
+	});
+
+	it("excludes and restores screenshots without exposing alt text", async () => {
+		render(
+			<LocalContributionImporter
+				data={editorData}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+
+		expect(screen.queryByText(/Alt:/)).toBeNull();
+		fireEvent.click(
+			screen.getByRole("button", { name: "Exclude screenshot 1" }),
+		);
+		expect(screen.getByText("0 of 1 included")).toBeTruthy();
+		expect(screen.getAllByText("Excluded").length).toBeGreaterThan(0);
+		fireEvent.click(
+			screen.getByRole("button", { name: "Restore screenshot 1" }),
+		);
+		expect(screen.getByText("1 of 1 included")).toBeTruthy();
+	});
+
+	it("validates and previews a screenshot replacement beside the ZIP original", async () => {
+		Object.defineProperty(globalThis, "createImageBitmap", {
+			configurable: true,
+			value: vi.fn(async () => ({ close: vi.fn(), height: 1, width: 1 })),
+		});
+		render(
+			<LocalContributionImporter
+				data={editorData}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+		const replacement = new File([PNG_BYTES], "corrected.png", {
+			type: "image/png",
+		});
+
+		fireEvent.change(screen.getByLabelText("Replace screenshot 1"), {
+			target: { files: [replacement] },
+		});
+
+		await waitFor(() => expect(screen.getByText("ZIP original")).toBeTruthy());
+		expect(screen.getByText("Replacement")).toBeTruthy();
+		fireEvent.click(
+			screen.getByRole("button", { name: "Exclude screenshot 1" }),
+		);
+		fireEvent.click(screen.getByRole("button", { name: "Discard changes" }));
+		expect(screen.queryByText("ZIP original")).toBeNull();
+		expect(screen.getByText("1 of 1 included")).toBeTruthy();
+		expect(
+			screen.queryByRole("button", {
+				name: "Undo replacement for screenshot 1",
+			}),
+		).toBeNull();
+	});
+
+	it("cancels an in-flight screenshot check when changing locations", async () => {
+		let finishImageCheck:
+			| ((value: { close: () => void; height: number; width: number }) => void)
+			| undefined;
+		Object.defineProperty(globalThis, "createImageBitmap", {
+			configurable: true,
+			value: vi.fn(
+				() =>
+					new Promise<{ close: () => void; height: number; width: number }>(
+						(resolve) => {
+							finishImageCheck = resolve;
+						},
+					),
+			),
+		});
+		vi.mocked(readLocationContributionArchive).mockResolvedValue({
+			...reviewedArchive,
+			locations: [
+				...reviewedArchive.locations,
+				{
+					...reviewedArchive.locations[0],
+					id: "00000000-0000-4000-8000-000000000004",
+					name: "Black Pawn",
+					screenshots: [],
+				},
+			],
+		});
+		render(
+			<LocalContributionImporter
+				data={editorData}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+
+		fireEvent.change(screen.getByLabelText("Replace screenshot 1"), {
+			target: {
+				files: [new File([PNG_BYTES], "corrected.png", { type: "image/png" })],
+			},
+		});
+		await waitFor(() =>
+			expect(
+				screen.getByRole("button", {
+					name: "Checking replacement for screenshot 1",
+				}),
+			).toHaveProperty("disabled", true),
+		);
+
+		fireEvent.click(screen.getByRole("button", { name: /Black Pawn/ }));
+		fireEvent.click(screen.getByRole("button", { name: /White Pawn/ }));
+
+		await waitFor(() =>
+			expect(
+				screen.getByText(
+					"Replacement check was cancelled when the review changed.",
+				),
+			).toBeTruthy(),
+		);
+		expect(
+			screen.getByRole("button", {
+				name: "Choose replacement for screenshot 1",
+			}),
+		).toHaveProperty("disabled", false);
+
+		await act(async () => {
+			finishImageCheck?.({ close: vi.fn(), height: 1, width: 1 });
+		});
+		expect(screen.queryByText("Replacement")).toBeNull();
+	});
+
+	it("shows the original marker while a proposed position is changed", async () => {
+		render(
+			<LocalContributionImporter
+				data={editorData}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+		expect(
+			vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0].onMapPress,
+		).toBeUndefined();
+
+		fireEvent.click(screen.getByRole("button", { name: "Edit position" }));
+		const editableMapProps = vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0];
+		expect(editableMapProps?.onMapPress).toBeTypeOf("function");
+		act(() =>
+			editableMapProps?.onMapPress?.({
+				xBasisPoints: 4_000,
+				yBasisPoints: 2_000,
+			}),
+		);
+
+		const changedMapProps = vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0];
+		expect(changedMapProps?.markers).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					accessibleLabel: "ZIP original position for White Pawn: 3193, 1527",
+					id: "original:00000000-0000-4000-8000-000000000002",
+					xBasisPoints: 3_193,
+				}),
+				expect.objectContaining({
+					id: "review:00000000-0000-4000-8000-000000000002",
+					xBasisPoints: 4_000,
+				}),
+			]),
+		);
+	});
+
 	it("protects navigation only while verified locations remain in memory", async () => {
 		render(
 			<LocalContributionImporter
@@ -133,6 +369,22 @@ describe("LocalContributionImporter", () => {
 		expect(latestBlockerOptions().enableBeforeUnload()).toBe(true);
 	});
 });
+
+async function openBundle() {
+	fireEvent.change(screen.getByLabelText("Choose ZIP bundle"), {
+		target: { files: [new File(["archive"], "contribution.zip")] },
+	});
+	await waitFor(() =>
+		expect(screen.getAllByText("White Pawn").length).toBeGreaterThan(0),
+	);
+}
+
+const PNG_BYTES = Uint8Array.from(
+	Buffer.from(
+		"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+		"base64",
+	),
+);
 
 const screenshotFile = new File(["image"], "screenshot.png", {
 	type: "image/png",
@@ -152,9 +404,14 @@ const reviewedArchive = {
 			screenshots: [
 				{
 					altText: "Desk",
+					byteLength: screenshotFile.size,
 					caption: null,
+					entry:
+						"locations/00000000-0000-4000-8000-000000000002/screenshots/00000000-0000-4000-8000-000000000003.png",
 					file: screenshotFile,
 					id: "00000000-0000-4000-8000-000000000003",
+					mediaType: "image/png" as const,
+					sourceSha256: "b".repeat(64),
 				},
 			],
 			xBasisPoints: 3_193,

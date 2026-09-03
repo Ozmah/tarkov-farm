@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { verifyLocationContributionImage } from "./location-contribution-image";
+import {
+	verifyLocationContributionImage,
+	verifyLocationContributionImageFile,
+} from "./location-contribution-image";
 
 const PNG_BYTES = Uint8Array.from(
 	Buffer.from(
@@ -18,6 +21,22 @@ describe("location contribution image verification", () => {
 				decode: async () => ({ close, height: 1, width: 1 }),
 			}),
 		).resolves.toEqual({ height: 1, width: 1 });
+		expect(close).toHaveBeenCalledOnce();
+	});
+
+	it("closes a decoded image when verification is aborted", async () => {
+		const controller = new AbortController();
+		const close = vi.fn();
+
+		await expect(
+			verifyLocationContributionImage(PNG_BYTES, "image/png", {
+				decode: async () => {
+					controller.abort();
+					return { close, height: 1, width: 1 };
+				},
+				signal: controller.signal,
+			}),
+		).rejects.toThrow(/abort/i);
 		expect(close).toHaveBeenCalledOnce();
 	});
 
@@ -49,5 +68,32 @@ describe("location contribution image verification", () => {
 			verifyLocationContributionImage(bytes, "image/png", { decode }),
 		).rejects.toThrow("dimensions exceed");
 		expect(decode).not.toHaveBeenCalled();
+	});
+
+	it("validates replacement files and returns their integrity metadata", async () => {
+		const file = new File([PNG_BYTES], "replacement.png", {
+			type: "image/png",
+		});
+
+		await expect(
+			verifyLocationContributionImageFile(file, {
+				decode: async () => ({ height: 1, width: 1 }),
+			}),
+		).resolves.toMatchObject({
+			file,
+			height: 1,
+			mediaType: "image/png",
+			width: 1,
+		});
+		await expect(
+			verifyLocationContributionImageFile(
+				new File([PNG_BYTES], "spoofed.jpg", { type: "image/jpeg" }),
+			),
+		).rejects.toThrow("valid JPEG");
+		await expect(
+			verifyLocationContributionImageFile(
+				new File([PNG_BYTES], "unsupported.gif", { type: "image/gif" }),
+			),
+		).rejects.toThrow("JPEG, PNG, or WebP");
 	});
 });

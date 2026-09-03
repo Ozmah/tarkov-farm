@@ -43,6 +43,13 @@ describe("location contribution archive reader", () => {
 			size: PNG_BYTES.byteLength,
 			type: "image/png",
 		});
+		expect(reviewed.locations[0]?.screenshots[0]).toMatchObject({
+			altText: "Desk",
+			byteLength: PNG_BYTES.byteLength,
+			entry: SCREENSHOT_ENTRY,
+			mediaType: "image/png",
+			sourceSha256: bundle.locations[0]?.screenshots[0]?.sourceSha256,
+		});
 		expect(decoder).toHaveBeenCalledTimes(1);
 	});
 

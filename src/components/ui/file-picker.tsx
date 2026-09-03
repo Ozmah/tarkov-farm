@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 type FilePickerProps = {
 	accept: string;
+	buttonAriaLabel?: string;
 	buttonLabel: string;
 	buttonSize?: ComponentProps<typeof Button>["size"];
 	buttonVariant?: ComponentProps<typeof Button>["variant"];
@@ -24,6 +25,7 @@ type FilePickerProps = {
 
 export function FilePicker({
 	accept,
+	buttonAriaLabel,
 	buttonLabel,
 	buttonSize,
 	buttonVariant,
@@ -70,6 +72,7 @@ export function FilePicker({
 	const button = (
 		<Button
 			type="button"
+			aria-label={buttonAriaLabel}
 			variant={buttonVariant}
 			size={buttonSize}
 			disabled={disabled}

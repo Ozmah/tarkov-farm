@@ -60,6 +60,7 @@ export type MapWorkspaceImage = {
 };
 
 export type MapWorkspaceMarker = {
+	accessibleLabel?: string;
 	appearance?: "default" | "reference";
 	clusterable?: boolean;
 	focusOnSelect?: boolean;
@@ -1074,7 +1075,10 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 				<span
 					data-map-marker
 					role="img"
-					aria-label={`Existing location: ${marker.name}${keyAccessLabel}`}
+					aria-label={
+						marker.accessibleLabel ??
+						`Existing location: ${marker.name}${keyAccessLabel}`
+					}
 					className={className}
 					style={style}
 				>
@@ -1092,16 +1096,31 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 			);
 		}
 
-		return (
-			<span
-				aria-hidden="true"
-				className={cn(className, "pointer-events-none")}
-				style={style}
-			>
+		const content = (
+			<>
 				{marker.label}
 				{requiresKeyAccess && !isSubmap ? (
 					<KeyRequirementIndicator className="absolute -top-1 -right-1" />
 				) : null}
+			</>
+		);
+		const passiveClassName = cn(className, "pointer-events-none");
+		if (marker.accessibleLabel) {
+			return (
+				<span
+					role="img"
+					aria-label={marker.accessibleLabel}
+					className={passiveClassName}
+					style={style}
+				>
+					{content}
+				</span>
+			);
+		}
+
+		return (
+			<span aria-hidden="true" className={passiveClassName} style={style}>
+				{content}
 			</span>
 		);
 	}

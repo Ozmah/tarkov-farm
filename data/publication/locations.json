@@ -1921,6 +1921,59 @@
 			"yBasisPoints": 9361
 		},
 		{
+			"description": "Second floor, room next to the west stars, right side of the room in the wooden cabinet.",
+			"documentId": "project",
+			"id": "35d7040f-8c73-45ed-b2c4-a4d90a80e354",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "White Pawn",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/35d7040f-8c73-45ed-b2c4-a4d90a80e354/2cea6f781ed1823bb41a97b2e3a6a97f62bd53f3ee00faa77e3399217f38f701-1920.webp",
+						"sha256": "cbd12b0f18d7ba569b90e7badfa30aa6d8e430f2e031f1668efb7eacb39fe323",
+						"width": 1920
+					},
+					"id": "ee31b699-ed9f-4362-aa65-0a52a7a189ac",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/35d7040f-8c73-45ed-b2c4-a4d90a80e354/2cea6f781ed1823bb41a97b2e3a6a97f62bd53f3ee00faa77e3399217f38f701-1000.webp",
+						"sha256": "62a039be19853f625b65bce0270225bd26a352ec99d43a14aa24824747888037",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "2cea6f781ed1823bb41a97b2e3a6a97f62bd53f3ee00faa77e3399217f38f701"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/35d7040f-8c73-45ed-b2c4-a4d90a80e354/41ab77b557c867933c308c27992d9886a3a67944e898412870a359252f1a5280-1920.webp",
+						"sha256": "c8a141b47eef6a39124d6437d8b3475364ad4549a59995604292718c77f1803d",
+						"width": 1920
+					},
+					"id": "6b734e9d-8988-4bc0-8e42-0ee1d9f87e2e",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/35d7040f-8c73-45ed-b2c4-a4d90a80e354/41ab77b557c867933c308c27992d9886a3a67944e898412870a359252f1a5280-1000.webp",
+						"sha256": "2ead5aa06a0447483324eac5f54223fecf1f30f4ecf1ea48d4d33f94efa51d5a",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "41ab77b557c867933c308c27992d9886a3a67944e898412870a359252f1a5280"
+				}
+			],
+			"xBasisPoints": 6968,
+			"yBasisPoints": 4562
+		},
+		{
 			"description": "On the desk at the end, next to a locker",
 			"documentId": "financial",
 			"id": "36094ccb-73d3-4217-8373-faf4dcba389a",
@@ -2291,6 +2344,59 @@
 			"yBasisPoints": 1888
 		},
 		{
+			"description": "In the right corner against the file cabinet.",
+			"documentId": "project",
+			"id": "3f423edd-f346-4490-b1fc-54b463a69864",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Guard Post",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/3f423edd-f346-4490-b1fc-54b463a69864/9c43f105852f6acc6b77207c61d6bf8a5367c440325af94c7fe9b0493eb7e4d5-1920.webp",
+						"sha256": "dac6aaa1b293683739a5b16828aba2449d6457ee66c6420260b27f69481397a5",
+						"width": 1920
+					},
+					"id": "670118b0-ecec-4d5a-afe7-6a0b093ff60b",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/3f423edd-f346-4490-b1fc-54b463a69864/9c43f105852f6acc6b77207c61d6bf8a5367c440325af94c7fe9b0493eb7e4d5-1000.webp",
+						"sha256": "822c4a023dbda0447f2cb5d4099813ad6f88e223a8805aafeb758f38a28bfb1d",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9c43f105852f6acc6b77207c61d6bf8a5367c440325af94c7fe9b0493eb7e4d5"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/3f423edd-f346-4490-b1fc-54b463a69864/eef7a5ac901d0c4c52099546c4c06898dc2d2ee4822743e22e372a3371570ee5-1920.webp",
+						"sha256": "1d31d469a3881f3e1d0b2f5eeac7604ea1de457c6b20e10aa3d037d036f61798",
+						"width": 1920
+					},
+					"id": "c8f1eae3-2296-47ee-90ad-fa68666ae29e",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/3f423edd-f346-4490-b1fc-54b463a69864/eef7a5ac901d0c4c52099546c4c06898dc2d2ee4822743e22e372a3371570ee5-1000.webp",
+						"sha256": "e3b6fb1da386d4582faa832ead1326cf4845d11161aba19c0044aaf0ea0085d1",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "eef7a5ac901d0c4c52099546c4c06898dc2d2ee4822743e22e372a3371570ee5"
+				}
+			],
+			"xBasisPoints": 7013,
+			"yBasisPoints": 6346
+		},
+		{
 			"description": "Next to east exit, radio room on the desk next to the projector",
 			"documentId": "pmc-personnel",
 			"id": "40f75a60-5e42-4bba-8c03-e64b354b42b8",
@@ -2514,6 +2620,39 @@
 			],
 			"xBasisPoints": 7685,
 			"yBasisPoints": 4098
+		},
+		{
+			"description": "In the couch at the end of the armory room on the fourth floor.",
+			"documentId": "project",
+			"id": "46182669-fa28-458f-95ac-a025a076ac54",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Pawn",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/46182669-fa28-458f-95ac-a025a076ac54/ef9aa154ff28398c444cbc212c074863499560ce89dcb08a0249c173e35a2ad9-1920.webp",
+						"sha256": "378b8388a00e3f9ed4946344a36407c25fd440a0234b980d76395f54a47a40a5",
+						"width": 1920
+					},
+					"id": "bc3d45f1-ae0f-42c1-9759-2488db186c0b",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/46182669-fa28-458f-95ac-a025a076ac54/ef9aa154ff28398c444cbc212c074863499560ce89dcb08a0249c173e35a2ad9-1000.webp",
+						"sha256": "f870270436c511bacbda155a67aa856662e169924123c0bd542f9ff2b9075b96",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ef9aa154ff28398c444cbc212c074863499560ce89dcb08a0249c173e35a2ad9"
+				}
+			],
+			"xBasisPoints": 8094,
+			"yBasisPoints": 2925
 		},
 		{
 			"description": "In the room in the back of the area between radar station, bunker and D2, in the middle desk",
@@ -2814,6 +2953,39 @@
 			],
 			"xBasisPoints": 5735,
 			"yBasisPoints": 7387
+		},
+		{
+			"description": "On second floor, standing upright between green weapon box and the drawers.",
+			"documentId": "project",
+			"id": "4affa229-e694-4425-bfc9-86282f6e89e6",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Pawn",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/4affa229-e694-4425-bfc9-86282f6e89e6/709030e588e455f89f5bb3b2e2d6af7fb2416f65d41758d9940c1ebff5c1fcb2-1920.webp",
+						"sha256": "3a8bf9b8f0932e285cec2fa83c171d126e6f4f9e82ee503d379ac68cd0ae0aed",
+						"width": 1920
+					},
+					"id": "c6f8acd2-69b3-4b42-8bf9-403d69e49187",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/4affa229-e694-4425-bfc9-86282f6e89e6/709030e588e455f89f5bb3b2e2d6af7fb2416f65d41758d9940c1ebff5c1fcb2-1000.webp",
+						"sha256": "a4dc087d5bcc639e6e99d2defdb2a972f011c1c32a375f0635ab32d633d844a8",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "709030e588e455f89f5bb3b2e2d6af7fb2416f65d41758d9940c1ebff5c1fcb2"
+				}
+			],
+			"xBasisPoints": 8128,
+			"yBasisPoints": 3915
 		},
 		{
 			"description": "In the room behind the meetings room, on the ground next to a pile of books and a bookshelf.",
@@ -3160,6 +3332,39 @@
 			],
 			"xBasisPoints": 7844,
 			"yBasisPoints": 4368
+		},
+		{
+			"description": "On the floor next to some papers and a large wooden cabinet.",
+			"documentId": "pmc-personnel",
+			"id": "54e0964c-37db-431e-b6c8-bb235b41cb91",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "White Knight",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/54e0964c-37db-431e-b6c8-bb235b41cb91/905ffe970f12c2563f42c2f59074cd2eaf504419a751b087979faee656edaf8a-1920.webp",
+						"sha256": "e5c5ca1e0634e4980aaf96c0effde55f9c33b3bcd8eb769e4356572f54ed39f5",
+						"width": 1920
+					},
+					"id": "19c076be-3214-42d9-8265-47eb3c1a9e42",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/54e0964c-37db-431e-b6c8-bb235b41cb91/905ffe970f12c2563f42c2f59074cd2eaf504419a751b087979faee656edaf8a-1000.webp",
+						"sha256": "073f989e6e004d7ebc8c2f4c7ce48500eace480bf3dfb300c95235ccc98c8cae",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "905ffe970f12c2563f42c2f59074cd2eaf504419a751b087979faee656edaf8a"
+				}
+			],
+			"xBasisPoints": 3710,
+			"yBasisPoints": 3237
 		},
 		{
 			"description": "On the ground inside the power pump office between a locker and a shelf",
@@ -3697,16 +3902,34 @@
 			"yBasisPoints": 6266
 		},
 		{
-			"description": "On the window inside the RB-KPRL room, in the dome area",
+			"description": "On the window inside the RB-KPRL room, in the dome area. No key needed, can be taken from the outside.",
 			"documentId": "pmc-personnel",
 			"id": "6f3cc1bc-9357-4577-b220-2688b67ce826",
 			"isActive": true,
 			"mapImageId": "reserve-main",
 			"name": "Safe Window",
-			"requiredKeyIds": [
-				"rb-kprl-key"
-			],
+			"requiredKeyIds": [],
 			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/6f3cc1bc-9357-4577-b220-2688b67ce826/ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b-1920.webp",
+						"sha256": "11d0c733dc2cd12dce4d1c946f94489cb99f781c2ee9b3b6b22f84328ffb969c",
+						"width": 1920
+					},
+					"id": "f1bc10df-26a7-4165-b746-682ef720b0ab",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/6f3cc1bc-9357-4577-b220-2688b67ce826/ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b-1000.webp",
+						"sha256": "9a875f6868ce2f759cd9b053f5ea94ca13b0c50d1b423698098d12ff3448f495",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "ede77b5d5267c52bc3bf8a37b95ee4b70d4e41617a8379a7cc969ea2f8ac4c6b"
+				},
 				{
 					"altText": "",
 					"caption": null,
@@ -3724,7 +3947,7 @@
 						"sha256": "96f69fce733c873619d606bf6c0a75f497a2f59fad9aecdf1bc1b6db96c065fa",
 						"width": 1000
 					},
-					"sortOrder": 0,
+					"sortOrder": 1,
 					"sourceSha256": "36475b5a7b23e2d0ed8233cc339b7b0687bf31f729a0f8b31735fbc3810a4981"
 				}
 			],
@@ -5245,6 +5468,127 @@
 			"yBasisPoints": 3427
 		},
 		{
+			"description": "Floor between the wooden desk and shelf. \nCan use key or jump from 3rd floor window",
+			"documentId": "project",
+			"id": "90268ad4-93c7-4ed5-812f-eeb2d9f61aaf",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Tech Storage",
+			"requiredKeyIds": [
+				"rb-ak-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/90268ad4-93c7-4ed5-812f-eeb2d9f61aaf/db1f93da51f8320ee16f11240b12a0214b17441935167dcfb0fed41b6ec5105e-1920.webp",
+						"sha256": "fb8f9b95d7e9e95442b7dc26464ebe1815e2cb8057db44c43acd83d50912f67b",
+						"width": 1920
+					},
+					"id": "07c69e3c-5f7c-461e-ae79-e7eab060352f",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/90268ad4-93c7-4ed5-812f-eeb2d9f61aaf/db1f93da51f8320ee16f11240b12a0214b17441935167dcfb0fed41b6ec5105e-1000.webp",
+						"sha256": "f2318be1f2c2fb2380e56b3da457b45a5ae8c3c6f44024fb49e544c494d449db",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "db1f93da51f8320ee16f11240b12a0214b17441935167dcfb0fed41b6ec5105e"
+				}
+			],
+			"xBasisPoints": 7115,
+			"yBasisPoints": 2575
+		},
+		{
+			"description": "3rd floor on PC room, standing on the first desk upon opening the door",
+			"documentId": "project",
+			"id": "9092a0d1-f23f-404e-9fa2-fe9949f5cc8e",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Knight",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/9092a0d1-f23f-404e-9fa2-fe9949f5cc8e/3b63e6f53d7ee8a16f469db90cf3ce59507a52e255d6e8d3b7da5534ac5fc5ef-1920.webp",
+						"sha256": "116f0d74e0f55d1e0db373d5261f36c7f9b707c02becdb032cb6e0cecca8e3d5",
+						"width": 1920
+					},
+					"id": "60bb60f8-6b2b-43db-aae0-485a54d5244b",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/9092a0d1-f23f-404e-9fa2-fe9949f5cc8e/3b63e6f53d7ee8a16f469db90cf3ce59507a52e255d6e8d3b7da5534ac5fc5ef-1000.webp",
+						"sha256": "8f66e56710b97fdf8afbdbab2cc5c3454d5c3e2d6d7c2d4a9de645ba9af8779a",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "3b63e6f53d7ee8a16f469db90cf3ce59507a52e255d6e8d3b7da5534ac5fc5ef"
+				}
+			],
+			"xBasisPoints": 4844,
+			"yBasisPoints": 2727
+		},
+		{
+			"description": "Entering the room, right corner at the bottom of the shelf on the right side of the chair.",
+			"documentId": "pmc-personnel",
+			"id": "91cc3c8b-a5bb-4a42-8919-bdf1308b406f",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "North Barracks",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/91cc3c8b-a5bb-4a42-8919-bdf1308b406f/92f2f8faf8b91710515b49d3e7892e2b0dcf1f752e8d34123e35f3f03ea2f652-1920.webp",
+						"sha256": "8822dcddc928d94028fbb906c724fd462dc3807258cb36bcc3a70360bbcf7995",
+						"width": 1920
+					},
+					"id": "3602f755-5e11-45a7-bb15-6a2269901855",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/91cc3c8b-a5bb-4a42-8919-bdf1308b406f/92f2f8faf8b91710515b49d3e7892e2b0dcf1f752e8d34123e35f3f03ea2f652-1000.webp",
+						"sha256": "bf5fe49986b759c645741b12de460516bc954fdf651e26c8d527c00cab2c73ec",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "92f2f8faf8b91710515b49d3e7892e2b0dcf1f752e8d34123e35f3f03ea2f652"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/91cc3c8b-a5bb-4a42-8919-bdf1308b406f/2c0a991ce94f406d5f0872e10b124f4760fbf2175993ed8367d4ff7945bf4e16-1920.webp",
+						"sha256": "ffa41d53c7b494adf74581206855d08b1f247d970a93abd499d9a1e7058b59ab",
+						"width": 1920
+					},
+					"id": "de856cac-1a8d-475b-9310-86bcab6bb84d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/91cc3c8b-a5bb-4a42-8919-bdf1308b406f/2c0a991ce94f406d5f0872e10b124f4760fbf2175993ed8367d4ff7945bf4e16-1000.webp",
+						"sha256": "71ccb3821800257bd9732557fbad412a3517a1440ccdf7bee346f3d72db417fd",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "2c0a991ce94f406d5f0872e10b124f4760fbf2175993ed8367d4ff7945bf4e16"
+				}
+			],
+			"xBasisPoints": 2201,
+			"yBasisPoints": 509
+		},
+		{
 			"description": "On top of the safe in the corner of the company director's room",
 			"documentId": "financial",
 			"id": "922ccd7b-814c-4501-8e76-be0216f08aa8",
@@ -6148,6 +6492,39 @@
 			"yBasisPoints": 3963
 		},
 		{
+			"description": "Third floor, corner of the room, on the wooden shelf.",
+			"documentId": "project",
+			"id": "bb0b4c1b-0cce-495c-a727-da6dc35e423a",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Bishop",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/bb0b4c1b-0cce-495c-a727-da6dc35e423a/424a6fe6fbd1d9ee20314bfaf73103dbd37215536f858201a9b6c5cb0d05287b-1920.webp",
+						"sha256": "2d42d6a3b284d229bc063f9b3074dec347dad499d96e10cc92a91bd44331b87b",
+						"width": 1920
+					},
+					"id": "4b5de88e-fbbf-42d7-9d43-43e5cde5c93f",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/bb0b4c1b-0cce-495c-a727-da6dc35e423a/424a6fe6fbd1d9ee20314bfaf73103dbd37215536f858201a9b6c5cb0d05287b-1000.webp",
+						"sha256": "4d09b64dce5be8f723d32e914f21008985334c7c01afee871dd6d55e220888cb",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "424a6fe6fbd1d9ee20314bfaf73103dbd37215536f858201a9b6c5cb0d05287b"
+				}
+			],
+			"xBasisPoints": 7781,
+			"yBasisPoints": 2273
+		},
+		{
 			"description": "On the ground between a bookshelf and the utility cart",
 			"documentId": "project",
 			"id": "bca6ee0b-966f-465f-a467-905074f18ba5",
@@ -6265,6 +6642,41 @@
 			],
 			"xBasisPoints": 8435,
 			"yBasisPoints": 6704
+		},
+		{
+			"description": "Lower shelf in RB-OB key room.",
+			"documentId": "pmc-personnel",
+			"id": "be3d833a-5c50-41d1-807e-838d41e2e1e2",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "Black Pawn",
+			"requiredKeyIds": [
+				"rb-ob-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/be3d833a-5c50-41d1-807e-838d41e2e1e2/3e2ee9fbd7f359a46bff584d74b9ddcb6c27fae6e7281c631274f8cdc1ad5d36-1920.webp",
+						"sha256": "d42fdce01128a2260d69afaad6268f9cdb14172015b3e71ca8addaa5e594013d",
+						"width": 1920
+					},
+					"id": "169361f5-049b-4cee-8524-ed7e94e78819",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/be3d833a-5c50-41d1-807e-838d41e2e1e2/3e2ee9fbd7f359a46bff584d74b9ddcb6c27fae6e7281c631274f8cdc1ad5d36-1000.webp",
+						"sha256": "0681beecd163f2a119b55974eada8cfc28e3710dbd6334df385e96f53c8a35a5",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "3e2ee9fbd7f359a46bff584d74b9ddcb6c27fae6e7281c631274f8cdc1ad5d36"
+				}
+			],
+			"xBasisPoints": 8108,
+			"yBasisPoints": 3020
 		},
 		{
 			"description": "On a bench with an umbrella next to the car dealership",
@@ -6545,6 +6957,59 @@
 			],
 			"xBasisPoints": 8144,
 			"yBasisPoints": 3479
+		},
+		{
+			"description": "Fourth floor, room next to the east stairs, entering the room on the floor by the green binder.",
+			"documentId": "pmc-personnel",
+			"id": "c87f9079-7a11-4080-958d-2be05dee2c03",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "White Pawn",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/c87f9079-7a11-4080-958d-2be05dee2c03/b0d51715ed2907074e20e4ec9e00f3177ee950335b21f0c9f2ea951f7defde1e-1920.webp",
+						"sha256": "b7a4fa7362327b1c4caa6fdb2fe2c62c7d65eca8f0ec143d3acd6ca0ad2a4faf",
+						"width": 1920
+					},
+					"id": "7f38b7b9-0202-446c-b05d-affe7d361121",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/c87f9079-7a11-4080-958d-2be05dee2c03/b0d51715ed2907074e20e4ec9e00f3177ee950335b21f0c9f2ea951f7defde1e-1000.webp",
+						"sha256": "53fde902ca47bbfe450e594e1d4e6f6204709ff918470c535a8bbd630c9420ef",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "b0d51715ed2907074e20e4ec9e00f3177ee950335b21f0c9f2ea951f7defde1e"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/c87f9079-7a11-4080-958d-2be05dee2c03/2b4ea8db459e067cf79bc5ef80ad78bfb4c7eaf54ef220c2492274dd1ff6d1e7-1920.webp",
+						"sha256": "8b636d6d66ae2df6ecba617cbc55b9d62ad000af0e0d5827181a364c278b4ecd",
+						"width": 1920
+					},
+					"id": "b22ffb18-4483-42e6-afce-0786532b0c39",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/c87f9079-7a11-4080-958d-2be05dee2c03/2b4ea8db459e067cf79bc5ef80ad78bfb4c7eaf54ef220c2492274dd1ff6d1e7-1000.webp",
+						"sha256": "53a92914bd57a343523cba9d61ece5197415a60cbeb1c2c99eb6fba460a9c296",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "2b4ea8db459e067cf79bc5ef80ad78bfb4c7eaf54ef220c2492274dd1ff6d1e7"
+				}
+			],
+			"xBasisPoints": 7734,
+			"yBasisPoints": 4245
 		},
 		{
 			"description": "Inside the small control room in front of the spawn area before entering the infirmary, on top of the surface next to the window, next to the main control panels.",
@@ -8273,6 +8738,39 @@
 			],
 			"xBasisPoints": 589,
 			"yBasisPoints": 3155
+		},
+		{
+			"description": "On the desk in the corner of the room.",
+			"documentId": "pmc-personnel",
+			"id": "f37a88df-66a6-4e38-8aae-5f75ae5a0026",
+			"isActive": true,
+			"mapImageId": "reserve-tunnels",
+			"name": "Underground Black Bishop",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/f37a88df-66a6-4e38-8aae-5f75ae5a0026/28fb1fc9aad2b7e283d2f5f8894e2f8e884bce5f83731ddda11fb3a890939d1b-1920.webp",
+						"sha256": "505d642fd56db0f8dce33c9eaa8cbc06cf3761b18e2703441a07b743c2d5e65c",
+						"width": 1920
+					},
+					"id": "a8f6818a-d7c3-4b4a-8b3e-9498f4f3e17e",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/f37a88df-66a6-4e38-8aae-5f75ae5a0026/28fb1fc9aad2b7e283d2f5f8894e2f8e884bce5f83731ddda11fb3a890939d1b-1000.webp",
+						"sha256": "6840751f3c5167aa3f3f4fcc4fb562046779f76e570fe2a072017946a4899dc6",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "28fb1fc9aad2b7e283d2f5f8894e2f8e884bce5f83731ddda11fb3a890939d1b"
+				}
+			],
+			"xBasisPoints": 5568,
+			"yBasisPoints": 1121
 		},
 		{
 			"description": "In the conference room in the back of the bank",

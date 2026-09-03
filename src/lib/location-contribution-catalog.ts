@@ -27,6 +27,31 @@ export type LocationContributionCatalogWarning = {
 	possibleDuplicateIds: string[];
 };
 
+type LocationPosition = {
+	id: string;
+	mapImageId: string;
+	xBasisPoints: number;
+	yBasisPoints: number;
+};
+
+const POSSIBLE_DUPLICATE_DISTANCE_BASIS_POINTS = 75;
+
+export function findPossibleDuplicateLocationIds(
+	location: Omit<LocationPosition, "id">,
+	candidates: LocationPosition[],
+) {
+	return candidates
+		.filter(
+			(candidate) =>
+				candidate.mapImageId === location.mapImageId &&
+				Math.hypot(
+					candidate.xBasisPoints - location.xBasisPoints,
+					candidate.yBasisPoints - location.yBasisPoints,
+				) <= POSSIBLE_DUPLICATE_DISTANCE_BASIS_POINTS,
+		)
+		.map(({ id }) => id);
+}
+
 export function validateLocationContributionCatalog(
 	bundle: LocationContributionBundle,
 	catalog: LocationContributionCatalog,
@@ -78,25 +103,14 @@ export function validateLocationContributionCatalog(
 			}
 		}
 
-		const possibleDuplicateIds = (catalog.locations ?? [])
-			.filter(
-				(published) =>
-					published.mapImageId === location.mapImageId &&
-					(normalizeName(published.name) === normalizeName(location.name) ||
-						Math.hypot(
-							published.xBasisPoints - location.xBasisPoints,
-							published.yBasisPoints - location.yBasisPoints,
-						) <= 75),
-			)
-			.map(({ id }) => id);
+		const possibleDuplicateIds = findPossibleDuplicateLocationIds(
+			location,
+			catalog.locations ?? [],
+		);
 		if (possibleDuplicateIds.length > 0) {
 			warnings.push({ locationId: location.id, possibleDuplicateIds });
 		}
 	}
 
 	return warnings;
-}
-
-function normalizeName(value: string) {
-	return value.trim().toLocaleLowerCase("en-US");
 }
