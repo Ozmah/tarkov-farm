@@ -152,6 +152,43 @@ describe("LocalContributionImporter", () => {
 		).toHaveProperty("value", "White Pawn");
 	});
 
+	it("flags possible duplicates by proximity, not by name", async () => {
+		const dataWithRepeatedName = {
+			...editorData,
+			locations: [
+				...editorData.locations,
+				{
+					description: "Another location with an intentionally repeated name",
+					id: "same-name-far-away",
+					isActive: true,
+					mapImageId: "reserve-main",
+					name: "White Pawn",
+					xBasisPoints: 8_000,
+					yBasisPoints: 8_000,
+				},
+			],
+		};
+		vi.mocked(getEditorData).mockResolvedValue(dataWithRepeatedName);
+		render(
+			<LocalContributionImporter
+				data={dataWithRepeatedName}
+				onImported={vi.fn().mockResolvedValue(undefined)}
+			/>,
+		);
+		await openBundle();
+
+		expect(screen.queryByText("Possible duplicate location")).toBeNull();
+		fireEvent.click(screen.getByRole("button", { name: "Edit position" }));
+		act(() =>
+			vi.mocked(MapWorkspace).mock.calls.at(-1)?.[0].onMapPress?.({
+				xBasisPoints: 3_030,
+				yBasisPoints: 1_500,
+			}),
+		);
+		expect(screen.getByText("Possible duplicate location")).toBeTruthy();
+		expect(screen.getByText(/Existing location/)).toBeTruthy();
+	});
+
 	it("excludes and restores screenshots without exposing alt text", async () => {
 		render(
 			<LocalContributionImporter

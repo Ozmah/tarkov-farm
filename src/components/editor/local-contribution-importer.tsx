@@ -19,7 +19,10 @@ import type {
 	ReviewedContributionLocation,
 	ReviewedLocationContributionArchive,
 } from "@/lib/location-contribution-archive-reader";
-import type { LocationContributionCatalog } from "@/lib/location-contribution-catalog";
+import {
+	findPossibleDuplicateLocationIds,
+	type LocationContributionCatalog,
+} from "@/lib/location-contribution-catalog";
 import {
 	type ContributionLocationImportState,
 	type ContributionLocationReviewDraft,
@@ -359,21 +362,7 @@ function findPossibleDuplicateIds(
 	draft: ContributionLocationReviewDraft,
 	data: EditorData,
 ) {
-	return data.locations
-		.filter(
-			(location) =>
-				location.mapImageId === draft.values.mapImageId &&
-				(normalizeName(location.name) === normalizeName(draft.values.name) ||
-					Math.hypot(
-						location.xBasisPoints - draft.values.xBasisPoints,
-						location.yBasisPoints - draft.values.yBasisPoints,
-					) <= 75),
-		)
-		.map(({ id }) => id);
-}
-
-function normalizeName(value: string) {
-	return value.trim().toLocaleLowerCase("en-US");
+	return findPossibleDuplicateLocationIds(draft.values, data.locations);
 }
 
 function readErrorMessage(error: unknown) {
