@@ -61,11 +61,10 @@ export function parsePublicationData(input: unknown): PublicationData {
 		locations.flatMap(({ screenshots }) => screenshots.map(({ id }) => id)),
 		"Screenshot identifiers",
 	);
-	assertUnique(
+	assertConsistentAssetsByPath(
 		locations.flatMap(({ screenshots }) =>
-			screenshots.flatMap(({ full, preview }) => [full.path, preview.path]),
+			screenshots.flatMap(({ full, preview }) => [full, preview]),
 		),
-		"Screenshot asset paths",
 	);
 
 	return canonicalizePublicationData({ formatVersion: 2, locations });
@@ -73,6 +72,14 @@ export function parsePublicationData(input: unknown): PublicationData {
 
 export function serializePublicationData(input: PublicationData) {
 	return `${JSON.stringify(parsePublicationData(input), null, "\t")}\n`;
+}
+
+export function getPublicationScreenshotAssetPath(
+	locationId: string,
+	sha256: string,
+	maxDimension: 1_000 | 1_920,
+) {
+	return `/screenshots/${locationId}/${sha256}-${maxDimension}.webp`;
 }
 
 function parseLocation(input: unknown): PublicationLocation {
@@ -167,14 +174,18 @@ function parseScreenshot(
 		caption: readNullableText(value.caption, "Screenshot caption", 500),
 		full: parseAsset(
 			value.full,
-			`/screenshots/${locationId}/${sourceSha256}-1920.webp`,
+			locationId,
+			sourceSha256,
+			1_920,
 			"Full screenshot",
 		),
 		id,
 		isActive: readBoolean(value.isActive, "Screenshot active state"),
 		preview: parseAsset(
 			value.preview,
-			`/screenshots/${locationId}/${sourceSha256}-1000.webp`,
+			locationId,
+			sourceSha256,
+			1_000,
 			"Screenshot preview",
 		),
 		sortOrder: readInteger(value.sortOrder, "Screenshot order", 0),
@@ -184,20 +195,35 @@ function parseScreenshot(
 
 function parseAsset(
 	input: unknown,
-	expectedPath: string,
+	locationId: string,
+	legacySourceHash: string,
+	maxDimension: 1_000 | 1_920,
 	label: string,
 ): PublicationAsset {
 	const value = readObject(input, label, ["height", "path", "sha256", "width"]);
 	const path = readText(value.path, `${label} path`, 500, false);
+	const sha256 = readSha256(value.sha256, `${label} hash`);
+	const expectedPath = getPublicationScreenshotAssetPath(
+		locationId,
+		sha256,
+		maxDimension,
+	);
+	const legacyPath = getPublicationScreenshotAssetPath(
+		locationId,
+		legacySourceHash,
+		maxDimension,
+	);
 
-	if (path !== expectedPath) {
-		throw new Error(`${label} path must be ${expectedPath}`);
+	if (path !== expectedPath && path !== legacyPath) {
+		throw new Error(
+			`${label} path must be ${expectedPath} or legacy path ${legacyPath}`,
+		);
 	}
 
 	return {
 		height: readInteger(value.height, `${label} height`, 1),
 		path,
-		sha256: readSha256(value.sha256, `${label} hash`),
+		sha256,
 		width: readInteger(value.width, `${label} width`, 1),
 	};
 }
@@ -308,6 +334,24 @@ function readInteger(
 function assertUnique(values: string[], label: string) {
 	if (new Set(values).size !== values.length) {
 		throw new Error(`${label} contain duplicates`);
+	}
+}
+
+function assertConsistentAssetsByPath(assets: PublicationAsset[]) {
+	const assetsByPath = new Map<string, PublicationAsset>();
+	for (const asset of assets) {
+		const existing = assetsByPath.get(asset.path);
+		if (!existing) {
+			assetsByPath.set(asset.path, asset);
+			continue;
+		}
+		if (
+			existing.sha256 !== asset.sha256 ||
+			existing.width !== asset.width ||
+			existing.height !== asset.height
+		) {
+			throw new Error("Screenshot asset paths contain conflicting metadata");
+		}
 	}
 }
 

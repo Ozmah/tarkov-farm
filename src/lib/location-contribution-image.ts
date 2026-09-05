@@ -5,6 +5,73 @@ import {
 
 export const MAX_CONTRIBUTION_IMAGE_DIMENSION = 8_192;
 export const MAX_CONTRIBUTION_IMAGE_PIXELS = 40_000_000;
+export const CONTRIBUTION_THUMBNAIL_DIMENSION = 640;
+
+let thumbnailQueue: Promise<unknown> = Promise.resolve();
+
+// Keep the slot until native decoding finishes, even if its caller cancels.
+export function createLocationContributionThumbnail(
+	file: File,
+	signal: AbortSignal,
+): Promise<Blob> {
+	const task = thumbnailQueue.then(async () => {
+		signal.throwIfAborted();
+		let source: ImageBitmap | HTMLImageElement | undefined;
+		let sourceUrl: string | undefined;
+		let canvas: HTMLCanvasElement | undefined;
+		try {
+			const verified = await verifyLocationContributionImageFile(file, {
+				signal,
+				decode: async (blob) => {
+					signal.throwIfAborted();
+					if (typeof createImageBitmap === "function") {
+						source = await createImageBitmap(blob);
+						return { width: source.width, height: source.height };
+					}
+					source = new Image();
+					sourceUrl = URL.createObjectURL(blob);
+					source.src = sourceUrl;
+					await source.decode();
+					return { width: source.naturalWidth, height: source.naturalHeight };
+				},
+			});
+			if (!source) throw new Error("Screenshot decoder is unavailable");
+			const scale = Math.min(
+				1,
+				CONTRIBUTION_THUMBNAIL_DIMENSION / verified.width,
+				CONTRIBUTION_THUMBNAIL_DIMENSION / verified.height,
+			);
+			canvas = document.createElement("canvas");
+			canvas.width = Math.max(1, Math.round(verified.width * scale));
+			canvas.height = Math.max(1, Math.round(verified.height * scale));
+			const context = canvas.getContext("2d");
+			if (!context) throw new Error("Screenshot preview canvas is unavailable");
+			context.drawImage(source, 0, 0, canvas.width, canvas.height);
+			const thumbnail = await new Promise<Blob>((resolve, reject) => {
+				canvas?.toBlob(
+					(blob) => {
+						if (blob) resolve(blob);
+						else reject(new Error("Could not encode screenshot preview"));
+					},
+					"image/webp",
+					0.8,
+				);
+			});
+			signal.throwIfAborted();
+			return thumbnail;
+		} finally {
+			if (source && "close" in source) source.close();
+			else if (source) source.removeAttribute("src");
+			if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+			if (canvas) {
+				canvas.width = 0;
+				canvas.height = 0;
+			}
+		}
+	});
+	thumbnailQueue = task.catch(() => undefined);
+	return task;
+}
 
 type ScreenshotMediaType = LocationContributionScreenshot["mediaType"];
 
@@ -167,6 +234,9 @@ function inspectJpeg(bytes: Uint8Array) {
 	}
 
 	let offset = 2;
+	let dimensions: { width: number; height: number } | undefined;
+	let orientation = 1;
+	let hasExif = false;
 	while (offset < bytes.byteLength) {
 		if (bytes[offset] !== 0xff) {
 			throw new Error("JPEG screenshot marker is invalid");
@@ -182,16 +252,71 @@ function inspectJpeg(bytes: Uint8Array) {
 			throw new Error("JPEG screenshot is truncated");
 		}
 		if (isStartOfFrame(marker)) {
-			if (length < 7) throw new Error("JPEG dimensions are invalid");
-			return {
+			if (length < 7 || dimensions)
+				throw new Error("JPEG dimensions are invalid");
+			dimensions = {
 				height: readUint16(bytes, offset + 3, false),
 				width: readUint16(bytes, offset + 5, false),
 			};
+			assertSafeDimensions(dimensions.width, dimensions.height);
+		}
+		if (marker === 0xe1) {
+			const segment = bytes.subarray(offset + 2, offset + length);
+			if (readAscii(segment, 0, 4) === "Exif") {
+				if (hasExif) throw new Error("JPEG contains multiple EXIF blocks");
+				hasExif = true;
+				orientation = readJpegExifOrientation(segment);
+			}
 		}
 		offset += length;
 	}
 
-	throw new Error("JPEG screenshot dimensions are missing");
+	if (!dimensions) throw new Error("JPEG screenshot dimensions are missing");
+	return orientation >= 5
+		? { width: dimensions.height, height: dimensions.width }
+		: dimensions;
+}
+
+function readJpegExifOrientation(segment: Uint8Array) {
+	if (!matches(segment, [0x45, 0x78, 0x69, 0x66, 0, 0])) {
+		throw new Error("JPEG EXIF signature is invalid");
+	}
+	// TIFF offsets are relative to this bounded APP1 payload, never the JPEG.
+	const tiff = segment.subarray(6);
+	const byteOrder = readAscii(tiff, 0, 2);
+	const littleEndian = byteOrder === "II";
+	if (
+		(byteOrder !== "II" && byteOrder !== "MM") ||
+		readUint16(tiff, 2, littleEndian) !== 42
+	) {
+		throw new Error("JPEG EXIF TIFF header is invalid");
+	}
+	const ifdOffset = readUint32(tiff, 4, littleEndian);
+	if (ifdOffset < 8 || ifdOffset + 2 > tiff.length) {
+		throw new Error("JPEG EXIF directory offset is invalid");
+	}
+	const count = readUint16(tiff, ifdOffset, littleEndian);
+	if (ifdOffset + 2 + count * 12 + 4 > tiff.length) {
+		throw new Error("JPEG EXIF directory is truncated");
+	}
+	let orientation: number | undefined;
+	// Only IFD0 describes the main image; thumbnail/sub-IFD orientations do not.
+	for (let index = 0; index < count; index += 1) {
+		const entry = ifdOffset + 2 + index * 12;
+		if (readUint16(tiff, entry, littleEndian) !== 0x0112) continue;
+		if (
+			orientation !== undefined ||
+			readUint16(tiff, entry + 2, littleEndian) !== 3 ||
+			readUint32(tiff, entry + 4, littleEndian) !== 1
+		) {
+			throw new Error("JPEG EXIF orientation entry is invalid or duplicated");
+		}
+		orientation = readUint16(tiff, entry + 8, littleEndian);
+		if (orientation < 1 || orientation > 8) {
+			throw new Error("JPEG EXIF orientation must be between 1 and 8");
+		}
+	}
+	return orientation ?? 1;
 }
 
 function inspectWebp(bytes: Uint8Array) {

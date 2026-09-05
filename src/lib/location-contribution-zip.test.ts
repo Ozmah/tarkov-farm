@@ -73,6 +73,22 @@ describe("location contribution ZIP index", () => {
 		).rejects.toMatchObject({ name: "AbortError" });
 	});
 
+	it("reads entry data with a valid standard CRC32", async () => {
+		const standardVector = new TextEncoder().encode("123456789");
+		const archive = createZip([
+			["manifest.json", standardVector],
+			[SCREENSHOT_ENTRY, new Uint8Array([1])],
+		]);
+		const indexed = await indexLocationContributionZip(archive);
+		const manifest = indexed.entries[0];
+		if (!manifest) throw new Error("Expected a manifest entry");
+
+		expect(manifest.crc32).toBe(0xcbf43926);
+		await expect(readLocationContributionZipEntry(manifest)).resolves.toEqual(
+			standardVector,
+		);
+	});
+
 	it("rejects entry data whose CRC no longer matches", async () => {
 		const archive = createZip([
 			["manifest.json", new TextEncoder().encode("{}\n")],

@@ -16,6 +16,8 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 
+import { getPublicationScreenshotAssetPath } from "@/lib/publication-data";
+
 const SCREENSHOT_PROCESSOR = resolve(
 	process.cwd(),
 	"scripts/process-location-screenshot.ts",
@@ -24,6 +26,10 @@ const PUBLIC_ROOT = resolve(process.cwd(), "public");
 const SCREENSHOT_ROOT = resolve(PUBLIC_ROOT, "screenshots");
 const ORIGINAL_ROOT = resolve(process.cwd(), "assets/screenshots/originals");
 const SAFE_SEGMENT_PATTERN = /^[a-zA-Z0-9_-]+$/;
+const PROCESSOR_TIMEOUT_MS = 120_000;
+const PROCESSOR_SHUTDOWN_GRACE_MS = 5_000;
+const MAX_PROCESSOR_TEXT_LENGTH = 64 * 1024;
+const TRUNCATION_MARKER = "\n[truncated]";
 
 type WorkerResult = {
 	format: "jpeg" | "png" | "webp";
@@ -79,11 +85,18 @@ export async function processScreenshotFiles(
 				previewOutputPath,
 				fullOutputPath,
 			);
-			const outputDirectory = resolve(SCREENSHOT_ROOT, locationId);
-			const previewFilename = `${sourceHash}-1000.webp`;
-			const fullFilename = `${sourceHash}-1920.webp`;
-			const previewDestination = resolve(outputDirectory, previewFilename);
-			const fullDestination = resolve(outputDirectory, fullFilename);
+			const previewPath = getPublicationScreenshotAssetPath(
+				locationId,
+				workerResult.preview.sha256,
+				1_000,
+			);
+			const fullPath = getPublicationScreenshotAssetPath(
+				locationId,
+				workerResult.full.sha256,
+				1_920,
+			);
+			const previewDestination = resolve(PUBLIC_ROOT, previewPath.slice(1));
+			const fullDestination = resolve(PUBLIC_ROOT, fullPath.slice(1));
 			const originalDestination = resolve(
 				ORIGINAL_ROOT,
 				locationId,
@@ -103,10 +116,10 @@ export async function processScreenshotFiles(
 			screenshots.push({
 				fullHash: workerResult.full.sha256,
 				height: workerResult.full.height,
-				path: `/screenshots/${locationId}/${fullFilename}`,
+				path: fullPath,
 				previewHash: workerResult.preview.sha256,
 				previewHeight: workerResult.preview.height,
-				previewPath: `/screenshots/${locationId}/${previewFilename}`,
+				previewPath,
 				previewWidth: workerResult.preview.width,
 				sourceHash,
 				width: workerResult.full.width,
@@ -126,21 +139,28 @@ export async function discardPublishedFiles(paths: string[]) {
 	await Promise.all(paths.map((path) => rm(path, { force: true })));
 }
 
-export async function removeScreenshotFiles(
+export async function removeObsoleteScreenshotFiles(
 	locationId: string,
 	records: ReadonlyArray<{
 		path: string;
 		previewPath: string;
 		sourceHash: string;
 	}>,
+	retainedPublicPaths: ReadonlySet<string>,
+	retainedSourceHashes: ReadonlySet<string>,
 ) {
 	assertSafeSegment(locationId);
 
 	for (const record of records) {
-		await removePublicScreenshot(locationId, record.path);
-
-		await removePublicScreenshot(locationId, record.previewPath);
-		await removeOriginalByHash(locationId, record.sourceHash);
+		if (!retainedPublicPaths.has(record.path)) {
+			await removePublicScreenshot(locationId, record.path);
+		}
+		if (!retainedPublicPaths.has(record.previewPath)) {
+			await removePublicScreenshot(locationId, record.previewPath);
+		}
+		if (!retainedSourceHashes.has(record.sourceHash)) {
+			await removeOriginalByHash(locationId, record.sourceHash);
+		}
 	}
 }
 
@@ -172,7 +192,7 @@ async function runProcessor(
 	}
 }
 
-function executeBunProcessor(arguments_: string[]) {
+export function executeBunProcessor(arguments_: string[]) {
 	return new Promise<{ diagnostics: string; output: string }>(
 		(resolve, reject) => {
 			const subprocess = spawn("bun", arguments_, {
@@ -181,25 +201,75 @@ function executeBunProcessor(arguments_: string[]) {
 			});
 			let output = "";
 			let diagnostics = "";
+			let outputLimitExceeded = false;
+			let settled = false;
+			let terminationError: Error | undefined;
+			let terminationFallback: ReturnType<typeof setTimeout> | undefined;
+			const timeoutError = new Error(
+				`The screenshot processor timed out after ${PROCESSOR_TIMEOUT_MS / 1000} seconds`,
+			);
+			const timeout = setTimeout(() => {
+				terminate(timeoutError);
+			}, PROCESSOR_TIMEOUT_MS);
+
+			function rejectOnce(error: Error) {
+				if (settled) return;
+				settled = true;
+				clearTimeout(timeout);
+				clearTimeout(terminationFallback);
+				reject(error);
+			}
+
+			function resolveOnce() {
+				if (settled) return;
+				settled = true;
+				clearTimeout(timeout);
+				clearTimeout(terminationFallback);
+				resolve({ diagnostics, output });
+			}
+
+			function terminate(error: Error) {
+				if (terminationError) return;
+				terminationError = error;
+				terminationFallback = setTimeout(() => {
+					rejectOnce(error);
+				}, PROCESSOR_SHUTDOWN_GRACE_MS);
+				try {
+					if (!subprocess.kill("SIGKILL")) rejectOnce(error);
+				} catch {
+					rejectOnce(error);
+				}
+			}
 
 			subprocess.stdout.setEncoding("utf8");
 			subprocess.stderr.setEncoding("utf8");
 			subprocess.stdout.on("data", (chunk: string) => {
-				output += chunk;
+				if (outputLimitExceeded) return;
+				const result = appendBoundedText(output, chunk);
+				output = result.text;
+				outputLimitExceeded = result.truncated;
+				if (outputLimitExceeded) {
+					terminate(
+						new Error("The screenshot processor returned too much data"),
+					);
+				}
 			});
 			subprocess.stderr.on("data", (chunk: string) => {
-				diagnostics += chunk;
+				diagnostics = appendBoundedText(diagnostics, chunk).text;
 			});
-			subprocess.on("error", (error) => {
-				reject(
-					new Error(
-						`Unable to start Bun screenshot processor: ${error.message}`,
-					),
+			subprocess.once("error", (error) => {
+				if (terminationError) return;
+				rejectOnce(
+					new Error(`Bun screenshot processor error: ${error.message}`),
 				);
 			});
-			subprocess.on("close", (exitCode) => {
+			subprocess.once("close", (exitCode) => {
+				if (terminationError) {
+					rejectOnce(terminationError);
+					return;
+				}
 				if (exitCode !== 0) {
-					reject(
+					rejectOnce(
 						new Error(
 							diagnostics.trim() || "The screenshot could not be processed",
 						),
@@ -207,10 +277,28 @@ function executeBunProcessor(arguments_: string[]) {
 					return;
 				}
 
-				resolve({ diagnostics, output });
+				resolveOnce();
 			});
 		},
 	);
+}
+
+function appendBoundedText(current: string, chunk: string) {
+	const contentLimit = MAX_PROCESSOR_TEXT_LENGTH - TRUNCATION_MARKER.length;
+	if (current.endsWith(TRUNCATION_MARKER)) {
+		return { text: current, truncated: true };
+	}
+	if (current.length + chunk.length <= MAX_PROCESSOR_TEXT_LENGTH) {
+		return { text: current + chunk, truncated: false };
+	}
+	const content =
+		current.length >= contentLimit
+			? current.slice(0, contentLimit)
+			: current + chunk.slice(0, contentLimit - current.length);
+	return {
+		text: `${content}${TRUNCATION_MARKER}`,
+		truncated: true,
+	};
 }
 
 async function publishFile(

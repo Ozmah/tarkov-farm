@@ -33,14 +33,15 @@ export function LocationScreenshotDialog({
 	previousScreenshot,
 	screenshot,
 }: LocationScreenshotDialogProps) {
+	const isOpen = Boolean(screenshot);
 	const hasNavigation = Boolean(onPrevious || onNext);
 	useGlobalScreenshotNavigation({
-		active: Boolean(screenshot) && hasNavigation,
+		active: isOpen && hasNavigation,
 		onNext,
 		onPrevious,
 	});
 	const { isActive, isTransitioning, ...swipeProps } = useSwipeNavigation({
-		active: Boolean(screenshot),
+		active: isOpen,
 		onNext,
 		onPrevious,
 	});
@@ -52,15 +53,17 @@ export function LocationScreenshotDialog({
 		: `${locationName} screenshot`;
 
 	useEffect(() => {
+		if (!isOpen) return;
+
 		for (const path of [previousScreenshot?.path, nextScreenshot?.path]) {
 			if (!path) continue;
 			const image = new Image();
 			image.src = path;
 		}
-	}, [nextScreenshot?.path, previousScreenshot?.path]);
+	}, [isOpen, nextScreenshot?.path, previousScreenshot?.path]);
 
 	return (
-		<Dialog open={Boolean(screenshot)} onOpenChange={onOpenChange}>
+		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent
 				aria-keyshortcuts={
 					hasNavigation ? "A ArrowLeft D ArrowRight" : undefined
