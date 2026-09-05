@@ -38,7 +38,7 @@ import {
 	discardPublishedFiles,
 	processScreenshotFiles,
 	removeLocationScreenshotDirectories,
-	removeScreenshotFiles,
+	removeObsoleteScreenshotFiles,
 } from "./screenshot-files.server";
 
 const projectRoot = resolve(process.cwd());
@@ -310,6 +310,7 @@ async function saveEditorLocationLocked(
 	}
 
 	const processedBatch = await processScreenshotFiles(locationId, input.files);
+	let databaseCommitted = false;
 
 	try {
 		const finalScreenshots = input.screenshots.map((screenshot, sortOrder) => {
@@ -351,6 +352,10 @@ async function saveEditorLocationLocked(
 		if (new Set(sourceHashes).size !== sourceHashes.length) {
 			throw new Error("The same screenshot cannot be attached twice");
 		}
+		const assetPaths = finalScreenshots.flatMap(({ path, previewPath }) => [
+			path,
+			previewPath,
+		]);
 
 		await runDatabaseTransaction(async (transaction) => {
 			if (location.id) {
@@ -407,35 +412,37 @@ async function saveEditorLocationLocked(
 				.run();
 			await transaction.insert(screenshots).values(finalScreenshots).run();
 		});
+		databaseCommitted = true;
 
-		const retainedIds = new Set(
-			input.screenshots.flatMap(({ id }) => (id ? [id] : [])),
-		);
-		const retainedPaths = new Set(
-			finalScreenshots.flatMap(({ path, previewPath }) => [path, previewPath]),
-		);
+		await publishEditorManifest({
+			type: "saved",
+			locationId,
+			mapImageId: location.mapImageId,
+		});
+
+		const retainedIds = new Set(finalScreenshots.map(({ id }) => id));
+		const retainedPaths = new Set(assetPaths);
+		const retainedSourceHashes = new Set(sourceHashes);
 		const removedScreenshots = existingScreenshotRows.filter(
-			({ id, path, previewPath }) =>
-				!retainedIds.has(id) &&
-				!retainedPaths.has(path) &&
-				!retainedPaths.has(previewPath),
+			({ id }) => !retainedIds.has(id),
 		);
 
 		try {
-			await removeScreenshotFiles(locationId, removedScreenshots);
+			await removeObsoleteScreenshotFiles(
+				locationId,
+				removedScreenshots,
+				retainedPaths,
+				retainedSourceHashes,
+			);
 		} catch (error) {
 			console.error("Failed to remove obsolete screenshot files", error);
 		}
 	} catch (error) {
-		await discardPublishedFiles(processedBatch.createdFiles);
+		if (!databaseCommitted) {
+			await discardPublishedFiles(processedBatch.createdFiles);
+		}
 		throw error;
 	}
-
-	await publishEditorManifest({
-		type: "saved",
-		locationId,
-		mapImageId: location.mapImageId,
-	});
 	return {
 		id: locationId,
 		mapId: image.mapId,
@@ -464,13 +471,14 @@ async function deleteEditorLocationLocked(input: DeleteLocationInput) {
 		throw new Error("The selected location no longer exists");
 	}
 
+	await publishEditorManifest({ type: "deleted", locationId: deleted.id });
+
 	try {
 		await removeLocationScreenshotDirectories(input.id);
 	} catch (error) {
 		console.error("Failed to remove location screenshot files", error);
 	}
 
-	await publishEditorManifest({ type: "deleted", locationId: deleted.id });
 	return { id: deleted.id };
 }
 

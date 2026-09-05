@@ -16,6 +16,8 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 
+import { getPublicationScreenshotAssetPath } from "@/lib/publication-data";
+
 const SCREENSHOT_PROCESSOR = resolve(
 	process.cwd(),
 	"scripts/process-location-screenshot.ts",
@@ -83,11 +85,18 @@ export async function processScreenshotFiles(
 				previewOutputPath,
 				fullOutputPath,
 			);
-			const outputDirectory = resolve(SCREENSHOT_ROOT, locationId);
-			const previewFilename = `${sourceHash}-1000.webp`;
-			const fullFilename = `${sourceHash}-1920.webp`;
-			const previewDestination = resolve(outputDirectory, previewFilename);
-			const fullDestination = resolve(outputDirectory, fullFilename);
+			const previewPath = getPublicationScreenshotAssetPath(
+				locationId,
+				workerResult.preview.sha256,
+				1_000,
+			);
+			const fullPath = getPublicationScreenshotAssetPath(
+				locationId,
+				workerResult.full.sha256,
+				1_920,
+			);
+			const previewDestination = resolve(PUBLIC_ROOT, previewPath.slice(1));
+			const fullDestination = resolve(PUBLIC_ROOT, fullPath.slice(1));
 			const originalDestination = resolve(
 				ORIGINAL_ROOT,
 				locationId,
@@ -107,10 +116,10 @@ export async function processScreenshotFiles(
 			screenshots.push({
 				fullHash: workerResult.full.sha256,
 				height: workerResult.full.height,
-				path: `/screenshots/${locationId}/${fullFilename}`,
+				path: fullPath,
 				previewHash: workerResult.preview.sha256,
 				previewHeight: workerResult.preview.height,
-				previewPath: `/screenshots/${locationId}/${previewFilename}`,
+				previewPath,
 				previewWidth: workerResult.preview.width,
 				sourceHash,
 				width: workerResult.full.width,
@@ -130,21 +139,28 @@ export async function discardPublishedFiles(paths: string[]) {
 	await Promise.all(paths.map((path) => rm(path, { force: true })));
 }
 
-export async function removeScreenshotFiles(
+export async function removeObsoleteScreenshotFiles(
 	locationId: string,
 	records: ReadonlyArray<{
 		path: string;
 		previewPath: string;
 		sourceHash: string;
 	}>,
+	retainedPublicPaths: ReadonlySet<string>,
+	retainedSourceHashes: ReadonlySet<string>,
 ) {
 	assertSafeSegment(locationId);
 
 	for (const record of records) {
-		await removePublicScreenshot(locationId, record.path);
-
-		await removePublicScreenshot(locationId, record.previewPath);
-		await removeOriginalByHash(locationId, record.sourceHash);
+		if (!retainedPublicPaths.has(record.path)) {
+			await removePublicScreenshot(locationId, record.path);
+		}
+		if (!retainedPublicPaths.has(record.previewPath)) {
+			await removePublicScreenshot(locationId, record.previewPath);
+		}
+		if (!retainedSourceHashes.has(record.sourceHash)) {
+			await removeOriginalByHash(locationId, record.sourceHash);
+		}
 	}
 }
 
