@@ -76,6 +76,11 @@ const config = defineConfig(({ mode }) => ({
 									"cache-control": "public, max-age=86400",
 								},
 							},
+							"/maps/masters/*-*w-*.webp": {
+								headers: {
+									"cache-control": "public, max-age=31536000, immutable",
+								},
+							},
 						},
 					}),
 				]),
