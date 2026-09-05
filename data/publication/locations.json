@@ -2556,6 +2556,39 @@
 			"yBasisPoints": 7684
 		},
 		{
+			"description": "After beating BD under the helipad, before the chained door, opposite to that door climb the stairs all the way to the top, inside the control room on the low metal cabiten.",
+			"documentId": "test",
+			"id": "43df2bba-97ba-4be0-a817-7e6bfa9b687b",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Upper Control Room",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1090,
+						"path": "/screenshots/43df2bba-97ba-4be0-a817-7e6bfa9b687b/c5f3fd16d98d1fd95fd6962e8cce82201a49c0245e8e138d73d5efb1cfa29bc4-1920.webp",
+						"sha256": "006eff7594049dc3d5590d70e8f1774c61180cd33994e359a01433d9bbc17842",
+						"width": 1920
+					},
+					"id": "943ad2cd-4e96-4acf-97c9-7ceb65fba6dd",
+					"isActive": true,
+					"preview": {
+						"height": 567,
+						"path": "/screenshots/43df2bba-97ba-4be0-a817-7e6bfa9b687b/c5f3fd16d98d1fd95fd6962e8cce82201a49c0245e8e138d73d5efb1cfa29bc4-1000.webp",
+						"sha256": "5726438675e47af9bef726ad7073db7b6d892d95fa507c742983843facf24cdc",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "c5f3fd16d98d1fd95fd6962e8cce82201a49c0245e8e138d73d5efb1cfa29bc4"
+				}
+			],
+			"xBasisPoints": 4697,
+			"yBasisPoints": 2049
+		},
+		{
 			"description": "On a table at the end of the room in front of the yellow sofas",
 			"documentId": "user",
 			"id": "44344ee5-fe9e-4959-a391-64958f00c832",
@@ -7010,6 +7043,59 @@
 			],
 			"xBasisPoints": 7734,
 			"yBasisPoints": 4245
+		},
+		{
+			"description": "Go downstairs of the helipad, walk to the first sealed room to the right, walk and inside the room on the left on top of the low metal cabinet.",
+			"documentId": "pmc-personnel",
+			"id": "c8bd1c9a-768e-4206-ae52-1b1ebad0eb3c",
+			"isActive": true,
+			"mapImageId": "icebreaker-main",
+			"name": "Control Room Under Helipad",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 996,
+						"path": "/screenshots/c8bd1c9a-768e-4206-ae52-1b1ebad0eb3c/0ef2b6a7767169c9470436923823802ff0bbb26d6731e755aa3f1d1979d16b71-1920.webp",
+						"sha256": "ca5913781189d2f15bcb72a7aae5c5faabdc4639662e6a7df0a307ca1c97d701",
+						"width": 1920
+					},
+					"id": "d5a10001-ad32-4e6d-92f9-16f33adb08e6",
+					"isActive": true,
+					"preview": {
+						"height": 519,
+						"path": "/screenshots/c8bd1c9a-768e-4206-ae52-1b1ebad0eb3c/0ef2b6a7767169c9470436923823802ff0bbb26d6731e755aa3f1d1979d16b71-1000.webp",
+						"sha256": "91767d021c27a5a17a21c85b2c0ddda1ae5119aa1ccb0867915becf53c8566c6",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0ef2b6a7767169c9470436923823802ff0bbb26d6731e755aa3f1d1979d16b71"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 942,
+						"path": "/screenshots/c8bd1c9a-768e-4206-ae52-1b1ebad0eb3c/719ab07e6b8e9ebbf766f219823615f5d8986fb9986cc7e907c6a1d235a768fb-1920.webp",
+						"sha256": "849f44bb1b3c1ee346013ad7de60eacefe90d6334bffc3ddd8ca5b1d90fab617",
+						"width": 1920
+					},
+					"id": "0c66be26-0564-4e89-b399-3aff019b5a96",
+					"isActive": true,
+					"preview": {
+						"height": 491,
+						"path": "/screenshots/c8bd1c9a-768e-4206-ae52-1b1ebad0eb3c/719ab07e6b8e9ebbf766f219823615f5d8986fb9986cc7e907c6a1d235a768fb-1000.webp",
+						"sha256": "fb9e5b3f9b95e293ba121bafe6771a82331c37ee2e99c39b2c20769682759d9b",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "719ab07e6b8e9ebbf766f219823615f5d8986fb9986cc7e907c6a1d235a768fb"
+				}
+			],
+			"xBasisPoints": 6817,
+			"yBasisPoints": 1043
 		},
 		{
 			"description": "Inside the small control room in front of the spawn area before entering the infirmary, on top of the surface next to the window, next to the main control panels.",
