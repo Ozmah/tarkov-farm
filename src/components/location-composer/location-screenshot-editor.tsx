@@ -4,11 +4,12 @@ import {
 	ImageIcon,
 	TrashIcon,
 } from "@phosphor-icons/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
 import { FilePicker } from "@/components/ui/file-picker";
+import { createLocationContributionThumbnail } from "@/lib/location-contribution-image";
 import { cn } from "@/lib/utils";
 
 export type ScreenshotDraft = {
@@ -118,31 +119,61 @@ function ScreenshotItem({
 	onMove,
 	onRemove,
 }: ScreenshotItemProps) {
-	const previewImageRef = useRef<HTMLImageElement>(null);
 	const file = screenshot.file;
+	const [preview, setPreview] = useState<{
+		file: File;
+		url?: string;
+		error?: string;
+	}>();
+	const currentPreview = preview?.file === file ? preview : undefined;
+	if (preview && preview.file !== file) setPreview(undefined);
 
 	useEffect(() => {
-		const previewImage = previewImageRef.current;
-
-		if (!file || !previewImage) {
-			return;
-		}
-
-		return attachFilePreview(previewImage, file);
+		if (!file) return;
+		const controller = new AbortController();
+		let url: string | undefined;
+		void createLocationContributionThumbnail(file, controller.signal)
+			.then((blob) => {
+				if (controller.signal.aborted) return;
+				url = URL.createObjectURL(blob);
+				setPreview({ file, url });
+			})
+			.catch((error: unknown) => {
+				if (controller.signal.aborted) return;
+				setPreview({
+					file,
+					error:
+						error instanceof Error
+							? error.message
+							: "Could not preview screenshot",
+				});
+			});
+		return () => {
+			controller.abort();
+			if (url) URL.revokeObjectURL(url);
+		};
 	}, [file]);
 
 	return (
 		<li className="overflow-hidden border border-border bg-background">
 			<div className="aspect-video bg-muted">
-				<img
-					ref={previewImageRef}
-					src={file ? undefined : screenshot.previewUrl}
-					alt=""
-					width={screenshot.width}
-					height={screenshot.height}
-					draggable={false}
-					className="size-full object-contain"
-				/>
+				{file && !currentPreview?.url ? (
+					<p
+						role={currentPreview?.error ? "alert" : "status"}
+						className="p-3 text-muted-foreground text-sm"
+					>
+						{currentPreview?.error ?? "Checking screenshot..."}
+					</p>
+				) : (
+					<img
+						src={file ? currentPreview?.url : screenshot.previewUrl}
+						alt=""
+						width={screenshot.width}
+						height={screenshot.height}
+						draggable={false}
+						className="size-full object-contain"
+					/>
+				)}
 			</div>
 
 			<div className="p-3">
@@ -185,11 +216,4 @@ function ScreenshotItem({
 			</div>
 		</li>
 	);
-}
-
-function attachFilePreview(image: HTMLImageElement, file: File) {
-	const previewUrl = URL.createObjectURL(file);
-	image.src = previewUrl;
-
-	return () => URL.revokeObjectURL(previewUrl);
 }
