@@ -23,6 +23,7 @@ const WRITER_DOS_DATE = 0x0021;
 const MANIFEST_ENTRY = "manifest.json";
 const SCREENSHOT_ENTRY_PATTERN =
 	/^locations\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/screenshots\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(?:jpg|png|webp)$/;
+const CRC32_TABLE = createCrc32Table();
 
 export type LocationContributionZipEntry = {
 	crc32: number;
@@ -317,11 +318,20 @@ function equalBytes(left: Uint8Array, right: Uint8Array) {
 
 function crc32(bytes: Uint8Array) {
 	let value = 0xffffffff;
-	for (const byte of bytes) {
-		value ^= byte;
+	for (let index = 0; index < bytes.length; index += 1) {
+		value = (value >>> 8) ^ CRC32_TABLE[(value ^ bytes[index]) & 0xff];
+	}
+	return (value ^ 0xffffffff) >>> 0;
+}
+
+function createCrc32Table() {
+	const table = new Uint32Array(256);
+	for (let byte = 0; byte < table.length; byte += 1) {
+		let value = byte;
 		for (let bit = 0; bit < 8; bit += 1) {
 			value = (value >>> 1) ^ (value & 1 ? 0xedb88320 : 0);
 		}
+		table[byte] = value >>> 0;
 	}
-	return (value ^ 0xffffffff) >>> 0;
+	return table;
 }
