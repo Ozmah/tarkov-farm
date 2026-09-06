@@ -20,6 +20,7 @@ import {
 	serializePublicationUpdatesData,
 } from "../../lib/publication-updates";
 import { openDatabase } from "./open";
+import { getDatabasePath } from "./path";
 import { readPublicationDataFromDatabase } from "./publication-store";
 import { readPublicationUpdatesFromDatabase } from "./publication-updates-store";
 import { setupDatabase } from "./setup";
@@ -65,7 +66,10 @@ afterEach(async () => {
 describe("database setup", () => {
 	it("creates a missing database from versioned files", async () => {
 		const directory = await createTemporaryDirectory();
-		const databasePath = resolve(directory, "database.sqlite");
+		const databasePath = getDatabasePath({
+			projectRoot: directory,
+			isContainer: false,
+		});
 		const result = await setupDatabase(databasePath, setupOptions);
 
 		expect(result).toEqual({

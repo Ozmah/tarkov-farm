@@ -29,8 +29,10 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& groupadd --gid 1001 --system tarkov \
 	&& useradd --uid 1001 --gid tarkov --system --create-home tarkov \
-	&& mkdir -p /data \
-	&& chown tarkov:tarkov /data
+	&& touch /etc/tarkov-farm-container \
+	&& chmod 0444 /etc/tarkov-farm-container \
+	&& mkdir -p /hideout \
+	&& chown tarkov:tarkov /hideout
 
 COPY --from=production-dependencies --chown=tarkov:tarkov /app/node_modules ./node_modules
 COPY --from=builder --chown=tarkov:tarkov /app/.output ./.output
@@ -44,10 +46,13 @@ COPY --from=builder --chown=tarkov:tarkov /app/drizzle ./drizzle
 COPY --from=builder --chown=tarkov:tarkov /app/data/catalog ./data/catalog
 COPY --from=builder --chown=tarkov:tarkov /app/data/publication ./data/publication
 COPY --from=builder --chown=tarkov:tarkov /app/public/maps/masters/manifest.json ./public/maps/masters/manifest.json
-RUN APP_ENV=production DATABASE_PATH=/tmp/tarkov-build-check.sqlite bun src/server/db/setup.ts \
-	&& rm -f /tmp/tarkov-build-check.sqlite*
 COPY --chown=root:root scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod 0555 /usr/local/bin/docker-entrypoint
+
+USER tarkov:tarkov
+ENV APP_ENV=production
+RUN bun src/server/db/setup.ts \
+	&& rm -f /hideout/tarkov.sqlite*
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0

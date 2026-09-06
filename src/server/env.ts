@@ -4,23 +4,15 @@ export type AppEnvironment = (typeof APP_ENVIRONMENTS)[number];
 
 export interface ServerEnvironment {
 	appEnvironment: AppEnvironment;
-	databasePath: string;
 }
 
 export function getServerEnvironment(
 	environment: NodeJS.ProcessEnv = process.env,
 ): ServerEnvironment {
 	const appEnvironment = environment.APP_ENV?.trim().toLowerCase();
-	const databasePath = environment.DATABASE_PATH?.trim();
-
-	if (!appEnvironment || !databasePath) {
-		const missingVariables = [
-			...(!appEnvironment ? ["APP_ENV"] : []),
-			...(!databasePath ? ["DATABASE_PATH"] : []),
-		];
-
+	if (!appEnvironment) {
 		throw new Error(
-			`Missing required environment variables: ${missingVariables.join(", ")}. Copy .env.example to .env and configure it.`,
+			"Missing required environment variables: APP_ENV. Copy .env.example to .env and configure it.",
 		);
 	}
 
@@ -30,7 +22,6 @@ export function getServerEnvironment(
 
 	return {
 		appEnvironment,
-		databasePath,
 	};
 }
 

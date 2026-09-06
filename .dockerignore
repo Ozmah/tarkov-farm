@@ -25,6 +25,7 @@ data/*.lock
 *.tsbuildinfo
 
 data/backups
+hideout
 data/rebuild
 assets/maps/originals
 assets/screenshots/originals

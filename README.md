@@ -12,9 +12,9 @@ bun install
 bun run dev
 ```
 
-Startup fails immediately when `APP_ENV` or `DATABASE_PATH` is missing or invalid.
+Startup fails immediately when `APP_ENV` is missing or invalid. No database environment variable is required or read.
 
-Every server start replaces the local SQLite database from the versioned migrations, catalog seed, `data/publication/locations.json`, and `data/publication/updates.json`.
+Every server start replaces `hideout/tarkov.sqlite` in the project directory from the versioned migrations, catalog seed, `data/publication/locations.json`, and `data/publication/updates.json`. Run the scripts from the project root. Local production builds and starts use the same path. The ignored `hideout/` directory is created automatically; old databases under `data/` are not migrated or deleted.
 
 The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server, just works on local.
 
@@ -76,11 +76,11 @@ Application date logic uses Temporal with `America/Mexico_City` as its display a
 
 ## Deployment
 
-The production image rebuilds the database before starting the HTTP server. Configure one service with:
+The production image rebuilds `/hideout/tarkov.sqlite` before starting the HTTP server on every start. SQLite is disposable: the versioned manifests are the source of truth. No persistent volume is needed or should be mounted.
 
-- `APP_ENV=production`
-- `DATABASE_PATH=/data/tarkov-season-docs.sqlite`
-- A persistent volume mounted at `/data`
+On Railway, use the repository's `Dockerfile` and `railway.toml` with one service and no volume. Keep `APP_ENV=production` (the image default), even when the Railway environment is named `dev`; that name does not enable the local editor. Remove any previous database-path variable and volume configuration from the service. Railway supplies `PORT`, and `/health` is the configured health check.
+
+Container path selection uses the fixed, root-owned `/etc/tarkov-farm-container` marker installed only in the runner image, not `APP_ENV`, `NODE_ENV`, or Railway environment names. The image owns `/hideout` as `tarkov` and runs as that non-root user. During the image build, it verifies database reconstruction as the same user and removes the check database before shipping. Local `hideout/` contents and `.env` files are excluded from the Docker build context.
 
 ## Analytics
 
