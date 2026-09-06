@@ -1,16 +1,12 @@
-import { isAbsolute, resolve } from "node:path";
-import { getServerEnvironment } from "../env";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 
-export function getDatabasePath() {
-	const { appEnvironment, databasePath } = getServerEnvironment();
-	const isProduction =
-		appEnvironment === "production" || process.env.NODE_ENV === "production";
-
-	if (isProduction && !isAbsolute(databasePath)) {
-		throw new Error("DATABASE_PATH must be absolute in production");
-	}
-
-	return isAbsolute(databasePath)
-		? databasePath
-		: resolve(process.cwd(), databasePath);
+export function getDatabasePath({
+	projectRoot = process.cwd(),
+	isContainer = existsSync("/etc/tarkov-farm-container"),
+} = {}) {
+	// Only the runner image installs this marker; local production builds stay local.
+	return isContainer
+		? "/hideout/tarkov.sqlite"
+		: resolve(projectRoot, "hideout", "tarkov.sqlite");
 }

@@ -4,7 +4,7 @@ import { getServerEnvironment } from "./env";
 describe("getServerEnvironment", () => {
 	test("rejects missing required variables", () => {
 		expect(() => getServerEnvironment({})).toThrowError(
-			"Missing required environment variables: APP_ENV, DATABASE_PATH",
+			"Missing required environment variables: APP_ENV",
 		);
 	});
 
@@ -12,7 +12,6 @@ describe("getServerEnvironment", () => {
 		expect(() =>
 			getServerEnvironment({
 				APP_ENV: "staging",
-				DATABASE_PATH: "./data/app.sqlite",
 			}),
 		).toThrowError("APP_ENV must be one of: local, production.");
 	});
@@ -21,11 +20,15 @@ describe("getServerEnvironment", () => {
 		expect(
 			getServerEnvironment({
 				APP_ENV: " LOCAL ",
-				DATABASE_PATH: " ./data/app.sqlite ",
 			}),
 		).toEqual({
 			appEnvironment: "local",
-			databasePath: "./data/app.sqlite",
+		});
+	});
+
+	test("accepts production without database configuration", () => {
+		expect(getServerEnvironment({ APP_ENV: "production" })).toEqual({
+			appEnvironment: "production",
 		});
 	});
 });

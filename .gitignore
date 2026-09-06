@@ -11,6 +11,7 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+/hideout/
 data/*.sqlite*
 data/*.lock
 data/backups/
