@@ -1,6 +1,7 @@
 import { CrosshairIcon } from "@phosphor-icons/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef } from "react";
+import { LighthouseReworkNotice } from "@/components/map/lighthouse-rework-notice";
 import { LocationDetailsPanel } from "@/components/map/location-details-panel";
 import { LocationShareControls } from "@/components/map/location-share-controls";
 import { MapNavigationStrip } from "@/components/map/map-navigation-strip";
@@ -386,6 +387,9 @@ function MapPage() {
 			{selectedImage ? (
 				<>
 					<div className="relative min-h-0 flex-1">
+						{mapData.map.id === "lighthouse" ? (
+							<LighthouseReworkNotice />
+						) : null}
 						<div className="h-full">
 							<MapWorkspace
 								key={selectedImage.id}
