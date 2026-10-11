@@ -43,6 +43,8 @@ const config = defineConfig(({ mode }) => ({
 		...(mode === "test"
 			? []
 			: [
+					// Nitro's final bundle warns about "use client" directives; this app uses SSR, not RSC.
+					// The warning fix is merged upstream but awaits a release: https://github.com/nitrojs/nitro/pull/4696
 					nitro({
 						preset: "bun",
 						routeRules: {
@@ -76,11 +78,13 @@ const config = defineConfig(({ mode }) => ({
 									"cache-control": "public, max-age=86400",
 								},
 							},
-							"/maps/masters/*-*w-*.webp": {
-								headers: {
-									"cache-control": "public, max-age=31536000, immutable",
+							// Only content-hashed responsive variants are immutable.
+							"/maps/masters/:file([A-Za-z0-9_-]+-[0-9]+w-[a-f0-9]{12}\\.webp)":
+								{
+									headers: {
+										"cache-control": "public, max-age=31536000, immutable",
+									},
 								},
-							},
 						},
 					}),
 				]),
