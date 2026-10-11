@@ -58,6 +58,14 @@ export async function verifyPublicationAssets(
 
 export async function verifyMapMasterAssets(projectRoot: string) {
 	const masterRoot = resolve(projectRoot, "public", "maps", "masters");
+	return verifyMapMasterDirectory(masterRoot);
+}
+
+export async function verifyMapMasterDirectory(masterRoot: string) {
+	const directory = await lstat(masterRoot);
+	if (!directory.isDirectory() || directory.isSymbolicLink()) {
+		throw new Error("Map master root must be a regular directory");
+	}
 	const manifestPath = resolve(masterRoot, "manifest.json");
 	await assertRegularContainedFile(manifestPath, masterRoot, "Map manifest");
 	const manifest = parseMapMasterManifest(

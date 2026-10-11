@@ -1,0 +1,69 @@
+name: tarkov.farm
+icon_initials: TF
+
+processes:
+  Dev:
+    command: bun run dev
+    auto_start: false
+    auto_restart: false
+
+  Shodan (watch):
+    command: bun run shodan:watch
+    auto_start: false
+    auto_restart: false
+
+  Glados:
+    command: bun run glados
+    auto_start: false
+    auto_restart: false
+
+  Shodan:
+    command: bun run shodan
+    auto_start: false
+    auto_restart: false
+
+  Release check:
+    command: bun run release:check
+    auto_start: false
+    auto_restart: false
+
+  Format / fix:
+    command: bun run check
+    auto_start: false
+    auto_restart: false
+
+  Typecheck:
+    command: bun run typecheck
+    auto_start: false
+    auto_restart: false
+
+  Screenshots check:
+    command: bun run screenshots:check
+    auto_start: false
+    auto_restart: false
+
+  Updates snapshot check:
+    command: bun run updates:snapshot:check
+    auto_start: false
+    auto_restart: false
+
+  Export publication:
+    # Stop Dev before exporting the publication manifests.
+    command: bun run db:manifest
+    auto_start: false
+    auto_restart: false
+
+  Map masters:
+    command: bun run images:masters
+    auto_start: false
+    auto_restart: false
+
+  Responsive maps:
+    command: bun run images:responsive
+    auto_start: false
+    auto_restart: false
+
+  Document images:
+    command: bun run documents:images
+    auto_start: false
+    auto_restart: false

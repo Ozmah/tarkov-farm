@@ -1,10 +1,12 @@
 # Tarkov-Farm for Season Documents
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Ozmah/tarkov-farm?utm_source=oss&utm_medium=github&utm_campaign=Ozmah%2Ftarkov-farm&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 Why? I just wanted to have everything on the same page, not 10 wiki tabs.
 
 ## Development
 
-Copy the required environment configuration before starting the application:
+Requires the Bun version pinned in `package.json` and Node.js 24.15+ within the 24.x release line for tests.
 
 ```bash
 cp .env.example .env
@@ -12,101 +14,53 @@ bun install
 bun run dev
 ```
 
-Startup fails immediately when `APP_ENV` is missing or invalid. No database environment variable is required or read.
+Open the local editor at [`/editor`](http://localhost:3000/editor).
 
-Every server start replaces `hideout/tarkov.sqlite` in the project directory from the versioned migrations, catalog seed, `data/publication/locations.json`, and `data/publication/updates.json`. Run the scripts from the project root. Local production builds and starts use the same path. The ignored `hideout/` directory is created automatically; old databases under `data/` are not migrated or deleted.
+SQLite is rebuilt on every server start from the versioned data. Commit changes under `data/publication` together with new files under `public/screenshots`.
 
-The local data editor is available at [`/editor`](http://localhost:3000/editor). Both the environment and request hostname are checked on the server, just works on local.
+## Validation
 
-### Generate map masters
+- `bun run glados`: lint, formatting, types, and build.
+- `bun run shodan`: tests and static assets.
+- `bun run release:check`: both.
 
-Maintainers with access to the ignored source images can regenerate the optimized WebP masters and their responsive variants with:
+CI runs on pull requests targeting `master` or `develop`.
 
-```bash
-bun run images:masters
-```
+## Images
 
-The command processes each image in an isolated subprocess and replaces `public/maps/masters` only after every image succeeds. To regenerate only the responsive variants from the tracked masters, without the ignored originals, run:
-
-```bash
-bun run images:responsive
-```
-
-### Document images
-
-Place one source PNG per document in the ignored `assets/documents/originals` directory. Each filename must match its document ID in `data/catalog/documents.json`. Generate content-addressed WebP assets and refresh their catalog metadata with:
+Place map originals in `assets/maps/originals`. Update one existing map with:
 
 ```bash
-bun run documents:images
+bun run images:masters --only re3mrLighthouseVERT.png
 ```
 
-The command rejects missing or unexpected sources and publishes to `public/documents` only after all nine images are valid.
-
-### Location screenshots
-
-The local editor requires at least one screenshot per location. Uploaded JPEG, PNG, and WebP files are processed offline in isolated Bun subprocesses. The editor writes content-addressed 1000px and 1920px WebP variants to `public/screenshots/<location-id>`, using each generated file's SHA-256 in its name. Historical source-addressed filenames remain supported. Original uploads are kept locally under the ignored `assets/screenshots/originals` directory but are not required to run or reconstruct the application.
-
-Verify the versioned publication manifest and its static assets with:
-
-```bash
-bun run screenshots:check
-```
-
-`bun run release:check` runs the complete code, build, and static-asset validation suite.
-
-### Publication data
-
-Every successful location or project-update mutation refreshes its corresponding manifest under `data/publication`. To verify or regenerate both manifests manually, stop the development server and run:
-
-```bash
-bun run db:manifest
-```
-
-Commit each changed publication manifest together with any new files under `public/screenshots`. A fresh clone reconstructs SQLite from those versioned files automatically.
-
-Project updates are public announcements, not a requirement for every location correction. Each update captures a canonical snapshot of the active public locations and screenshots. Release context therefore represents changes since the newest announcement, even when location-only releases happened afterward. When publishing an update, verify that its snapshot covers the current publication:
-
-```bash
-bun run updates:snapshot:check
-```
-
-Do not synchronize an older update merely to release an unannounced location correction. Before the first update, release context compares the current database with `data/publication/locations.json` from Git `HEAD`.
-
-Application date logic uses Temporal with `America/Mexico_City` as its display and authoring timezone. Publication timestamps remain canonical UTC instants in SQLite and JSON. Native `Date` is reserved for external library boundaries that explicitly require it.
+- `bun run images:masters`: regenerate all maps; requires all originals.
+- `bun run images:responsive`: regenerate variants from the tracked masters.
+- `bun run documents:images`: generate document images from `assets/documents/originals/<document-id>.png`.
 
 ## Deployment
 
-The production image rebuilds `/hideout/tarkov.sqlite` before starting the HTTP server on every start. SQLite is disposable: the versioned manifests are the source of truth. No persistent volume is needed or should be mounted.
+On Railway, use `Dockerfile` and `railway.toml` with `APP_ENV=production` and no persistent volume. Health check: `/health`. The editor is local-only.
 
-On Railway, use the repository's `Dockerfile` and `railway.toml` with one service and no volume. Keep `APP_ENV=production` (the image default), even when the Railway environment is named `dev`; that name does not enable the local editor. Remove any previous database-path variable and volume configuration from the service. Railway supplies `PORT`, and `/health` is the configured health check.
-
-Container path selection uses the fixed, root-owned `/etc/tarkov-farm-container` marker installed only in the runner image, not `APP_ENV`, `NODE_ENV`, or Railway environment names. The image owns `/hideout` as `tarkov` and runs as that non-root user. During the image build, it verifies database reconstruction as the same user and removes the check database before shipping. Local `hideout/` contents and `.env` files are excluded from the Docker build context.
-
-## Analytics
-
-Production builds initialize PostHog when `VITE_POSTHOG_KEY` is configured. Set `VITE_POSTHOG_HOST` to the ingest host for the project. Docker builds require both values as build arguments because Vite embeds them at compile time.
-
-The client records pathname-only pageviews, layout mode usage and changes, map selections, document filter changes, location views, explicit screenshot opens, and application errors. Acquisition is limited to `utm_source`, `utm_medium`, `utm_campaign`, and the referring domain; unsafe campaign values, search keywords, full referrers, query strings, and URL fragments are discarded. Cookieless mode avoids cookies and browser storage, and application-level Do Not Track handling disables analytics entirely. The application does not show a consent banner. Web Vitals are sampled at 20%. Autocapture, pageleave events, session replay, surveys, heatmaps, feature flags, and person profiles are disabled.
+Optional analytics: set `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` at build time (Docker build arguments).
 
 ## Built with
 
 - [TanStack Start](https://tanstack.com/start/latest)
 - [shadcn/ui](https://ui.shadcn.com/)
 
-## Visual attribution
+## Attribution and license
 
-- Most map artwork was created by [re3mr](https://reemr.se/) and is used under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
-- The Lab map was sourced from the [Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Map:The_Lab).
-- The color palette is [Mindful Palette 013](https://alexcristache.gumroad.com/) by [Alex Cristache](https://x.com/AlexCristache).
+- Most maps: [re3mr](https://reemr.se/), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+- The Lab map: [Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Map:The_Lab).
+- Color palette: [Mindful Palette 013](https://alexcristache.gumroad.com/) by [Alex Cristache](https://x.com/AlexCristache).
 
 See [`public/maps/ATTRIBUTION.md`](public/maps/ATTRIBUTION.md) for complete attribution details.
 
-Key names and icon source references are derived from the [Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Keys_%26_Intel). The icons remain property of their respective rights holders and are not covered by this repository's MIT license.
-
-## License
+Key names and icon references: [Escape from Tarkov Wiki](https://escapefromtarkov.fandom.com/wiki/Keys_%26_Intel). Icons belong to their respective rights holders and are excluded from the MIT license.
 
 The source code is licensed under the [MIT License](LICENSE).
 
 Map images are excluded from the MIT License and remain subject to their respective source terms and licenses.
 
-Escape from Tarkov and its related trademarks belong to Battlestate Games. This is an unofficial fan project and is not affiliated with or endorsed by Battlestate Games.
+Unofficial fan project, not affiliated with or endorsed by Battlestate Games. Escape from Tarkov and its trademarks belong to Battlestate Games.

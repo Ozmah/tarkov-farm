@@ -228,31 +228,31 @@
 		{
 			"file": "re3mrLighthouseVERT.webp",
 			"height": 5624,
-			"sha256": "253388c241b3d427a08e9ae49f25747754212b810b200000f6fa2f53351d75d3",
-			"size": 9702630,
+			"sha256": "5cdec02d63973302d77bda238bf18df83f7565ad47ebc3056768196f27d112d7",
+			"size": 8626786,
 			"width": 6144,
 			"original": "re3mrLighthouseVERT.png",
 			"passthrough": false,
 			"variants": [
 				{
-					"file": "re3mrLighthouseVERT-1280w-5566f0e61aa8.webp",
+					"file": "re3mrLighthouseVERT-1280w-5ba0cd6abe60.webp",
 					"height": 1172,
-					"sha256": "5566f0e61aa87e45c55eabd923ad081df7c17868550376f27ca3690ff3fa671a",
-					"size": 469626,
+					"sha256": "5ba0cd6abe60b1c6cf50f24ca103d34a6802074237e0e68b3653fe15a174610c",
+					"size": 443846,
 					"width": 1280
 				},
 				{
-					"file": "re3mrLighthouseVERT-2560w-3982630b6aa6.webp",
+					"file": "re3mrLighthouseVERT-2560w-92b97e15ec10.webp",
 					"height": 2343,
-					"sha256": "3982630b6aa63885a76fe5e165ef45036d0728a77293d1093229c8c155b53bb5",
-					"size": 1790628,
+					"sha256": "92b97e15ec103e521db4465ddbe59f922c8e0b7b199079d77615c0366dfc9dca",
+					"size": 1557680,
 					"width": 2560
 				},
 				{
-					"file": "re3mrLighthouseVERT-4096w-17854bce0af2.webp",
+					"file": "re3mrLighthouseVERT-4096w-60d313e73b78.webp",
 					"height": 3749,
-					"sha256": "17854bce0af249e5993e5cc3405f05e6084dce972add6549cd09ab03bd57e0fd",
-					"size": 4255950,
+					"sha256": "60d313e73b788b536392d5fe17adb720e3fb99999549db6f2e447ebe141e5de6",
+					"size": 3674968,
 					"width": 4096
 				}
 			]
