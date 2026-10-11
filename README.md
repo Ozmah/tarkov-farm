@@ -61,7 +61,7 @@ Use Node.js 24.15 or newer within the Node.js 24 release line and the Bun versio
 - `bun run shodan:watch`: the Vitest test suite in watch mode.
 - `bun run release:check`: Glados followed by Shodan, the complete validation suite.
 
-CI runs only on pull requests targeting `master` or `develop`, using Blacksmith runner (`blacksmith-4vcpu-ubuntu-2404`). It installs from the frozen lockfile and runs the environment check, Glados, and Shodan without production secrets. Superseded runs for the same pull request are cancelled.
+CI runs only on pull requests targeting `master` or `develop`, using the GitHub-hosted `ubuntu-latest` runner. It installs from the frozen lockfile and runs the environment check, Glados, and Shodan without production secrets. Superseded runs for the same pull request are cancelled.
 
 Update snapshot checks remain a separate step when publishing a project update; location-only changes do not require a new announcement snapshot.
 
