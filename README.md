@@ -52,7 +52,18 @@ Verify the versioned publication manifest and its static assets with:
 bun run screenshots:check
 ```
 
-`bun run release:check` runs the complete code, build, and static-asset validation suite.
+### Validation and CI
+
+Use Node.js 24 and the Bun version pinned in `package.json` for local validation:
+
+- `bun run glados`: formatting/lint checks, TypeScript checks, and production build.
+- `bun run shodan`: the Vitest test suite and publication/static-asset validation.
+- `bun run shodan:watch`: the Vitest test suite in watch mode.
+- `bun run release:check`: Glados followed by Shodan, the complete validation suite.
+
+CI runs only on pull requests targeting `master` or `develop`, using Blacksmith runner (`blacksmith-4vcpu-ubuntu-2404`). It installs from the frozen lockfile and runs the environment check, Glados, and Shodan without production secrets. Superseded runs for the same pull request are cancelled.
+
+Update snapshot checks remain a separate step when publishing a project update; location-only changes do not require a new announcement snapshot.
 
 ### Publication data
 

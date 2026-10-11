@@ -6,8 +6,10 @@
 	"packageManager": "bun@1.4.0",
 	"scripts": {
 		"check": "biome check --write .",
-		"glados": "biome check . && bun run typecheck && bun run test && bun run build",
-		"release:check": "bun run glados && bun run screenshots:check",
+		"glados": "biome check . && bun run typecheck && bun run build",
+		"shodan": "bun run test && bun run screenshots:check",
+		"shodan:watch": "bun run test --watch",
+		"release:check": "bun run glados && bun run shodan",
 		"dev": "bun run env:check && bun run db:setup && vite dev",
 		"build": "vite build",
 		"start": "bun run env:check && bun run db:setup && bun .output/server/index.mjs",
