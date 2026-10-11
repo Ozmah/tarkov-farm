@@ -56,6 +56,8 @@ bun run screenshots:check
 
 Use Node.js 24.15 or newer within the Node.js 24 release line and the Bun version pinned in `package.json` for local validation. The test tools run on Node.js; the production server runs on Bun.
 
+Install Node.js since Bun alone is not sufficient to run the test suite.
+
 - `bun run glados`: formatting/lint checks, TypeScript checks, and production build.
 - `bun run shodan`: the Vitest test suite and publication/static-asset validation.
 - `bun run shodan:watch`: the Vitest test suite in watch mode.
