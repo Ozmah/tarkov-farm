@@ -1,6 +1,7 @@
 import {
 	copyFile,
-	mkdir,
+	lstat,
+	mkdtemp,
 	open,
 	readdir,
 	readFile,
@@ -19,6 +20,14 @@ import {
 	type MapMasterVariant,
 	parseMapMasterManifest,
 } from "../src/lib/map-master-manifest";
+import {
+	isMapOriginalFilename,
+	type MapGenerationOptions,
+	parseMapGenerationArguments,
+	planMapMasterSources,
+	replaceMapMasterDirectory,
+} from "./lib/map-master-generation";
+import { verifyMapMasterDirectory } from "./lib/publication-assets";
 
 const SOURCE_DIRECTORY = "assets/maps/originals";
 const OUTPUT_DIRECTORY = "public/maps/masters";
@@ -32,32 +41,43 @@ const command = Bun.argv[2];
 if (command === "--worker") {
 	await runWorker(Bun.argv[3], Bun.argv[4]);
 } else {
-	if (command && command !== "--responsive-only") {
-		throw new Error(`Unknown map generation option: ${command}`);
-	}
-
-	await generateMasters({ responsiveOnly: command === "--responsive-only" });
+	await generateMasters(parseMapGenerationArguments(Bun.argv.slice(2)));
 }
 
-async function generateMasters({
-	responsiveOnly,
-}: {
-	responsiveOnly: boolean;
-}) {
+async function generateMasters({ responsiveOnly, only }: MapGenerationOptions) {
 	const lockPath = `${OUTPUT_DIRECTORY}.lock`;
 	const lock = await acquireLock(lockPath);
-	const temporaryDirectory = `${OUTPUT_DIRECTORY}.tmp-${process.pid}`;
-	const backupDirectory = `${OUTPUT_DIRECTORY}.backup-${process.pid}`;
+	let temporaryDirectory: string | undefined;
 
 	try {
-		await rm(temporaryDirectory, { recursive: true, force: true });
-		await mkdir(temporaryDirectory, { recursive: true });
+		const manifestInput = await readExistingManifest();
+		const existingImages =
+			manifestInput === undefined ? [] : readExistingImages(manifestInput);
+		if (responsiveOnly && manifestInput === undefined) {
+			throw new Error(
+				"Responsive generation requires an existing map manifest",
+			);
+		}
+		const sources = responsiveOnly
+			? []
+			: planMapMasterSources(await readOriginalFiles(), existingImages, only);
+		const selectedManifest = only
+			? parseMapMasterManifest(manifestInput)
+			: undefined;
+		if (selectedManifest) assertCompatibleSettings(selectedManifest);
+
+		temporaryDirectory = await mkdtemp(`${OUTPUT_DIRECTORY}.tmp-`);
+		const backupDirectory = `${temporaryDirectory}.backup`;
 		const images = responsiveOnly
-			? await generateFromExistingMasters(temporaryDirectory)
-			: await generateFromOriginals(temporaryDirectory);
+			? await generateFromExistingMasters(temporaryDirectory, existingImages)
+			: await generateFromOriginals(
+					temporaryDirectory,
+					sources,
+					selectedManifest,
+				);
 		const manifest: MapMasterManifest = {
 			version: MAP_MASTER_MANIFEST_VERSION,
-			settings: {
+			settings: selectedManifest?.settings ?? {
 				backend: "bun",
 				format: "webp",
 				maxDimension: MAX_DIMENSION,
@@ -73,7 +93,8 @@ async function generateMasters({
 			serializeManifest(manifest),
 			"utf8",
 		);
-		await replaceDirectory(
+		await verifyMapMasterDirectory(temporaryDirectory);
+		await replaceMapMasterDirectory(
 			temporaryDirectory,
 			OUTPUT_DIRECTORY,
 			backupDirectory,
@@ -83,32 +104,44 @@ async function generateMasters({
 			`Generated ${images.length} map masters and ${images.reduce((count, image) => count + image.variants.length, 0)} responsive variants`,
 		);
 	} finally {
-		await rm(temporaryDirectory, { recursive: true, force: true });
-		await rm(backupDirectory, { recursive: true, force: true });
-		await lock.close();
-		await rm(lockPath, { force: true });
+		try {
+			if (temporaryDirectory) {
+				await rm(temporaryDirectory, { recursive: true, force: true });
+			}
+		} finally {
+			try {
+				await lock.close();
+			} finally {
+				await rm(lockPath, { force: true });
+			}
+		}
 	}
 }
 
-async function generateFromOriginals(outputDirectory: string) {
+async function readOriginalFiles() {
+	await assertRegularDirectory(SOURCE_DIRECTORY);
 	const sourceEntries = await readdir(SOURCE_DIRECTORY, {
 		withFileTypes: true,
 	});
-	const sourceFiles = sourceEntries
-		.filter(
-			(entry) =>
-				entry.isFile() &&
-				SUPPORTED_EXTENSIONS.has(extname(entry.name).toLowerCase()),
-		)
+	const images = sourceEntries.filter((entry) =>
+		SUPPORTED_EXTENSIONS.has(extname(entry.name).toLowerCase()),
+	);
+	if (images.some((entry) => !entry.isFile() || entry.isSymbolicLink())) {
+		throw new Error(
+			"Map originals must be regular files, not links or directories",
+		);
+	}
+	return images
 		.map((entry) => entry.name)
 		.sort((left, right) => left.localeCompare(right, "en"));
+}
 
-	if (sourceFiles.length === 0) {
-		throw new Error(`No source images found in ${SOURCE_DIRECTORY}`);
-	}
-
-	const images: MapMasterImage[] = [];
-
+async function generateFromOriginals(
+	outputDirectory: string,
+	sourceFiles: string[],
+	existingManifest?: MapMasterManifest,
+) {
+	const generated = new Map<string, MapMasterImage>();
 	for (const sourceFile of sourceFiles) {
 		const subprocess = Bun.spawn(
 			[
@@ -131,24 +164,35 @@ async function generateFromOriginals(outputDirectory: string) {
 		}
 
 		const image = parseWorkerImage(JSON.parse(output));
-		images.push(image);
+		generated.set(image.file, image);
 		logGeneratedImage(image);
 	}
 
+	if (!existingManifest) return [...generated.values()];
+	const images: MapMasterImage[] = [];
+	for (const existing of existingManifest.images) {
+		const replacement = generated.get(existing.file);
+		if (replacement) {
+			images.push(replacement);
+			continue;
+		}
+		for (const asset of [existing, ...existing.variants]) {
+			await copyPublishedAsset(asset.file, outputDirectory);
+		}
+		images.push(existing);
+	}
 	return images;
 }
 
-async function generateFromExistingMasters(outputDirectory: string) {
-	const manifestInput = JSON.parse(
-		await readFile(join(OUTPUT_DIRECTORY, "manifest.json"), "utf8"),
-	);
-	const existingImages = readExistingImages(manifestInput);
+async function generateFromExistingMasters(
+	outputDirectory: string,
+	existingImages: ReturnType<typeof readExistingImages>,
+) {
 	const images: MapMasterImage[] = [];
 
 	for (const existing of existingImages) {
-		const sourcePath = join(OUTPUT_DIRECTORY, existing.file);
 		const outputPath = join(outputDirectory, existing.file);
-		await copyFile(sourcePath, outputPath);
+		await copyPublishedAsset(existing.file, outputDirectory);
 		const master = await readGeneratedAsset(outputPath, existing.file);
 		const variants = await generateVariants(
 			master,
@@ -166,6 +210,56 @@ async function generateFromExistingMasters(outputDirectory: string) {
 	}
 
 	return images;
+}
+
+async function copyPublishedAsset(file: string, outputDirectory: string) {
+	const sourcePath = join(OUTPUT_DIRECTORY, file);
+	const stats = await lstat(sourcePath);
+	if (!stats.isFile() || stats.isSymbolicLink()) {
+		throw new Error(`Published map must be a regular file: ${file}`);
+	}
+	await copyFile(sourcePath, join(outputDirectory, file));
+}
+
+async function readExistingManifest(): Promise<unknown> {
+	try {
+		await assertRegularDirectory(OUTPUT_DIRECTORY);
+	} catch (error) {
+		if (isNodeError(error) && error.code === "ENOENT") return undefined;
+		throw error;
+	}
+	const manifestPath = join(OUTPUT_DIRECTORY, "manifest.json");
+	const stats = await lstat(manifestPath);
+	if (!stats.isFile() || stats.isSymbolicLink()) {
+		throw new Error("Existing map manifest must be a regular file");
+	}
+	const input: unknown = JSON.parse(await readFile(manifestPath, "utf8"));
+	// Keep v1 responsive regeneration available; selective copying requires v2.
+	if (isRecord(input) && input.version === MAP_MASTER_MANIFEST_VERSION) {
+		parseMapMasterManifest(input);
+		await verifyMapMasterDirectory(OUTPUT_DIRECTORY);
+	}
+	return input;
+}
+
+async function assertRegularDirectory(path: string) {
+	const stats = await lstat(path);
+	if (!stats.isDirectory() || stats.isSymbolicLink()) {
+		throw new Error(`Map directory must be a regular directory: ${path}`);
+	}
+}
+
+function assertCompatibleSettings(manifest: MapMasterManifest) {
+	const { backend, maxDimension, quality, responsiveWidths } =
+		manifest.settings;
+	if (
+		backend !== "bun" ||
+		maxDimension !== MAX_DIMENSION ||
+		quality !== WEBP_QUALITY ||
+		JSON.stringify(responsiveWidths) !== JSON.stringify(MAP_RESPONSIVE_WIDTHS)
+	) {
+		throw new Error("Selective generation cannot change collection settings");
+	}
 }
 
 async function runWorker(sourcePath?: string, outputDirectory?: string) {
@@ -284,19 +378,22 @@ function readExistingImages(input: unknown) {
 		throw new Error("Existing map manifest is invalid");
 	}
 
+	const files = new Set<string>();
 	return input.images.map((value, index) => {
 		if (
 			!isRecord(value) ||
 			typeof value.file !== "string" ||
-			value.file.length === 0 ||
-			value.file.includes("/") ||
-			value.file.includes("\\") ||
+			!isMapOriginalFilename(value.file) ||
+			extname(value.file).toLowerCase() !== ".webp" ||
 			typeof value.original !== "string" ||
-			value.original.length === 0 ||
+			!isMapOriginalFilename(value.original) ||
 			typeof value.passthrough !== "boolean"
 		) {
 			throw new Error(`Existing map manifest image ${index} is invalid`);
 		}
+		const file = value.file.toLowerCase();
+		if (files.has(file)) throw new Error(`Duplicate map master: ${value.file}`);
+		files.add(file);
 
 		return {
 			file: value.file,
@@ -329,39 +426,6 @@ async function acquireLock(lockPath: string) {
 		}
 
 		throw error;
-	}
-}
-
-async function replaceDirectory(
-	temporaryDirectory: string,
-	outputDirectory: string,
-	backupDirectory: string,
-) {
-	let existingOutputMoved = false;
-
-	await rm(backupDirectory, { recursive: true, force: true });
-
-	try {
-		await rename(outputDirectory, backupDirectory);
-		existingOutputMoved = true;
-	} catch (error) {
-		if (!isNodeError(error) || error.code !== "ENOENT") {
-			throw error;
-		}
-	}
-
-	try {
-		await rename(temporaryDirectory, outputDirectory);
-	} catch (error) {
-		if (existingOutputMoved) {
-			await rename(backupDirectory, outputDirectory);
-		}
-
-		throw error;
-	}
-
-	if (existingOutputMoved) {
-		await rm(backupDirectory, { recursive: true, force: true });
 	}
 }
 

@@ -43,6 +43,8 @@ const config = defineConfig(({ mode }) => ({
 		...(mode === "test"
 			? []
 			: [
+					// Nitro's final bundle warns about "use client" directives; this app uses SSR, not RSC.
+					// The warning fix is merged upstream but awaits a release: https://github.com/nitrojs/nitro/pull/4696
 					nitro({
 						preset: "bun",
 						routeRules: {
