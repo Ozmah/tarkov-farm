@@ -1,4 +1,5 @@
 import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
 import { eq } from "drizzle-orm";
@@ -29,9 +30,7 @@ afterEach(async () => {
 
 describe("contribution catalog", () => {
 	it("exposes only safe, current catalog data for active maps", async () => {
-		const directory = await mkdtemp(
-			resolve("/tmp/opencode", "contribution-catalog-"),
-		);
+		const directory = await mkdtemp(resolve(tmpdir(), "contribution-catalog-"));
 		temporaryDirectories.push(directory);
 		const { client, db } = await openDatabase(
 			resolve(directory, "database.sqlite"),
