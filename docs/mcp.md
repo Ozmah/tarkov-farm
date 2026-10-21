@@ -4,7 +4,9 @@ A local stdio MCP server that lets an agent turn contributions (messages and scr
 
 ## Setup
 
-Configure your MCP client to launch the server. The client starts and stops it on its own; there is nothing to run by hand.
+**pi**: already configured in `.pi/mcp.json`. Trust the project when pi asks, then run `/reload` (or start a new session); `pi mcp list` should show `tarkov-farm: connected`.
+
+Other clients: configure the client to launch the server. The client starts and stops it on its own; there is nothing to run by hand.
 
 ```json
 {
