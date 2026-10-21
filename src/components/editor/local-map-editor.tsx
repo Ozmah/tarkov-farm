@@ -57,6 +57,10 @@ import { numberMapLocations } from "@/lib/map-location-order";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
 
+/** The write succeeded; retrying would duplicate it, so say so. */
+const SAVED_BUT_STALE =
+	"Saved, but the editor could not refresh. Reload the page before editing again.";
+
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
 type EditorSearch = {
 	documents?: string;
@@ -817,16 +821,14 @@ function LocationWorkspace({
 				formData.append("screenshots", file);
 			}
 
-			let result: SavedLocationTarget;
-			if (intakeDraft) {
-				formData.set("draftId", intakeDraft.draft.id);
-				result = await saveIntakeDraftLocation({ data: formData });
-				onIntakeDraftClosed();
-			} else {
-				result = await saveLocation({ data: formData });
-			}
+			if (intakeDraft) formData.set("draftId", intakeDraft.draft.id);
+			const result = intakeDraft
+				? await saveIntakeDraftLocation({ data: formData })
+				: await saveLocation({ data: formData });
 
-			await onSaved(result);
+			// Saved: a failure from here is a stale view, not a failed save.
+			if (intakeDraft) onIntakeDraftClosed();
+			await onSaved(result).catch(() => setError(SAVED_BUT_STALE));
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
@@ -844,7 +846,7 @@ function LocationWorkspace({
 
 		try {
 			await deleteLocation({ data: { id: selectedLocation.id } });
-			await onSaved(undefined);
+			await onSaved(undefined).catch(() => setError(SAVED_BUT_STALE));
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
