@@ -108,6 +108,44 @@ describe("intake draft store", () => {
 		).rejects.toThrow("more than once");
 	});
 
+	it("keeps the contributor handle and dates publication", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const { draft } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "",
+			contributor: " @BiggestNwah ",
+			screenshots: [],
+		});
+		expect(draft.contributor).toBe("@BiggestNwah");
+		expect(draft.publishedAt).toBeNull();
+
+		const published = await store.setStatus(draft.id, "published");
+		expect(Date.parse(published.publishedAt ?? "")).not.toBeNaN();
+		// A different contributor is different content, not a duplicate.
+		const other = await store.create({
+			values: EMPTY_VALUES,
+			notes: "",
+			contributor: "@someone",
+			screenshots: [],
+		});
+		expect(other.created).toBe(true);
+	});
+
+	it("reads drafts written before contributor and publishedAt existed", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const { draft } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "",
+			screenshots: [],
+		});
+		const { contributor: _c, publishedAt: _p, ...legacy } = draft;
+		await writeFile(
+			join(projectRoot, INTAKE_DRAFTS_DIRECTORY, draft.id, "draft.json"),
+			JSON.stringify(legacy),
+		);
+		expect(await store.get(draft.id)).toEqual(draft);
+	});
+
 	it("moves pending drafts to a final status exactly once", async () => {
 		const store = createIntakeDraftStore(projectRoot);
 		const { draft } = await store.create({

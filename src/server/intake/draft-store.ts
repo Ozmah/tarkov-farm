@@ -19,6 +19,7 @@ import {
 	isUuidV4,
 	MAX_INTAKE_SCREENSHOT_BYTES,
 	MAX_INTAKE_SCREENSHOTS,
+	parseIntakeContributor,
 	parseIntakeDraft,
 	parseIntakeDraftId,
 	parseIntakeDraftValues,
@@ -38,6 +39,7 @@ export type VerifiedIntakeImage = {
 export type CreateIntakeDraftInput = {
 	values: IntakeDraftValues;
 	notes: string;
+	contributor?: string;
 	screenshots: VerifiedIntakeImage[];
 };
 
@@ -83,6 +85,7 @@ export function createIntakeDraftStore(projectRoot: string) {
 	): Promise<{ draft: IntakeDraft; created: boolean }> {
 		const values = parseIntakeDraftValues(input.values);
 		const notes = parseIntakeNotes(input.notes);
+		const contributor = parseIntakeContributor(input.contributor);
 		if (input.screenshots.length > MAX_INTAKE_SCREENSHOTS)
 			throw new Error(
 				`A draft holds at most ${MAX_INTAKE_SCREENSHOTS} screenshots`,
@@ -109,7 +112,9 @@ export function createIntakeDraftStore(projectRoot: string) {
 		if (new Set(shas).size !== shas.length)
 			throw new Error("The same screenshot was supplied more than once");
 
-		const contentHash = sha256(JSON.stringify({ values, notes, shas }));
+		const contentHash = sha256(
+			JSON.stringify({ values, notes, contributor, shas }),
+		);
 		const existing = (await list()).find(
 			(draft) => draft.contentHash === contentHash,
 		);
@@ -122,8 +127,10 @@ export function createIntakeDraftStore(projectRoot: string) {
 			createdAt: new Date().toISOString(),
 			contentHash,
 			status: "pending",
+			publishedAt: null,
 			values,
 			notes,
+			contributor,
 			screenshots: screenshots.map(({ metadata }) => metadata),
 		});
 		// Stage the whole directory, then rename: readers never see a partial draft.
@@ -179,7 +186,11 @@ export function createIntakeDraftStore(projectRoot: string) {
 			if (draft.status === status) return draft;
 			if (draft.status !== "pending")
 				throw new Error(`This draft is already ${draft.status}`);
-			const next = { ...draft, status };
+			const next = {
+				...draft,
+				status,
+				publishedAt: status === "published" ? new Date().toISOString() : null,
+			};
 			const temporary = join(root, draft.id, `.draft-${randomUUID()}.json`);
 			try {
 				await writeFile(temporary, serialize(next), {

@@ -6,6 +6,7 @@ import * as z from "zod/v4";
 
 import {
 	type IntakeDraft,
+	MAX_INTAKE_CONTRIBUTOR_LENGTH,
 	MAX_INTAKE_NOTES_LENGTH,
 	MAX_INTAKE_SCREENSHOTS,
 } from "../../src/lib/intake-draft";
@@ -86,6 +87,13 @@ export function createTarkovFarmMcpServer(options: {
 				documentId: catalogId.optional(),
 				requiredKeyIds: z.array(catalogId).max(32).optional(),
 				notes: z.string().max(MAX_INTAKE_NOTES_LENGTH).optional(),
+				contributor: z
+					.string()
+					.max(MAX_INTAKE_CONTRIBUTOR_LENGTH)
+					.optional()
+					.describe(
+						"Handle of who sent the contribution, only when the message makes it clear. No source or URL.",
+					),
 				screenshots: z
 					.array(z.string().min(1).max(4_096))
 					.max(MAX_INTAKE_SCREENSHOTS)
@@ -115,6 +123,7 @@ export function createTarkovFarmMcpServer(options: {
 				const { draft, created } = await store.create({
 					values,
 					notes: input.notes ?? "",
+					contributor: input.contributor,
 					screenshots: images,
 				});
 				return {
@@ -128,18 +137,29 @@ export function createTarkovFarmMcpServer(options: {
 	server.registerTool(
 		"drafts_list",
 		{
-			description: "List drafts, newest first. Never returns image bytes.",
+			description:
+				"List drafts, newest first. Never returns image bytes. publishedSince (ISO date) returns only drafts published from that moment, e.g. to credit contributors since the last release tag.",
 			inputSchema: z.strictObject({
 				status: z.enum(["pending", "published", "dismissed"]).optional(),
+				publishedSince: z.iso.date().or(z.iso.datetime()).optional(),
 			}),
 			annotations: { readOnlyHint: true, openWorldHint: false },
 		},
-		({ status }) =>
-			respond(async () => ({
-				drafts: (await store.list())
-					.filter((draft) => !status || draft.status === status)
-					.map(summarize),
-			})),
+		({ status, publishedSince }) =>
+			respond(async () => {
+				const since = publishedSince ? Date.parse(publishedSince) : undefined;
+				return {
+					drafts: (await store.list())
+						.filter((draft) => !status || draft.status === status)
+						.filter(
+							(draft) =>
+								since === undefined ||
+								(draft.publishedAt !== null &&
+									Date.parse(draft.publishedAt) >= since),
+						)
+						.map(summarize),
+				};
+			}),
 	);
 
 	server.registerTool(
@@ -191,8 +211,10 @@ function summarize(draft: IntakeDraft) {
 		id: draft.id,
 		status: draft.status,
 		createdAt: draft.createdAt,
+		publishedAt: draft.publishedAt,
 		...draft.values,
 		notes: draft.notes,
+		contributor: draft.contributor,
 		screenshotCount: draft.screenshots.length,
 	};
 }

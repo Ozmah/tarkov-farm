@@ -913,10 +913,18 @@ function LocationWorkspace({
 							: "New location"
 				}
 				notice={
-					intakeDraft?.draft.notes ? (
-						<div className="whitespace-pre-line rounded-md border border-border bg-muted p-3 text-sm">
-							<p className="mb-1 font-medium">Agent notes</p>
-							{intakeDraft.draft.notes}
+					intakeDraft &&
+					(intakeDraft.draft.notes || intakeDraft.draft.contributor) ? (
+						<div className="flex flex-col gap-1 whitespace-pre-line rounded-md border border-border bg-muted p-3 text-sm">
+							{intakeDraft.draft.contributor && (
+								<p>Sent by {intakeDraft.draft.contributor}</p>
+							)}
+							{intakeDraft.draft.notes && (
+								<>
+									<p className="font-medium">Agent notes</p>
+									<p>{intakeDraft.draft.notes}</p>
+								</>
+							)}
 						</div>
 					) : undefined
 				}

@@ -34,8 +34,10 @@ Example for clients using `mcpServers`:
 ## Tools
 
 - `catalog_read`: maps and image IDs, documents and keys per map, and published location names.
-- `draft_create`: one draft per contribution. Every field is optional; uncertainty goes in `notes`. Identical content returns the existing draft. Warns when a screenshot is already published or in another draft.
-- `drafts_list` / `draft_get`: read drafts, never image bytes.
+- `draft_create`: one draft per contribution. Every field is optional; uncertainty goes in `notes`, and `contributor` holds the sender's handle when the message makes it clear. Identical content returns the existing draft. Warns when a screenshot is already published or in another draft.
+- `drafts_list` / `draft_get`: read drafts, never image bytes. `drafts_list` with `status: "published"` and `publishedSince: "<last tag date>"` lists the contributors to credit in the next release.
+
+The contributor handle is private to the drafts: the app never shows it.
 
 ## Review
 

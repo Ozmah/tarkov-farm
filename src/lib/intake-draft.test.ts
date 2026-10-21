@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { parseIntakeDraftValues, parseIntakeNotes } from "./intake-draft";
+import {
+	parseIntakeContributor,
+	parseIntakeDraftValues,
+	parseIntakeNotes,
+} from "./intake-draft";
 
 describe("intake draft values", () => {
 	it("fills omitted fields and normalizes keys", () => {
@@ -28,5 +32,12 @@ describe("intake draft values", () => {
 		);
 		expect(() => parseIntakeNotes("bell\u0007")).toThrow("control characters");
 		expect(parseIntakeNotes("line\nnext\ttab")).toBe("line\nnext\ttab");
+	});
+
+	it("accepts a one-line contributor handle", () => {
+		expect(parseIntakeContributor(undefined)).toBe("");
+		expect(parseIntakeContributor("Some Name")).toBe("Some Name");
+		expect(() => parseIntakeContributor("@a\n@b")).toThrow("single line");
+		expect(() => parseIntakeContributor("x".repeat(101))).toThrow("at most");
 	});
 });

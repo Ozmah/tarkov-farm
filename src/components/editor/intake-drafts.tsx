@@ -131,6 +131,9 @@ export function IntakeDrafts({
 										`${draft.screenshots.length} screenshot${draft.screenshots.length === 1 ? "" : "s"}`,
 									].join(" — ")}
 								</p>
+								{draft.contributor && (
+									<p className="text-sm">Sent by {draft.contributor}</p>
+								)}
 								{draft.notes && (
 									<p className="line-clamp-3 whitespace-pre-line rounded-md bg-muted p-2 text-sm">
 										{draft.notes}

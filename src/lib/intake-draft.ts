@@ -7,6 +7,7 @@ export const INTAKE_DRAFT_FORMAT_VERSION = 1;
 export const MAX_INTAKE_SCREENSHOTS = 10;
 export const MAX_INTAKE_SCREENSHOT_BYTES = 20 * 1_048_576;
 export const MAX_INTAKE_NOTES_LENGTH = 2_000;
+export const MAX_INTAKE_CONTRIBUTOR_LENGTH = 100;
 
 const UUID_V4_PATTERN =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -44,9 +45,13 @@ export type IntakeDraft = {
 	createdAt: string;
 	contentHash: string;
 	status: IntakeDraftStatus;
+	/** When the draft became a location; lets a release list who contributed since its tag. */
+	publishedAt: string | null;
 	values: IntakeDraftValues;
 	/** Private agent notes about uncertainty. Never published. */
 	notes: string;
+	/** Handle of whoever sent the contribution, when known. Never published in the app. */
+	contributor: string;
 	screenshots: IntakeScreenshot[];
 };
 
@@ -86,6 +91,18 @@ export function parseIntakeNotes(value: unknown): string {
 	return readText(value ?? "", "Notes", MAX_INTAKE_NOTES_LENGTH);
 }
 
+/** A bare handle such as "@BiggestNwah": one line, no source or URL required. */
+export function parseIntakeContributor(value: unknown): string {
+	const handle = readText(
+		value ?? "",
+		"Contributor",
+		MAX_INTAKE_CONTRIBUTOR_LENGTH,
+	);
+	if (/[\n\t]/.test(handle))
+		throw new Error("Contributor must be a single line");
+	return handle;
+}
+
 export function parseIntakeDraft(input: unknown): IntakeDraft {
 	const value = readRecord(input, "Draft", [
 		"formatVersion",
@@ -94,8 +111,10 @@ export function parseIntakeDraft(input: unknown): IntakeDraft {
 		"createdAt",
 		"contentHash",
 		"status",
+		"publishedAt",
 		"values",
 		"notes",
+		"contributor",
 		"screenshots",
 	]);
 	if (value.formatVersion !== INTAKE_DRAFT_FORMAT_VERSION)
@@ -129,8 +148,10 @@ export function parseIntakeDraft(input: unknown): IntakeDraft {
 		createdAt: value.createdAt,
 		contentHash: readHash(value.contentHash),
 		status: value.status,
+		publishedAt: readPublishedAt(value.publishedAt, value.status),
 		values: parseIntakeDraftValues(value.values),
 		notes: parseIntakeNotes(value.notes),
+		contributor: parseIntakeContributor(value.contributor),
 		screenshots,
 	};
 }
@@ -167,6 +188,17 @@ function hasControlCharacter(text: string) {
 		if ((code < 32 && code !== 9 && code !== 10) || code === 127) return true;
 	}
 	return false;
+}
+
+function readPublishedAt(value: unknown, status: IntakeDraftStatus) {
+	if (value == null) return null;
+	if (
+		status !== "published" ||
+		typeof value !== "string" ||
+		Number.isNaN(Date.parse(value))
+	)
+		throw new Error("Draft publication date is invalid");
+	return value;
 }
 
 function readRecord(input: unknown, label: string, allowed: string[]) {
