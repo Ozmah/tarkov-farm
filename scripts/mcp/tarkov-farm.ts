@@ -141,10 +141,10 @@ export function createTarkovFarmMcpServer(options: {
 		"drafts_list",
 		{
 			description:
-				"List drafts, newest first. Never returns image bytes. publishedSince (ISO date) returns only drafts published from that moment, e.g. to credit contributors since the last release tag.",
+				"List drafts, newest first. Never returns image bytes. publishedSince (ISO datetime with offset, e.g. the last release tag's exact timestamp) returns only drafts published from that moment, e.g. to credit contributors since the last release tag.",
 			inputSchema: z.strictObject({
 				status: z.enum(["pending", "published", "dismissed"]).optional(),
-				publishedSince: z.iso.date().or(z.iso.datetime()).optional(),
+				publishedSince: z.iso.datetime({ offset: true }).optional(),
 			}),
 			annotations: { readOnlyHint: true, openWorldHint: false },
 		},

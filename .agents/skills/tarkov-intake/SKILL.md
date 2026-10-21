@@ -41,12 +41,21 @@ Re-running `draft_create` with identical content returns the existing draft, so 
 
 Contributor handles are stored only in the drafts (`assets/intake/drafts`, ignored by Git). They are never copied to the published location or shown in the app.
 
-To list who to credit in a release, find the date of the last release tag (`git tag --sort=creatordate | tail -1`; tags look like `2026.09.05-tarpon`) and call:
+To list who to credit in a release, get the commit timestamp of the last release tag (the commit date, not the tag date: a location published after that commit belongs to the next release, even if the tag was created later):
 
-```json
-drafts_list({ "status": "published", "publishedSince": "2026-09-05" })
+```sh
+tag=$(git for-each-ref --sort=-creatordate --count=1 --format='%(refname:short)' refs/tags)
+git log -1 --format=%cI "$tag"
 ```
 
-It returns only drafts saved as locations since that date. Collect their non-empty `contributor` values, remove duplicates, and give the list to the user. Dismissed drafts have no `publishedAt` and never appear. The user decides who gets named in the `### Location contributors` section of `CHANGELOG.md`.
+Release tags point to the merge commit on `master`, so the boundary is the moment the release PR was merged. A location published while that PR is open is not in the release but falls before the boundary, and its contributor is never credited: do not publish drafts while a release PR is open.
+
+Pass that timestamp as is, offset included (never the date in the tag name, which reads as midnight UTC and repeats drafts already credited):
+
+```json
+drafts_list({ "status": "published", "publishedSince": "2026-09-05T01:42:29-06:00" })
+```
+
+It returns only drafts saved as locations since that moment. Collect their non-empty `contributor` values, remove duplicates, and give the list to the user. Dismissed drafts have no `publishedAt` and never appear. The user decides who gets named in the `### Location contributors` section of `CHANGELOG.md`.
 
 Because `assets/intake` is not in Git, the changelog is the only lasting record of credits: do this before the drafts folder is cleaned up.
