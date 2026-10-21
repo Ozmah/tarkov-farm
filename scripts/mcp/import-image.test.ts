@@ -1,8 +1,17 @@
-import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import {
+	mkdir,
+	mkdtemp,
+	rm,
+	symlink,
+	truncate,
+	writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { MAX_INTAKE_SCREENSHOT_BYTES } from "../../src/lib/intake-draft";
 import { importImage } from "./import-image";
 
 // Smallest valid 1x1 PNG.
@@ -53,6 +62,24 @@ describe("importImage", () => {
 			await expect(importImage(path, [allowed], decode)).rejects.toThrow(
 				"outside the allowed",
 			);
+	});
+
+	it("rejects files over the size limit without reading them", async () => {
+		const path = join(allowed, "huge.png");
+		await writeFile(path, PNG);
+		// Sparse: reports MAX + 1 bytes without using the disk space.
+		await truncate(path, MAX_INTAKE_SCREENSHOT_BYTES + 1);
+		await expect(importImage(path, [allowed], decode)).rejects.toThrow(
+			"up to 20 MiB",
+		);
+	});
+
+	it("rejects a FIFO without blocking on it", async () => {
+		const path = join(allowed, "pipe.png");
+		execFileSync("mkfifo", [path]);
+		await expect(importImage(path, [allowed], decode)).rejects.toThrow(
+			"up to 20 MiB",
+		);
 	});
 
 	it("rejects relative paths and content that is not an image", async () => {
