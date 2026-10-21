@@ -11,7 +11,7 @@ import {
 	type ScreenshotDraft,
 } from "@/components/location-composer/location-screenshot-editor";
 import { Button } from "@/components/ui/button";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup, FieldWarning } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 
 type LocationComposerFormProps = {
@@ -34,6 +34,8 @@ type LocationComposerFormProps = {
 	mapImages: Array<{ id: string; name: string }>;
 	maps: Array<{ id: string; name: string }>;
 	maxScreenshots: number;
+	/** Context shown under the title, such as reviewer notes. */
+	notice?: ReactNode;
 	screenshots: ScreenshotDraft[];
 	screenshotDescription?: string;
 	secondaryActions?: ReactNode;
@@ -41,6 +43,8 @@ type LocationComposerFormProps = {
 	submitting: boolean;
 	submittingLabel: string;
 	title: string;
+	/** Non-blocking outcome the reviewer should know about. */
+	warning?: string;
 	onDraftChange: LocationDraftChange;
 	onMapChange: (mapId: string) => void;
 	onScreenshotFilesAdded: (files: File[]) => void;
@@ -63,6 +67,7 @@ export function LocationComposerForm({
 	mapImages,
 	maps,
 	maxScreenshots,
+	notice,
 	screenshots,
 	screenshotDescription,
 	secondaryActions,
@@ -70,6 +75,7 @@ export function LocationComposerForm({
 	submitting,
 	submittingLabel,
 	title,
+	warning,
 	onDraftChange,
 	onMapChange,
 	onScreenshotFilesAdded,
@@ -106,6 +112,7 @@ export function LocationComposerForm({
 						{title}
 					</h2>
 				</div>
+				{notice}
 
 				<fieldset
 					disabled={disabled}
@@ -141,6 +148,7 @@ export function LocationComposerForm({
 						/>
 
 						{additionalFields}
+						{warning && <FieldWarning>{warning}</FieldWarning>}
 						{error && <FieldError>{error}</FieldError>}
 					</FieldGroup>
 

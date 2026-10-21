@@ -20,6 +20,7 @@ assets/maps/originals/
 assets/screenshots/originals/
 assets/keys/
 assets/documents/originals/
+assets/intake/
 
 # typescript
 *.tsbuildinfo

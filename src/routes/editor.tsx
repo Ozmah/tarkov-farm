@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LocalMapEditor } from "@/components/editor/local-map-editor";
 import { getEditorData } from "@/functions/editor";
+import { getPendingIntakeDrafts } from "@/functions/intake";
 import { getEditorUpdates } from "@/functions/updates";
 import { validateCatalogSearch } from "@/lib/catalog-search";
 
@@ -10,7 +11,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
-	section?: "import" | "updates";
+	section?: "import" | "updates" | "drafts";
 };
 
 export const Route = createFileRoute("/editor")({
@@ -29,19 +30,22 @@ export const Route = createFileRoute("/editor")({
 			image: readSearchValue(search.image),
 			location: readSearchValue(search.location),
 			section:
-				search.section === "updates" || search.section === "import"
+				search.section === "updates" ||
+				search.section === "import" ||
+				search.section === "drafts"
 					? search.section
 					: undefined,
 		};
 	},
 	loaderDeps: () => ({}),
 	loader: async () => {
-		const [data, updates] = await Promise.all([
+		const [data, updates, intakeDrafts] = await Promise.all([
 			getEditorData(),
 			getEditorUpdates(),
+			getPendingIntakeDrafts(),
 		]);
 
-		return { data, updates };
+		return { data, updates, intakeDrafts };
 	},
 	staleTime: Number.POSITIVE_INFINITY,
 	notFoundComponent: EditorNotFound,
@@ -49,13 +53,14 @@ export const Route = createFileRoute("/editor")({
 });
 
 function EditorRoute() {
-	const { data, updates } = Route.useLoaderData();
+	const { data, updates, intakeDrafts } = Route.useLoaderData();
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 
 	return (
 		<LocalMapEditor
 			data={data}
+			intakeDrafts={intakeDrafts}
 			releaseContext={updates.releaseContext}
 			updates={updates.updates}
 			search={search}

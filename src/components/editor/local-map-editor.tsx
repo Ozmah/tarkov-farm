@@ -3,6 +3,10 @@ import { useRouter } from "@tanstack/react-router";
 import { type ReactNode, useMemo, useState } from "react";
 import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
 import { EditorSidebarNavigation } from "@/components/editor/editor-sidebar-navigation";
+import {
+	IntakeDrafts,
+	type OpenedIntakeDraft,
+} from "@/components/editor/intake-drafts";
 import { LocalContributionImporter } from "@/components/editor/local-contribution-importer";
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import { LocationReplyImageDialog } from "@/components/editor/location-reply-image-dialog";
@@ -38,6 +42,7 @@ import {
 	type getEditorData,
 	saveLocation,
 } from "@/functions/editor";
+import { saveIntakeDraftLocation } from "@/functions/intake";
 import {
 	encodeMapDocumentFilters,
 	resolveMapDocumentIds,
@@ -47,9 +52,16 @@ import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
 } from "@/lib/editor-validation";
+import type { IntakeDraft } from "@/lib/intake-draft";
 import { numberMapLocations } from "@/lib/map-location-order";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
+
+/** The write succeeded; retrying would duplicate it, so say so. */
+const SAVED_BUT_STALE =
+	"Saved, but the editor could not refresh. Reload the page before editing again.";
+const DRAFT_ALREADY_SAVED =
+	"This location was already saved by an earlier attempt; your latest edits were not applied. Review it and save again if needed.";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
 type EditorSearch = {
@@ -57,7 +69,7 @@ type EditorSearch = {
 	map?: string;
 	image?: string;
 	location?: string;
-	section?: "import" | "updates";
+	section?: "import" | "updates" | "drafts";
 };
 type EditorLocation = EditorData["locations"][number] & { markerLabel: string };
 type EditorScreenshot = EditorData["screenshots"][number];
@@ -80,6 +92,7 @@ type Draft = {
 
 type LocalMapEditorProps = {
 	data: EditorData;
+	intakeDrafts: IntakeDraft[];
 	releaseContext: ReleaseContext;
 	updates: PublicUpdate[];
 	search: EditorSearch;
@@ -91,6 +104,7 @@ type LocalMapEditorProps = {
 
 export function LocalMapEditor({
 	data,
+	intakeDrafts,
 	releaseContext,
 	updates,
 	search,
@@ -149,6 +163,8 @@ export function LocalMapEditor({
 		(location) => location.id === search.location,
 	);
 	const [newDraftVersion, setNewDraftVersion] = useState(0);
+	const [openedIntakeDraft, setOpenedIntakeDraft] =
+		useState<OpenedIntakeDraft>();
 
 	const selectMap = (mapId: string | null) => {
 		if (!mapId) {
@@ -177,8 +193,26 @@ export function LocalMapEditor({
 	};
 
 	const beginNewLocation = () => {
+		setOpenedIntakeDraft(undefined);
 		setNewDraftVersion((version) => version + 1);
 		void onSearchChange({ location: undefined }, true);
+	};
+
+	const openIntakeDraft = (opened: OpenedIntakeDraft) => {
+		const draftImage = data.mapImages.find(
+			(item) => item.id === opened.draft.values.mapImageId,
+		);
+		setOpenedIntakeDraft(opened);
+		setNewDraftVersion((version) => version + 1);
+		void onSearchChange(
+			{
+				...(draftImage ? { map: draftImage.mapId, image: draftImage.id } : {}),
+				documents: undefined,
+				location: undefined,
+				section: undefined,
+			},
+			true,
+		);
 	};
 
 	const refreshAndSelect = async (target?: SavedLocationTarget) => {
@@ -229,6 +263,16 @@ export function LocalMapEditor({
 	};
 	let editorContent: ReactNode;
 	switch (search.section) {
+		case "drafts":
+			editorContent = (
+				<IntakeDrafts
+					catalog={data}
+					drafts={intakeDrafts}
+					onOpen={openIntakeDraft}
+					onDismissed={() => router.invalidate({ sync: true })}
+				/>
+			);
+			break;
 		case "import":
 			editorContent = (
 				<LocalContributionImporter
@@ -258,6 +302,8 @@ export function LocalMapEditor({
 							key={selectedImage.id}
 							data={data}
 							draftVersion={newDraftVersion}
+							intakeDraft={selectedLocation ? undefined : openedIntakeDraft}
+							onIntakeDraftClosed={() => setOpenedIntakeDraft(undefined)}
 							image={selectedImage}
 							locations={visibleLocations}
 							requiredKeyCountByLocation={requiredKeyCountByLocation}
@@ -361,6 +407,8 @@ export function LocalMapEditor({
 
 function getEditorHeaderTitle(section: EditorSearch["section"]) {
 	switch (section) {
+		case "drafts":
+			return "Draft review";
 		case "import":
 			return "Contribution reviewer";
 		case "updates":
@@ -442,6 +490,9 @@ function EditorMapSidebarPanel({
 type LocationWorkspaceProps = {
 	data: EditorData;
 	draftVersion: number;
+	/** Present only for a new location prefilled from an agent draft. */
+	intakeDraft?: OpenedIntakeDraft;
+	onIntakeDraftClosed: () => void;
 	image: MapImage;
 	locations: EditorLocation[];
 	requiredKeyCountByLocation: ReadonlyMap<string, number>;
@@ -453,6 +504,8 @@ type LocationWorkspaceProps = {
 function LocationWorkspace({
 	data,
 	draftVersion,
+	intakeDraft,
+	onIntakeDraftClosed,
 	image,
 	locations,
 	requiredKeyCountByLocation,
@@ -476,21 +529,32 @@ function LocationWorkspace({
 		[data.locationRequiredKeys, selectedLocation],
 	);
 	const [draft, setDraft] = useState<Draft>(() =>
-		createLocationDraft(
-			selectedLocation,
-			selectedDocumentId,
-			selectedRequiredKeyIds,
-			image.id,
-		),
+		intakeDraft
+			? createIntakeLocationDraft(intakeDraft.draft, image.id)
+			: createLocationDraft(
+					selectedLocation,
+					selectedDocumentId,
+					selectedRequiredKeyIds,
+					image.id,
+				),
 	);
 	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
-		() => createScreenshotDrafts(data.screenshots, selectedLocation?.id),
+		() =>
+			intakeDraft
+				? createIntakeScreenshotDrafts(intakeDraft)
+				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
+	// Tied to its location so the post-save form reset cannot race it away.
+	const [warning, setWarning] = useState<{
+		locationId: string;
+		message: string;
+	}>();
 	const resetState = {
 		draftVersion,
+		intakeDraft,
 		imageId: image.id,
 		screenshots: data.screenshots,
 		selectedDocumentId,
@@ -500,6 +564,7 @@ function LocationWorkspace({
 	const [previousResetState, setPreviousResetState] = useState(resetState);
 	const shouldReset =
 		resetState.draftVersion !== previousResetState.draftVersion ||
+		resetState.intakeDraft !== previousResetState.intakeDraft ||
 		resetState.imageId !== previousResetState.imageId ||
 		resetState.screenshots !== previousResetState.screenshots ||
 		resetState.selectedDocumentId !== previousResetState.selectedDocumentId ||
@@ -510,15 +575,19 @@ function LocationWorkspace({
 	if (shouldReset) {
 		setPreviousResetState(resetState);
 		setDraft(
-			createLocationDraft(
-				selectedLocation,
-				selectedDocumentId,
-				selectedRequiredKeyIds,
-				image.id,
-			),
+			intakeDraft
+				? createIntakeLocationDraft(intakeDraft.draft, image.id)
+				: createLocationDraft(
+						selectedLocation,
+						selectedDocumentId,
+						selectedRequiredKeyIds,
+						image.id,
+					),
 		);
 		setScreenshotDrafts(
-			createScreenshotDrafts(data.screenshots, selectedLocation?.id),
+			intakeDraft
+				? createIntakeScreenshotDrafts(intakeDraft)
+				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 		);
 		setError(undefined);
 	}
@@ -708,6 +777,7 @@ function LocationWorkspace({
 
 	const submitLocation = async () => {
 		setError(undefined);
+		setWarning(undefined);
 
 		if (screenshotDrafts.length === 0) {
 			setError("Add at least one screenshot before saving this location");
@@ -759,11 +829,19 @@ function LocationWorkspace({
 				formData.append("screenshots", file);
 			}
 
-			const result = await saveLocation({
-				data: formData,
-			});
+			if (intakeDraft) formData.set("draftId", intakeDraft.draft.id);
+			const { target, acknowledgedOnly } = intakeDraft
+				? await saveIntakeDraftLocation({ data: formData })
+				: {
+						target: await saveLocation({ data: formData }),
+						acknowledgedOnly: false,
+					};
 
-			await onSaved(result);
+			// Saved: a failure from here is a stale view, not a failed save.
+			if (intakeDraft) onIntakeDraftClosed();
+			await onSaved(target).catch(() => setError(SAVED_BUT_STALE));
+			if (acknowledgedOnly)
+				setWarning({ locationId: target.id, message: DRAFT_ALREADY_SAVED });
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
@@ -777,11 +855,12 @@ function LocationWorkspace({
 		}
 
 		setError(undefined);
+		setWarning(undefined);
 		setIsDeleting(true);
 
 		try {
 			await deleteLocation({ data: { id: selectedLocation.id } });
-			await onSaved(undefined);
+			await onSaved(undefined).catch(() => setError(SAVED_BUT_STALE));
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
@@ -842,7 +921,34 @@ function LocationWorkspace({
 				draft={draft}
 				draftMapId={draftImage.mapId}
 				error={error}
-				eyebrow={selectedLocation ? "Edit location" : "New location"}
+				warning={
+					warning && warning.locationId === selectedLocation?.id
+						? warning.message
+						: undefined
+				}
+				eyebrow={
+					selectedLocation
+						? "Edit location"
+						: intakeDraft
+							? "New location from draft"
+							: "New location"
+				}
+				notice={
+					intakeDraft &&
+					(intakeDraft.draft.notes || intakeDraft.draft.contributor) ? (
+						<div className="flex flex-col gap-1 whitespace-pre-line rounded-md border border-border bg-muted p-3 text-sm">
+							{intakeDraft.draft.contributor && (
+								<p>Sent by {intakeDraft.draft.contributor}</p>
+							)}
+							{intakeDraft.draft.notes && (
+								<>
+									<p className="font-medium">Agent notes</p>
+									<p>{intakeDraft.draft.notes}</p>
+								</>
+							)}
+						</div>
+					) : undefined
+				}
 				keyboardSubmitHint="Use Ctrl+Enter to save from this field."
 				mapImages={draftMapImages}
 				maps={editableMaps}
@@ -878,6 +984,15 @@ function LocationWorkspace({
 								</AlertDialogFooter>
 							</AlertDialogContent>
 						</AlertDialog>
+					) : intakeDraft ? (
+						<Button
+							type="button"
+							variant="ghost"
+							disabled={isSaving}
+							onClick={onIntakeDraftClosed}
+						>
+							Close draft
+						</Button>
 					) : undefined
 				}
 				submitLabel="Save location"
@@ -917,6 +1032,33 @@ function createLocationDraft(
 		documentId,
 		requiredKeyIds,
 	};
+}
+
+/** Unknown fields stay empty for the reviewer; the point starts centered as usual. */
+function createIntakeLocationDraft(
+	draft: IntakeDraft,
+	defaultMapImageId: string,
+): Draft {
+	return {
+		name: draft.values.name,
+		description: draft.values.description,
+		mapImageId: draft.values.mapImageId ?? defaultMapImageId,
+		xBasisPoints: 5_000,
+		yBasisPoints: 5_000,
+		isActive: true,
+		documentId: draft.values.documentId ?? "",
+		requiredKeyIds: draft.values.requiredKeyIds,
+	};
+}
+
+function createIntakeScreenshotDrafts({
+	draft,
+	files,
+}: OpenedIntakeDraft): ScreenshotDraft[] {
+	return files.map((file, index) => ({
+		file,
+		key: draft.screenshots[index]?.id ?? crypto.randomUUID(),
+	}));
 }
 
 function createScreenshotDrafts(

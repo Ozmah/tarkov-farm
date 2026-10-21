@@ -30,5 +30,8 @@ data/rebuild
 assets/maps/originals
 assets/screenshots/originals
 assets/documents/originals
+assets/intake
+scripts/mcp
 tarkov-backup
 todos.json
+.pi
