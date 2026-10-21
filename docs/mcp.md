@@ -4,31 +4,23 @@ A local stdio MCP server that lets an agent turn contributions (messages and scr
 
 ## Setup
 
-Configure your MCP client to launch:
-
-```text
-bun /absolute/path/to/tarkov-farm/scripts/mcp/tarkov-farm.ts --import-root /absolute/path/to/screenshots
-```
-
-- `--import-root` is required and repeatable. The MCP reads screenshots only from these folders; anything else is rejected, including symlinks that point outside.
-- Drafts are written to `assets/intake/drafts`, which is ignored by Git and excluded from Docker builds.
-
-Example for clients using `mcpServers`:
+Configure your MCP client to launch the server. The client starts and stops it on its own; there is nothing to run by hand.
 
 ```json
 {
   "mcpServers": {
     "tarkov-farm": {
       "command": "bun",
-      "args": [
-        "/home/me/dev/tarkov-farm/scripts/mcp/tarkov-farm.ts",
-        "--import-root",
-        "/home/me/tarkov-screenshots"
-      ]
+      "args": ["/home/me/dev/tarkov-farm/scripts/mcp/tarkov-farm.ts"]
     }
   }
 }
 ```
+
+- Put the game screenshots in `assets/intake/inbox`. It is created on startup and ignored by Git.
+- Optional: `--import-root <absolute path>` (repeatable) allows another folder besides the inbox.
+- The MCP reads screenshots only from allowed folders; anything else is rejected, including symlinks that point outside.
+- Drafts are written to `assets/intake/drafts`, also ignored by Git and excluded from Docker builds.
 
 ## Tools
 

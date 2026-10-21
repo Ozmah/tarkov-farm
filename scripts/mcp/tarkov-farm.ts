@@ -1,4 +1,5 @@
-import { dirname, isAbsolute, resolve } from "node:path";
+import { mkdir } from "node:fs/promises";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/server";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
@@ -18,21 +19,23 @@ import { createIntakeDraftStore } from "../../src/server/intake/draft-store";
 import { importImage } from "./import-image";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+/** Default screenshot inbox, inside the repo and ignored by Git with the rest of assets/intake. */
+export const INTAKE_INBOX_DIRECTORY = "assets/intake/inbox";
 const USAGE =
-	"Usage: bun scripts/mcp/tarkov-farm.ts --import-root <absolute path> [--import-root <path> ...]";
+	"Usage: bun scripts/mcp/tarkov-farm.ts [--import-root <absolute path> ...]";
 
 const catalogId = z.string().regex(/^[a-zA-Z0-9_-]{1,100}$/);
 const uuid = z.uuidv4();
 
-export function parseImportRoots(args: string[]) {
-	const roots: string[] = [];
+/** The inbox is always allowed; each --import-root adds another folder. */
+export function parseImportRoots(args: string[], projectRoot: string) {
+	const roots = [join(projectRoot, INTAKE_INBOX_DIRECTORY)];
 	for (let index = 0; index < args.length; index += 2) {
 		const root = args[index + 1];
 		if (args[index] !== "--import-root" || !root || !isAbsolute(root))
 			throw new Error(USAGE);
 		roots.push(root);
 	}
-	if (!roots.length) throw new Error(USAGE);
 	return roots;
 }
 
@@ -240,7 +243,10 @@ async function respond(operation: () => Promise<Record<string, unknown>>) {
 
 if (import.meta.main) {
 	try {
-		const importRoots = parseImportRoots(process.argv.slice(2));
+		const importRoots = parseImportRoots(process.argv.slice(2), PROJECT_ROOT);
+		await mkdir(join(PROJECT_ROOT, INTAKE_INBOX_DIRECTORY), {
+			recursive: true,
+		});
 		serveStdio(() =>
 			createTarkovFarmMcpServer({ projectRoot: PROJECT_ROOT, importRoots }),
 		);
