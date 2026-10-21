@@ -1,3 +1,4 @@
+import { WarningIcon } from "@phosphor-icons/react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
 import { Label } from "@/components/ui/label";
@@ -222,6 +223,31 @@ function FieldError({
 	);
 }
 
+/** Informative, not an error: something landed differently than asked. */
+function FieldWarning({
+	className,
+	children,
+	...props
+}: React.ComponentProps<"div">) {
+	return (
+		<div
+			role="status"
+			data-slot="field-warning"
+			className={cn(
+				"flex items-start gap-2.5 rounded-md border border-warning/40 bg-warning/10 p-3 text-foreground text-sm dark:border-warning/50 dark:bg-warning/14",
+				className,
+			)}
+			{...props}
+		>
+			<WarningIcon
+				aria-hidden="true"
+				className="mt-0.5 size-4.5 shrink-0 text-warning"
+			/>
+			<div>{children}</div>
+		</div>
+	);
+}
+
 export {
 	Field,
 	FieldContent,
@@ -233,4 +259,5 @@ export {
 	FieldSeparator,
 	FieldSet,
 	FieldTitle,
+	FieldWarning,
 };

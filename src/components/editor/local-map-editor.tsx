@@ -60,6 +60,8 @@ import type { ReleaseContext } from "@/lib/release-context";
 /** The write succeeded; retrying would duplicate it, so say so. */
 const SAVED_BUT_STALE =
 	"Saved, but the editor could not refresh. Reload the page before editing again.";
+const DRAFT_ALREADY_SAVED =
+	"This location was already saved by an earlier attempt; your latest edits were not applied. Review it and save again if needed.";
 
 type EditorData = Awaited<ReturnType<typeof getEditorData>>;
 type EditorSearch = {
@@ -545,6 +547,11 @@ function LocationWorkspace({
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
+	// Tied to its location so the post-save form reset cannot race it away.
+	const [warning, setWarning] = useState<{
+		locationId: string;
+		message: string;
+	}>();
 	const resetState = {
 		draftVersion,
 		intakeDraft,
@@ -770,6 +777,7 @@ function LocationWorkspace({
 
 	const submitLocation = async () => {
 		setError(undefined);
+		setWarning(undefined);
 
 		if (screenshotDrafts.length === 0) {
 			setError("Add at least one screenshot before saving this location");
@@ -822,13 +830,18 @@ function LocationWorkspace({
 			}
 
 			if (intakeDraft) formData.set("draftId", intakeDraft.draft.id);
-			const result = intakeDraft
+			const { target, acknowledgedOnly } = intakeDraft
 				? await saveIntakeDraftLocation({ data: formData })
-				: await saveLocation({ data: formData });
+				: {
+						target: await saveLocation({ data: formData }),
+						acknowledgedOnly: false,
+					};
 
 			// Saved: a failure from here is a stale view, not a failed save.
 			if (intakeDraft) onIntakeDraftClosed();
-			await onSaved(result).catch(() => setError(SAVED_BUT_STALE));
+			await onSaved(target).catch(() => setError(SAVED_BUT_STALE));
+			if (acknowledgedOnly)
+				setWarning({ locationId: target.id, message: DRAFT_ALREADY_SAVED });
 		} catch (caughtError) {
 			setError(readErrorMessage(caughtError));
 		} finally {
@@ -842,6 +855,7 @@ function LocationWorkspace({
 		}
 
 		setError(undefined);
+		setWarning(undefined);
 		setIsDeleting(true);
 
 		try {
@@ -907,6 +921,11 @@ function LocationWorkspace({
 				draft={draft}
 				draftMapId={draftImage.mapId}
 				error={error}
+				warning={
+					warning && warning.locationId === selectedLocation?.id
+						? warning.message
+						: undefined
+				}
 				eyebrow={
 					selectedLocation
 						? "Edit location"

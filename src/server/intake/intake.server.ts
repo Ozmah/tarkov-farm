@@ -19,7 +19,9 @@ export async function listPendingIntakeDrafts() {
 
 /**
  * Saves through the regular editor path with the draft's reserved location ID.
- * If an earlier attempt already created it, only the draft acknowledgement is retried.
+ * If an earlier attempt already created it, only the draft acknowledgement is
+ * retried: the new input is not applied (its uploads would duplicate the saved
+ * screenshots), and `acknowledgedOnly` tells the reviewer so.
  */
 export async function saveIntakeDraftLocation(
 	draftId: string,
@@ -31,6 +33,7 @@ export async function saveIntakeDraftLocation(
 		throw new Error(`This draft is already ${draft.status}`);
 
 	let target: { id: string; mapId: string; mapImageId: string };
+	let acknowledgedOnly = false;
 	try {
 		target = await saveEditorLocation(input, {
 			newLocationId: draft.locationId,
@@ -38,9 +41,10 @@ export async function saveIntakeDraftLocation(
 	} catch (error) {
 		if (!(error instanceof LocationAlreadyExistsError)) throw error;
 		target = await findLocationTarget(draft.locationId);
+		acknowledgedOnly = true;
 	}
 	await store.setStatus(draft.id, "published");
-	return target;
+	return { target, acknowledgedOnly };
 }
 
 export async function dismissIntakeDraft(draftId: string) {

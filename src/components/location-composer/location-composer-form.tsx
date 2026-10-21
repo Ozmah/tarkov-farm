@@ -11,7 +11,7 @@ import {
 	type ScreenshotDraft,
 } from "@/components/location-composer/location-screenshot-editor";
 import { Button } from "@/components/ui/button";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup, FieldWarning } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 
 type LocationComposerFormProps = {
@@ -43,6 +43,8 @@ type LocationComposerFormProps = {
 	submitting: boolean;
 	submittingLabel: string;
 	title: string;
+	/** Non-blocking outcome the reviewer should know about. */
+	warning?: string;
 	onDraftChange: LocationDraftChange;
 	onMapChange: (mapId: string) => void;
 	onScreenshotFilesAdded: (files: File[]) => void;
@@ -73,6 +75,7 @@ export function LocationComposerForm({
 	submitting,
 	submittingLabel,
 	title,
+	warning,
 	onDraftChange,
 	onMapChange,
 	onScreenshotFilesAdded,
@@ -145,6 +148,7 @@ export function LocationComposerForm({
 						/>
 
 						{additionalFields}
+						{warning && <FieldWarning>{warning}</FieldWarning>}
 						{error && <FieldError>{error}</FieldError>}
 					</FieldGroup>
 
