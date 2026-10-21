@@ -12,14 +12,6 @@ import {
 } from "../../src/lib/location-contribution-image";
 import type { VerifiedIntakeImage } from "../../src/server/intake/draft-store";
 
-/** `C:\Users\me\x.png` → `/mnt/c/Users/me/x.png` when running inside WSL/Linux. */
-export function toLocalPath(path: string, platform = process.platform) {
-	const windows = /^([a-zA-Z]):[\\/](.*)$/.exec(path);
-	if (!windows || platform === "win32") return path;
-	const [, drive = "", rest = ""] = windows;
-	return `/mnt/${drive.toLowerCase()}/${rest.replaceAll("\\", "/")}`;
-}
-
 /** A real decode: header metadata alone accepts corrupted pixel data. */
 export const decodeWithBun: ContributionImageDecoder = async (blob) => {
 	const image = new Bun.Image(new Uint8Array(await blob.arrayBuffer()), {
@@ -40,10 +32,9 @@ export async function importImage(
 	allowedRoots: string[],
 	decode: ContributionImageDecoder = decodeWithBun,
 ): Promise<VerifiedIntakeImage> {
-	const localPath = toLocalPath(path);
-	if (!isAbsolute(localPath))
+	if (!isAbsolute(path))
 		throw new Error(`Screenshot path must be absolute: ${path}`);
-	const canonical = await realpath(localPath).catch(() => {
+	const canonical = await realpath(path).catch(() => {
 		throw new Error(`Screenshot not found: ${path}`);
 	});
 	const roots = await Promise.all(

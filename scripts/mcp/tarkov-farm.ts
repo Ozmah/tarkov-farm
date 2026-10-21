@@ -79,7 +79,7 @@ export function createTarkovFarmMcpServer(options: {
 	server.registerTool(
 		"draft_create",
 		{
-			description: `Create one pending draft from a contribution. Every field is optional. screenshots are absolute paths inside the allowed import folders (Windows C:\\ paths are converted to /mnt/c). Identical content returns the existing draft. Allowed import folders: ${options.importRoots.join(", ")}`,
+			description: `Create one pending draft from a contribution. Every field is optional. screenshots are absolute paths inside the allowed import folders. Identical content returns the existing draft. Allowed import folders: ${options.importRoots.join(", ")}`,
 			inputSchema: z.strictObject({
 				name: z.string().max(120).optional(),
 				description: z.string().max(2_000).optional(),

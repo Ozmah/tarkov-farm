@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { importImage, toLocalPath } from "./import-image";
+import { importImage } from "./import-image";
 
 // Smallest valid 1x1 PNG.
 const PNG = Uint8Array.from(
@@ -13,19 +13,6 @@ const PNG = Uint8Array.from(
 	(character) => character.charCodeAt(0),
 );
 const decode = async () => ({ width: 1, height: 1 });
-
-describe("toLocalPath", () => {
-	it("converts Windows drive paths for WSL and leaves POSIX paths alone", () => {
-		expect(
-			toLocalPath(
-				"C:\\Users\\strif\\Desktop\\tarkov-screenshots\\a.png",
-				"linux",
-			),
-		).toBe("/mnt/c/Users/strif/Desktop/tarkov-screenshots/a.png");
-		expect(toLocalPath("/home/me/a.png", "linux")).toBe("/home/me/a.png");
-		expect(toLocalPath("C:\\a.png", "win32")).toBe("C:\\a.png");
-	});
-});
 
 describe("importImage", () => {
 	let base: string;

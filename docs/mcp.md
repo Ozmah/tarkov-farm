@@ -11,7 +11,6 @@ bun /absolute/path/to/tarkov-farm/scripts/mcp/tarkov-farm.ts --import-root /abso
 ```
 
 - `--import-root` is required and repeatable. The MCP reads screenshots only from these folders; anything else is rejected, including symlinks that point outside.
-- In WSL, Windows paths given by the agent (`C:\Users\...`) are converted to `/mnt/c/Users/...` automatically, but the import root itself must be the `/mnt/c/...` path.
 - Drafts are written to `assets/intake/drafts`, which is ignored by Git and excluded from Docker builds.
 
 Example for clients using `mcpServers`:
@@ -24,7 +23,7 @@ Example for clients using `mcpServers`:
       "args": [
         "/home/me/dev/tarkov-farm/scripts/mcp/tarkov-farm.ts",
         "--import-root",
-        "/mnt/c/Users/me/Desktop/tarkov-screenshots"
+        "/home/me/tarkov-screenshots"
       ]
     }
   }
@@ -38,6 +37,8 @@ Example for clients using `mcpServers`:
 - `drafts_list` / `draft_get`: read drafts, never image bytes. `drafts_list` with `status: "published"` and `publishedSince: "<last tag date>"` lists the contributors to credit in the next release.
 
 The contributor handle is private to the drafts: the app never shows it.
+
+Agents that load skills from `.agents/skills` get the full workflow from [`tarkov-intake`](../.agents/skills/tarkov-intake/SKILL.md): grouping screenshots per contribution, what to omit, and how to list release credits.
 
 ## Review
 
