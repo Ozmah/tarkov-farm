@@ -9,6 +9,7 @@ import type {
 	DeleteLocationInput,
 	SaveLocationFormInput,
 } from "@/lib/editor-validation";
+import { isUuidV4 } from "@/lib/intake-draft";
 import { getMapImageSources } from "@/lib/map-master-manifest";
 import {
 	type PublicationData,
@@ -189,12 +190,33 @@ export async function readEditorData() {
 	};
 }
 
+/** A location with the reserved identifier was already created by an earlier save. */
+export class LocationAlreadyExistsError extends Error {
+	constructor(public locationId: string) {
+		super("A location with the reserved identifier already exists");
+		this.name = "LocationAlreadyExistsError";
+	}
+}
+
+type SaveEditorLocationOptions = {
+	expectedMapImageSha256?: string;
+	/** Reserved UUID for a new location, so a retried save cannot create a second one. */
+	newLocationId?: string;
+};
+
 export async function saveEditorLocation(
 	input: SaveLocationFormInput,
-	options: { expectedMapImageSha256?: string } = {},
+	options: SaveEditorLocationOptions = {},
 ) {
 	assertLocalEditorAccess({ mutation: true });
-	const locationId = input.location.id ?? randomUUID();
+	if (
+		options.newLocationId !== undefined &&
+		(input.location.id !== undefined || !isUuidV4(options.newLocationId))
+	)
+		throw new Error(
+			"A reserved location identifier must be a UUIDv4 for a new location",
+		);
+	const locationId = input.location.id ?? options.newLocationId ?? randomUUID();
 
 	return withLocationMutationLock(locationId, () =>
 		saveEditorLocationLocked(input, locationId, options),
@@ -204,10 +226,19 @@ export async function saveEditorLocation(
 async function saveEditorLocationLocked(
 	input: SaveLocationFormInput,
 	locationId: string,
-	options: { expectedMapImageSha256?: string },
+	options: SaveEditorLocationOptions,
 ) {
 	const { db } = await getDatabase();
 	const { location } = input;
+	if (
+		options.newLocationId &&
+		(await db
+			.select({ id: locations.id })
+			.from(locations)
+			.where(eq(locations.id, options.newLocationId))
+			.get())
+	)
+		throw new LocationAlreadyExistsError(options.newLocationId);
 	const image = await db
 		.select({ contentHash: mapImages.contentHash, mapId: mapImages.mapId })
 		.from(mapImages)

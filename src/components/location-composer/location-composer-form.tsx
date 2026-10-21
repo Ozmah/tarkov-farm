@@ -34,6 +34,8 @@ type LocationComposerFormProps = {
 	mapImages: Array<{ id: string; name: string }>;
 	maps: Array<{ id: string; name: string }>;
 	maxScreenshots: number;
+	/** Context shown under the title, such as reviewer notes. */
+	notice?: ReactNode;
 	screenshots: ScreenshotDraft[];
 	screenshotDescription?: string;
 	secondaryActions?: ReactNode;
@@ -63,6 +65,7 @@ export function LocationComposerForm({
 	mapImages,
 	maps,
 	maxScreenshots,
+	notice,
 	screenshots,
 	screenshotDescription,
 	secondaryActions,
@@ -106,6 +109,7 @@ export function LocationComposerForm({
 						{title}
 					</h2>
 				</div>
+				{notice}
 
 				<fieldset
 					disabled={disabled}

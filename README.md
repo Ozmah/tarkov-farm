@@ -16,6 +16,8 @@ bun run dev
 
 Open the local editor at [`/editor`](http://localhost:3000/editor).
 
+Optional: [local intake MCP](docs/mcp.md) for agent-prepared location drafts.
+
 SQLite is rebuilt on every server start from the versioned data. Commit changes under `data/publication` together with new files under `public/screenshots`.
 
 ## Validation
