@@ -12,15 +12,22 @@ import { useSwipeNavigation } from "@/hooks/use-swipe-navigation";
 import { getLocationScreenshotAltText } from "@/lib/location-screenshot-text";
 import { cn } from "@/lib/utils";
 
+/** What the viewer needs; dimensions are optional for local files not yet decoded. */
+export type ViewerScreenshot = Pick<
+	LocationScreenshot,
+	"altText" | "caption" | "path"
+> &
+	Partial<Pick<LocationScreenshot, "height" | "width">>;
+
 type LocationScreenshotDialogProps = {
 	locationDescription: string | null;
 	locationName: string;
-	nextScreenshot?: LocationScreenshot;
+	nextScreenshot?: ViewerScreenshot;
 	onNext?: () => void;
 	onOpenChange: (open: boolean) => void;
 	onPrevious?: () => void;
-	previousScreenshot?: LocationScreenshot;
-	screenshot?: LocationScreenshot;
+	previousScreenshot?: ViewerScreenshot;
+	screenshot?: ViewerScreenshot;
 };
 
 export function LocationScreenshotDialog({

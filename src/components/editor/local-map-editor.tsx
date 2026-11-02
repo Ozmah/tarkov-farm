@@ -1006,6 +1006,13 @@ function LocationWorkspace({
 				onScreenshotFilesAdded={addScreenshotFiles}
 				onScreenshotMove={moveScreenshotDraft}
 				onScreenshotRemove={removeScreenshotDraft}
+				onScreenshotReplace={(key, file) =>
+					setScreenshotDrafts((current) =>
+						current.map((screenshot) =>
+							screenshot.key === key ? { ...screenshot, file } : screenshot,
+						),
+					)
+				}
 				onSubmit={() => void submitLocation()}
 			/>
 		</>

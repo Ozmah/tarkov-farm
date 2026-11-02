@@ -108,3 +108,58 @@ it("does not attach a completed thumbnail after unmount", async () => {
 	await act(async () => finish(new Blob(["thumbnail"])));
 	expect(createObjectURL).not.toHaveBeenCalled();
 });
+
+it("opens screenshots full screen and offers marking only for local files", async () => {
+	vi.mocked(createLocationContributionThumbnail).mockResolvedValue(
+		new Blob(["thumbnail"]),
+	);
+	const createObjectURL = vi.fn(
+		(source: Blob) => `blob:${source instanceof File ? source.name : "thumb"}`,
+	);
+	vi.stubGlobal("URL", { createObjectURL, revokeObjectURL: vi.fn() });
+	const file = new File(["original"], "local.png", { type: "image/png" });
+
+	render(
+		<LocationScreenshotEditor
+			disabled={false}
+			maxScreenshots={10}
+			screenshots={[
+				{ file, key: "local" },
+				{ id: "saved", key: "saved", previewUrl: "/screenshots/saved.webp" },
+			]}
+			title="Crackhouse Library"
+			onFilesAdded={vi.fn()}
+			onMove={vi.fn()}
+			onRemove={vi.fn()}
+			onReplace={vi.fn()}
+		/>,
+	);
+
+	// Published screenshots have no original file to mark.
+	expect(
+		screen.getAllByRole("button", { name: /^Mark screenshot/ }),
+	).toHaveLength(1);
+	await waitFor(() =>
+		expect(
+			screen.getByRole("button", { name: "View screenshot 1 full screen" }),
+		).toBeTruthy(),
+	);
+	act(() =>
+		screen
+			.getByRole("button", { name: "View screenshot 1 full screen" })
+			.click(),
+	);
+	// The viewer shows the full-resolution file, not the thumbnail.
+	await waitFor(() =>
+		expect(
+			screen
+				.getByRole("img", { name: "Crackhouse Library screenshot 1" })
+				.getAttribute("src"),
+		).toBe("blob:local.png"),
+	);
+});
+
+it("hides marking when the form does not accept replacements", () => {
+	render(editor([{ id: "saved", key: "saved", previewUrl: "/a.webp" }]));
+	expect(screen.queryByRole("button", { name: /^Mark screenshot/ })).toBeNull();
+});
