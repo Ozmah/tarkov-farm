@@ -104,7 +104,7 @@ export function UnsavedChangesDialog({
 				if (!nextOpen) onKeep();
 			}}
 		>
-			<AlertDialogContent size="sm">
+			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>{title}</AlertDialogTitle>
 					<AlertDialogDescription>{description}</AlertDialogDescription>
