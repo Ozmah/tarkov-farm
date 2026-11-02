@@ -1,0 +1,10 @@
+{
+	"$schema": "https://opencode.ai/config.json",
+	"mcp": {
+		"tarkov-farm": {
+			"type": "local",
+			"command": ["bun", "scripts/mcp/tarkov-farm.ts"],
+			"enabled": true
+		}
+	}
+}
