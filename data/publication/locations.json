@@ -951,6 +951,59 @@
 			"yBasisPoints": 7462
 		},
 		{
+			"description": "Inside the warehouse at the train station. The document is on the bottom shelf of the metal lockers against the corrugated wall, next to the shelves and the desk with a lamp.",
+			"documentId": "technical",
+			"id": "19add9dd-a632-4579-85f6-21c8fa6ad52d",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Train Station Warehouse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/4325bafedb1f87a0ece4659962206f50f56c1df440abee313ac739d581d4b6e0-1920.webp",
+						"sha256": "4325bafedb1f87a0ece4659962206f50f56c1df440abee313ac739d581d4b6e0",
+						"width": 1920
+					},
+					"id": "9389bef0-3a85-4ecb-b1bd-6aac0fdea6c2",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/f1c9aeaa42c4f632ad3dbb5f10df04e3dd6d4e64da1251b35b571460de75129c-1000.webp",
+						"sha256": "f1c9aeaa42c4f632ad3dbb5f10df04e3dd6d4e64da1251b35b571460de75129c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "3197e12a8705378a5f9d6271801ddd32b0d84dd89cce9c6da6207473b1227d5d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/f80a965e780e21781eb63ca168c5f5ac05ca1139d4b18b42430a00e506a53899-1920.webp",
+						"sha256": "f80a965e780e21781eb63ca168c5f5ac05ca1139d4b18b42430a00e506a53899",
+						"width": 1920
+					},
+					"id": "986d62a5-5398-462d-ac50-92ef13d1e94c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/33bbbb4efa7ce186d2fbffb42061974901953ab931e34b7dff03c32f0430b42d-1000.webp",
+						"sha256": "33bbbb4efa7ce186d2fbffb42061974901953ab931e34b7dff03c32f0430b42d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "2b7024853bb10d9ca81d262618d1ab9fa07bf587fd8187a2f4f9cc721200f62f"
+				}
+			],
+			"xBasisPoints": 6290,
+			"yBasisPoints": 930
+		},
+		{
 			"description": "On a lab surface next to the blue key card entrance room",
 			"documentId": "medical",
 			"id": "19d67714-3eb1-4d02-be7e-da8aed91a87f",
@@ -6554,6 +6607,39 @@
 			],
 			"xBasisPoints": 5734,
 			"yBasisPoints": 2032
+		},
+		{
+			"description": "Parking lot north of Capital Insight. The document is a clipboard lying in the open trunk of a brown hatchback.",
+			"documentId": "medical",
+			"id": "b69c2004-f6b8-4e85-acf1-dfc2cbb4d383",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Capital Insight Parking Lot",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/b69c2004-f6b8-4e85-acf1-dfc2cbb4d383/a700da6de0037913200204ebcf21ad1c75295459f062d04aae3dfecb4332702a-1920.webp",
+						"sha256": "a700da6de0037913200204ebcf21ad1c75295459f062d04aae3dfecb4332702a",
+						"width": 1920
+					},
+					"id": "c9583027-6f8f-4c8b-8340-f0fefd3bbb1d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/b69c2004-f6b8-4e85-acf1-dfc2cbb4d383/f1b949bde70fae7861ffe7ce56d2192d931c1a19db271f7ed9c7fdbdca0c8c21-1000.webp",
+						"sha256": "f1b949bde70fae7861ffe7ce56d2192d931c1a19db271f7ed9c7fdbdca0c8c21",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "464912e8a2e01abb4493453dc7be7368b471b065454eaeb04b4ed9274215d8bb"
+				}
+			],
+			"xBasisPoints": 5953,
+			"yBasisPoints": 6902
 		},
 		{
 			"description": "Under a desk with a monitor, near the window",
