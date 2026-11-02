@@ -50,8 +50,14 @@ export type CreateIntakeDraftInput = {
 export function createIntakeDraftStore(projectRoot: string) {
 	const root = join(projectRoot, INTAKE_DRAFTS_DIRECTORY);
 	const draftPath = (id: string) => join(root, id, "draft.json");
-	// Creation checks for identical content first; concurrent calls must not both pass.
-	let creation: Promise<unknown> = Promise.resolve();
+	// Writes read before they write (duplicate check, pending status): run them
+	// one at a time, or two concurrent calls can both pass the check.
+	let writes: Promise<unknown> = Promise.resolve();
+	function queued<T>(write: () => Promise<T>) {
+		const result = writes.then(write);
+		writes = result.catch(() => undefined);
+		return result;
+	}
 
 	async function readDraft(id: string) {
 		return parseIntakeDraft(
@@ -193,9 +199,7 @@ export function createIntakeDraftStore(projectRoot: string) {
 		create(
 			input: CreateIntakeDraftInput,
 		): Promise<{ draft: IntakeDraft; created: boolean }> {
-			const result = creation.then(() => createDraft(input));
-			creation = result.catch(() => undefined);
-			return result;
+			return queued(() => createDraft(input));
 		},
 
 		async readScreenshot(id: string, screenshotId: string) {
@@ -217,11 +221,11 @@ export function createIntakeDraftStore(projectRoot: string) {
 		 * identifying what the agent sent, so a resend still matches this draft.
 		 */
 		publish(id: string, changes: { contributor?: string } = {}) {
-			return transition(id, "published", changes);
+			return queued(() => transition(id, "published", changes));
 		},
 
 		dismiss(id: string) {
-			return transition(id, "dismissed");
+			return queued(() => transition(id, "dismissed"));
 		},
 	};
 }

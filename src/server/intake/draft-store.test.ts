@@ -153,6 +153,24 @@ describe("intake draft store", () => {
 		expect((await store.create(input)).created).toBe(false);
 	});
 
+	it("lets only the first of two overlapping publishes decide the contributor", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const { draft } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "",
+			screenshots: [],
+		});
+
+		const [first, second] = await Promise.all([
+			store.publish(draft.id, { contributor: "@first" }),
+			store.publish(draft.id, { contributor: "@second" }),
+		]);
+		expect(first.contributor).toBe("@first");
+		// The second sees an already published draft and changes nothing.
+		expect(second).toEqual(first);
+		expect(await store.get(draft.id)).toEqual(first);
+	});
+
 	it("reads drafts written before contributor and publishedAt existed", async () => {
 		const store = createIntakeDraftStore(projectRoot);
 		const { draft } = await store.create({
