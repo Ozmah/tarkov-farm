@@ -12,6 +12,7 @@ import {
 	renderPublicLocationImage,
 } from "@/components/location-image/location-image-renderer";
 import { Button } from "@/components/ui/button";
+import { readClipboardError, writeClipboardText } from "@/lib/clipboard";
 import { cn } from "@/lib/utils";
 
 type CopyStatus = "copied" | "copying" | "error" | "idle";
@@ -59,22 +60,19 @@ export function LocationShareControls({
 		setLinkStatus("copying");
 		setImageStatus("idle");
 		try {
-			if (!window.isSecureContext || !navigator.clipboard?.writeText) {
-				throw new Error(
-					"Clipboard access is unavailable. Copy the browser URL instead.",
-				);
-			}
-
 			const shareUrl = new URL(
 				createLocationSharePath({ locationId, mapId, viewKey }),
 				window.location.origin,
 			);
-			await navigator.clipboard.writeText(shareUrl.href);
+			await writeClipboardText(
+				shareUrl.href,
+				"Clipboard access is unavailable. Copy the browser URL instead.",
+			);
 			setLinkStatus("copied");
 			setStatusMessage("Location link copied to clipboard.");
 		} catch (error) {
 			setLinkStatus("error");
-			setStatusMessage(readCopyError(error));
+			setStatusMessage(readClipboardError(error));
 		}
 	}
 
@@ -98,7 +96,7 @@ export function LocationShareControls({
 			setStatusMessage("Location image copied to clipboard.");
 		} catch (error) {
 			setImageStatus("error");
-			setStatusMessage(readCopyError(error));
+			setStatusMessage(readClipboardError(error));
 		}
 	}
 
@@ -172,10 +170,4 @@ async function createPublicLocationPng(input: LocationImageInput) {
 	const canvas = document.createElement("canvas");
 	await renderPublicLocationImage(canvas, input);
 	return canvasToPngBlob(canvas);
-}
-
-function readCopyError(error: unknown) {
-	return error instanceof Error
-		? error.message
-		: "The clipboard operation failed. Try again.";
 }

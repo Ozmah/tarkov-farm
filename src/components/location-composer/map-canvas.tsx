@@ -1,16 +1,28 @@
 import type { ReactNode } from "react";
 import {
+	LocationPeek,
+	type LocationPeekLocation,
+} from "@/components/location-composer/location-peek";
+import {
 	MapWorkspace,
 	type MapWorkspaceImage,
 	type MapWorkspaceMarker,
 } from "@/components/map/map-workspace";
 
-type MapCanvasLocation = MapWorkspaceMarker & {
-	isActive: boolean;
-	markerLabel?: string;
-};
+type MapCanvasLocation = MapWorkspaceMarker &
+	Omit<LocationPeekLocation, "markerLabel"> & {
+		/** Shows Edit in the peek. Off by default, so nothing is editable by accident. */
+		editable?: boolean;
+		isActive: boolean;
+		markerLabel?: string;
+	};
 
-type DraftMarker = Omit<MapCanvasLocation, "id">;
+type DraftMarker = Omit<MapWorkspaceMarker, "id"> & { isActive: boolean };
+
+type Position = {
+	xBasisPoints: number;
+	yBasisPoints: number;
+};
 
 type MapCanvasProps = {
 	draftMarker: DraftMarker;
@@ -18,11 +30,8 @@ type MapCanvasProps = {
 	locations: MapCanvasLocation[];
 	selectedLocationId?: string;
 	toolbarEnd?: ReactNode;
-	onPositionChange: (position: {
-		xBasisPoints: number;
-		yBasisPoints: number;
-	}) => void;
-	onSelectLocation: (locationId: string) => void;
+	onEditLocation: (locationId: string) => void;
+	onPositionChange: (position: Position) => void;
 };
 
 export function MapCanvas({
@@ -31,8 +40,8 @@ export function MapCanvas({
 	locations,
 	selectedLocationId,
 	toolbarEnd,
+	onEditLocation,
 	onPositionChange,
-	onSelectLocation,
 }: MapCanvasProps) {
 	const publishedLocationCount = locations.filter(
 		({ appearance }) => appearance === "reference",
@@ -40,14 +49,17 @@ export function MapCanvas({
 	const selectedLocation = selectedLocationId
 		? locations.find((location) => location.id === selectedLocationId)
 		: undefined;
-	const markers = locations.map((location, index) => {
-		const marker = location.id === selectedLocationId ? draftMarker : location;
+	const markers: MapWorkspaceMarker[] = locations.map((location, index) => {
+		const label = location.markerLabel ?? String(index + 1);
 
-		return {
-			...marker,
-			id: location.id,
-			label: location.markerLabel ?? String(index + 1),
-		};
+		return location.id === selectedLocationId
+			? { ...draftMarker, id: location.id, label }
+			: {
+					...location,
+					inspectable: true,
+					label,
+					secondaryLabel: location.documentName,
+				};
 	});
 
 	if (!selectedLocationId) {
@@ -84,9 +96,35 @@ export function MapCanvas({
 			}
 			onMapPress={onPositionChange}
 			onSelectMarker={(markerId) => {
-				if (markerId !== "new-location") {
-					onSelectLocation(markerId);
-				}
+				if (markerId !== "new-location") onEditLocation(markerId);
+			}}
+			renderMarkerInspector={(markerId, close) => {
+				const location = locations.find(({ id }) => id === markerId);
+				if (!location) return null;
+
+				return (
+					<LocationPeek
+						location={{
+							...location,
+							markerLabel: markers.find(({ id }) => id === markerId)?.label,
+						}}
+						onEdit={
+							location.editable
+								? () => {
+										close();
+										onEditLocation(location.id);
+									}
+								: undefined
+						}
+						onUsePosition={() => {
+							close();
+							onPositionChange({
+								xBasisPoints: location.xBasisPoints,
+								yBasisPoints: location.yBasisPoints,
+							});
+						}}
+					/>
+				);
 			}}
 		/>
 	);

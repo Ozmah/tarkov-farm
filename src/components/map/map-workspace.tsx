@@ -19,7 +19,12 @@ import {
 import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import { MapMarkerCluster } from "@/components/map/map-marker-cluster";
 import { MapMarkerPreview } from "@/components/map/map-marker-preview";
+import {
+	MarkerPopoverContent,
+	type MarkerPopoverOpenChange,
+} from "@/components/map/marker-popover";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import {
 	Tooltip,
 	TooltipContent,
@@ -65,6 +70,8 @@ export type MapWorkspaceMarker = {
 	clusterable?: boolean;
 	focusOnSelect?: boolean;
 	id: string;
+	/** Opens `renderMarkerInspector` in a popover; `onSelectMarker` is not called. */
+	inspectable?: boolean;
 	isActive?: boolean;
 	kind?: "location" | "submap";
 	label?: string;
@@ -98,6 +105,7 @@ type MapWorkspaceProps = {
 	}) => void;
 	onImageError?: () => void;
 	onSelectMarker?: (markerId: string) => void;
+	renderMarkerInspector?: (markerId: string, close: () => void) => ReactNode;
 };
 
 type PointerSession = {
@@ -107,6 +115,8 @@ type PointerSession = {
 	moved: boolean;
 	pointerId: number;
 	start: Point;
+	/** The press only closed a marker popover, so it must not reach `onMapPress`. */
+	suppressPress: boolean;
 };
 
 export function MapWorkspace({
@@ -124,6 +134,7 @@ export function MapWorkspace({
 	onImageError,
 	onMapPress,
 	onSelectMarker,
+	renderMarkerInspector,
 }: MapWorkspaceProps) {
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const instructionsId = useId();
@@ -140,6 +151,9 @@ export function MapWorkspace({
 	const pendingSourcePathsRef = useRef(new Set<string>());
 	const failedSourcePathsRef = useRef(new Set<string>());
 	const mountedRef = useRef(true);
+	const dismissedPopoverEventRef = useRef<Event | undefined>(undefined);
+	const popoverOpenRef = useRef(false);
+	const [openPopoverId, setOpenPopoverId] = useState<string>();
 	const [view, setView] = useState<ViewTransform>();
 	const [isPanning, setIsPanning] = useState(false);
 	const [sourceSelection, setSourceSelection] = useState<{
@@ -210,6 +224,33 @@ export function MapWorkspace({
 			),
 		[clusterableLocationMarkers, imageSize, view?.scale],
 	);
+	const renderedPopoverIds = new Set([
+		...markerGroups.map((group) =>
+			group.markers.length === 1 ? group.markers[0]?.id : group.id,
+		),
+		...standaloneLocationMarkers.map(({ id }) => id),
+	]);
+	const activePopoverId =
+		openPopoverId && renderedPopoverIds.has(openPopoverId)
+			? openPopoverId
+			: undefined;
+	popoverOpenRef.current = activePopoverId !== undefined;
+	const changeMarkerPopover =
+		(popoverId: string): MarkerPopoverOpenChange =>
+		(open, details) => {
+			if (!open && details.reason === "outside-press") {
+				dismissedPopoverEventRef.current = details.event;
+			}
+			setOpenPopoverId((current) =>
+				open ? popoverId : current === popoverId ? undefined : current,
+			);
+		};
+	const closeMarkerPopover = () => {
+		setOpenPopoverId(undefined);
+		viewportRef.current?.focus();
+	};
+	const renderInspectorFor = (markerId: string) =>
+		renderMarkerInspector?.(markerId, closeMarkerPopover);
 	const zoomRatio = view ? view.scale / fitScaleRef.current : 1;
 	const zoomPercent = Math.round(zoomRatio * 100);
 	const responsiveSrcSet = image.sources
@@ -682,8 +723,15 @@ export function MapWorkspace({
 		}
 
 		const point = { x: event.clientX, y: event.clientY };
+		const suppressPress =
+			popoverOpenRef.current ||
+			dismissedPopoverEventRef.current === event.nativeEvent;
+		dismissedPopoverEventRef.current = undefined;
 		const shouldPan =
-			event.button !== 0 || event.pointerType === "touch" || !onMapPress;
+			event.button !== 0 ||
+			event.pointerType === "touch" ||
+			!onMapPress ||
+			suppressPress;
 
 		pointerSessionRef.current = {
 			button: event.button,
@@ -692,6 +740,7 @@ export function MapWorkspace({
 			moved: false,
 			pointerId: event.pointerId,
 			start: point,
+			suppressPress,
 		};
 		event.currentTarget.setPointerCapture(event.pointerId);
 
@@ -773,6 +822,7 @@ export function MapWorkspace({
 
 		if (
 			!cancelled &&
+			!session.suppressPress &&
 			(session.mode === "press" || event.pointerType === "touch") &&
 			!session.moved &&
 			onMapPress
@@ -809,6 +859,27 @@ export function MapWorkspace({
 		pointerSessionRef.current = undefined;
 		setIsPanning(false);
 	};
+
+	function getMarkerInteraction(
+		marker: MapWorkspaceMarker,
+	): Pick<MapMarkerProps, "inspector" | "onClick"> {
+		if (renderMarkerInspector && marker.inspectable) {
+			return {
+				inspector: {
+					open: activePopoverId === marker.id,
+					render: () => renderInspectorFor(marker.id),
+					onOpenChange: changeMarkerPopover(marker.id),
+				},
+			};
+		}
+
+		return {
+			onClick:
+				onSelectMarker && marker.selectable !== false
+					? () => onSelectMarker(marker.id)
+					: undefined,
+		};
+	}
 
 	// biome-ignore-start lint/a11y/noNoninteractiveTabindex: The map viewport is intentionally keyboard-focusable for panning and zooming.
 	return (
@@ -962,6 +1033,7 @@ export function MapWorkspace({
 									return group.markers.length === 1 && marker ? (
 										<MapMarker
 											key={marker.id}
+											{...getMarkerInteraction(marker)}
 											marker={marker}
 											position={getMarkerPosition(
 												marker,
@@ -969,20 +1041,20 @@ export function MapWorkspace({
 												view.scale,
 											)}
 											isSelected={marker.id === selectedMarkerId}
-											onClick={
-												onSelectMarker && marker.selectable !== false
-													? () => onSelectMarker(marker.id)
-													: undefined
-											}
 										/>
 									) : onSelectMarker ? (
 										<MapMarkerCluster
 											key={group.id}
 											markers={group.markers}
+											open={activePopoverId === group.id}
 											position={getMarkerPosition(group, imageSize, view.scale)}
+											renderInspector={
+												renderMarkerInspector ? renderInspectorFor : undefined
+											}
 											selectedMarkerId={selectedMarkerId}
+											onOpenChange={changeMarkerPopover(group.id)}
 											onSelect={(markerId) => {
-												viewportRef.current?.focus();
+												closeMarkerPopover();
 												onSelectMarker(markerId);
 											}}
 										/>
@@ -991,14 +1063,10 @@ export function MapWorkspace({
 								{standaloneLocationMarkers.map((marker) => (
 									<MapMarker
 										key={marker.id}
+										{...getMarkerInteraction(marker)}
 										marker={marker}
 										position={getMarkerPosition(marker, imageSize, view.scale)}
 										isSelected={marker.id === selectedMarkerId}
-										onClick={
-											onSelectMarker && marker.selectable !== false
-												? () => onSelectMarker(marker.id)
-												: undefined
-										}
 									/>
 								))}
 								{submapMarkers.map((marker) => (
@@ -1040,26 +1108,39 @@ export function MapWorkspace({
 }
 
 type MapMarkerProps = {
+	/** A controlled popover the marker opens instead of calling `onClick`. */
+	inspector?: {
+		open: boolean;
+		render: () => ReactNode;
+		onOpenChange: MarkerPopoverOpenChange;
+	};
 	isSelected: boolean;
 	marker: MapWorkspaceMarker;
 	onClick?: () => void;
 	position: Point;
 };
 
-function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
+function MapMarker({
+	inspector,
+	isSelected,
+	marker,
+	onClick,
+	position,
+}: MapMarkerProps) {
 	const [tooltipOpen, setTooltipOpen] = useState(false);
 	const isSubmap = marker.kind === "submap";
+	const isReference = marker.appearance === "reference";
 	const requiresKeyAccess = (marker.requiredKeyCount ?? 0) > 0;
 	const keyAccessLabel = requiresKeyAccess ? ", requires key access" : "";
 	const className = cn(
-		"group/marker pointer-events-auto absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange",
+		"group/marker pointer-events-auto absolute z-10 flex size-9 items-center justify-center rounded-full border-2 border-cosmic-ink bg-milk-mustache font-bold font-heading text-cosmic-ink text-lg shadow-[0_2px_8px_rgb(0_0_0/0.8)] outline-none ring-2 ring-milk-mustache after:absolute after:-bottom-1 after:left-1/2 after:size-2 after:-translate-x-1/2 after:rotate-45 after:border-cosmic-ink after:border-r-2 after:border-b-2 after:bg-milk-mustache focus-visible:ring-4 focus-visible:ring-rowdy-orange data-popup-open:z-20 data-popup-open:ring-4 data-popup-open:ring-rowdy-orange",
 		isSubmap &&
 			"h-11 w-auto min-w-14 gap-1.5 rounded-none bg-rowdy-orange px-2 text-rowdy-orange-foreground ring-rowdy-orange after:bg-rowdy-orange [&_svg]:size-5",
 		isSelected &&
 			!isSubmap &&
 			"z-20 size-11 bg-rowdy-orange text-rowdy-orange-foreground ring-4 after:bg-rowdy-orange",
 		marker.isActive === false && "opacity-60",
-		marker.appearance === "reference" &&
+		isReference &&
 			"size-6 border-2 border-cosmic-ink bg-milk-mustache text-transparent opacity-95 shadow-[0_2px_6px_rgb(0_0_0/0.9)] ring-1 ring-milk-mustache before:size-2 before:rounded-full before:bg-blue-opal after:-bottom-1 after:size-2 after:border-r after:border-b after:bg-milk-mustache",
 	);
 	const style = {
@@ -1068,9 +1149,71 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 		transform: "translate(-50%, -100%)",
 		transformOrigin: "50% 100%",
 	};
+	const referenceKeyIndicator = requiresKeyAccess ? (
+		<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+	) : null;
+	const tooltipContent = (
+		<TooltipContent
+			className={cn(
+				marker.preview &&
+					"max-w-none flex-col items-stretch gap-0 overflow-hidden p-0",
+			)}
+		>
+			{marker.preview ? (
+				<MapMarkerPreview name={marker.name} preview={marker.preview} />
+			) : (
+				marker.name
+			)}
+		</TooltipContent>
+	);
+
+	if (inspector) {
+		const trigger = (
+			<PopoverTrigger
+				data-map-marker
+				aria-label={`Inspect ${marker.name}${keyAccessLabel}`}
+				onPointerDown={(event) => event.stopPropagation()}
+				className={className}
+				style={style}
+			>
+				{isReference ? (
+					referenceKeyIndicator
+				) : (
+					<>
+						<span className="tabular-nums">{marker.label}</span>
+						{requiresKeyAccess ? (
+							<KeyRequirementIndicator className="absolute -top-1 -right-1" />
+						) : null}
+					</>
+				)}
+			</PopoverTrigger>
+		);
+
+		return (
+			<Popover
+				modal={false}
+				open={inspector.open}
+				onOpenChange={(open, details) => {
+					if (open) setTooltipOpen(false);
+					inspector.onOpenChange(open, details);
+				}}
+			>
+				<Tooltip
+					open={!inspector.open && tooltipOpen}
+					onOpenChange={setTooltipOpen}
+				>
+					<TooltipTrigger render={trigger} />
+					{tooltipContent}
+				</Tooltip>
+				<MarkerPopoverContent>
+					{inspector.open ? inspector.render() : null}
+				</MarkerPopoverContent>
+			</Popover>
+		);
+	}
 
 	if (!onClick) {
-		if (marker.appearance === "reference") {
+		if (isReference) {
 			const referenceMarker = (
 				<span
 					data-map-marker
@@ -1082,9 +1225,7 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 					className={className}
 					style={style}
 				>
-					{requiresKeyAccess ? (
-						<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
-					) : null}
+					{referenceKeyIndicator}
 				</span>
 			);
 
@@ -1150,18 +1291,7 @@ function MapMarker({ isSelected, marker, onClick, position }: MapMarkerProps) {
 	return (
 		<Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
 			<TooltipTrigger render={trigger} />
-			<TooltipContent
-				className={cn(
-					marker.preview &&
-						"max-w-none flex-col items-stretch gap-0 overflow-hidden p-0",
-				)}
-			>
-				{marker.preview ? (
-					<MapMarkerPreview name={marker.name} preview={marker.preview} />
-				) : (
-					marker.name
-				)}
-			</TooltipContent>
+			{tooltipContent}
 		</Tooltip>
 	);
 }

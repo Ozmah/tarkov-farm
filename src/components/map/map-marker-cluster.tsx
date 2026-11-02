@@ -1,10 +1,13 @@
-import { CheckIcon, MapPinIcon } from "@phosphor-icons/react";
-import { useRef, useState } from "react";
+import { CaretLeftIcon, CheckIcon, MapPinIcon } from "@phosphor-icons/react";
+import { type ReactNode, useRef, useState } from "react";
 import { KeyRequirementIndicator } from "@/components/map/key-requirement-indicator";
 import { MapMarkerPreview } from "@/components/map/map-marker-preview";
 import {
+	MarkerPopoverContent,
+	type MarkerPopoverOpenChange,
+} from "@/components/map/marker-popover";
+import {
 	Popover,
-	PopoverContent,
 	PopoverDescription,
 	PopoverTitle,
 	PopoverTrigger,
@@ -20,6 +23,7 @@ import { cn } from "@/lib/utils";
 
 type ClusterMarker = {
 	id: string;
+	inspectable?: boolean;
 	label?: string;
 	name: string;
 	preview?: MapMarkerPreviewData;
@@ -29,29 +33,34 @@ type ClusterMarker = {
 
 type MapMarkerClusterProps = {
 	markers: ClusterMarker[];
-	onSelect: (markerId: string) => void;
+	open: boolean;
 	position: Point;
+	/** Shown in place of the list for inspectable markers. */
+	renderInspector?: (markerId: string) => ReactNode;
 	selectedMarkerId?: string;
+	onOpenChange: MarkerPopoverOpenChange;
+	/** Chosen from the list; the parent closes the popover. */
+	onSelect: (markerId: string) => void;
 };
 
-const MAP_SHORTCUT_KEYS = new Set([
-	"ArrowDown",
-	"ArrowLeft",
-	"ArrowRight",
-	"ArrowUp",
-	"+",
-	"=",
-	"-",
-	"0",
-]);
 export function MapMarkerCluster({
 	markers,
-	onSelect,
+	open,
 	position,
+	renderInspector,
 	selectedMarkerId,
+	onOpenChange,
+	onSelect,
 }: MapMarkerClusterProps) {
-	const [open, setOpen] = useState(false);
 	const [tooltipOpen, setTooltipOpen] = useState(false);
+	const [inspectedMarkerId, setInspectedMarkerId] = useState<string>();
+	const inspectableMarkers = renderInspector
+		? markers.filter((marker) => marker.inspectable)
+		: [];
+	const inspectedIndex = inspectableMarkers.findIndex(
+		(marker) => marker.id === inspectedMarkerId,
+	);
+	const inspectedMarker = inspectableMarkers[inspectedIndex];
 	const restoreFocusRef = useRef(true);
 	const containsSelection = markers.some(
 		(marker) => marker.id === selectedMarkerId,
@@ -95,13 +104,15 @@ export function MapMarkerCluster({
 		<Popover
 			modal={false}
 			open={open}
-			onOpenChange={(nextOpen) => {
+			onOpenChange={(nextOpen, details) => {
 				if (nextOpen) {
 					restoreFocusRef.current = true;
 					setTooltipOpen(false);
+				} else {
+					setInspectedMarkerId(undefined);
 				}
 
-				setOpen(nextOpen);
+				onOpenChange(nextOpen, details);
 			}}
 		>
 			<Tooltip open={!open && tooltipOpen} onOpenChange={setTooltipOpen}>
@@ -119,70 +130,121 @@ export function MapMarkerCluster({
 					) : null}
 				</TooltipContent>
 			</Tooltip>
-			<PopoverContent
+			<MarkerPopoverContent
 				finalFocus={() => restoreFocusRef.current}
-				onPointerDown={(event) => event.stopPropagation()}
 				onKeyDown={(event) => {
-					if (MAP_SHORTCUT_KEYS.has(event.key)) {
-						event.stopPropagation();
+					if (
+						!inspectedMarker ||
+						(event.key !== "ArrowLeft" && event.key !== "ArrowRight")
+					) {
+						return;
 					}
+
+					event.preventDefault();
+					const offset = event.key === "ArrowLeft" ? -1 : 1;
+					const count = inspectableMarkers.length;
+					setInspectedMarkerId(
+						inspectableMarkers[(inspectedIndex + offset + count) % count]?.id,
+					);
 				}}
 			>
-				<header className="flex items-start gap-3 border-border border-b p-4">
-					<MapPinIcon aria-hidden="true" className="mt-0.5 shrink-0" />
-					<div className="min-w-0">
-						<PopoverTitle className="font-heading font-medium text-sm">
-							Nearby locations
-						</PopoverTitle>
-						<PopoverDescription className="mt-1 text-muted-foreground text-xs">
-							Choose the exact location to open.
-						</PopoverDescription>
-					</div>
-				</header>
-				<ul className="max-h-72 overflow-y-auto p-1.5">
-					{markers.map((marker) => {
-						const selected = marker.id === selectedMarkerId;
-						const requiresKeyAccess = (marker.requiredKeyCount ?? 0) > 0;
-
-						return (
-							<li key={marker.id}>
-								<button
-									type="button"
-									aria-label={`Open location ${marker.label}: ${marker.name}${marker.secondaryLabel ? `, ${marker.secondaryLabel}` : ""}${requiresKeyAccess ? ", requires key access" : ""}`}
-									aria-pressed={selected}
-									onClick={() => {
-										restoreFocusRef.current = false;
-										setOpen(false);
-										onSelect(marker.id);
-									}}
-									className={cn(
-										"flex min-h-12 w-full items-center gap-3 px-2.5 py-2 text-left outline-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground",
-										selected && "bg-accent text-accent-foreground",
-									)}
-								>
-									<span className="relative flex size-7 shrink-0 items-center justify-center rounded-full border border-border font-heading text-xs tabular-nums">
-										{marker.label}
-										{requiresKeyAccess ? (
-											<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
-										) : null}
-									</span>
-									<span className="min-w-0 flex-1">
-										<span className="block truncate text-sm">
-											{marker.name}
-										</span>
-										{marker.secondaryLabel ? (
-											<span className="block truncate text-muted-foreground text-xs">
-												{marker.secondaryLabel}
-											</span>
-										) : null}
-									</span>
-									{selected ? <CheckIcon aria-hidden="true" /> : null}
-								</button>
-							</li>
-						);
-					})}
-				</ul>
-			</PopoverContent>
+				{inspectedMarker && renderInspector ? (
+					<>
+						<div className="flex items-center gap-2 border-border border-b px-1.5 py-1">
+							<button
+								type="button"
+								onClick={() => setInspectedMarkerId(undefined)}
+								className="flex min-h-11 items-center gap-1.5 px-2 font-heading text-xs outline-none hover:bg-accent focus-visible:bg-accent"
+							>
+								<CaretLeftIcon aria-hidden="true" />
+								Nearby locations
+							</button>
+							<span className="ml-auto px-2 text-muted-foreground text-xs tabular-nums">
+								{inspectedIndex + 1} of {inspectableMarkers.length}
+							</span>
+						</div>
+						{renderInspector(inspectedMarker.id)}
+					</>
+				) : (
+					<ClusterList
+						markers={markers}
+						selectedMarkerId={selectedMarkerId}
+						onChoose={(marker) => {
+							if (marker.inspectable && renderInspector) {
+								setInspectedMarkerId(marker.id);
+								return;
+							}
+							restoreFocusRef.current = false;
+							onSelect(marker.id);
+						}}
+					/>
+				)}
+			</MarkerPopoverContent>
 		</Popover>
+	);
+}
+
+type ClusterListProps = {
+	markers: ClusterMarker[];
+	selectedMarkerId?: string;
+	onChoose: (marker: ClusterMarker) => void;
+};
+
+function ClusterList({
+	markers,
+	selectedMarkerId,
+	onChoose,
+}: ClusterListProps) {
+	return (
+		<>
+			<header className="flex items-start gap-3 border-border border-b p-4">
+				<MapPinIcon aria-hidden="true" className="mt-0.5 shrink-0" />
+				<div className="min-w-0">
+					<PopoverTitle className="font-heading font-medium text-sm">
+						Nearby locations
+					</PopoverTitle>
+					<PopoverDescription className="mt-1 text-muted-foreground text-xs">
+						Choose the exact location to open.
+					</PopoverDescription>
+				</div>
+			</header>
+			<ul className="max-h-72 overflow-y-auto p-1.5">
+				{markers.map((marker) => {
+					const selected = marker.id === selectedMarkerId;
+					const requiresKeyAccess = (marker.requiredKeyCount ?? 0) > 0;
+
+					return (
+						<li key={marker.id}>
+							<button
+								type="button"
+								aria-label={`Open location${marker.label ? ` ${marker.label}` : ""}: ${marker.name}${marker.secondaryLabel ? `, ${marker.secondaryLabel}` : ""}${requiresKeyAccess ? ", requires key access" : ""}`}
+								aria-pressed={selected}
+								onClick={() => onChoose(marker)}
+								className={cn(
+									"flex min-h-12 w-full items-center gap-3 px-2.5 py-2 text-left outline-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground",
+									selected && "bg-accent text-accent-foreground",
+								)}
+							>
+								<span className="relative flex size-7 shrink-0 items-center justify-center rounded-full border border-border font-heading text-xs tabular-nums">
+									{marker.label}
+									{requiresKeyAccess ? (
+										<KeyRequirementIndicator className="absolute -top-1.5 -right-1.5 size-3.5 [&_svg]:size-2" />
+									) : null}
+								</span>
+								<span className="min-w-0 flex-1">
+									<span className="block truncate text-sm">{marker.name}</span>
+									{marker.secondaryLabel ? (
+										<span className="block truncate text-muted-foreground text-xs">
+											{marker.secondaryLabel}
+										</span>
+									) : null}
+								</span>
+								{selected ? <CheckIcon aria-hidden="true" /> : null}
+							</button>
+						</li>
+					);
+				})}
+			</ul>
+		</>
 	);
 }

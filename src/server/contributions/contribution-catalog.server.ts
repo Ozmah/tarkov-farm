@@ -2,6 +2,7 @@ import "@tanstack/react-start/server-only";
 
 import { and, asc, desc, eq } from "drizzle-orm";
 
+import { indexFirstScreenshotPreviews } from "@/lib/map-marker-preview";
 import {
 	getMapImageSources,
 	type MapMasterManifest,
@@ -18,6 +19,7 @@ import {
 	locations,
 	mapImages,
 	maps,
+	screenshots,
 } from "@/server/db/schema";
 
 type CatalogDatabase = Awaited<ReturnType<typeof getDatabase>>["db"];
@@ -44,6 +46,7 @@ export async function queryContributionCatalog(
 		keyMapRows,
 		locationRows,
 		locationRequiredKeyRows,
+		screenshotRows,
 	] = await Promise.all([
 		db
 			.select({ id: maps.id, name: maps.name })
@@ -125,6 +128,8 @@ export async function queryContributionCatalog(
 		db
 			.select({
 				id: locations.id,
+				description: locations.description,
+				documentId: locationDocuments.documentId,
 				mapImageId: locations.mapImageId,
 				name: locations.name,
 				xBasisPoints: locations.xBasisPoints,
@@ -182,6 +187,19 @@ export async function queryContributionCatalog(
 			.where(eq(locations.isActive, true))
 			.orderBy(asc(locationRequiredKeys.locationId))
 			.all(),
+		db
+			.select({
+				altText: screenshots.altText,
+				id: screenshots.id,
+				locationId: screenshots.locationId,
+				previewHeight: screenshots.previewHeight,
+				previewPath: screenshots.previewPath,
+				previewWidth: screenshots.previewWidth,
+				sortOrder: screenshots.sortOrder,
+			})
+			.from(screenshots)
+			.where(eq(screenshots.isActive, true))
+			.all(),
 	]);
 	const contributableMapIds = new Set(imageRows.map(({ mapId }) => mapId));
 	const visibleDocumentMaps = documentMapRows.filter(({ mapId }) =>
@@ -194,6 +212,7 @@ export async function queryContributionCatalog(
 		contributableMapIds.has(mapId),
 	);
 	const visibleKeyIds = new Set(visibleKeyMaps.map(({ keyId }) => keyId));
+	const previewByLocation = indexFirstScreenshotPreviews(screenshotRows);
 	const requiredKeyCountByLocation = new Map<string, number>();
 	for (const { locationId } of locationRequiredKeyRows) {
 		requiredKeyCountByLocation.set(
@@ -209,6 +228,7 @@ export async function queryContributionCatalog(
 		keys: keyRows.filter(({ id }) => visibleKeyIds.has(id)),
 		locations: locationRows.map((location) => ({
 			...location,
+			preview: previewByLocation.get(location.id),
 			requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
 		})),
 		mapImages: imageRows.map((image) => ({

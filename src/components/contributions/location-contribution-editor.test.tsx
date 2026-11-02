@@ -1,7 +1,14 @@
 // @vitest-environment jsdom
 
 import { useBlocker } from "@tanstack/react-router";
-import { act, cleanup, render, waitFor } from "@testing-library/react";
+import {
+	act,
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
@@ -43,13 +50,17 @@ describe("LocationContributionEditor", () => {
 		expect(latestMapProps().locations).toContainEqual(
 			expect.objectContaining({
 				appearance: "reference",
-				clusterable: false,
+				description: "Under the bench",
+				documentName: "Technical manual",
 				id: "published:published-location",
 				markerLabel: "",
 				requiredKeyCount: 1,
-				selectable: false,
 			}),
 		);
+		expect(
+			latestMapProps().locations.find(({ id }) => id.startsWith("published:"))
+				?.editable,
+		).toBeUndefined();
 
 		act(() => {
 			latestComposerProps().onDraftChange("name", "USEC camp");
@@ -81,6 +92,17 @@ describe("LocationContributionEditor", () => {
 			expect(latestTrayProps().locations[0]?.name).toBe("USEC camp convoy"),
 		);
 		expect(latestTrayProps().locations[0]?.id).toBe(staged?.id);
+
+		act(() => {
+			latestComposerProps().onDraftChange("name", "Unsaved rename");
+		});
+		act(() => latestMapProps().onEditLocation(staged?.id ?? ""));
+		expect(await screen.findByText("Discard your changes?")).toBeTruthy();
+		expect(latestComposerProps().draft.name).toBe("Unsaved rename");
+		fireEvent.click(screen.getByRole("button", { name: "Discard changes" }));
+		await waitFor(() =>
+			expect(latestComposerProps().draft.name).toBe("USEC camp convoy"),
+		);
 
 		act(() => latestTrayProps().onRemove(staged?.id ?? ""));
 		expect(latestTrayProps().locations).toHaveLength(0);
@@ -150,9 +172,12 @@ const catalog: React.ComponentProps<
 	],
 	locations: [
 		{
+			description: "Under the bench",
+			documentId: "technical",
 			id: "published-location",
 			mapImageId: "woods-main",
 			name: "Published location",
+			preview: undefined,
 			requiredKeyCount: 1,
 			xBasisPoints: 4_000,
 			yBasisPoints: 6_000,

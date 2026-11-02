@@ -7,6 +7,7 @@ import {
 	screen,
 	waitFor,
 } from "@testing-library/react";
+import { type ComponentProps, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { MapMarkerCluster } from "./map-marker-cluster";
@@ -25,7 +26,7 @@ describe("MapMarkerCluster", () => {
 				onKeyDown={onKeyDown}
 				onPointerDown={onPointerDown}
 			>
-				<MapMarkerCluster
+				<ControlledCluster
 					markers={[
 						{
 							id: "one",
@@ -71,7 +72,7 @@ describe("MapMarkerCluster", () => {
 
 	it("summarizes keyed locations and identifies them in the chooser", async () => {
 		render(
-			<MapMarkerCluster
+			<ControlledCluster
 				markers={[
 					{
 						id: "locked",
@@ -128,9 +129,51 @@ describe("MapMarkerCluster", () => {
 		expect(document.activeElement).toBe(trigger);
 	});
 
+	it("inspects a location in place and steps through the cluster with the arrow keys", async () => {
+		const onSelect = vi.fn();
+		render(
+			<ControlledCluster
+				markers={clusterMarkers.map((marker) => ({
+					...marker,
+					inspectable: true,
+				}))}
+				onSelect={onSelect}
+				position={{ x: 500, y: 500 }}
+				renderInspector={(markerId) => <p>Inspecting {markerId}</p>}
+			/>,
+		);
+
+		fireEvent.click(
+			screen.getByRole("button", { name: "Choose among 2 nearby locations" }),
+		);
+		fireEvent.click(
+			await screen.findByRole("button", {
+				name: "Open location 7: First location",
+			}),
+		);
+
+		expect(screen.getByText("Inspecting one")).toBeTruthy();
+		expect(screen.getByText("1 of 2")).toBeTruthy();
+		expect(onSelect).not.toHaveBeenCalled();
+
+		fireEvent.keyDown(screen.getByText("Inspecting one"), {
+			key: "ArrowRight",
+		});
+		expect(screen.getByText("Inspecting two")).toBeTruthy();
+		fireEvent.keyDown(screen.getByText("Inspecting two"), {
+			key: "ArrowRight",
+		});
+		expect(screen.getByText("Inspecting one")).toBeTruthy();
+
+		fireEvent.click(screen.getByRole("button", { name: "Nearby locations" }));
+		expect(
+			screen.getByRole("button", { name: "Open location 11: Second location" }),
+		).toBeTruthy();
+	});
+
 	it("previews the first cluster location when none is selected", async () => {
 		render(
-			<MapMarkerCluster
+			<ControlledCluster
 				markers={clusterMarkers}
 				onSelect={vi.fn()}
 				position={{ x: 500, y: 500 }}
@@ -151,7 +194,7 @@ describe("MapMarkerCluster", () => {
 
 	it("previews the selected cluster location using its stable position", async () => {
 		render(
-			<MapMarkerCluster
+			<ControlledCluster
 				markers={clusterMarkers}
 				onSelect={vi.fn()}
 				position={{ x: 500, y: 500 }}
@@ -214,7 +257,7 @@ async function findMarkerPreview() {
 
 function renderCluster(onSelect = vi.fn()) {
 	return render(
-		<MapMarkerCluster
+		<ControlledCluster
 			markers={[
 				{ id: "one", label: "7", name: "First location" },
 				{ id: "two", label: "11", name: "Second location" },
@@ -222,5 +265,24 @@ function renderCluster(onSelect = vi.fn()) {
 			onSelect={onSelect}
 			position={{ x: 500, y: 500 }}
 		/>,
+	);
+}
+
+/** Mirrors MapWorkspace, which owns the open state and closes on selection. */
+function ControlledCluster(
+	props: Omit<ComponentProps<typeof MapMarkerCluster>, "open" | "onOpenChange">,
+) {
+	const [open, setOpen] = useState(false);
+
+	return (
+		<MapMarkerCluster
+			{...props}
+			open={open}
+			onOpenChange={setOpen}
+			onSelect={(markerId) => {
+				setOpen(false);
+				props.onSelect(markerId);
+			}}
+		/>
 	);
 }

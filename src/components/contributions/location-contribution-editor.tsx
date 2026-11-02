@@ -1,24 +1,19 @@
-import { useBlocker } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { ContributionTray } from "@/components/contributions/contribution-tray";
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
-import type {
-	LocationComposerDraft,
-	LocationDraftChange,
+import {
+	hasLocationComposerChanges,
+	type LocationComposerDraft,
+	type LocationComposerSnapshot,
+	type LocationDraftChange,
 } from "@/components/location-composer/location-draft";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
 import { MapCanvas } from "@/components/location-composer/map-canvas";
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+	UnsavedChangesDialog,
+	useUnsavedChangesGuard,
+} from "@/components/location-composer/unsaved-changes-guard";
 import { Button } from "@/components/ui/button";
 import {
 	Empty,
@@ -53,7 +48,11 @@ export function LocationContributionEditor({
 	const [workspace, setWorkspace] = useState(
 		createLocationContributionWorkspace,
 	);
-	const [draft, setDraft] = useState(() => createDraft(catalog, initialMapId));
+	const [baseline, setBaseline] = useState<LocationComposerSnapshot>(() => ({
+		draft: createDraft(catalog, initialMapId),
+		screenshots: [],
+	}));
+	const [draft, setDraft] = useState(baseline.draft);
 	const [screenshots, setScreenshots] = useState<ScreenshotDraft[]>([]);
 	const [editingLocationId, setEditingLocationId] = useState<string>();
 	const [isStaging, setIsStaging] = useState(false);
@@ -79,6 +78,9 @@ export function LocationContributionEditor({
 			.map(({ keyId }) => keyId),
 	);
 	const availableKeys = catalog.keys.filter(({ id }) => keyIds.has(id));
+	const documentNameById = new Map(
+		catalog.documents.map(({ id, name }) => [id, name]),
+	);
 	const canvasLocations = [
 		...workspace.locations.flatMap((location, index) =>
 			location.mapImageId === draftImage?.id ||
@@ -86,6 +88,8 @@ export function LocationContributionEditor({
 				? [
 						{
 							...location,
+							documentName: documentNameById.get(location.documentId),
+							editable: true,
 							isActive: true,
 							markerLabel: String(index + 1),
 							requiredKeyCount: location.requiredKeyIds.length,
@@ -99,27 +103,24 @@ export function LocationContributionEditor({
 						{
 							...location,
 							appearance: "reference" as const,
-							clusterable: false,
+							documentName: documentNameById.get(location.documentId),
 							id: `published:${location.id}`,
 							isActive: true,
 							markerLabel: "",
 							requiredKeyCount: location.requiredKeyCount ?? 0,
-							selectable: false,
 						},
 					]
 				: [],
 		),
 	];
 	const workspaceBytes = getLocationContributionWorkspaceBytes(workspace);
-	const hasInMemoryWork =
-		workspace.locations.length > 0 ||
-		screenshots.length > 0 ||
-		!areDraftsEqual(draft, createDraft(catalog, undefined, draft.mapImageId));
-	const navigationBlocker = useBlocker({
-		disabled: !hasInMemoryWork,
-		enableBeforeUnload: () => hasInMemoryWork,
-		shouldBlockFn: ({ next }) => next.pathname !== "/contribute/editor",
-		withResolver: true,
+	const hasComposerChanges = hasLocationComposerChanges(baseline, {
+		draft,
+		screenshots,
+	});
+	const guard = useUnsavedChangesGuard({
+		blockNavigation: workspace.locations.length > 0 || hasComposerChanges,
+		shouldBlockNavigation: ({ next }) => next.pathname !== "/contribute/editor",
 	});
 
 	if (!draftImage) {
@@ -143,6 +144,8 @@ export function LocationContributionEditor({
 
 	const updateDraftMap = (mapId: string) => {
 		const next = createDraft(catalog, mapId);
+		// Choosing a map on an untouched composer is not work worth guarding.
+		if (!hasComposerChanges) setBaseline({ draft: next, screenshots: [] });
 		const nextDocumentIds = new Set(
 			catalog.documentMaps
 				.filter((assignment) => assignment.mapId === mapId)
@@ -208,7 +211,9 @@ export function LocationContributionEditor({
 	};
 
 	const resetComposer = (mapImageId = draft.mapImageId) => {
-		setDraft(createDraft(catalog, undefined, mapImageId));
+		const next = createDraft(catalog, undefined, mapImageId);
+		setBaseline({ draft: next, screenshots: [] });
+		setDraft(next);
 		setScreenshots([]);
 		setEditingLocationId(undefined);
 		setError(undefined);
@@ -218,21 +223,24 @@ export function LocationContributionEditor({
 		const location = workspace.locations.find(({ id }) => id === locationId);
 		if (!location || isStaging) return;
 
-		setDraft({
-			description: location.description ?? "",
-			documentId: location.documentId,
-			mapImageId: location.mapImageId,
-			name: location.name,
-			requiredKeyIds: location.requiredKeyIds,
-			xBasisPoints: location.xBasisPoints,
-			yBasisPoints: location.yBasisPoints,
-		});
-		setScreenshots(
-			location.screenshots.map((screenshot) => ({
+		const next = {
+			draft: {
+				description: location.description ?? "",
+				documentId: location.documentId,
+				mapImageId: location.mapImageId,
+				name: location.name,
+				requiredKeyIds: location.requiredKeyIds,
+				xBasisPoints: location.xBasisPoints,
+				yBasisPoints: location.yBasisPoints,
+			},
+			screenshots: location.screenshots.map((screenshot) => ({
 				file: screenshot.file,
 				key: screenshot.id,
 			})),
-		);
+		};
+		setBaseline(next);
+		setDraft(next.draft);
+		setScreenshots(next.screenshots);
 		setEditingLocationId(locationId);
 		setError(undefined);
 	};
@@ -306,7 +314,9 @@ export function LocationContributionEditor({
 								setDraft((current) => ({ ...current, ...position }));
 							}
 						}}
-						onSelectLocation={editLocation}
+						onEditLocation={(locationId) =>
+							guard.confirm(hasComposerChanges, () => editLocation(locationId))
+						}
 					/>
 
 					<LocationComposerForm
@@ -372,44 +382,36 @@ export function LocationContributionEditor({
 						warnAboutSize={shouldWarnAboutLocationContributionBundleSize(
 							workspace,
 						)}
-						onCreate={() => resetComposer()}
+						onCreate={() =>
+							guard.confirm(hasComposerChanges, () => resetComposer())
+						}
 						onDownload={downloadContribution}
-						onEdit={editLocation}
+						onEdit={(locationId) =>
+							guard.confirm(hasComposerChanges, () => editLocation(locationId))
+						}
 						onRemove={removeLocation}
 					/>
 				</div>
 			</div>
 
-			<AlertDialog
-				open={navigationBlocker.status === "blocked"}
-				onOpenChange={(open) => {
-					if (!open && navigationBlocker.status === "blocked") {
-						navigationBlocker.reset();
-					}
-				}}
-			>
-				<AlertDialogContent size="sm">
-					<AlertDialogHeader>
-						<AlertDialogTitle>Leave the contribution editor?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Your locations, draft changes, and screenshots will be lost.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Stay here</AlertDialogCancel>
-						<AlertDialogAction
-							variant="destructive"
-							onClick={() => {
-								if (navigationBlocker.status === "blocked") {
-									navigationBlocker.proceed();
-								}
-							}}
-						>
-							Leave editor
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+			<UnsavedChangesDialog
+				open={guard.pending !== undefined}
+				{...(guard.pending === "navigation"
+					? {
+							confirmLabel: "Leave editor",
+							description:
+								"Your locations, draft changes, and screenshots will be lost.",
+							title: "Leave the contribution editor?",
+						}
+					: {
+							confirmLabel: "Discard changes",
+							description:
+								"The location you are editing has changes that are not in the tray yet.",
+							title: "Discard your changes?",
+						})}
+				onDiscard={guard.discard}
+				onKeep={guard.keep}
+			/>
 		</>
 	);
 }
@@ -443,22 +445,6 @@ function isAcceptedScreenshot(file: File) {
 		file.size > 0 &&
 		file.size <= MAX_CONTRIBUTION_SCREENSHOT_BYTES &&
 		["image/jpeg", "image/png", "image/webp"].includes(file.type)
-	);
-}
-
-function areDraftsEqual(
-	left: LocationComposerDraft,
-	right: LocationComposerDraft,
-) {
-	return (
-		left.description === right.description &&
-		left.documentId === right.documentId &&
-		left.mapImageId === right.mapImageId &&
-		left.name === right.name &&
-		left.xBasisPoints === right.xBasisPoints &&
-		left.yBasisPoints === right.yBasisPoints &&
-		left.requiredKeyIds.length === right.requiredKeyIds.length &&
-		left.requiredKeyIds.every((id, index) => id === right.requiredKeyIds[index])
 	);
 }
 

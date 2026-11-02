@@ -1,6 +1,6 @@
 import { CrosshairIcon, PlusIcon } from "@phosphor-icons/react";
 import { useRouter } from "@tanstack/react-router";
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { EditorMapSelectors } from "@/components/editor/editor-map-selectors";
 import { EditorSidebarNavigation } from "@/components/editor/editor-sidebar-navigation";
 import {
@@ -11,8 +11,17 @@ import { LocalContributionImporter } from "@/components/editor/local-contributio
 import { LocalUpdatesEditor } from "@/components/editor/local-updates-editor";
 import { LocationReplyImageDialog } from "@/components/editor/location-reply-image-dialog";
 import { LocationComposerForm } from "@/components/location-composer/location-composer-form";
+import {
+	hasLocationComposerChanges,
+	type LocationComposerDraft,
+	type LocationComposerSnapshot,
+} from "@/components/location-composer/location-draft";
 import type { ScreenshotDraft } from "@/components/location-composer/location-screenshot-editor";
 import { MapCanvas } from "@/components/location-composer/map-canvas";
+import {
+	UnsavedChangesDialog,
+	useUnsavedChangesGuard,
+} from "@/components/location-composer/unsaved-changes-guard";
 import { MapSidebarPanel } from "@/components/map/map-sidebar-panel";
 import {
 	AlertDialog,
@@ -58,6 +67,7 @@ import {
 	MAX_INTAKE_CONTRIBUTOR_LENGTH,
 } from "@/lib/intake-draft";
 import { numberMapLocations } from "@/lib/map-location-order";
+import { indexFirstScreenshotPreviews } from "@/lib/map-marker-preview";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
 
@@ -82,16 +92,7 @@ type SavedLocationTarget = {
 	mapId: string;
 	mapImageId: string;
 };
-type Draft = {
-	name: string;
-	description: string;
-	mapImageId: string;
-	xBasisPoints: number;
-	yBasisPoints: number;
-	isActive: boolean;
-	documentId: string;
-	requiredKeyIds: string[];
-};
+type Draft = LocationComposerDraft & { isActive: boolean };
 
 type LocalMapEditorProps = {
 	data: EditorData;
@@ -123,10 +124,15 @@ export function LocalMapEditor({
 		images.find((image) => image.id === search.image) ??
 		images.find((image) => image.viewKey === "main") ??
 		images[0];
-	const imageLocations = numberMapLocations(
-		data.locations.filter(
-			(location) => location.mapImageId === selectedImage?.id,
-		),
+	// Stable identities: LocationWorkspace resets its form when the selected location object changes.
+	const imageLocations = useMemo(
+		() =>
+			numberMapLocations(
+				data.locations.filter(
+					(location) => location.mapImageId === selectedImage?.id,
+				),
+			),
+		[data.locations, selectedImage?.id],
 	);
 	const assignedDocumentIds = new Set(
 		data.documentMaps
@@ -168,6 +174,18 @@ export function LocalMapEditor({
 	const [newDraftVersion, setNewDraftVersion] = useState(0);
 	const [openedIntakeDraft, setOpenedIntakeDraft] =
 		useState<OpenedIntakeDraft>();
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+	const guard = useUnsavedChangesGuard({
+		blockNavigation: hasUnsavedChanges,
+		// A document filter keeps a new location's form; these replace or unmount it.
+		shouldBlockNavigation: ({ current, next }) =>
+			current.pathname !== next.pathname ||
+			(["image", "location", "map", "section"] as const).some(
+				(key) =>
+					(current.search as EditorSearch)[key] !==
+					(next.search as EditorSearch)[key],
+			),
+	});
 
 	const selectMap = (mapId: string | null) => {
 		if (!mapId) {
@@ -195,11 +213,12 @@ export function LocalMapEditor({
 		}
 	};
 
-	const beginNewLocation = () => {
-		setOpenedIntakeDraft(undefined);
-		setNewDraftVersion((version) => version + 1);
-		void onSearchChange({ location: undefined }, true);
-	};
+	const beginNewLocation = () =>
+		guard.confirm(hasUnsavedChanges, () => {
+			setOpenedIntakeDraft(undefined);
+			setNewDraftVersion((version) => version + 1);
+			return onSearchChange({ location: undefined }, true);
+		});
 
 	const openIntakeDraft = (opened: OpenedIntakeDraft) => {
 		const draftImage = data.mapImages.find(
@@ -315,7 +334,8 @@ export function LocalMapEditor({
 							onSelectLocation={(locationId) =>
 								void onSearchChange({ location: locationId }, true)
 							}
-							onSaved={refreshAndSelect}
+							onSaved={(target) => guard.allow(() => refreshAndSelect(target))}
+							onUnsavedChangesChange={setHasUnsavedChanges}
 						/>
 					) : (
 						<Empty className="min-h-[50svh] lg:col-span-2">
@@ -405,6 +425,14 @@ export function LocalMapEditor({
 			}
 		>
 			{editorContent}
+			<UnsavedChangesDialog
+				open={guard.pending !== undefined}
+				confirmLabel="Discard changes"
+				description="The location in the editor has changes that are not saved."
+				title="Discard your changes?"
+				onDiscard={guard.discard}
+				onKeep={guard.keep}
+			/>
 		</WorkspaceShell>
 	);
 }
@@ -503,6 +531,7 @@ type LocationWorkspaceProps = {
 	selectedLocation?: EditorLocation;
 	onSelectLocation: (locationId: string) => void;
 	onSaved: (target?: SavedLocationTarget) => Promise<void>;
+	onUnsavedChangesChange: (hasUnsavedChanges: boolean) => void;
 };
 
 function LocationWorkspace({
@@ -516,6 +545,7 @@ function LocationWorkspace({
 	selectedLocation,
 	onSelectLocation,
 	onSaved,
+	onUnsavedChangesChange,
 }: LocationWorkspaceProps) {
 	const selectedDocumentId = selectedLocation
 		? (data.locationDocuments.find(
@@ -532,25 +562,35 @@ function LocationWorkspace({
 				: [],
 		[data.locationRequiredKeys, selectedLocation],
 	);
-	const [draft, setDraft] = useState<Draft>(() =>
+	const previewByLocation = useMemo(
+		() => indexFirstScreenshotPreviews(data.screenshots),
+		[data.screenshots],
+	);
+	const openComposer = (): LocationComposerSnapshot<Draft> =>
 		intakeDraft
-			? createIntakeLocationDraft(intakeDraft.draft, image.id)
-			: createLocationDraft(
-					selectedLocation,
-					selectedDocumentId,
-					selectedRequiredKeyIds,
-					image.id,
-				),
-	);
+			? {
+					draft: createIntakeLocationDraft(intakeDraft.draft, image.id),
+					screenshots: createIntakeScreenshotDrafts(intakeDraft),
+				}
+			: {
+					draft: createLocationDraft(
+						selectedLocation,
+						selectedDocumentId,
+						selectedRequiredKeyIds,
+						image.id,
+					),
+					screenshots: createScreenshotDrafts(
+						data.screenshots,
+						selectedLocation?.id,
+					),
+				};
+	const [baseline, setBaseline] = useState(openComposer);
+	const [draft, setDraft] = useState<Draft>(baseline.draft);
 	const [screenshotDrafts, setScreenshotDrafts] = useState<ScreenshotDraft[]>(
-		() =>
-			intakeDraft
-				? createIntakeScreenshotDrafts(intakeDraft)
-				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
+		baseline.screenshots,
 	);
-	const [contributor, setContributor] = useState(
-		intakeDraft?.draft.contributor ?? "",
-	);
+	const initialContributor = intakeDraft?.draft.contributor ?? "";
+	const [contributor, setContributor] = useState(initialContributor);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
@@ -581,22 +621,11 @@ function LocationWorkspace({
 
 	if (shouldReset) {
 		setPreviousResetState(resetState);
-		setDraft(
-			intakeDraft
-				? createIntakeLocationDraft(intakeDraft.draft, image.id)
-				: createLocationDraft(
-						selectedLocation,
-						selectedDocumentId,
-						selectedRequiredKeyIds,
-						image.id,
-					),
-		);
-		setScreenshotDrafts(
-			intakeDraft
-				? createIntakeScreenshotDrafts(intakeDraft)
-				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
-		);
-		setContributor(intakeDraft?.draft.contributor ?? "");
+		const next = openComposer();
+		setBaseline(next);
+		setDraft(next.draft);
+		setScreenshotDrafts(next.screenshots);
+		setContributor(initialContributor);
 		setError(undefined);
 	}
 
@@ -628,8 +657,17 @@ function LocationWorkspace({
 			: selectedLocation
 				? [selectedLocation]
 				: [];
-	const canvasLocationsWithKeyCounts = canvasLocations.map((location) => ({
+	const documentNameByLocation = new Map(
+		data.locationDocuments.map(({ documentId, locationId }) => [
+			locationId,
+			data.documents.find(({ id }) => id === documentId)?.name,
+		]),
+	);
+	const canvasLocationsWithDetails = canvasLocations.map((location) => ({
 		...location,
+		documentName: documentNameByLocation.get(location.id),
+		editable: true,
+		preview: previewByLocation.get(location.id),
 		requiredKeyCount: requiredKeyCountByLocation.get(location.id) ?? 0,
 	}));
 	const savedScreenshots = selectedLocation
@@ -650,16 +688,20 @@ function LocationWorkspace({
 		const key = data.keys.find((item) => item.id === keyId);
 		return key ? [key.name] : [];
 	});
-	const hasUnsavedChanges = selectedLocation
-		? !isSavedLocationDraft({
-				draft,
-				screenshotDrafts,
-				selectedDocumentId,
-				selectedLocation,
-				selectedRequiredKeyIds,
-				savedScreenshotIds: savedScreenshots.map(({ id }) => id),
-			})
-		: false;
+	const hasUnsavedChanges =
+		contributor !== initialContributor ||
+		hasLocationComposerChanges(baseline, {
+			draft,
+			screenshots: screenshotDrafts,
+		});
+
+	useEffect(() => {
+		onUnsavedChangesChange(hasUnsavedChanges);
+	}, [hasUnsavedChanges, onUnsavedChangesChange]);
+	useEffect(
+		() => () => onUnsavedChangesChange(false),
+		[onUnsavedChangesChange],
+	);
 	const replyImageInput =
 		selectedLocation &&
 		savedMapImage &&
@@ -884,7 +926,7 @@ function LocationWorkspace({
 			<MapCanvas
 				key={draftImage.id}
 				image={draftImage}
-				locations={canvasLocationsWithKeyCounts}
+				locations={canvasLocationsWithDetails}
 				selectedLocationId={selectedLocation?.id}
 				toolbarEnd={
 					replyImageInput ? (
@@ -906,7 +948,7 @@ function LocationWorkspace({
 				onPositionChange={(position) =>
 					setDraft((current) => ({ ...current, ...position }))
 				}
-				onSelectLocation={onSelectLocation}
+				onEditLocation={onSelectLocation}
 			/>
 
 			<LocationComposerForm
@@ -1118,38 +1160,5 @@ function isAcceptedScreenshotFile(file: File) {
 		file.size > 0 &&
 		file.size <= MAX_SCREENSHOT_BYTES &&
 		["image/jpeg", "image/png", "image/webp"].includes(file.type)
-	);
-}
-
-function isSavedLocationDraft(input: {
-	draft: Draft;
-	screenshotDrafts: ScreenshotDraft[];
-	selectedDocumentId: string;
-	selectedLocation: EditorLocation;
-	selectedRequiredKeyIds: string[];
-	savedScreenshotIds: string[];
-}) {
-	const requiredKeyIds = [...input.draft.requiredKeyIds].sort();
-	const screenshotIds = input.screenshotDrafts.flatMap((screenshot) =>
-		screenshot.id && !screenshot.file ? [screenshot.id] : [],
-	);
-
-	return (
-		input.draft.name === input.selectedLocation.name &&
-		input.draft.description === (input.selectedLocation.description ?? "") &&
-		input.draft.mapImageId === input.selectedLocation.mapImageId &&
-		input.draft.xBasisPoints === input.selectedLocation.xBasisPoints &&
-		input.draft.yBasisPoints === input.selectedLocation.yBasisPoints &&
-		input.draft.isActive === input.selectedLocation.isActive &&
-		input.draft.documentId === input.selectedDocumentId &&
-		requiredKeyIds.length === input.selectedRequiredKeyIds.length &&
-		requiredKeyIds.every(
-			(keyId, index) => keyId === input.selectedRequiredKeyIds[index],
-		) &&
-		screenshotIds.length === input.screenshotDrafts.length &&
-		screenshotIds.length === input.savedScreenshotIds.length &&
-		screenshotIds.every(
-			(screenshotId, index) => screenshotId === input.savedScreenshotIds[index],
-		)
 	);
 }
