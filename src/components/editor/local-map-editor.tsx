@@ -96,7 +96,7 @@ type Draft = {
 
 type LocalMapEditorProps = {
 	data: EditorData;
-	intakeDrafts: IntakeDraft[];
+	intakeDrafts: { drafts: IntakeDraft[]; problem?: string };
 	releaseContext: ReleaseContext;
 	updates: PublicUpdate[];
 	search: EditorSearch;
@@ -271,7 +271,8 @@ export function LocalMapEditor({
 			editorContent = (
 				<IntakeDrafts
 					catalog={data}
-					drafts={intakeDrafts}
+					drafts={intakeDrafts.drafts}
+					problem={intakeDrafts.problem}
 					onOpen={openIntakeDraft}
 					onDismissed={() => router.invalidate({ sync: true })}
 				/>

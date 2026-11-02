@@ -151,8 +151,10 @@ export function createTarkovFarmMcpServer(options: {
 		({ status, publishedSince }) =>
 			respond(async () => {
 				const since = publishedSince ? Date.parse(publishedSince) : undefined;
+				const { drafts, unreadable } = await store.list();
 				return {
-					drafts: (await store.list())
+					unreadable,
+					drafts: drafts
 						.filter((draft) => !status || draft.status === status)
 						.filter(
 							(draft) =>
@@ -178,7 +180,7 @@ export function createTarkovFarmMcpServer(options: {
 
 	/** Same original bytes already published or drafted: likely a repeat contribution. */
 	async function findDuplicateScreenshots(draft: IntakeDraft) {
-		const [catalog, drafts] = await Promise.all([
+		const [catalog, { drafts }] = await Promise.all([
 			readIntakeCatalog(options.projectRoot),
 			store.list(),
 		]);

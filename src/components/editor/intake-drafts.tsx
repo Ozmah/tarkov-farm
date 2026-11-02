@@ -30,6 +30,8 @@ export type OpenedIntakeDraft = {
 
 type IntakeDraftsProps = {
 	drafts: IntakeDraft[];
+	/** Drafts that could not be read or listed, from the server. */
+	problem?: string;
 	catalog: {
 		maps: Array<{ id: string; name: string }>;
 		mapImages: Array<{ id: string; mapId: string; name: string }>;
@@ -45,6 +47,7 @@ function intakeScreenshotUrl(draftId: string, screenshotId: string) {
 
 export function IntakeDrafts({
 	drafts,
+	problem,
 	catalog,
 	onOpen,
 	onDismissed,
@@ -66,24 +69,34 @@ export function IntakeDrafts({
 		}
 	}
 
+	const problemNotice = problem ? (
+		<p role="alert" className="mb-4 text-destructive text-sm">
+			{problem}
+		</p>
+	) : null;
+
 	if (drafts.length === 0) {
 		return (
-			<Empty className="min-h-[50svh]">
-				<EmptyHeader>
-					<EmptyMedia variant="icon">
-						<NotePencilIcon aria-hidden="true" />
-					</EmptyMedia>
-					<EmptyTitle>No pending drafts</EmptyTitle>
-					<EmptyDescription>
-						Drafts created by the local agent appear here for review.
-					</EmptyDescription>
-				</EmptyHeader>
-			</Empty>
+			<div className="min-h-0 flex-1 overflow-auto p-5">
+				{problemNotice}
+				<Empty className="min-h-[50svh]">
+					<EmptyHeader>
+						<EmptyMedia variant="icon">
+							<NotePencilIcon aria-hidden="true" />
+						</EmptyMedia>
+						<EmptyTitle>No pending drafts</EmptyTitle>
+						<EmptyDescription>
+							Drafts created by the local agent appear here for review.
+						</EmptyDescription>
+					</EmptyHeader>
+				</Empty>
+			</div>
 		);
 	}
 
 	return (
 		<div className="min-h-0 flex-1 overflow-auto p-5">
+			{problemNotice}
 			{error && (
 				<p role="alert" className="mb-4 text-destructive text-sm">
 					{error}

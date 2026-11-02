@@ -6,15 +6,52 @@ import { assertLocalEditorAccess } from "@/server/editor/access.server";
 import {
 	LocationAlreadyExistsError,
 	readEditorData,
+	republishEditorLocation,
 	saveEditorLocation,
 } from "@/server/editor/editor.server";
 import { createIntakeDraftStore } from "./draft-store";
 
 const store = createIntakeDraftStore(process.cwd());
+const draftLocks = new Map<string, Promise<unknown>>();
 
+/**
+ * Never throws: the editor loader awaits it next to the locations and updates,
+ * and a drafts problem must not take those sections down with it.
+ */
 export async function listPendingIntakeDrafts() {
 	assertLocalEditorAccess();
-	return (await store.list()).filter(({ status }) => status === "pending");
+	try {
+		const { drafts, unreadable } = await store.list();
+		return {
+			drafts: drafts.filter(({ status }) => status === "pending"),
+			problem:
+				unreadable.length > 0
+					? `${unreadable.length} draft(s) could not be read and are hidden: ${unreadable.join("; ")}`
+					: undefined,
+		};
+	} catch (error) {
+		return {
+			drafts: [],
+			problem: `Drafts could not be listed: ${error instanceof Error ? error.message : "unknown error"}`,
+		};
+	}
+}
+
+/** Save and dismiss of one draft run one at a time, from the pending check to the final status. */
+function withDraftLock<Result>(
+	draftId: string,
+	operation: () => Promise<Result>,
+) {
+	const id = parseIntakeDraftId(draftId);
+	const result = (draftLocks.get(id) ?? Promise.resolve())
+		.catch(() => undefined)
+		.then(operation);
+	const tail = result.catch(() => undefined);
+	draftLocks.set(id, tail);
+	void tail.then(() => {
+		if (draftLocks.get(id) === tail) draftLocks.delete(id);
+	});
+	return result;
 }
 
 /**
@@ -29,6 +66,16 @@ export async function saveIntakeDraftLocation(
 	contributor?: string,
 ) {
 	assertLocalEditorAccess({ mutation: true });
+	return withDraftLock(draftId, () =>
+		saveIntakeDraftLocationLocked(draftId, input, contributor),
+	);
+}
+
+async function saveIntakeDraftLocationLocked(
+	draftId: string,
+	input: SaveLocationFormInput,
+	contributor?: string,
+) {
 	const draft = await store.get(draftId);
 	if (draft.status !== "pending")
 		throw new Error(`This draft is already ${draft.status}`);
@@ -42,6 +89,8 @@ export async function saveIntakeDraftLocation(
 	} catch (error) {
 		if (!(error instanceof LocationAlreadyExistsError)) throw error;
 		target = await findLocationTarget(draft.locationId);
+		// The first attempt may have committed the database but failed the manifest write.
+		await republishEditorLocation(target);
 		acknowledgedOnly = true;
 	}
 	await store.publish(draft.id, { contributor });
@@ -50,7 +99,7 @@ export async function saveIntakeDraftLocation(
 
 export async function dismissIntakeDraft(draftId: string) {
 	assertLocalEditorAccess({ mutation: true });
-	await store.dismiss(parseIntakeDraftId(draftId));
+	await withDraftLock(draftId, () => store.dismiss(draftId));
 }
 
 /**

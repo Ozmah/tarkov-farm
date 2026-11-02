@@ -65,25 +65,36 @@ export function createIntakeDraftStore(projectRoot: string) {
 		);
 	}
 
+	/**
+	 * One damaged draft.json must not block review or new drafts: it is left
+	 * out of `drafts` and reported in `unreadable` for manual repair.
+	 */
 	async function list() {
 		await mkdir(root, { recursive: true });
 		const entries = await readdir(root, { withFileTypes: true });
-		const drafts = await Promise.all(
+		const results = await Promise.all(
 			entries
 				.filter((entry) => entry.isDirectory() && isUuidV4(entry.name))
 				.map((entry) =>
-					readDraft(entry.name).catch((error: unknown) => {
-						throw new Error(
-							`Draft ${entry.name} is unreadable: ${error instanceof Error ? error.message : "unknown error"}`,
-						);
-					}),
+					readDraft(entry.name).then(
+						(draft) => ({ draft }),
+						(error: unknown) => ({
+							unreadable: `${entry.name}: ${error instanceof Error ? error.message : "unknown error"}`,
+						}),
+					),
 				),
 		);
-		return drafts.sort(
+		const drafts: IntakeDraft[] = [];
+		const unreadable: string[] = [];
+		for (const result of results)
+			if ("draft" in result) drafts.push(result.draft);
+			else unreadable.push(result.unreadable);
+		drafts.sort(
 			(left, right) =>
 				right.createdAt.localeCompare(left.createdAt) ||
 				left.id.localeCompare(right.id),
 		);
+		return { drafts, unreadable };
 	}
 
 	async function createDraft(
@@ -121,7 +132,7 @@ export function createIntakeDraftStore(projectRoot: string) {
 		const contentHash = sha256(
 			JSON.stringify({ values, notes, contributor, shas }),
 		);
-		const existing = (await list()).find(
+		const existing = (await list()).drafts.find(
 			(draft) => draft.contentHash === contentHash,
 		);
 		if (existing) return { draft: existing, created: false };

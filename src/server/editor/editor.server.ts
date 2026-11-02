@@ -481,6 +481,24 @@ async function saveEditorLocationLocked(
 	};
 }
 
+/**
+ * Rewrites the manifest for a location already in the database: repairs a
+ * save whose database commit succeeded but whose manifest write did not.
+ */
+export async function republishEditorLocation(target: {
+	id: string;
+	mapImageId: string;
+}) {
+	assertLocalEditorAccess({ mutation: true });
+	return withLocationMutationLock(target.id, () =>
+		publishEditorManifest({
+			type: "saved",
+			locationId: target.id,
+			mapImageId: target.mapImageId,
+		}),
+	);
+}
+
 export async function deleteEditorLocation(input: DeleteLocationInput) {
 	assertLocalEditorAccess({ mutation: true });
 

@@ -48,7 +48,7 @@ describe("intake draft store", () => {
 		expect(draft.status).toBe("pending");
 		expect(draft.values.name).toBe("Desk by the window");
 		expect(draft.locationId).not.toBe(draft.id);
-		expect(await store.list()).toEqual([draft]);
+		expect(await store.list()).toEqual({ drafts: [draft], unreadable: [] });
 
 		const screenshot = draft.screenshots[1];
 		if (!screenshot) throw new Error("missing screenshot");
@@ -78,7 +78,7 @@ describe("intake draft store", () => {
 
 		expect(second.created).toBe(false);
 		expect(second.draft.id).toBe(first.draft.id);
-		expect(await store.list()).toHaveLength(1);
+		expect((await store.list()).drafts).toHaveLength(1);
 	});
 
 	it("does not duplicate identical drafts created concurrently", async () => {
@@ -95,7 +95,7 @@ describe("intake draft store", () => {
 		]);
 
 		expect(results.filter(({ created }) => created)).toHaveLength(1);
-		expect(await store.list()).toHaveLength(1);
+		expect((await store.list()).drafts).toHaveLength(1);
 	});
 
 	it("rejects the same screenshot twice in one draft", async () => {
@@ -202,6 +202,29 @@ describe("intake draft store", () => {
 			join(projectRoot, INTAKE_DRAFTS_DIRECTORY, draft.id),
 		);
 		expect(files).toEqual(["draft.json"]);
+	});
+
+	it("skips a damaged draft instead of blocking the list and new drafts", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const { draft: damaged } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "damaged",
+			screenshots: [],
+		});
+		await writeFile(
+			join(projectRoot, INTAKE_DRAFTS_DIRECTORY, damaged.id, "draft.json"),
+			"{ not json",
+		);
+
+		const { draft } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "healthy",
+			screenshots: [],
+		});
+		const { drafts, unreadable } = await store.list();
+		expect(drafts).toEqual([draft]);
+		expect(unreadable).toHaveLength(1);
+		expect(unreadable[0]).toContain(damaged.id);
 	});
 
 	it("detects tampered screenshot bytes", async () => {
