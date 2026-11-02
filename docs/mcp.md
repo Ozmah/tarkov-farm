@@ -30,7 +30,7 @@ Other clients: configure the client to launch the server. The client starts and 
 - `draft_create`: one draft per contribution. Every field is optional; uncertainty goes in `notes`, and `contributor` holds the sender's handle when the message makes it clear. Identical content returns the existing draft. Warns when a screenshot is already published or in another draft.
 - `drafts_list` / `draft_get`: read drafts, never image bytes. `drafts_list` with `status: "published"` and `publishedSince: "<last tag commit timestamp>"` (ISO datetime with offset, from `git log -1 --format=%cI <last tag>`) lists the contributors to credit in the next release.
 
-The contributor handle is private to the drafts: the app never shows it.
+The contributor handle is private to the drafts: the app never shows it. The reviewer can correct it in the local editor before saving the draft; the draft's `contentHash` still identifies what the agent sent.
 
 Agents that load skills from `.agents/skills` get the full workflow from [`tarkov-intake`](../.agents/skills/tarkov-intake/SKILL.md): grouping screenshots per contribution, what to omit, and how to list release credits.
 

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { SaveLocationFormInput } from "@/lib/editor-validation";
 
 const { store, saveEditorLocation, readEditorData } = vi.hoisted(() => ({
-	store: { get: vi.fn(), setStatus: vi.fn(), list: vi.fn() },
+	store: { get: vi.fn(), publish: vi.fn(), list: vi.fn() },
 	saveEditorLocation: vi.fn(),
 	readEditorData: vi.fn(),
 }));
@@ -39,14 +39,18 @@ describe("saveIntakeDraftLocation", () => {
 	it("saves the location and publishes the draft", async () => {
 		saveEditorLocation.mockResolvedValue(target);
 
-		await expect(saveIntakeDraftLocation(draft.id, input)).resolves.toEqual({
+		await expect(
+			saveIntakeDraftLocation(draft.id, input, "@fixed"),
+		).resolves.toEqual({
 			target,
 			acknowledgedOnly: false,
 		});
 		expect(saveEditorLocation).toHaveBeenCalledWith(input, {
 			newLocationId: draft.locationId,
 		});
-		expect(store.setStatus).toHaveBeenCalledWith(draft.id, "published");
+		expect(store.publish).toHaveBeenCalledWith(draft.id, {
+			contributor: "@fixed",
+		});
 	});
 
 	it("only acknowledges a location an earlier attempt already saved, and says so", async () => {
@@ -58,19 +62,23 @@ describe("saveIntakeDraftLocation", () => {
 			mapImages: [{ id: target.mapImageId, mapId: target.mapId }],
 		});
 
-		await expect(saveIntakeDraftLocation(draft.id, input)).resolves.toEqual({
+		await expect(
+			saveIntakeDraftLocation(draft.id, input, "@fixed"),
+		).resolves.toEqual({
 			target,
 			acknowledgedOnly: true,
 		});
-		expect(store.setStatus).toHaveBeenCalledWith(draft.id, "published");
+		expect(store.publish).toHaveBeenCalledWith(draft.id, {
+			contributor: "@fixed",
+		});
 	});
 
 	it("does not publish the draft when the save fails for another reason", async () => {
 		saveEditorLocation.mockRejectedValue(new Error("disk full"));
 
-		await expect(saveIntakeDraftLocation(draft.id, input)).rejects.toThrow(
-			"disk full",
-		);
-		expect(store.setStatus).not.toHaveBeenCalled();
+		await expect(
+			saveIntakeDraftLocation(draft.id, input, "@fixed"),
+		).rejects.toThrow("disk full");
+		expect(store.publish).not.toHaveBeenCalled();
 	});
 });

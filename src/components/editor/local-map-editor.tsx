@@ -34,7 +34,8 @@ import {
 	EmptyMedia,
 	EmptyTitle,
 } from "@/components/ui/empty";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { useSidebar } from "@/components/ui/sidebar";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import {
@@ -52,7 +53,10 @@ import {
 	MAX_SCREENSHOT_BYTES,
 	MAX_SCREENSHOTS_PER_LOCATION,
 } from "@/lib/editor-validation";
-import type { IntakeDraft } from "@/lib/intake-draft";
+import {
+	type IntakeDraft,
+	MAX_INTAKE_CONTRIBUTOR_LENGTH,
+} from "@/lib/intake-draft";
 import { numberMapLocations } from "@/lib/map-location-order";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
@@ -544,6 +548,9 @@ function LocationWorkspace({
 				? createIntakeScreenshotDrafts(intakeDraft)
 				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 	);
+	const [contributor, setContributor] = useState(
+		intakeDraft?.draft.contributor ?? "",
+	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [error, setError] = useState<string>();
@@ -589,6 +596,7 @@ function LocationWorkspace({
 				? createIntakeScreenshotDrafts(intakeDraft)
 				: createScreenshotDrafts(data.screenshots, selectedLocation?.id),
 		);
+		setContributor(intakeDraft?.draft.contributor ?? "");
 		setError(undefined);
 	}
 
@@ -829,7 +837,10 @@ function LocationWorkspace({
 				formData.append("screenshots", file);
 			}
 
-			if (intakeDraft) formData.set("draftId", intakeDraft.draft.id);
+			if (intakeDraft) {
+				formData.set("draftId", intakeDraft.draft.id);
+				formData.set("contributor", contributor);
+			}
 			const { target, acknowledgedOnly } = intakeDraft
 				? await saveIntakeDraftLocation({ data: formData })
 				: {
@@ -900,20 +911,43 @@ function LocationWorkspace({
 
 			<LocationComposerForm
 				additionalFields={
-					<Field orientation="horizontal">
-						<Checkbox
-							id="location-active"
-							disabled={isSaving || isDeleting}
-							checked={draft.isActive}
-							onCheckedChange={(checked) => updateDraft("isActive", checked)}
-						/>
-						<FieldLabel
-							htmlFor="location-active"
-							className="cursor-pointer normal-case tracking-normal"
-						>
-							Active location
-						</FieldLabel>
-					</Field>
+					<>
+						{intakeDraft && (
+							<Field>
+								<FieldLabel htmlFor="intake-contributor">
+									Contributor
+								</FieldLabel>
+								<Input
+									id="intake-contributor"
+									disabled={isSaving}
+									value={contributor}
+									onChange={(event) => setContributor(event.target.value)}
+									maxLength={MAX_INTAKE_CONTRIBUTOR_LENGTH}
+									placeholder="@handle"
+									autoComplete="off"
+									spellCheck="false"
+								/>
+								<FieldDescription>
+									Private to the draft, used for release credits. Never
+									published.
+								</FieldDescription>
+							</Field>
+						)}
+						<Field orientation="horizontal">
+							<Checkbox
+								id="location-active"
+								disabled={isSaving || isDeleting}
+								checked={draft.isActive}
+								onCheckedChange={(checked) => updateDraft("isActive", checked)}
+							/>
+							<FieldLabel
+								htmlFor="location-active"
+								className="cursor-pointer normal-case tracking-normal"
+							>
+								Active location
+							</FieldLabel>
+						</Field>
+					</>
 				}
 				availableDocuments={availableDocuments}
 				availableKeys={availableKeys}
@@ -934,18 +968,10 @@ function LocationWorkspace({
 							: "New location"
 				}
 				notice={
-					intakeDraft &&
-					(intakeDraft.draft.notes || intakeDraft.draft.contributor) ? (
+					intakeDraft?.draft.notes ? (
 						<div className="flex flex-col gap-1 whitespace-pre-line rounded-md border border-border bg-muted p-3 text-sm">
-							{intakeDraft.draft.contributor && (
-								<p>Sent by {intakeDraft.draft.contributor}</p>
-							)}
-							{intakeDraft.draft.notes && (
-								<>
-									<p className="font-medium">Agent notes</p>
-									<p>{intakeDraft.draft.notes}</p>
-								</>
-							)}
+							<p className="font-medium">Agent notes</p>
+							<p>{intakeDraft.draft.notes}</p>
 						</div>
 					) : undefined
 				}
