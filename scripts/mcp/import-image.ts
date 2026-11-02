@@ -72,8 +72,9 @@ export async function importImage(
  * then confirms the descriptor really is the file at `canonical`.
  * O_NOFOLLOW only covers the last component: a parent directory swapped for
  * a symlink after `realpath` would still open, and stat() would follow the
- * same symlink. Where procfs exists (Linux), the kernel's path for the open
- * descriptor must equal `canonical`; elsewhere only the dev/ino check runs.
+ * same symlink. On Linux the kernel's path for the open descriptor must
+ * equal `canonical`, and the import fails if procfs cannot answer; on other
+ * platforms only the dev/ino check runs.
  */
 async function readVerified(canonical: string, path: string) {
 	const handle = await open(
@@ -92,9 +93,12 @@ async function readVerified(canonical: string, path: string) {
 			info.size > MAX_INTAKE_SCREENSHOT_BYTES
 		)
 			throw new Error(`Screenshot must be a file up to 20 MiB: ${path}`);
-		const opened = await readlink(`/proc/self/fd/${handle.fd}`).catch(
-			() => undefined,
-		);
+		const opened = await readlink(`/proc/self/fd/${handle.fd}`).catch(() => {
+			// Fail closed: on Linux a missing answer must not skip the check.
+			if (process.platform === "linux")
+				throw new Error(`Screenshot location could not be verified: ${path}`);
+			return undefined;
+		});
 		if (opened !== undefined && opened !== canonical) throw changed();
 		const current = await stat(canonical);
 		if (current.dev !== info.dev || current.ino !== info.ino) throw changed();
