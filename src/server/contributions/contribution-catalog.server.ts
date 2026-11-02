@@ -72,7 +72,13 @@ export async function queryContributionCatalog(
 			)
 			.all(),
 		db
-			.select({ id: documents.id, name: documents.name })
+			.select({
+				id: documents.id,
+				name: documents.name,
+				imagePath: documents.imagePath,
+				imageWidth: documents.imageWidth,
+				imageHeight: documents.imageHeight,
+			})
 			.from(documents)
 			.where(
 				and(eq(documents.isActive, true), eq(documents.isFilterable, true)),

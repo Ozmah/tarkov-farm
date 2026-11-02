@@ -1,5 +1,6 @@
 import { type ReactNode, useId } from "react";
 
+import type { DocumentArtwork } from "@/components/document-thumbnail";
 import { LocationAccessFields } from "@/components/location-composer/location-access-fields";
 import { LocationDetailsFields } from "@/components/location-composer/location-details-fields";
 import type {
@@ -16,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 type LocationComposerFormProps = {
 	additionalFields?: ReactNode;
-	availableDocuments: Array<{ id: string; name: string }>;
+	availableDocuments: Array<DocumentArtwork & { id: string; name: string }>;
 	availableKeys: Array<{
 		id: string;
 		imageHeight: number;

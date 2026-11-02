@@ -1,3 +1,7 @@
+import {
+	type DocumentArtwork,
+	DocumentThumbnail,
+} from "@/components/document-thumbnail";
 import type {
 	LocationComposerDraft,
 	LocationDraftChange,
@@ -13,7 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type LocationAccessFieldsProps = {
-	availableDocuments: Array<{ id: string; name: string }>;
+	availableDocuments: Array<DocumentArtwork & { id: string; name: string }>;
 	availableKeys: Array<{
 		id: string;
 		imageHeight: number;
@@ -59,6 +63,7 @@ export function LocationAccessFields({
 									id={`document-${document.id}`}
 									value={document.id}
 								/>
+								<DocumentThumbnail document={document} className="size-10" />
 								<FieldLabel
 									htmlFor={`document-${document.id}`}
 									className="cursor-pointer normal-case tracking-normal"
