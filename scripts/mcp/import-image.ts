@@ -1,5 +1,11 @@
 import { constants } from "node:fs";
-import { type FileHandle, open, realpath, stat } from "node:fs/promises";
+import {
+	type FileHandle,
+	open,
+	readlink,
+	realpath,
+	stat,
+} from "node:fs/promises";
 import { isAbsolute, relative, sep } from "node:path";
 
 import {
@@ -63,8 +69,11 @@ export async function importImage(
 
 /**
  * Opens without following a final symlink and without blocking on FIFOs,
- * then confirms the descriptor is still the file at `canonical` (same
- * dev/ino), which catches any path component swapped since `realpath`.
+ * then confirms the descriptor really is the file at `canonical`.
+ * O_NOFOLLOW only covers the last component: a parent directory swapped for
+ * a symlink after `realpath` would still open, and stat() would follow the
+ * same symlink. Where procfs exists (Linux), the kernel's path for the open
+ * descriptor must equal `canonical`; elsewhere only the dev/ino check runs.
  */
 async function readVerified(canonical: string, path: string) {
 	const handle = await open(
@@ -83,6 +92,10 @@ async function readVerified(canonical: string, path: string) {
 			info.size > MAX_INTAKE_SCREENSHOT_BYTES
 		)
 			throw new Error(`Screenshot must be a file up to 20 MiB: ${path}`);
+		const opened = await readlink(`/proc/self/fd/${handle.fd}`).catch(
+			() => undefined,
+		);
+		if (opened !== undefined && opened !== canonical) throw changed();
 		const current = await stat(canonical);
 		if (current.dev !== info.dev || current.ino !== info.ino) throw changed();
 		const bytes = await readExactly(handle, info.size);
