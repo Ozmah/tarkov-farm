@@ -61,7 +61,6 @@ import { numberMapLocations } from "@/lib/map-location-order";
 import type { PublicUpdate } from "@/lib/publication-updates";
 import type { ReleaseContext } from "@/lib/release-context";
 
-/** The write succeeded; retrying would duplicate it, so say so. */
 const SAVED_BUT_STALE =
 	"Saved, but the editor could not refresh. Reload the page before editing again.";
 const DRAFT_ALREADY_SAVED =
@@ -1068,7 +1067,6 @@ function createLocationDraft(
 	};
 }
 
-/** Unknown fields stay empty for the reviewer; the point starts centered as usual. */
 function createIntakeLocationDraft(
 	draft: IntakeDraft,
 	defaultMapImageId: string,

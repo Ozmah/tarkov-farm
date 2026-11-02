@@ -30,7 +30,7 @@ export type OpenedIntakeDraft = {
 
 type IntakeDraftsProps = {
 	drafts: IntakeDraft[];
-	/** Drafts that could not be read or listed, from the server. */
+	/** Server message when drafts could not be read or listed. */
 	problem?: string;
 	catalog: {
 		maps: Array<{ id: string; name: string }>;
