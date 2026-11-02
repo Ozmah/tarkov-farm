@@ -50,6 +50,8 @@ type LocationComposerFormProps = {
 	onScreenshotFilesAdded: (files: File[]) => void;
 	onScreenshotMove: (index: number, offset: -1 | 1) => void;
 	onScreenshotRemove: (key: string) => void;
+	/** Enables marking screenshots (rectangles, ellipses, brightness) before saving. */
+	onScreenshotReplace?: (key: string, file: File) => void;
 	onSubmit: () => void;
 };
 
@@ -81,6 +83,7 @@ export function LocationComposerForm({
 	onScreenshotFilesAdded,
 	onScreenshotMove,
 	onScreenshotRemove,
+	onScreenshotReplace,
 	onSubmit,
 }: LocationComposerFormProps) {
 	const titleId = useId();
@@ -145,6 +148,8 @@ export function LocationComposerForm({
 							onFilesAdded={onScreenshotFilesAdded}
 							onMove={onScreenshotMove}
 							onRemove={onScreenshotRemove}
+							onReplace={onScreenshotReplace}
+							title={title}
 						/>
 
 						{additionalFields}

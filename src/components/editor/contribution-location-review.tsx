@@ -10,6 +10,7 @@ import {
 	type ReactNode,
 	useEffect,
 	useEffectEvent,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -19,6 +20,8 @@ import {
 	MapWorkspace,
 	type MapWorkspaceMarker,
 } from "@/components/map/map-workspace";
+import { ScreenshotAnnotator } from "@/components/screenshots/screenshot-annotator";
+import { ScreenshotGalleryDialog } from "@/components/screenshots/screenshot-gallery-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -81,6 +84,21 @@ export function ContributionLocationReview({
 	onRestore,
 }: ContributionLocationReviewProps) {
 	const [editing, setEditing] = useState<EditableSection>();
+	const [viewerIndex, setViewerIndex] = useState<number>();
+	const [markingSourceId, setMarkingSourceId] = useState<string>();
+	// The visible version of each screenshot: the replacement when there is one.
+	const galleryScreenshots = useMemo(
+		() =>
+			draft.screenshots.map(({ sourceId, replacement }) => ({
+				key: sourceId,
+				file:
+					replacement?.file ?? findReviewedScreenshot(location, sourceId).file,
+			})),
+		[draft.screenshots, location],
+	);
+	const markingFile = galleryScreenshots.find(
+		({ key }) => key === markingSourceId,
+	)?.file;
 	const replacementRequestsRef = useRef(new Map<string, AbortController>());
 	function abortPendingReplacementChecks() {
 		for (const controller of replacementRequestsRef.current.values()) {
@@ -643,6 +661,8 @@ export function ContributionLocationReview({
 								onReplacementFile={(file) =>
 									void replaceScreenshot(screenshot.sourceId, file)
 								}
+								onMark={() => setMarkingSourceId(screenshot.sourceId)}
+								onView={() => setViewerIndex(index)}
 								onReplacementChange={(replacement) =>
 									updateScreenshot(screenshot.sourceId, (candidate) => ({
 										...candidate,
@@ -654,6 +674,22 @@ export function ContributionLocationReview({
 							/>
 						))}
 					</ol>
+					<ScreenshotGalleryDialog
+						index={viewerIndex}
+						screenshots={galleryScreenshots}
+						title={draft.values.name || "Contribution"}
+						onIndexChange={setViewerIndex}
+					/>
+					<ScreenshotAnnotator
+						file={markingFile}
+						title={`Mark ${draft.values.name || "contribution"} screenshot`}
+						onCancel={() => setMarkingSourceId(undefined)}
+						onSave={(file) => {
+							if (markingSourceId)
+								void replaceScreenshot(markingSourceId, file);
+							setMarkingSourceId(undefined);
+						}}
+					/>
 				</section>
 			</div>
 		</main>

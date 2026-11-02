@@ -50,8 +50,14 @@ export type CreateIntakeDraftInput = {
 export function createIntakeDraftStore(projectRoot: string) {
 	const root = join(projectRoot, INTAKE_DRAFTS_DIRECTORY);
 	const draftPath = (id: string) => join(root, id, "draft.json");
-	// Creation checks for identical content first; concurrent calls must not both pass.
-	let creation: Promise<unknown> = Promise.resolve();
+	// Writes read before they write (duplicate check, pending status): run them
+	// one at a time, or two concurrent calls can both pass the check.
+	let writes: Promise<unknown> = Promise.resolve();
+	function queued<T>(write: () => Promise<T>) {
+		const result = writes.then(write);
+		writes = result.catch(() => undefined);
+		return result;
+	}
 
 	async function readDraft(id: string) {
 		return parseIntakeDraft(
@@ -153,6 +159,38 @@ export function createIntakeDraftStore(projectRoot: string) {
 		return { draft, created: true };
 	}
 
+	/** Only pending drafts change state; published and dismissed are final. */
+	async function transition(
+		id: string,
+		status: Exclude<IntakeDraftStatus, "pending">,
+		changes: { contributor?: string } = {},
+	) {
+		const draft = await readDraft(id);
+		if (draft.status === status) return draft;
+		if (draft.status !== "pending")
+			throw new Error(`This draft is already ${draft.status}`);
+		const next = parseIntakeDraft({
+			...draft,
+			contributor:
+				changes.contributor === undefined
+					? draft.contributor
+					: parseIntakeContributor(changes.contributor),
+			status,
+			publishedAt: status === "published" ? new Date().toISOString() : null,
+		});
+		const temporary = join(root, draft.id, `.draft-${randomUUID()}.json`);
+		try {
+			await writeFile(temporary, serialize(next), {
+				flag: "wx",
+				mode: 0o600,
+			});
+			await rename(temporary, draftPath(draft.id));
+		} finally {
+			await rm(temporary, { force: true });
+		}
+		return next;
+	}
+
 	return {
 		list,
 		get: readDraft,
@@ -161,9 +199,7 @@ export function createIntakeDraftStore(projectRoot: string) {
 		create(
 			input: CreateIntakeDraftInput,
 		): Promise<{ draft: IntakeDraft; created: boolean }> {
-			const result = creation.then(() => createDraft(input));
-			creation = result.catch(() => undefined);
-			return result;
+			return queued(() => createDraft(input));
 		},
 
 		async readScreenshot(id: string, screenshotId: string) {
@@ -180,28 +216,16 @@ export function createIntakeDraftStore(projectRoot: string) {
 			return { bytes, screenshot };
 		},
 
-		/** Only pending drafts change state; published and dismissed are final. */
-		async setStatus(id: string, status: Exclude<IntakeDraftStatus, "pending">) {
-			const draft = await readDraft(id);
-			if (draft.status === status) return draft;
-			if (draft.status !== "pending")
-				throw new Error(`This draft is already ${draft.status}`);
-			const next = {
-				...draft,
-				status,
-				publishedAt: status === "published" ? new Date().toISOString() : null,
-			};
-			const temporary = join(root, draft.id, `.draft-${randomUUID()}.json`);
-			try {
-				await writeFile(temporary, serialize(next), {
-					flag: "wx",
-					mode: 0o600,
-				});
-				await rename(temporary, draftPath(draft.id));
-			} finally {
-				await rm(temporary, { force: true });
-			}
-			return next;
+		/**
+		 * The reviewer may correct the contributor handle. contentHash keeps
+		 * identifying what the agent sent, so a resend still matches this draft.
+		 */
+		publish(id: string, changes: { contributor?: string } = {}) {
+			return queued(() => transition(id, "published", changes));
+		},
+
+		dismiss(id: string) {
+			return queued(() => transition(id, "dismissed"));
 		},
 	};
 }

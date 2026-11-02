@@ -350,6 +350,14 @@ export function LocationContributionEditor({
 							);
 							setError(undefined);
 						}}
+						onScreenshotReplace={(key, file) => {
+							setScreenshots((current) =>
+								current.map((screenshot) =>
+									screenshot.key === key ? { ...screenshot, file } : screenshot,
+								),
+							);
+							setError(undefined);
+						}}
 						onSubmit={() => void stageLocation()}
 					/>
 

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { parseSaveLocationFormData } from "@/lib/editor-validation";
-import { parseIntakeDraftId } from "@/lib/intake-draft";
+import { parseIntakeContributor, parseIntakeDraftId } from "@/lib/intake-draft";
 
 export const getPendingIntakeDrafts = createServerFn({ method: "GET" }).handler(
 	async () => {
@@ -17,9 +17,13 @@ export const saveIntakeDraftLocation = createServerFn({ method: "POST" })
 	.validator((formData: unknown) => {
 		if (!(formData instanceof FormData))
 			throw new Error("Expected draft location form data");
+		const contributor = formData.get("contributor");
 		return {
 			draftId: parseIntakeDraftId(formData.get("draftId")),
 			input: parseSaveLocationFormData(formData),
+			// Absent keeps the draft's handle; an empty string clears it.
+			contributor:
+				contributor === null ? undefined : parseIntakeContributor(contributor),
 		};
 	})
 	.handler(async ({ data }) => {
@@ -27,7 +31,7 @@ export const saveIntakeDraftLocation = createServerFn({ method: "POST" })
 			"@/server/intake/intake.server"
 		);
 
-		return saveIntakeDraftLocation(data.draftId, data.input);
+		return saveIntakeDraftLocation(data.draftId, data.input, data.contributor);
 	});
 
 export const dismissIntakeDraft = createServerFn({ method: "POST" })

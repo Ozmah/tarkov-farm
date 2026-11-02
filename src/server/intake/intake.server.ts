@@ -26,6 +26,7 @@ export async function listPendingIntakeDrafts() {
 export async function saveIntakeDraftLocation(
 	draftId: string,
 	input: SaveLocationFormInput,
+	contributor?: string,
 ) {
 	assertLocalEditorAccess({ mutation: true });
 	const draft = await store.get(draftId);
@@ -43,13 +44,13 @@ export async function saveIntakeDraftLocation(
 		target = await findLocationTarget(draft.locationId);
 		acknowledgedOnly = true;
 	}
-	await store.setStatus(draft.id, "published");
+	await store.publish(draft.id, { contributor });
 	return { target, acknowledgedOnly };
 }
 
 export async function dismissIntakeDraft(draftId: string) {
 	assertLocalEditorAccess({ mutation: true });
-	await store.setStatus(parseIntakeDraftId(draftId), "dismissed");
+	await store.dismiss(parseIntakeDraftId(draftId));
 }
 
 /**

@@ -119,7 +119,7 @@ describe("intake draft store", () => {
 		expect(draft.contributor).toBe("@BiggestNwah");
 		expect(draft.publishedAt).toBeNull();
 
-		const published = await store.setStatus(draft.id, "published");
+		const published = await store.publish(draft.id);
 		expect(Date.parse(published.publishedAt ?? "")).not.toBeNaN();
 		// A different contributor is different content, not a duplicate.
 		const other = await store.create({
@@ -129,6 +129,46 @@ describe("intake draft store", () => {
 			screenshots: [],
 		});
 		expect(other.created).toBe(true);
+	});
+
+	it("publishes with the reviewer's corrected contributor", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const input = {
+			values: EMPTY_VALUES,
+			notes: "",
+			contributor: "CrunchByte",
+			screenshots: [],
+		};
+		const { draft } = await store.create(input);
+
+		await expect(
+			store.publish(draft.id, { contributor: "@a\n@b" }),
+		).rejects.toThrow("single line");
+		const published = await store.publish(draft.id, {
+			contributor: " @CrunchByte ",
+		});
+		expect(published.contributor).toBe("@CrunchByte");
+		expect(await store.get(draft.id)).toEqual(published);
+		// The hash still identifies what the agent sent: a resend is not a new draft.
+		expect((await store.create(input)).created).toBe(false);
+	});
+
+	it("lets only the first of two overlapping publishes decide the contributor", async () => {
+		const store = createIntakeDraftStore(projectRoot);
+		const { draft } = await store.create({
+			values: EMPTY_VALUES,
+			notes: "",
+			screenshots: [],
+		});
+
+		const [first, second] = await Promise.all([
+			store.publish(draft.id, { contributor: "@first" }),
+			store.publish(draft.id, { contributor: "@second" }),
+		]);
+		expect(first.contributor).toBe("@first");
+		// The second sees an already published draft and changes nothing.
+		expect(second).toEqual(first);
+		expect(await store.get(draft.id)).toEqual(first);
 	});
 
 	it("reads drafts written before contributor and publishedAt existed", async () => {
@@ -154,16 +194,10 @@ describe("intake draft store", () => {
 			screenshots: [],
 		});
 
-		expect((await store.setStatus(draft.id, "published")).status).toBe(
-			"published",
-		);
+		expect((await store.publish(draft.id)).status).toBe("published");
 		// Repeating the same transition is a no-op (retried acknowledgement).
-		expect((await store.setStatus(draft.id, "published")).status).toBe(
-			"published",
-		);
-		await expect(store.setStatus(draft.id, "dismissed")).rejects.toThrow(
-			"already published",
-		);
+		expect((await store.publish(draft.id)).status).toBe("published");
+		await expect(store.dismiss(draft.id)).rejects.toThrow("already published");
 		const files = await readdir(
 			join(projectRoot, INTAKE_DRAFTS_DIRECTORY, draft.id),
 		);

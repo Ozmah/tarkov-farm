@@ -6424,6 +6424,39 @@
 			"yBasisPoints": 6052
 		},
 		{
+			"description": "Inside the tower, on the lower shelf of the desk under the window.",
+			"documentId": "pmc-personnel",
+			"id": "adda2897-7974-4fec-8e20-66e37f414709",
+			"isActive": true,
+			"mapImageId": "reserve-main",
+			"name": "South Checkpoint",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/adda2897-7974-4fec-8e20-66e37f414709/611bf828f2fbd608b5f9c73262d8820a42138096df03a0fbc16b6098ff030465-1920.webp",
+						"sha256": "611bf828f2fbd608b5f9c73262d8820a42138096df03a0fbc16b6098ff030465",
+						"width": 1920
+					},
+					"id": "59456d4a-0673-4388-b547-bac02caaf462",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/adda2897-7974-4fec-8e20-66e37f414709/6c10713e8ecb45cd09fc7a55c26b83dc9da1188e9a3e341f0dbb247186ddca7c-1000.webp",
+						"sha256": "6c10713e8ecb45cd09fc7a55c26b83dc9da1188e9a3e341f0dbb247186ddca7c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9bb1b4fead3b137a8082f0317f90c34e9e64135ec7fa3f841546375d71c1ec6a"
+				}
+			],
+			"xBasisPoints": 4589,
+			"yBasisPoints": 5706
+		},
+		{
 			"description": "On top of the bed of room 211 west wing",
 			"documentId": "test",
 			"id": "b50dffad-5106-4e06-938b-8cb7e2906f38",

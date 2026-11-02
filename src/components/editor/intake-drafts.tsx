@@ -39,7 +39,7 @@ type IntakeDraftsProps = {
 	onDismissed: () => Promise<void>;
 };
 
-export function intakeScreenshotUrl(draftId: string, screenshotId: string) {
+function intakeScreenshotUrl(draftId: string, screenshotId: string) {
 	return `/api/intake-drafts/${draftId}/screenshots/${screenshotId}`;
 }
 
