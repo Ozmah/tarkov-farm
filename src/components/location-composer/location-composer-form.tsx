@@ -1,5 +1,6 @@
 import { type ReactNode, useId } from "react";
 
+import type { DocumentArtwork } from "@/components/document-thumbnail";
 import { LocationAccessFields } from "@/components/location-composer/location-access-fields";
 import { LocationDetailsFields } from "@/components/location-composer/location-details-fields";
 import type {
@@ -11,12 +12,12 @@ import {
 	type ScreenshotDraft,
 } from "@/components/location-composer/location-screenshot-editor";
 import { Button } from "@/components/ui/button";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup, FieldWarning } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 
 type LocationComposerFormProps = {
 	additionalFields?: ReactNode;
-	availableDocuments: Array<{ id: string; name: string }>;
+	availableDocuments: Array<DocumentArtwork & { id: string; name: string }>;
 	availableKeys: Array<{
 		id: string;
 		imageHeight: number;
@@ -34,6 +35,8 @@ type LocationComposerFormProps = {
 	mapImages: Array<{ id: string; name: string }>;
 	maps: Array<{ id: string; name: string }>;
 	maxScreenshots: number;
+	/** Context shown under the title, such as reviewer notes. */
+	notice?: ReactNode;
 	screenshots: ScreenshotDraft[];
 	screenshotDescription?: string;
 	secondaryActions?: ReactNode;
@@ -41,11 +44,15 @@ type LocationComposerFormProps = {
 	submitting: boolean;
 	submittingLabel: string;
 	title: string;
+	/** Non-blocking outcome the reviewer should know about. */
+	warning?: string;
 	onDraftChange: LocationDraftChange;
 	onMapChange: (mapId: string) => void;
 	onScreenshotFilesAdded: (files: File[]) => void;
 	onScreenshotMove: (index: number, offset: -1 | 1) => void;
 	onScreenshotRemove: (key: string) => void;
+	/** Enables marking screenshots (rectangles, ellipses, brightness) before saving. */
+	onScreenshotReplace?: (key: string, file: File) => void;
 	onSubmit: () => void;
 };
 
@@ -63,6 +70,7 @@ export function LocationComposerForm({
 	mapImages,
 	maps,
 	maxScreenshots,
+	notice,
 	screenshots,
 	screenshotDescription,
 	secondaryActions,
@@ -70,11 +78,13 @@ export function LocationComposerForm({
 	submitting,
 	submittingLabel,
 	title,
+	warning,
 	onDraftChange,
 	onMapChange,
 	onScreenshotFilesAdded,
 	onScreenshotMove,
 	onScreenshotRemove,
+	onScreenshotReplace,
 	onSubmit,
 }: LocationComposerFormProps) {
 	const titleId = useId();
@@ -106,6 +116,7 @@ export function LocationComposerForm({
 						{title}
 					</h2>
 				</div>
+				{notice}
 
 				<fieldset
 					disabled={disabled}
@@ -138,9 +149,12 @@ export function LocationComposerForm({
 							onFilesAdded={onScreenshotFilesAdded}
 							onMove={onScreenshotMove}
 							onRemove={onScreenshotRemove}
+							onReplace={onScreenshotReplace}
+							title={title}
 						/>
 
 						{additionalFields}
+						{warning && <FieldWarning>{warning}</FieldWarning>}
 						{error && <FieldError>{error}</FieldError>}
 					</FieldGroup>
 

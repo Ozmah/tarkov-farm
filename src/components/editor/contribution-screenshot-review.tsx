@@ -4,6 +4,7 @@ import {
 	ArrowUpIcon,
 	DownloadSimpleIcon,
 	EyeSlashIcon,
+	PencilSimpleIcon,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 
@@ -30,6 +31,9 @@ type ContributionScreenshotReviewProps = {
 	onReplacementChange: (
 		replacement: ContributionScreenshotReplacement | undefined,
 	) => void;
+	/** Opens the marking editor on the visible version of this screenshot. */
+	onMark: () => void;
+	onView: () => void;
 };
 
 export function ContributionScreenshotReview({
@@ -42,6 +46,8 @@ export function ContributionScreenshotReview({
 	onMove,
 	onReplacementFile,
 	onReplacementChange,
+	onMark,
+	onView,
 }: ContributionScreenshotReviewProps) {
 	const status = !draft.included
 		? "Excluded"
@@ -68,26 +74,33 @@ export function ContributionScreenshotReview({
 				</span>
 			</div>
 
-			{draft.replacement ? (
-				<div className="grid sm:grid-cols-2">
+			<button
+				type="button"
+				aria-label={`View screenshot ${index + 1} full screen`}
+				className="block w-full cursor-zoom-in"
+				onClick={onView}
+			>
+				{draft.replacement ? (
+					<div className="grid sm:grid-cols-2">
+						<ScreenshotPreview
+							altText={`ZIP original screenshot ${index + 1}`}
+							file={source.file}
+							label="ZIP original"
+						/>
+						<ScreenshotPreview
+							altText={`Replacement preview for screenshot ${index + 1}`}
+							className="border-border border-t sm:border-t-0 sm:border-l"
+							file={draft.replacement.file}
+							label="Replacement"
+						/>
+					</div>
+				) : (
 					<ScreenshotPreview
-						altText={`ZIP original screenshot ${index + 1}`}
+						altText={`Screenshot ${index + 1} preview`}
 						file={source.file}
-						label="ZIP original"
 					/>
-					<ScreenshotPreview
-						altText={`Replacement preview for screenshot ${index + 1}`}
-						className="border-border border-t sm:border-t-0 sm:border-l"
-						file={draft.replacement.file}
-						label="Replacement"
-					/>
-				</div>
-			) : (
-				<ScreenshotPreview
-					altText={`Screenshot ${index + 1} preview`}
-					file={source.file}
-				/>
-			)}
+				)}
+			</button>
 
 			<div className="space-y-3 p-4">
 				{source.caption ? (
@@ -109,6 +122,17 @@ export function ContributionScreenshotReview({
 					>
 						<DownloadSimpleIcon data-icon="inline-start" aria-hidden="true" />
 						Download original
+					</Button>
+					<Button
+						type="button"
+						variant="outline"
+						size="xs"
+						aria-label={`Mark screenshot ${index + 1}`}
+						disabled={disabled || draft.isCheckingReplacement}
+						onClick={onMark}
+					>
+						<PencilSimpleIcon data-icon="inline-start" aria-hidden="true" />
+						Mark
 					</Button>
 					<FilePicker
 						accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"

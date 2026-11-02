@@ -1,0 +1,252 @@
+import { createHash, randomUUID } from "node:crypto";
+import {
+	mkdir,
+	readdir,
+	readFile,
+	rename,
+	rm,
+	writeFile,
+} from "node:fs/promises";
+import { join } from "node:path";
+
+import {
+	INTAKE_DRAFT_FORMAT_VERSION,
+	type IntakeDraft,
+	type IntakeDraftStatus,
+	type IntakeDraftValues,
+	type IntakeMediaType,
+	type IntakeScreenshot,
+	isUuidV4,
+	MAX_INTAKE_SCREENSHOT_BYTES,
+	MAX_INTAKE_SCREENSHOTS,
+	parseIntakeContributor,
+	parseIntakeDraft,
+	parseIntakeDraftId,
+	parseIntakeDraftValues,
+	parseIntakeNotes,
+} from "@/lib/intake-draft";
+
+export const INTAKE_DRAFTS_DIRECTORY = "assets/intake/drafts";
+
+/** Image bytes already verified by the caller (header, real decode, dimensions). */
+export type VerifiedIntakeImage = {
+	bytes: Uint8Array;
+	mediaType: IntakeMediaType;
+	width: number;
+	height: number;
+};
+
+export type CreateIntakeDraftInput = {
+	values: IntakeDraftValues;
+	notes: string;
+	contributor?: string;
+	screenshots: VerifiedIntakeImage[];
+};
+
+/**
+ * One directory per draft: draft.json plus one file per screenshot, named by
+ * its UUID. IDs are validated UUIDs, so they can never escape the drafts root.
+ */
+export function createIntakeDraftStore(projectRoot: string) {
+	const root = join(projectRoot, INTAKE_DRAFTS_DIRECTORY);
+	const draftPath = (id: string) => join(root, id, "draft.json");
+	// Writes read before they write (duplicate check, pending status): run them
+	// one at a time, or two concurrent calls can both pass the check.
+	let writes: Promise<unknown> = Promise.resolve();
+	function queued<T>(write: () => Promise<T>) {
+		const result = writes.then(write);
+		writes = result.catch(() => undefined);
+		return result;
+	}
+
+	async function readDraft(id: string) {
+		return parseIntakeDraft(
+			JSON.parse(await readFile(draftPath(parseIntakeDraftId(id)), "utf8")),
+		);
+	}
+
+	/**
+	 * One damaged draft.json must not block review or new drafts: it is left
+	 * out of `drafts` and reported in `unreadable` for manual repair.
+	 */
+	async function list() {
+		await mkdir(root, { recursive: true });
+		const entries = await readdir(root, { withFileTypes: true });
+		const results = await Promise.all(
+			entries
+				.filter((entry) => entry.isDirectory() && isUuidV4(entry.name))
+				.map((entry) =>
+					readDraft(entry.name).then(
+						(draft) => ({ draft }),
+						(error: unknown) => ({
+							unreadable: `${entry.name}: ${error instanceof Error ? error.message : "unknown error"}`,
+						}),
+					),
+				),
+		);
+		const drafts: IntakeDraft[] = [];
+		const unreadable: string[] = [];
+		for (const result of results)
+			if ("draft" in result) drafts.push(result.draft);
+			else unreadable.push(result.unreadable);
+		drafts.sort(
+			(left, right) =>
+				right.createdAt.localeCompare(left.createdAt) ||
+				left.id.localeCompare(right.id),
+		);
+		return { drafts, unreadable };
+	}
+
+	async function createDraft(
+		input: CreateIntakeDraftInput,
+	): Promise<{ draft: IntakeDraft; created: boolean }> {
+		const values = parseIntakeDraftValues(input.values);
+		const notes = parseIntakeNotes(input.notes);
+		const contributor = parseIntakeContributor(input.contributor);
+		if (input.screenshots.length > MAX_INTAKE_SCREENSHOTS)
+			throw new Error(
+				`A draft holds at most ${MAX_INTAKE_SCREENSHOTS} screenshots`,
+			);
+		const screenshots = input.screenshots.map((image) => {
+			if (
+				image.bytes.byteLength < 1 ||
+				image.bytes.byteLength > MAX_INTAKE_SCREENSHOT_BYTES
+			)
+				throw new Error("Screenshots must be between 1 byte and 20 MiB");
+			return {
+				image,
+				metadata: {
+					id: randomUUID(),
+					mediaType: image.mediaType,
+					sha256: sha256(image.bytes),
+					size: image.bytes.byteLength,
+					width: image.width,
+					height: image.height,
+				} satisfies IntakeScreenshot,
+			};
+		});
+		const shas = screenshots.map(({ metadata }) => metadata.sha256);
+		if (new Set(shas).size !== shas.length)
+			throw new Error("The same screenshot was supplied more than once");
+
+		const contentHash = sha256(
+			JSON.stringify({ values, notes, contributor, shas }),
+		);
+		const existing = (await list()).drafts.find(
+			(draft) => draft.contentHash === contentHash,
+		);
+		if (existing) return { draft: existing, created: false };
+
+		const draft = parseIntakeDraft({
+			formatVersion: INTAKE_DRAFT_FORMAT_VERSION,
+			id: randomUUID(),
+			locationId: randomUUID(),
+			createdAt: new Date().toISOString(),
+			contentHash,
+			status: "pending",
+			publishedAt: null,
+			values,
+			notes,
+			contributor,
+			screenshots: screenshots.map(({ metadata }) => metadata),
+		});
+		// Stage the whole directory, then rename: readers never see a partial draft.
+		const stage = join(root, `.stage-${randomUUID()}`);
+		await mkdir(stage, { recursive: true });
+		try {
+			for (const { image, metadata } of screenshots)
+				await writeFile(join(stage, metadata.id), image.bytes, {
+					flag: "wx",
+					mode: 0o600,
+				});
+			await writeFile(join(stage, "draft.json"), serialize(draft), {
+				flag: "wx",
+				mode: 0o600,
+			});
+			await rename(stage, join(root, draft.id));
+		} finally {
+			await rm(stage, { recursive: true, force: true });
+		}
+		return { draft, created: true };
+	}
+
+	/** Only pending drafts change state; published and dismissed are final. */
+	async function transition(
+		id: string,
+		status: Exclude<IntakeDraftStatus, "pending">,
+		changes: { contributor?: string } = {},
+	) {
+		const draft = await readDraft(id);
+		if (draft.status === status) return draft;
+		if (draft.status !== "pending")
+			throw new Error(`This draft is already ${draft.status}`);
+		const next = parseIntakeDraft({
+			...draft,
+			contributor:
+				changes.contributor === undefined
+					? draft.contributor
+					: parseIntakeContributor(changes.contributor),
+			status,
+			publishedAt: status === "published" ? new Date().toISOString() : null,
+		});
+		const temporary = join(root, draft.id, `.draft-${randomUUID()}.json`);
+		try {
+			await writeFile(temporary, serialize(next), {
+				flag: "wx",
+				mode: 0o600,
+			});
+			await rename(temporary, draftPath(draft.id));
+		} finally {
+			await rm(temporary, { force: true });
+		}
+		return next;
+	}
+
+	return {
+		list,
+		get: readDraft,
+
+		/** Idempotent: identical content returns the existing draft instead of a copy. */
+		create(
+			input: CreateIntakeDraftInput,
+		): Promise<{ draft: IntakeDraft; created: boolean }> {
+			return queued(() => createDraft(input));
+		},
+
+		async readScreenshot(id: string, screenshotId: string) {
+			const draft = await readDraft(id);
+			const screenshot = draft.screenshots.find(
+				(item) => item.id === parseIntakeDraftId(screenshotId),
+			);
+			if (!screenshot) throw new Error("Screenshot not found in this draft");
+			const bytes = new Uint8Array(
+				await readFile(join(root, draft.id, screenshot.id)),
+			);
+			if (sha256(bytes) !== screenshot.sha256)
+				throw new Error("Stored draft screenshot failed its integrity check");
+			return { bytes, screenshot };
+		},
+
+		/**
+		 * The reviewer may correct the contributor handle. contentHash keeps
+		 * identifying what the agent sent, so a resend still matches this draft.
+		 */
+		publish(id: string, changes: { contributor?: string } = {}) {
+			return queued(() => transition(id, "published", changes));
+		},
+
+		dismiss(id: string) {
+			return queued(() => transition(id, "dismissed"));
+		},
+	};
+}
+
+export type IntakeDraftStore = ReturnType<typeof createIntakeDraftStore>;
+
+function sha256(value: string | Uint8Array) {
+	return createHash("sha256").update(value).digest("hex");
+}
+
+function serialize(draft: IntakeDraft) {
+	return `${JSON.stringify(draft, null, "\t")}\n`;
+}

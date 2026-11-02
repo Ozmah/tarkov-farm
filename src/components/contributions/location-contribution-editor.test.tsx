@@ -129,7 +129,15 @@ const catalog: React.ComponentProps<
 	typeof LocationContributionEditor
 >["catalog"] = {
 	documentMaps: [{ documentId: "technical", mapId: "woods" }],
-	documents: [{ id: "technical", name: "Technical manual" }],
+	documents: [
+		{
+			id: "technical",
+			name: "Technical manual",
+			imagePath: "/documents/technical.webp",
+			imageWidth: 512,
+			imageHeight: 512,
+		},
+	],
 	keyMaps: [{ keyId: "woods-key", mapId: "woods" }],
 	keys: [
 		{

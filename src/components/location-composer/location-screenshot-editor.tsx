@@ -2,10 +2,13 @@ import {
 	ArrowDownIcon,
 	ArrowUpIcon,
 	ImageIcon,
+	PencilSimpleIcon,
 	TrashIcon,
 } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { ScreenshotAnnotator } from "@/components/screenshots/screenshot-annotator";
+import { ScreenshotGalleryDialog } from "@/components/screenshots/screenshot-gallery-dialog";
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
 import { FilePicker } from "@/components/ui/file-picker";
@@ -14,6 +17,8 @@ import { cn } from "@/lib/utils";
 
 export type ScreenshotDraft = {
 	file?: File;
+	/** Full-size image of a saved screenshot, for the viewer. */
+	fullUrl?: string;
 	height?: number;
 	id?: string;
 	key: string;
@@ -27,9 +32,13 @@ type LocationScreenshotEditorProps = {
 	disabled: boolean;
 	maxScreenshots: number;
 	screenshots: ScreenshotDraft[];
+	/** Location name for the full-screen viewer. */
+	title?: string;
 	onFilesAdded: (files: File[]) => void;
 	onMove: (index: number, offset: -1 | 1) => void;
 	onRemove: (key: string) => void;
+	/** Enables marking local screenshots; receives the edited file. */
+	onReplace?: (key: string, file: File) => void;
 };
 
 export function LocationScreenshotEditor({
@@ -38,11 +47,26 @@ export function LocationScreenshotEditor({
 	disabled,
 	maxScreenshots,
 	screenshots,
+	title = "Location",
 	onFilesAdded,
 	onMove,
 	onRemove,
+	onReplace,
 }: LocationScreenshotEditorProps) {
 	const pickerDisabled = disabled || screenshots.length >= maxScreenshots;
+	const [viewerIndex, setViewerIndex] = useState<number>();
+	const [editingKey, setEditingKey] = useState<string>();
+	const editing = screenshots.find(({ key }) => key === editingKey);
+	// Stable while the screenshots are unchanged: the viewer keys its object URLs on it.
+	const galleryScreenshots = useMemo(
+		() =>
+			screenshots.map(({ key, file, fullUrl, previewUrl }) => ({
+				key,
+				file,
+				url: fullUrl ?? previewUrl,
+			})),
+		[screenshots],
+	);
 
 	return (
 		<FieldSet className={cn(className)}>
@@ -76,11 +100,32 @@ export function LocationScreenshotEditor({
 								index={index}
 								screenshot={screenshot}
 								total={screenshots.length}
+								onEdit={
+									onReplace && screenshot.file
+										? () => setEditingKey(screenshot.key)
+										: undefined
+								}
 								onMove={onMove}
 								onRemove={onRemove}
+								onView={() => setViewerIndex(index)}
 							/>
 						))}
 					</ol>
+					<ScreenshotGalleryDialog
+						index={viewerIndex}
+						screenshots={galleryScreenshots}
+						title={title}
+						onIndexChange={setViewerIndex}
+					/>
+					<ScreenshotAnnotator
+						file={editing?.file}
+						title={`Mark ${title} screenshot`}
+						onCancel={() => setEditingKey(undefined)}
+						onSave={(file) => {
+							if (editing) onReplace?.(editing.key, file);
+							setEditingKey(undefined);
+						}}
+					/>
 				</>
 			) : (
 				<FilePicker
@@ -107,8 +152,10 @@ type ScreenshotItemProps = {
 	index: number;
 	screenshot: ScreenshotDraft;
 	total: number;
+	onEdit?: () => void;
 	onMove: (index: number, offset: -1 | 1) => void;
 	onRemove: (key: string) => void;
+	onView: () => void;
 };
 
 function ScreenshotItem({
@@ -116,8 +163,10 @@ function ScreenshotItem({
 	index,
 	screenshot,
 	total,
+	onEdit,
 	onMove,
 	onRemove,
+	onView,
 }: ScreenshotItemProps) {
 	const file = screenshot.file;
 	const [preview, setPreview] = useState<{
@@ -165,14 +214,21 @@ function ScreenshotItem({
 						{currentPreview?.error ?? "Checking screenshot..."}
 					</p>
 				) : (
-					<img
-						src={file ? currentPreview?.url : screenshot.previewUrl}
-						alt=""
-						width={screenshot.width}
-						height={screenshot.height}
-						draggable={false}
-						className="size-full object-contain"
-					/>
+					<button
+						type="button"
+						aria-label={`View screenshot ${index + 1} full screen`}
+						className="size-full cursor-zoom-in"
+						onClick={onView}
+					>
+						<img
+							src={file ? currentPreview?.url : screenshot.previewUrl}
+							alt=""
+							width={screenshot.width}
+							height={screenshot.height}
+							draggable={false}
+							className="size-full object-contain"
+						/>
+					</button>
 				)}
 			</div>
 
@@ -181,6 +237,19 @@ function ScreenshotItem({
 					<span className="mr-auto text-muted-foreground text-xs tabular-nums">
 						{index + 1} of {total}
 					</span>
+					{onEdit ? (
+						<Button
+							type="button"
+							variant="ghost"
+							size="sm"
+							aria-label={`Mark screenshot ${index + 1}`}
+							disabled={disabled}
+							onClick={onEdit}
+						>
+							<PencilSimpleIcon data-icon="inline-start" aria-hidden="true" />
+							Mark
+						</Button>
+					) : null}
 					<Button
 						type="button"
 						variant="ghost"

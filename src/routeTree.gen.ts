@@ -20,6 +20,7 @@ import { Route as PublicDocumentsRouteImport } from './routes/_public.documents'
 import { Route as PublicUpdatesRouteImport } from './routes/_public.updates'
 import { Route as ContributeEditorRouteImport } from './routes/contribute.editor'
 import { Route as PublicMapsMapIdRouteImport } from './routes/_public.maps.$mapId'
+import { Route as ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRouteImport } from './routes/api.intake-drafts.$draftId.screenshots.$screenshotId'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -75,6 +76,12 @@ const PublicMapsMapIdRoute = PublicMapsMapIdRouteImport.update({
   path: '/maps/$mapId',
   getParentRoute: () => PublicRoute,
 } as any)
+const ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute =
+  ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRouteImport.update({
+    id: '/api/intake-drafts/$draftId/screenshots/$screenshotId',
+    path: '/api/intake-drafts/$draftId/screenshots/$screenshotId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/updates': typeof PublicUpdatesRoute
   '/contribute/editor': typeof ContributeEditorRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
+  '/api/intake-drafts/$draftId/screenshots/$screenshotId': typeof ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute
 }
 export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/contribute/editor': typeof ContributeEditorRoute
   '/': typeof PublicIndexRoute
   '/maps/$mapId': typeof PublicMapsMapIdRoute
+  '/api/intake-drafts/$draftId/screenshots/$screenshotId': typeof ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/contribute/editor': typeof ContributeEditorRoute
   '/_public/': typeof PublicIndexRoute
   '/_public/maps/$mapId': typeof PublicMapsMapIdRoute
+  '/api/intake-drafts/$draftId/screenshots/$screenshotId': typeof ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/updates'
     | '/contribute/editor'
     | '/maps/$mapId'
+    | '/api/intake-drafts/$draftId/screenshots/$screenshotId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/editor'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/contribute/editor'
     | '/'
     | '/maps/$mapId'
+    | '/api/intake-drafts/$draftId/screenshots/$screenshotId'
   id:
     | '__root__'
     | '/_public'
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/contribute/editor'
     | '/_public/'
     | '/_public/maps/$mapId'
+    | '/api/intake-drafts/$draftId/screenshots/$screenshotId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -160,6 +173,7 @@ export interface RootRouteChildren {
   HealthRoute: typeof HealthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ContributeEditorRoute: typeof ContributeEditorRoute
+  ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute: typeof ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -241,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicMapsMapIdRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/api/intake-drafts/$draftId/screenshots/$screenshotId': {
+      id: '/api/intake-drafts/$draftId/screenshots/$screenshotId'
+      path: '/api/intake-drafts/$draftId/screenshots/$screenshotId'
+      fullPath: '/api/intake-drafts/$draftId/screenshots/$screenshotId'
+      preLoaderRoute: typeof ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -271,6 +292,8 @@ const rootRouteChildren: RootRouteChildren = {
   HealthRoute: HealthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ContributeEditorRoute: ContributeEditorRoute,
+  ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute:
+    ApiIntakeDraftsDraftIdScreenshotsScreenshotIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

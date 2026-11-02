@@ -1,0 +1,10 @@
+{
+	"mcpServers": {
+		"tarkov-farm": {
+			"command": "bun",
+			"args": ["scripts/mcp/tarkov-farm.ts"],
+			"cwd": ".",
+			"description": "Tarkov Farm local intake: catalog and location drafts from contributions"
+		}
+	}
+}

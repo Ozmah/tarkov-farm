@@ -3,6 +3,7 @@ import {
 	CrosshairIcon,
 	FileZipIcon,
 	NewspaperClippingIcon,
+	NotePencilIcon,
 } from "@phosphor-icons/react";
 import { Link } from "@tanstack/react-router";
 
@@ -13,7 +14,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 
-export type EditorSection = "locations" | "import" | "updates";
+export type EditorSection = "locations" | "drafts" | "import" | "updates";
 
 type EditorSidebarNavigationProps = {
 	activeSection: EditorSection;
@@ -50,6 +51,13 @@ export function EditorSidebarNavigation({
 				icon={CrosshairIcon}
 				label="Edit locations"
 				section="locations"
+				onSelect={selectSection}
+			/>
+			<EditorSectionItem
+				activeSection={activeSection}
+				icon={NotePencilIcon}
+				label="Review drafts"
+				section="drafts"
 				onSelect={selectSection}
 			/>
 			<EditorSectionItem

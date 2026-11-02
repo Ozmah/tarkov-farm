@@ -95,7 +95,15 @@ function renderComposer(
 ) {
 	return render(
 		<LocationComposerForm
-			availableDocuments={[{ id: "technical", name: "Technical" }]}
+			availableDocuments={[
+				{
+					id: "technical",
+					name: "Technical",
+					imagePath: "/documents/technical.webp",
+					imageWidth: 512,
+					imageHeight: 512,
+				},
+			]}
 			availableKeys={[]}
 			disabled={false}
 			draft={draft}
