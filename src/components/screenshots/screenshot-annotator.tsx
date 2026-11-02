@@ -154,11 +154,15 @@ function AnnotatorWorkspace({
 	}
 
 	function undo() {
+		if (saving) return;
 		setShapes((current) => current.slice(0, -1));
 	}
 
 	async function save() {
 		if (!image) return;
+		// The export uses the marks as of this click: nothing may change them while it encodes.
+		dragStartRef.current = undefined;
+		setDraft(undefined);
 		setSaving(true);
 		setError(undefined);
 		try {
@@ -225,7 +229,7 @@ function AnnotatorWorkspace({
 					type="button"
 					variant="ghost"
 					size="sm"
-					disabled={shapes.length === 0}
+					disabled={saving || shapes.length === 0}
 					onClick={undo}
 				>
 					<ArrowCounterClockwiseIcon
@@ -238,7 +242,7 @@ function AnnotatorWorkspace({
 					type="button"
 					variant="ghost"
 					size="sm"
-					disabled={shapes.length === 0}
+					disabled={saving || shapes.length === 0}
 					onClick={() => setShapes([])}
 				>
 					<TrashIcon data-icon="inline-start" aria-hidden="true" />
@@ -253,6 +257,7 @@ function AnnotatorWorkspace({
 						max={MAX_BRIGHTNESS}
 						step={5}
 						value={brightness}
+						disabled={saving}
 						onChange={(event) =>
 							setBrightness(event.currentTarget.valueAsNumber)
 						}
@@ -290,7 +295,7 @@ function AnnotatorWorkspace({
 						aria-label="Screenshot being marked"
 						className="h-auto max-h-[calc(100dvh-9rem)] w-auto max-w-full cursor-crosshair touch-none"
 						onPointerDown={(event) => {
-							if (event.button !== 0) return;
+							if (saving || event.button !== 0) return;
 							event.currentTarget.setPointerCapture(event.pointerId);
 							const point = toImagePoint(event);
 							dragStartRef.current = point;
@@ -299,7 +304,7 @@ function AnnotatorWorkspace({
 						}}
 						onPointerMove={(event) => {
 							const start = dragStartRef.current;
-							if (!start) return;
+							if (saving || !start) return;
 							const point = toImagePoint(event);
 							if (tool === "pen") {
 								penPointsRef.current = extendPenStroke(
@@ -324,7 +329,7 @@ function AnnotatorWorkspace({
 							const start = dragStartRef.current;
 							dragStartRef.current = undefined;
 							setDraft(undefined);
-							if (!start) return;
+							if (saving || !start) return;
 							const shape: AnnotationShape =
 								tool === "pen"
 									? { kind: "pen", points: penPointsRef.current }
