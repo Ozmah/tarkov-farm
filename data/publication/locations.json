@@ -2093,6 +2093,39 @@
 			"yBasisPoints": 5817
 		},
 		{
+			"description": "House with a gaming PC in the village between the military zone and the Resort. Living room by the entrance with the coat rack and shoe bench: the document is on the wooden bookshelf, second shelf from the top, leaning against the side.",
+			"documentId": "technical",
+			"id": "385ee947-60af-48b8-a854-20cf9adc4e64",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Village Gamer PC House",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1030,
+						"path": "/screenshots/385ee947-60af-48b8-a854-20cf9adc4e64/9ed16911cdf662bfde562c1bba3fe2c98e18a53e64847e05e49bf4abc2eb296b-1920.webp",
+						"sha256": "9ed16911cdf662bfde562c1bba3fe2c98e18a53e64847e05e49bf4abc2eb296b",
+						"width": 1920
+					},
+					"id": "4676bf5c-9c9f-4cd8-92e8-9487c6013e4f",
+					"isActive": true,
+					"preview": {
+						"height": 536,
+						"path": "/screenshots/385ee947-60af-48b8-a854-20cf9adc4e64/0284f1be39a036520dbf14bf4092818122c70418e9d1875cc801c54eb2f55797-1000.webp",
+						"sha256": "0284f1be39a036520dbf14bf4092818122c70418e9d1875cc801c54eb2f55797",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "b82dddc141d334b5d61d6fe4f63f11d97bd4426d44bc6a370050ddcfce0ef686"
+				}
+			],
+			"xBasisPoints": 7767,
+			"yBasisPoints": 4588
+		},
+		{
 			"description": "Second floor west office next to the bookshelf and the wall",
 			"documentId": "technical",
 			"id": "38658498-795b-4970-b58b-a08b0ff18900",
@@ -5970,7 +6003,7 @@
 			"id": "a1dd55c8-558e-4622-8075-1fe1b6c6ac22",
 			"isActive": true,
 			"mapImageId": "shoreline-main",
-			"name": "Radio Station Building",
+			"name": "Weather Station Building",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -8892,6 +8925,39 @@
 			"yBasisPoints": 1121
 		},
 		{
+			"description": "First floor, southwest new wing. First office to the right after entering the infected area.",
+			"documentId": "medical",
+			"id": "f3c7953a-2361-433d-a185-4f56061e4a2d",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Containment Block",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 968,
+						"path": "/screenshots/f3c7953a-2361-433d-a185-4f56061e4a2d/8073fcbd5474f8ec07ff6e608f63ac49eaa345870932ab67bc3addd97393f669-1920.webp",
+						"sha256": "8073fcbd5474f8ec07ff6e608f63ac49eaa345870932ab67bc3addd97393f669",
+						"width": 1920
+					},
+					"id": "a162bdaf-2304-4279-b34c-1dbc7ab4bd1d",
+					"isActive": true,
+					"preview": {
+						"height": 504,
+						"path": "/screenshots/f3c7953a-2361-433d-a185-4f56061e4a2d/0ce8263d63e82bbd5ac15cd3e2aca6085793ea58a855d530d533105112765273-1000.webp",
+						"sha256": "0ce8263d63e82bbd5ac15cd3e2aca6085793ea58a855d530d533105112765273",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0f3c7732523866d0581411099863981362c48168f529f69730499bcec02c5382"
+				}
+			],
+			"xBasisPoints": 2977,
+			"yBasisPoints": 8708
+		},
+		{
 			"description": "In the conference room in the back of the bank",
 			"documentId": "user",
 			"id": "f50461a8-1b51-46ce-80ab-6c265fc76afa",
@@ -9071,6 +9137,79 @@
 			],
 			"xBasisPoints": 7710,
 			"yBasisPoints": 4739
+		},
+		{
+			"description": "Weather Station, on the red steel tower, not in the building. Climb the stairs to the cabin under the top platform. The document is on the desk inside the cabin, among the loose papers.",
+			"documentId": "technical",
+			"id": "f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Weather Station Tower",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 804,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/122b3e689066783abe398d4c558281fbdb1cbfb6186f86cef8b9a79019471f6b-1920.webp",
+						"sha256": "122b3e689066783abe398d4c558281fbdb1cbfb6186f86cef8b9a79019471f6b",
+						"width": 1920
+					},
+					"id": "12414a2d-faeb-41d3-810d-ce378c96e3c9",
+					"isActive": true,
+					"preview": {
+						"height": 419,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/e9f94df682c221e5789ac29fea04284b92e8c40bddb3e0c14cb7e47794e14b0f-1000.webp",
+						"sha256": "e9f94df682c221e5789ac29fea04284b92e8c40bddb3e0c14cb7e47794e14b0f",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f4334339269adf468301ba5412dc1d29eb8ea8c3baff23d9414366bc9f46a152"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 804,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/105ca0ec2f776716f0d4b495ef06ff39b43b1192bf676ae856c40e5975eb06a6-1920.webp",
+						"sha256": "105ca0ec2f776716f0d4b495ef06ff39b43b1192bf676ae856c40e5975eb06a6",
+						"width": 1920
+					},
+					"id": "7243edcd-c71a-4d35-82ce-e72575e901f9",
+					"isActive": true,
+					"preview": {
+						"height": 419,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/f50907986f4b03aafda529f5678ed7e721e4f1342fecec95adb5f1767be29f4c-1000.webp",
+						"sha256": "f50907986f4b03aafda529f5678ed7e721e4f1342fecec95adb5f1767be29f4c",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "8971631ce713f0633bab344b19622c863668a830e9591006a190c113f339d733"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 804,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/6d20a05c45283a33382906d3e46c53c40cd48859cdffe1fd7e0d025827058365-1920.webp",
+						"sha256": "6d20a05c45283a33382906d3e46c53c40cd48859cdffe1fd7e0d025827058365",
+						"width": 1920
+					},
+					"id": "58ddf80d-0b34-4adb-8562-50f788abc864",
+					"isActive": true,
+					"preview": {
+						"height": 419,
+						"path": "/screenshots/f5cc52bc-f5e8-40d1-9e6e-d1e06a69d865/ba6e565ac1e2e736930615e3502e4deaadd3fbbd716539eae0c54fa56c868ab4-1000.webp",
+						"sha256": "ba6e565ac1e2e736930615e3502e4deaadd3fbbd716539eae0c54fa56c868ab4",
+						"width": 1000
+					},
+					"sortOrder": 2,
+					"sourceSha256": "3c01aeb5874fd12a03485f07a733eabc1d62b960a07fcc20fc3cc3a6529c24b9"
+				}
+			],
+			"xBasisPoints": 6578,
+			"yBasisPoints": 4563
 		},
 		{
 			"description": "On a bookshelf on the opposite side of the safe in company director's room",
