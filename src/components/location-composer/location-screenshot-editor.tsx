@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 
 export type ScreenshotDraft = {
 	file?: File;
+	/** Full-size image of a saved screenshot, for the viewer. */
+	fullUrl?: string;
 	height?: number;
 	id?: string;
 	key: string;
@@ -58,10 +60,10 @@ export function LocationScreenshotEditor({
 	// Stable while the screenshots are unchanged: the viewer keys its object URLs on it.
 	const galleryScreenshots = useMemo(
 		() =>
-			screenshots.map(({ key, file, previewUrl }) => ({
+			screenshots.map(({ key, file, fullUrl, previewUrl }) => ({
 				key,
 				file,
-				url: previewUrl,
+				url: fullUrl ?? previewUrl,
 			})),
 		[screenshots],
 	);

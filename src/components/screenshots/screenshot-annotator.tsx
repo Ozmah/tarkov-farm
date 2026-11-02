@@ -23,6 +23,7 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { MAX_SCREENSHOT_BYTES } from "@/lib/editor-validation";
 import {
 	type AnnotationPoint,
 	type AnnotationShape,
@@ -161,7 +162,18 @@ function AnnotatorWorkspace({
 		setSaving(true);
 		setError(undefined);
 		try {
-			onSave(await exportAnnotatedScreenshot(file, image, shapes, brightness));
+			const edited = await exportAnnotatedScreenshot(
+				file,
+				image,
+				shapes,
+				brightness,
+			);
+			// Rejected later otherwise, after the dialog closed and the edit looked saved.
+			if (edited.size > MAX_SCREENSHOT_BYTES)
+				throw new Error(
+					`The edited screenshot is over ${MAX_SCREENSHOT_BYTES / 1_048_576} MiB and cannot be saved`,
+				);
+			onSave(edited);
 		} catch (caught) {
 			setError(
 				caught instanceof Error ? caught.message : "Could not save the edit",
@@ -297,7 +309,15 @@ function AnnotatorWorkspace({
 								);
 								setDraft({ kind: "pen", points: penPointsRef.current });
 							} else {
-								setDraft(shapeFromDrag(tool, start, point, event.shiftKey));
+								setDraft(
+									shapeFromDrag(
+										tool,
+										start,
+										point,
+										event.shiftKey,
+										event.currentTarget,
+									),
+								);
 							}
 						}}
 						onPointerUp={(event) => {
@@ -313,6 +333,7 @@ function AnnotatorWorkspace({
 											start,
 											toImagePoint(event),
 											event.shiftKey,
+											event.currentTarget,
 										);
 							if (isVisibleShape(shape))
 								setShapes((current) => [...current, shape]);

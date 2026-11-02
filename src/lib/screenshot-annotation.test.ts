@@ -22,6 +22,30 @@ describe("shapeFromDrag", () => {
 			shapeFromDrag("ellipse", { x: 100, y: 100 }, { x: 40, y: 130 }, true),
 		).toEqual({ kind: "ellipse", x: 40, y: 100, width: 60, height: 60 });
 	});
+
+	it("keeps constrained shapes inside the image", () => {
+		const bounds = { width: 200, height: 100 };
+		// Squaring the 30px-tall drag to 90px would cross the bottom edge.
+		expect(
+			shapeFromDrag(
+				"rectangle",
+				{ x: 10, y: 60 },
+				{ x: 100, y: 90 },
+				true,
+				bounds,
+			),
+		).toEqual({ kind: "rectangle", x: 10, y: 60, width: 40, height: 40 });
+		const arrow = shapeFromDrag(
+			"arrow",
+			{ x: 170, y: 50 },
+			{ x: 200, y: 10 },
+			true,
+			bounds,
+		);
+		if (arrow.kind !== "arrow") throw new Error("expected an arrow");
+		expect(arrow.to.x).toBeCloseTo(200);
+		expect(arrow.to.y).toBeCloseTo(20);
+	});
 });
 
 describe("annotation helpers", () => {
@@ -78,5 +102,10 @@ describe("arrows and freehand", () => {
 				to: { x: 3, y: 0 },
 			}),
 		).toBe(false);
+	});
+
+	it("measures strokes longer than the engine's argument limit", () => {
+		const points = Array.from({ length: 300_000 }, (_, x) => ({ x, y: 0 }));
+		expect(isVisibleShape({ kind: "pen", points })).toBe(true);
 	});
 });

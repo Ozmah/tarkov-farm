@@ -1105,6 +1105,7 @@ function createScreenshotDrafts(
 	return screenshots
 		.filter((screenshot) => screenshot.locationId === locationId)
 		.map((screenshot) => ({
+			fullUrl: screenshot.path,
 			height: screenshot.previewHeight,
 			id: screenshot.id,
 			key: screenshot.id,

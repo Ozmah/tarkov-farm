@@ -23,27 +23,37 @@ const MIN_SHAPE_SIZE = 4;
 
 /**
  * The shape spanned by a drag. With `constrain` (Shift): a square or circle,
- * or an arrow snapped to the nearest 45°.
+ * or an arrow snapped to the nearest 45°. `bounds` keeps a constrained shape
+ * inside the image: the pointer is clamped, but squaring can push past it.
  */
 export function shapeFromDrag(
 	kind: Exclude<AnnotationTool, "pen">,
 	start: AnnotationPoint,
 	end: AnnotationPoint,
 	constrain = false,
+	bounds?: { width: number; height: number },
 ): AnnotationShape {
 	if (kind === "arrow")
 		return {
 			kind,
 			from: start,
-			to: constrain ? snapToEighth(start, end) : end,
+			to: constrain ? snapToEighth(start, end, bounds) : end,
 		};
 
 	let width = end.x - start.x;
 	let height = end.y - start.y;
 	if (constrain) {
-		const side = Math.max(Math.abs(width), Math.abs(height));
-		width = Math.sign(width || 1) * side;
-		height = Math.sign(height || 1) * side;
+		const signX = Math.sign(width || 1);
+		const signY = Math.sign(height || 1);
+		let side = Math.max(Math.abs(width), Math.abs(height));
+		if (bounds)
+			side = Math.min(
+				side,
+				signX > 0 ? bounds.width - start.x : start.x,
+				signY > 0 ? bounds.height - start.y : start.y,
+			);
+		width = signX * side;
+		height = signY * side;
 	}
 	return {
 		kind,
@@ -71,15 +81,17 @@ export function isVisibleShape(shape: AnnotationShape) {
 		case "arrow":
 			return distance(shape.from, shape.to) >= MIN_SHAPE_SIZE * 2;
 		case "pen": {
-			const xs = shape.points.map(({ x }) => x);
-			const ys = shape.points.map(({ y }) => y);
-			return (
-				shape.points.length > 1 &&
-				Math.max(
-					Math.max(...xs) - Math.min(...xs),
-					Math.max(...ys) - Math.min(...ys),
-				) >= MIN_SHAPE_SIZE
-			);
+			// A loop, not Math.max(...points): long strokes exceed the argument limit.
+			const [first] = shape.points;
+			if (!first || shape.points.length < 2) return false;
+			let [minX, maxX, minY, maxY] = [first.x, first.x, first.y, first.y];
+			for (const { x, y } of shape.points) {
+				minX = Math.min(minX, x);
+				maxX = Math.max(maxX, x);
+				minY = Math.min(minY, y);
+				maxY = Math.max(maxY, y);
+			}
+			return Math.max(maxX - minX, maxY - minY) >= MIN_SHAPE_SIZE;
 		}
 		default:
 			return shape.width >= MIN_SHAPE_SIZE && shape.height >= MIN_SHAPE_SIZE;
@@ -200,13 +212,23 @@ function distance(a: AnnotationPoint, b: AnnotationPoint) {
 	return Math.hypot(b.x - a.x, b.y - a.y);
 }
 
-function snapToEighth(start: AnnotationPoint, end: AnnotationPoint) {
-	const length = distance(start, end);
+function snapToEighth(
+	start: AnnotationPoint,
+	end: AnnotationPoint,
+	bounds?: { width: number; height: number },
+) {
 	const step = Math.PI / 4;
 	const angle =
 		Math.round(Math.atan2(end.y - start.y, end.x - start.x) / step) * step;
-	return {
-		x: start.x + Math.cos(angle) * length,
-		y: start.y + Math.sin(angle) * length,
-	};
+	const dx = Math.cos(angle);
+	const dy = Math.sin(angle);
+	let length = distance(start, end);
+	// Shorten along the snapped direction so the tip stays inside the image.
+	if (bounds) {
+		if (dx > 1e-9) length = Math.min(length, (bounds.width - start.x) / dx);
+		if (dx < -1e-9) length = Math.min(length, start.x / -dx);
+		if (dy > 1e-9) length = Math.min(length, (bounds.height - start.y) / dy);
+		if (dy < -1e-9) length = Math.min(length, start.y / -dy);
+	}
+	return { x: start.x + dx * length, y: start.y + dy * length };
 }
