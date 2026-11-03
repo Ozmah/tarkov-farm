@@ -719,6 +719,59 @@
 			"yBasisPoints": 5229
 		},
 		{
+			"description": "Inside the pier building, on top of the front counter",
+			"documentId": "technical",
+			"id": "13af41d8-ad34-45cf-bb32-4a48b20decb7",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Pier Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1081,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/e5c49fe10da5c8c0e41a667761169f0cff62a1c9ff67c608d0fac00a59f2fda7-1920.webp",
+						"sha256": "e5c49fe10da5c8c0e41a667761169f0cff62a1c9ff67c608d0fac00a59f2fda7",
+						"width": 1639
+					},
+					"id": "18aff3a7-5714-484d-a460-8593358c710d",
+					"isActive": true,
+					"preview": {
+						"height": 660,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/f12004be52773cc9e3358088a1ae80f88a948683b8617b2525a85aa925f26877-1000.webp",
+						"sha256": "f12004be52773cc9e3358088a1ae80f88a948683b8617b2525a85aa925f26877",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9f23ddde9f8762cd0c1ecfac15036692286c8ad1da1f3fce1c28f5e5f61b4446"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1075,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/65efb4b3f61a28797ed51e630f20bac59c5eb3f9153f9221ad3fbc2ba7eb8c6d-1920.webp",
+						"sha256": "65efb4b3f61a28797ed51e630f20bac59c5eb3f9153f9221ad3fbc2ba7eb8c6d",
+						"width": 1667
+					},
+					"id": "90c40269-f966-4899-8eba-a403a7ea5f20",
+					"isActive": true,
+					"preview": {
+						"height": 645,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/6c2887d9cc444149eeb7f72740c4383f7afd1c0bc3894f279590b65741ad1fda-1000.webp",
+						"sha256": "6c2887d9cc444149eeb7f72740c4383f7afd1c0bc3894f279590b65741ad1fda",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "7e44d0c594ddfafa1be14c51ba1dd716b4266713fc31017725b573cac816efd7"
+				}
+			],
+			"xBasisPoints": 5522,
+			"yBasisPoints": 6477
+		},
+		{
 			"description": "In a display with a round table in front of the south wall right next to the broken sheet rock wall.",
 			"documentId": "blueprints-technical",
 			"id": "143e7da6-0a1c-4c94-8606-d9854daac96b",
@@ -3261,6 +3314,59 @@
 			"yBasisPoints": 3862
 		},
 		{
+			"description": "Northeast, just before the paid car exit. Climb the outside stairs to the cabin on top of the blue shipping container; the document is on the floor at the foot of the bed, next to the jeans",
+			"documentId": "test",
+			"id": "4f99a03a-be03-430e-b81f-0d0d08ec1cb4",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Car Exit",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/ad55e888e8d2272ef8a90c68966075e77d3495957ad6715074e8304353423f11-1920.webp",
+						"sha256": "ad55e888e8d2272ef8a90c68966075e77d3495957ad6715074e8304353423f11",
+						"width": 1919
+					},
+					"id": "79b7be3f-d10f-4fc4-be48-d521d50830e0",
+					"isActive": true,
+					"preview": {
+						"height": 561,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/d5b93f53afc61903b1c2eaa3ec90ef457bde3eb260dbc94b078a6e531dffa068-1000.webp",
+						"sha256": "d5b93f53afc61903b1c2eaa3ec90ef457bde3eb260dbc94b078a6e531dffa068",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "90f7389547a3c5ffa821d1e89cfea3039f2b887343152e3dae6e57b63d8c60fa"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1073,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/ff72631ef10f1ecd46d4eefc2e5dca2fcce2ae9f62ea9f237b592d711c06ab7f-1920.webp",
+						"sha256": "ff72631ef10f1ecd46d4eefc2e5dca2fcce2ae9f62ea9f237b592d711c06ab7f",
+						"width": 1911
+					},
+					"id": "a5f7d634-6428-41a6-87b4-951e67a39a3b",
+					"isActive": true,
+					"preview": {
+						"height": 561,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/631254c94bd5cbbd519d8227c46639ffa797b5347c6bf58a3177a9e35ac0360b-1000.webp",
+						"sha256": "631254c94bd5cbbd519d8227c46639ffa797b5347c6bf58a3177a9e35ac0360b",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "8fe2aceb7345f9185b106e41a35578917a251e1ed0a3bba6ad1077c5655319bd"
+				}
+			],
+			"xBasisPoints": 6401,
+			"yBasisPoints": 1017
+		},
+		{
 			"description": "South side of the round table next to a laptop (Opposite side of the medical one)",
 			"documentId": "user",
 			"id": "5142d8d5-f144-4905-ad8b-0802bc9e518c",
@@ -4052,6 +4158,61 @@
 			],
 			"xBasisPoints": 6910,
 			"yBasisPoints": 6266
+		},
+		{
+			"description": "OLI logistics department office, on top of the low wooden cabinet against the wall",
+			"documentId": "financial",
+			"id": "6f3603c5-1943-437a-9403-eb25557423a9",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "OLI Logistics Office",
+			"requiredKeyIds": [
+				"oli-logistics-department-office-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/e8e54123a63472df154dd6dfa58172a91f82c0cd5129c1f8f71d72e665cc79f2-1920.webp",
+						"sha256": "e8e54123a63472df154dd6dfa58172a91f82c0cd5129c1f8f71d72e665cc79f2",
+						"width": 1911
+					},
+					"id": "2a65538e-8371-452a-ab17-71623978db99",
+					"isActive": true,
+					"preview": {
+						"height": 564,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/4d70da3da77321d5488dbfa4723139321d16e33b080ae6e63be3341b68036a97-1000.webp",
+						"sha256": "4d70da3da77321d5488dbfa4723139321d16e33b080ae6e63be3341b68036a97",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0bfe9e5a52a3df892b46465c2b95d46d918ea04489557aa915951c92f382d1ac"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/5525970bcf2ce8dffd85870a27b394a2b0888ad574271729e8e7dc59b14d2ca1-1920.webp",
+						"sha256": "5525970bcf2ce8dffd85870a27b394a2b0888ad574271729e8e7dc59b14d2ca1",
+						"width": 1915
+					},
+					"id": "b82bd1e1-b4f6-4fff-811c-b1bd26181fbd",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/8b160157a87f0671e08f10b78789fa4af3dd70f1a0cafa8cea94a22c019c98c0-1000.webp",
+						"sha256": "8b160157a87f0671e08f10b78789fa4af3dd70f1a0cafa8cea94a22c019c98c0",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "ea4059146a4c22d679ac77c64cde3da371757351a7e66243d53af622aa648857"
+				}
+			],
+			"xBasisPoints": 7396,
+			"yBasisPoints": 6757
 		},
 		{
 			"description": "On the window inside the RB-KPRL room, in the dome area. No key needed, can be taken from the outside.",
