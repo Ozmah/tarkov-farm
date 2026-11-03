@@ -3213,7 +3213,7 @@
 			"id": "4ddeb063-5303-496a-a927-54f4eadd2316",
 			"isActive": true,
 			"mapImageId": "the-lab-main",
-			"name": "South Glass Office",
+			"name": "Glass Office South",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -3953,6 +3953,39 @@
 			],
 			"xBasisPoints": 8774,
 			"yBasisPoints": 3702
+		},
+		{
+			"description": "Radio tower shack, on the metal shelf between the cardboard boxes",
+			"documentId": "test",
+			"id": "6a2b5bdf-84a3-44ee-a76f-f25e22958925",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Radio Tower Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/6a2b5bdf-84a3-44ee-a76f-f25e22958925/658c5032d8310ab5c57a1dbc8c999a321c32e875ad70dd64c3369d7a0e8903b3-1920.webp",
+						"sha256": "658c5032d8310ab5c57a1dbc8c999a321c32e875ad70dd64c3369d7a0e8903b3",
+						"width": 1920
+					},
+					"id": "be0d1c25-dbe0-4d5b-b791-e136b920e141",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/6a2b5bdf-84a3-44ee-a76f-f25e22958925/528f45c5de51ae5449eea35a08a5308b6d9a5bcacc379256953198f5d037f1ee-1000.webp",
+						"sha256": "528f45c5de51ae5449eea35a08a5308b6d9a5bcacc379256953198f5d037f1ee",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "5736009618ee8b7a93e79d32145d0ab26523a63453b852eb427131ce5f99f0ce"
+				}
+			],
+			"xBasisPoints": 7541,
+			"yBasisPoints": 3578
 		},
 		{
 			"description": "On top of the bar near the stairs",
@@ -4804,6 +4837,39 @@
 			],
 			"xBasisPoints": 3653,
 			"yBasisPoints": 3333
+		},
+		{
+			"description": "North glass office. The document is on top of the low white cabinets along the glass wall.",
+			"documentId": "user",
+			"id": "7efb4cba-9eb8-4a9f-8828-03f5a6d49260",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Glass Office North",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/7efb4cba-9eb8-4a9f-8828-03f5a6d49260/7cb26dab595df6d67668969d654a24f3a8bcaaa844478c25fb69ebb2a312e198-1920.webp",
+						"sha256": "7cb26dab595df6d67668969d654a24f3a8bcaaa844478c25fb69ebb2a312e198",
+						"width": 1920
+					},
+					"id": "9f482a2b-6e7b-45b8-9bf7-cd1482e3f290",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/7efb4cba-9eb8-4a9f-8828-03f5a6d49260/83e278c5d8a5b31b230bc472d2ab7f17832911cf46d5eb8e9279420c671166b8-1000.webp",
+						"sha256": "83e278c5d8a5b31b230bc472d2ab7f17832911cf46d5eb8e9279420c671166b8",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f8d922ac7ca802c9576d9f888732cfde3a54030c5d51d7324f99508b5a82948f"
+				}
+			],
+			"xBasisPoints": 7045,
+			"yBasisPoints": 2786
 		},
 		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
@@ -5774,6 +5840,39 @@
 			],
 			"xBasisPoints": 8315,
 			"yBasisPoints": 3249
+		},
+		{
+			"description": "South glass office. The document is on the low white rounded coffee table in front of the yellow leather sofa, next to a storage box and a magazine.",
+			"documentId": "user",
+			"id": "96542988-4411-4754-ab54-0c66b77315b9",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Glass Office South",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/96542988-4411-4754-ab54-0c66b77315b9/ad8a2ee1aeec8d136753820e88494f27eb99bd7c8724def1b42c630419da4f8d-1920.webp",
+						"sha256": "ad8a2ee1aeec8d136753820e88494f27eb99bd7c8724def1b42c630419da4f8d",
+						"width": 1920
+					},
+					"id": "35d45ab2-1d2e-4d0c-b294-69736a8af48c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/96542988-4411-4754-ab54-0c66b77315b9/ee232c4021dd823c17848967713a68b18ac09515a6e0fc190a602a951b6d2040-1000.webp",
+						"sha256": "ee232c4021dd823c17848967713a68b18ac09515a6e0fc190a602a951b6d2040",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "806f3f057bf064c8318c8ee8fc4c04d040f9a8c481fdc51ef62a550105e57c10"
+				}
+			],
+			"xBasisPoints": 7143,
+			"yBasisPoints": 3991
 		},
 		{
 			"description": "Corner office near the entrance, on the bookshelf",
@@ -8275,6 +8374,39 @@
 			"yBasisPoints": 6116
 		},
 		{
+			"description": "Terragroup building, second floor, on the black armchair across from the white lobby desk",
+			"documentId": "user",
+			"id": "e696a510-2d21-4fb6-9e8f-e6a0017a6301",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Reception",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e696a510-2d21-4fb6-9e8f-e6a0017a6301/a93f9c1e597a1573208e94941c4e5bfed1feb7184f5079e0809c7c16ad6c0726-1920.webp",
+						"sha256": "a93f9c1e597a1573208e94941c4e5bfed1feb7184f5079e0809c7c16ad6c0726",
+						"width": 1920
+					},
+					"id": "7c1414a6-a647-4dd2-9b87-2d98c5885be0",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e696a510-2d21-4fb6-9e8f-e6a0017a6301/75c2d1d1db34036c781b0dce834b6d40b402010e8355253aa2d6b9240863acec-1000.webp",
+						"sha256": "75c2d1d1db34036c781b0dce834b6d40b402010e8355253aa2d6b9240863acec",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "4e3d5c3ac94558440b9f6d0cf415508045c3bf1eca5361342584ce243257597e"
+				}
+			],
+			"xBasisPoints": 8871,
+			"yBasisPoints": 3803
+		},
+		{
 			"description": "Office in the middle, on top of the desk closest to the door.",
 			"documentId": "user",
 			"id": "e6da387e-addf-43bf-b472-517b7724f348",
@@ -8771,6 +8903,39 @@
 			],
 			"xBasisPoints": 1466,
 			"yBasisPoints": 4100
+		},
+		{
+			"description": "Radio tower shack, on the floor between the laptop desk and the server rack",
+			"documentId": "technical",
+			"id": "f0cbab8d-b8f5-44ed-969d-43c9803a2b79",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Radio Tower Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/f0cbab8d-b8f5-44ed-969d-43c9803a2b79/58b297c106e696337a1c0517585b35ab2119f20d3d9e623f011cebb6a1ea1356-1920.webp",
+						"sha256": "58b297c106e696337a1c0517585b35ab2119f20d3d9e623f011cebb6a1ea1356",
+						"width": 1920
+					},
+					"id": "673421f0-6164-4356-a7df-8fa67fe49e21",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/f0cbab8d-b8f5-44ed-969d-43c9803a2b79/3d4e8246b9536c800f35104f96cc6b931bc9bdd0cc2331dfda928b9de8a856e2-1000.webp",
+						"sha256": "3d4e8246b9536c800f35104f96cc6b931bc9bdd0cc2331dfda928b9de8a856e2",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "401fec24061c31b877da06c28c5c5221cf7bf0c5d7d603e0cefad4d6f56ca7ae"
+				}
+			],
+			"xBasisPoints": 7541,
+			"yBasisPoints": 3578
 		},
 		{
 			"description": "Building in the middle with the piled boxes, on top of the cabinet in front of the technical boxes",
