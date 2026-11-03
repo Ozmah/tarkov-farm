@@ -51,7 +51,7 @@ type LocationComposerFormProps = {
 	onScreenshotFilesAdded: (files: File[]) => void;
 	onScreenshotMove: (index: number, offset: -1 | 1) => void;
 	onScreenshotRemove: (key: string) => void;
-	/** Enables marking screenshots (rectangles, ellipses, brightness) before saving. */
+	/** Enables marking screenshots before saving; receives the edited file. */
 	onScreenshotReplace?: (key: string, file: File) => void;
 	onSubmit: () => void;
 };

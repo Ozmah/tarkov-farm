@@ -719,6 +719,59 @@
 			"yBasisPoints": 5229
 		},
 		{
+			"description": "Inside the pier building, on top of the front counter",
+			"documentId": "technical",
+			"id": "13af41d8-ad34-45cf-bb32-4a48b20decb7",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Pier Building",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1081,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/e5c49fe10da5c8c0e41a667761169f0cff62a1c9ff67c608d0fac00a59f2fda7-1920.webp",
+						"sha256": "e5c49fe10da5c8c0e41a667761169f0cff62a1c9ff67c608d0fac00a59f2fda7",
+						"width": 1639
+					},
+					"id": "18aff3a7-5714-484d-a460-8593358c710d",
+					"isActive": true,
+					"preview": {
+						"height": 660,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/f12004be52773cc9e3358088a1ae80f88a948683b8617b2525a85aa925f26877-1000.webp",
+						"sha256": "f12004be52773cc9e3358088a1ae80f88a948683b8617b2525a85aa925f26877",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "9f23ddde9f8762cd0c1ecfac15036692286c8ad1da1f3fce1c28f5e5f61b4446"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1075,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/65efb4b3f61a28797ed51e630f20bac59c5eb3f9153f9221ad3fbc2ba7eb8c6d-1920.webp",
+						"sha256": "65efb4b3f61a28797ed51e630f20bac59c5eb3f9153f9221ad3fbc2ba7eb8c6d",
+						"width": 1667
+					},
+					"id": "90c40269-f966-4899-8eba-a403a7ea5f20",
+					"isActive": true,
+					"preview": {
+						"height": 645,
+						"path": "/screenshots/13af41d8-ad34-45cf-bb32-4a48b20decb7/6c2887d9cc444149eeb7f72740c4383f7afd1c0bc3894f279590b65741ad1fda-1000.webp",
+						"sha256": "6c2887d9cc444149eeb7f72740c4383f7afd1c0bc3894f279590b65741ad1fda",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "7e44d0c594ddfafa1be14c51ba1dd716b4266713fc31017725b573cac816efd7"
+				}
+			],
+			"xBasisPoints": 5522,
+			"yBasisPoints": 6477
+		},
+		{
 			"description": "In a display with a round table in front of the south wall right next to the broken sheet rock wall.",
 			"documentId": "blueprints-technical",
 			"id": "143e7da6-0a1c-4c94-8606-d9854daac96b",
@@ -949,6 +1002,59 @@
 			],
 			"xBasisPoints": 5301,
 			"yBasisPoints": 7462
+		},
+		{
+			"description": "Inside the warehouse at the train station. The document is on the bottom shelf of the metal lockers against the corrugated wall, next to the shelves and the desk with a lamp.",
+			"documentId": "technical",
+			"id": "19add9dd-a632-4579-85f6-21c8fa6ad52d",
+			"isActive": true,
+			"mapImageId": "lighthouse-main",
+			"name": "Train Station Warehouse",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/4325bafedb1f87a0ece4659962206f50f56c1df440abee313ac739d581d4b6e0-1920.webp",
+						"sha256": "4325bafedb1f87a0ece4659962206f50f56c1df440abee313ac739d581d4b6e0",
+						"width": 1920
+					},
+					"id": "9389bef0-3a85-4ecb-b1bd-6aac0fdea6c2",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/f1c9aeaa42c4f632ad3dbb5f10df04e3dd6d4e64da1251b35b571460de75129c-1000.webp",
+						"sha256": "f1c9aeaa42c4f632ad3dbb5f10df04e3dd6d4e64da1251b35b571460de75129c",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "3197e12a8705378a5f9d6271801ddd32b0d84dd89cce9c6da6207473b1227d5d"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/f80a965e780e21781eb63ca168c5f5ac05ca1139d4b18b42430a00e506a53899-1920.webp",
+						"sha256": "f80a965e780e21781eb63ca168c5f5ac05ca1139d4b18b42430a00e506a53899",
+						"width": 1920
+					},
+					"id": "986d62a5-5398-462d-ac50-92ef13d1e94c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/19add9dd-a632-4579-85f6-21c8fa6ad52d/33bbbb4efa7ce186d2fbffb42061974901953ab931e34b7dff03c32f0430b42d-1000.webp",
+						"sha256": "33bbbb4efa7ce186d2fbffb42061974901953ab931e34b7dff03c32f0430b42d",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "2b7024853bb10d9ca81d262618d1ab9fa07bf587fd8187a2f4f9cc721200f62f"
+				}
+			],
+			"xBasisPoints": 6290,
+			"yBasisPoints": 930
 		},
 		{
 			"description": "On a lab surface next to the blue key card entrance room",
@@ -3160,7 +3266,7 @@
 			"id": "4ddeb063-5303-496a-a927-54f4eadd2316",
 			"isActive": true,
 			"mapImageId": "the-lab-main",
-			"name": "South Glass Office",
+			"name": "Glass Office South",
 			"requiredKeyIds": [],
 			"screenshots": [
 				{
@@ -3206,6 +3312,59 @@
 			],
 			"xBasisPoints": 7199,
 			"yBasisPoints": 3862
+		},
+		{
+			"description": "Northeast, just before the paid car exit. Climb the outside stairs to the cabin on top of the blue shipping container; the document is on the floor at the foot of the bed, next to the jeans",
+			"documentId": "test",
+			"id": "4f99a03a-be03-430e-b81f-0d0d08ec1cb4",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Car Exit",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/ad55e888e8d2272ef8a90c68966075e77d3495957ad6715074e8304353423f11-1920.webp",
+						"sha256": "ad55e888e8d2272ef8a90c68966075e77d3495957ad6715074e8304353423f11",
+						"width": 1919
+					},
+					"id": "79b7be3f-d10f-4fc4-be48-d521d50830e0",
+					"isActive": true,
+					"preview": {
+						"height": 561,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/d5b93f53afc61903b1c2eaa3ec90ef457bde3eb260dbc94b078a6e531dffa068-1000.webp",
+						"sha256": "d5b93f53afc61903b1c2eaa3ec90ef457bde3eb260dbc94b078a6e531dffa068",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "90f7389547a3c5ffa821d1e89cfea3039f2b887343152e3dae6e57b63d8c60fa"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1073,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/ff72631ef10f1ecd46d4eefc2e5dca2fcce2ae9f62ea9f237b592d711c06ab7f-1920.webp",
+						"sha256": "ff72631ef10f1ecd46d4eefc2e5dca2fcce2ae9f62ea9f237b592d711c06ab7f",
+						"width": 1911
+					},
+					"id": "a5f7d634-6428-41a6-87b4-951e67a39a3b",
+					"isActive": true,
+					"preview": {
+						"height": 561,
+						"path": "/screenshots/4f99a03a-be03-430e-b81f-0d0d08ec1cb4/631254c94bd5cbbd519d8227c46639ffa797b5347c6bf58a3177a9e35ac0360b-1000.webp",
+						"sha256": "631254c94bd5cbbd519d8227c46639ffa797b5347c6bf58a3177a9e35ac0360b",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "8fe2aceb7345f9185b106e41a35578917a251e1ed0a3bba6ad1077c5655319bd"
+				}
+			],
+			"xBasisPoints": 6401,
+			"yBasisPoints": 1017
 		},
 		{
 			"description": "South side of the round table next to a laptop (Opposite side of the medical one)",
@@ -3902,6 +4061,39 @@
 			"yBasisPoints": 3702
 		},
 		{
+			"description": "Radio tower shack, on the metal shelf between the cardboard boxes",
+			"documentId": "test",
+			"id": "6a2b5bdf-84a3-44ee-a76f-f25e22958925",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Radio Tower Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/6a2b5bdf-84a3-44ee-a76f-f25e22958925/658c5032d8310ab5c57a1dbc8c999a321c32e875ad70dd64c3369d7a0e8903b3-1920.webp",
+						"sha256": "658c5032d8310ab5c57a1dbc8c999a321c32e875ad70dd64c3369d7a0e8903b3",
+						"width": 1920
+					},
+					"id": "be0d1c25-dbe0-4d5b-b791-e136b920e141",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/6a2b5bdf-84a3-44ee-a76f-f25e22958925/528f45c5de51ae5449eea35a08a5308b6d9a5bcacc379256953198f5d037f1ee-1000.webp",
+						"sha256": "528f45c5de51ae5449eea35a08a5308b6d9a5bcacc379256953198f5d037f1ee",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "5736009618ee8b7a93e79d32145d0ab26523a63453b852eb427131ce5f99f0ce"
+				}
+			],
+			"xBasisPoints": 7541,
+			"yBasisPoints": 3578
+		},
+		{
 			"description": "On top of the bar near the stairs",
 			"documentId": "financial",
 			"id": "6ad4d78b-f6e6-4d60-bc0a-708d00975d96",
@@ -3966,6 +4158,61 @@
 			],
 			"xBasisPoints": 6910,
 			"yBasisPoints": 6266
+		},
+		{
+			"description": "OLI logistics department office, on top of the low wooden cabinet against the wall",
+			"documentId": "financial",
+			"id": "6f3603c5-1943-437a-9403-eb25557423a9",
+			"isActive": true,
+			"mapImageId": "interchange-main",
+			"name": "OLI Logistics Office",
+			"requiredKeyIds": [
+				"oli-logistics-department-office-key"
+			],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/e8e54123a63472df154dd6dfa58172a91f82c0cd5129c1f8f71d72e665cc79f2-1920.webp",
+						"sha256": "e8e54123a63472df154dd6dfa58172a91f82c0cd5129c1f8f71d72e665cc79f2",
+						"width": 1911
+					},
+					"id": "2a65538e-8371-452a-ab17-71623978db99",
+					"isActive": true,
+					"preview": {
+						"height": 564,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/4d70da3da77321d5488dbfa4723139321d16e33b080ae6e63be3341b68036a97-1000.webp",
+						"sha256": "4d70da3da77321d5488dbfa4723139321d16e33b080ae6e63be3341b68036a97",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "0bfe9e5a52a3df892b46465c2b95d46d918ea04489557aa915951c92f382d1ac"
+				},
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1077,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/5525970bcf2ce8dffd85870a27b394a2b0888ad574271729e8e7dc59b14d2ca1-1920.webp",
+						"sha256": "5525970bcf2ce8dffd85870a27b394a2b0888ad574271729e8e7dc59b14d2ca1",
+						"width": 1915
+					},
+					"id": "b82bd1e1-b4f6-4fff-811c-b1bd26181fbd",
+					"isActive": true,
+					"preview": {
+						"height": 562,
+						"path": "/screenshots/6f3603c5-1943-437a-9403-eb25557423a9/8b160157a87f0671e08f10b78789fa4af3dd70f1a0cafa8cea94a22c019c98c0-1000.webp",
+						"sha256": "8b160157a87f0671e08f10b78789fa4af3dd70f1a0cafa8cea94a22c019c98c0",
+						"width": 1000
+					},
+					"sortOrder": 1,
+					"sourceSha256": "ea4059146a4c22d679ac77c64cde3da371757351a7e66243d53af622aa648857"
+				}
+			],
+			"xBasisPoints": 7396,
+			"yBasisPoints": 6757
 		},
 		{
 			"description": "On the window inside the RB-KPRL room, in the dome area. No key needed, can be taken from the outside.",
@@ -4751,6 +4998,39 @@
 			],
 			"xBasisPoints": 3653,
 			"yBasisPoints": 3333
+		},
+		{
+			"description": "North glass office. The document is on top of the low white cabinets along the glass wall.",
+			"documentId": "user",
+			"id": "7efb4cba-9eb8-4a9f-8828-03f5a6d49260",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Glass Office North",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/7efb4cba-9eb8-4a9f-8828-03f5a6d49260/7cb26dab595df6d67668969d654a24f3a8bcaaa844478c25fb69ebb2a312e198-1920.webp",
+						"sha256": "7cb26dab595df6d67668969d654a24f3a8bcaaa844478c25fb69ebb2a312e198",
+						"width": 1920
+					},
+					"id": "9f482a2b-6e7b-45b8-9bf7-cd1482e3f290",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/7efb4cba-9eb8-4a9f-8828-03f5a6d49260/83e278c5d8a5b31b230bc472d2ab7f17832911cf46d5eb8e9279420c671166b8-1000.webp",
+						"sha256": "83e278c5d8a5b31b230bc472d2ab7f17832911cf46d5eb8e9279420c671166b8",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "f8d922ac7ca802c9576d9f888732cfde3a54030c5d51d7324f99508b5a82948f"
+				}
+			],
+			"xBasisPoints": 7045,
+			"yBasisPoints": 2786
 		},
 		{
 			"description": "Inside crackhouse on the backshelf upstairs.",
@@ -5723,6 +6003,39 @@
 			"yBasisPoints": 3249
 		},
 		{
+			"description": "South glass office. The document is on the low white rounded coffee table in front of the yellow leather sofa, next to a storage box and a magazine.",
+			"documentId": "user",
+			"id": "96542988-4411-4754-ab54-0c66b77315b9",
+			"isActive": true,
+			"mapImageId": "the-lab-main",
+			"name": "Glass Office South",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/96542988-4411-4754-ab54-0c66b77315b9/ad8a2ee1aeec8d136753820e88494f27eb99bd7c8724def1b42c630419da4f8d-1920.webp",
+						"sha256": "ad8a2ee1aeec8d136753820e88494f27eb99bd7c8724def1b42c630419da4f8d",
+						"width": 1920
+					},
+					"id": "35d45ab2-1d2e-4d0c-b294-69736a8af48c",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/96542988-4411-4754-ab54-0c66b77315b9/ee232c4021dd823c17848967713a68b18ac09515a6e0fc190a602a951b6d2040-1000.webp",
+						"sha256": "ee232c4021dd823c17848967713a68b18ac09515a6e0fc190a602a951b6d2040",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "806f3f057bf064c8318c8ee8fc4c04d040f9a8c481fdc51ef62a550105e57c10"
+				}
+			],
+			"xBasisPoints": 7143,
+			"yBasisPoints": 3991
+		},
+		{
 			"description": "Corner office near the entrance, on the bookshelf",
 			"documentId": "user",
 			"id": "966df40c-c958-4b4e-9d50-708458aad806",
@@ -6554,6 +6867,39 @@
 			],
 			"xBasisPoints": 5734,
 			"yBasisPoints": 2032
+		},
+		{
+			"description": "Parking lot north of Capital Insight. The document is a clipboard lying in the open trunk of a brown hatchback.",
+			"documentId": "medical",
+			"id": "b69c2004-f6b8-4e85-acf1-dfc2cbb4d383",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Capital Insight Parking Lot",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/b69c2004-f6b8-4e85-acf1-dfc2cbb4d383/a700da6de0037913200204ebcf21ad1c75295459f062d04aae3dfecb4332702a-1920.webp",
+						"sha256": "a700da6de0037913200204ebcf21ad1c75295459f062d04aae3dfecb4332702a",
+						"width": 1920
+					},
+					"id": "c9583027-6f8f-4c8b-8340-f0fefd3bbb1d",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/b69c2004-f6b8-4e85-acf1-dfc2cbb4d383/f1b949bde70fae7861ffe7ce56d2192d931c1a19db271f7ed9c7fdbdca0c8c21-1000.webp",
+						"sha256": "f1b949bde70fae7861ffe7ce56d2192d931c1a19db271f7ed9c7fdbdca0c8c21",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "464912e8a2e01abb4493453dc7be7368b471b065454eaeb04b4ed9274215d8bb"
+				}
+			],
+			"xBasisPoints": 5953,
+			"yBasisPoints": 6902
 		},
 		{
 			"description": "Under a desk with a monitor, near the window",
@@ -8189,6 +8535,39 @@
 			"yBasisPoints": 6116
 		},
 		{
+			"description": "Terragroup building, second floor, on the black armchair across from the white lobby desk",
+			"documentId": "user",
+			"id": "e696a510-2d21-4fb6-9e8f-e6a0017a6301",
+			"isActive": true,
+			"mapImageId": "ground-zero-main",
+			"name": "Reception",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/e696a510-2d21-4fb6-9e8f-e6a0017a6301/a93f9c1e597a1573208e94941c4e5bfed1feb7184f5079e0809c7c16ad6c0726-1920.webp",
+						"sha256": "a93f9c1e597a1573208e94941c4e5bfed1feb7184f5079e0809c7c16ad6c0726",
+						"width": 1920
+					},
+					"id": "7c1414a6-a647-4dd2-9b87-2d98c5885be0",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/e696a510-2d21-4fb6-9e8f-e6a0017a6301/75c2d1d1db34036c781b0dce834b6d40b402010e8355253aa2d6b9240863acec-1000.webp",
+						"sha256": "75c2d1d1db34036c781b0dce834b6d40b402010e8355253aa2d6b9240863acec",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "4e3d5c3ac94558440b9f6d0cf415508045c3bf1eca5361342584ce243257597e"
+				}
+			],
+			"xBasisPoints": 8871,
+			"yBasisPoints": 3803
+		},
+		{
 			"description": "Office in the middle, on top of the desk closest to the door.",
 			"documentId": "user",
 			"id": "e6da387e-addf-43bf-b472-517b7724f348",
@@ -8685,6 +9064,39 @@
 			],
 			"xBasisPoints": 1466,
 			"yBasisPoints": 4100
+		},
+		{
+			"description": "Radio tower shack, on the floor between the laptop desk and the server rack",
+			"documentId": "technical",
+			"id": "f0cbab8d-b8f5-44ed-969d-43c9803a2b79",
+			"isActive": true,
+			"mapImageId": "shoreline-main",
+			"name": "Radio Tower Shack",
+			"requiredKeyIds": [],
+			"screenshots": [
+				{
+					"altText": "",
+					"caption": null,
+					"full": {
+						"height": 1080,
+						"path": "/screenshots/f0cbab8d-b8f5-44ed-969d-43c9803a2b79/58b297c106e696337a1c0517585b35ab2119f20d3d9e623f011cebb6a1ea1356-1920.webp",
+						"sha256": "58b297c106e696337a1c0517585b35ab2119f20d3d9e623f011cebb6a1ea1356",
+						"width": 1920
+					},
+					"id": "673421f0-6164-4356-a7df-8fa67fe49e21",
+					"isActive": true,
+					"preview": {
+						"height": 563,
+						"path": "/screenshots/f0cbab8d-b8f5-44ed-969d-43c9803a2b79/3d4e8246b9536c800f35104f96cc6b931bc9bdd0cc2331dfda928b9de8a856e2-1000.webp",
+						"sha256": "3d4e8246b9536c800f35104f96cc6b931bc9bdd0cc2331dfda928b9de8a856e2",
+						"width": 1000
+					},
+					"sortOrder": 0,
+					"sourceSha256": "401fec24061c31b877da06c28c5c5221cf7bf0c5d7d603e0cefad4d6f56ca7ae"
+				}
+			],
+			"xBasisPoints": 7541,
+			"yBasisPoints": 3578
 		},
 		{
 			"description": "Building in the middle with the piled boxes, on top of the cabinet in front of the technical boxes",

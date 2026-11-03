@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 
 import { LocationScreenshotDialog } from "@/components/map/location-screenshot-dialog";
 
+/** A local `file` takes precedence over the published `url`. */
 export type GalleryScreenshot = {
 	key: string;
-	/** Local file, shown at full resolution. */
 	file?: File;
-	/** Already published image, used when there is no local file. */
 	url?: string;
 };
 

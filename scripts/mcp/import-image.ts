@@ -68,13 +68,10 @@ export async function importImage(
 }
 
 /**
- * Opens without following a final symlink and without blocking on FIFOs,
- * then confirms the descriptor really is the file at `canonical`.
- * O_NOFOLLOW only covers the last component: a parent directory swapped for
- * a symlink after `realpath` would still open, and stat() would follow the
- * same symlink. On Linux the kernel's path for the open descriptor must
- * equal `canonical`, and the import fails if procfs cannot answer; on other
- * platforms only the dev/ino check runs.
+ * Opens without following a final symlink or blocking on a FIFO, then checks
+ * the descriptor is still the file at `canonical`. O_NOFOLLOW covers only the
+ * last component and stat() follows a swapped parent, so on Linux the kernel's
+ * path for the descriptor must match too; elsewhere only dev/ino is compared.
  */
 async function readVerified(canonical: string, path: string) {
 	const handle = await open(

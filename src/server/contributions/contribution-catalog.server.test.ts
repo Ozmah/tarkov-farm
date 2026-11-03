@@ -14,6 +14,7 @@ import {
 	locationRequiredKeys,
 	locations,
 	maps,
+	screenshots,
 } from "@/server/db/schema";
 import { seedCatalog } from "@/server/db/seed";
 import { queryContributionCatalog } from "./contribution-catalog.server";
@@ -59,6 +60,7 @@ describe("contribution catalog", () => {
 				.insert(locations)
 				.values([
 					{
+						description: "Behind the desk",
 						id: "visible-location",
 						isActive: true,
 						mapImageId: "customs-main",
@@ -95,6 +97,37 @@ describe("contribution catalog", () => {
 					keyId: keyAssignment.keyId,
 					locationId: "visible-location",
 				})
+				.run();
+			const screenshot = {
+				altText: "Desk",
+				fullHash: "a".repeat(64),
+				height: 1_080,
+				locationId: "visible-location",
+				path: "/screenshots/visible/full.webp",
+				previewHash: "b".repeat(64),
+				previewHeight: 562,
+				previewWidth: 1_000,
+				width: 1_920,
+			};
+			await db
+				.insert(screenshots)
+				.values([
+					{
+						...screenshot,
+						id: "first-screenshot",
+						previewPath: "/screenshots/visible/first-1000.webp",
+						sortOrder: 1,
+						sourceHash: "c".repeat(64),
+					},
+					{
+						...screenshot,
+						id: "inactive-screenshot",
+						isActive: false,
+						previewPath: "/screenshots/visible/inactive-1000.webp",
+						sortOrder: 0,
+						sourceHash: "d".repeat(64),
+					},
+				])
 				.run();
 			await db
 				.update(maps)
@@ -173,14 +206,28 @@ describe("contribution catalog", () => {
 				"visible-location",
 			]);
 			expect(Object.keys(catalog.locations[0] ?? {}).sort()).toEqual([
+				"description",
+				"documentId",
 				"id",
 				"mapImageId",
 				"name",
+				"preview",
 				"requiredKeyCount",
 				"xBasisPoints",
 				"yBasisPoints",
 			]);
-			expect(catalog.locations[0]?.requiredKeyCount).toBe(1);
+			expect(catalog.locations[0]).toMatchObject({
+				description: "Behind the desk",
+				documentId: documentAssignment.documentId,
+				requiredKeyCount: 1,
+			});
+			// Only the preview of the first active screenshot; never the full image.
+			expect(catalog.locations[0]?.preview).toEqual({
+				altText: "Desk",
+				height: 562,
+				path: "/screenshots/visible/first-1000.webp",
+				width: 1_000,
+			});
 			expect(
 				catalog.locations.every((location) =>
 					catalog.mapImages.some(({ id }) => id === location.mapImageId),

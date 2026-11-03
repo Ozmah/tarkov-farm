@@ -17,7 +17,7 @@ const MEDIA_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
 export type IntakeMediaType = (typeof MEDIA_TYPES)[number];
 
-/** Every field is optional: the agent leaves out anything it cannot determine. */
+/** Empty or null where the agent could not determine the value. */
 export type IntakeDraftValues = {
 	name: string;
 	description: string;
@@ -37,20 +37,21 @@ export type IntakeScreenshot = {
 
 export type IntakeDraftStatus = "pending" | "published" | "dismissed";
 
+/**
+ * - `locationId`: reserved before publication, so a retried save cannot create a second location.
+ * - `publishedAt`: when the draft became a location; release credits list drafts published since a tag.
+ * - `notes`, `contributor`: private to the draft, never published.
+ */
 export type IntakeDraft = {
 	formatVersion: typeof INTAKE_DRAFT_FORMAT_VERSION;
 	id: string;
-	/** Reserved before publication so a retried save cannot create a second location. */
 	locationId: string;
 	createdAt: string;
 	contentHash: string;
 	status: IntakeDraftStatus;
-	/** When the draft became a location; lets a release list who contributed since its tag. */
 	publishedAt: string | null;
 	values: IntakeDraftValues;
-	/** Private agent notes about uncertainty. Never published. */
 	notes: string;
-	/** Handle of whoever sent the contribution, when known. Never published in the app. */
 	contributor: string;
 	screenshots: IntakeScreenshot[];
 };

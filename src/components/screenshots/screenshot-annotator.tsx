@@ -39,7 +39,7 @@ import {
 } from "@/lib/screenshot-annotation";
 
 type ScreenshotAnnotatorProps = {
-	/** The screenshot to mark; the dialog is open while it is set. */
+	/** The dialog is open while this is set. */
 	file?: File;
 	title: string;
 	onCancel: () => void;

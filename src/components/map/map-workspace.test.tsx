@@ -423,6 +423,57 @@ describe("MapWorkspace", () => {
 		);
 	});
 
+	it("opens an inspector on an inspectable marker, and an outside press only closes it", async () => {
+		const onMapPress = vi.fn();
+		const onSelectMarker = vi.fn();
+		renderWorkspace({
+			markers: [
+				{
+					id: "library",
+					inspectable: true,
+					label: "3",
+					name: "Crackhouse Library",
+					xBasisPoints: 5_000,
+					yBasisPoints: 5_000,
+				},
+			],
+			onMapPress,
+			onSelectMarker,
+			renderMarkerInspector: (markerId) => <p>Inspecting {markerId}</p>,
+		});
+		const viewport = prepareReadyViewport();
+		installPointerCapture(viewport);
+
+		fireEvent.click(
+			screen.getByRole("button", { name: "Inspect Crackhouse Library" }),
+		);
+		expect(await screen.findByText("Inspecting library")).toBeTruthy();
+		expect(onSelectMarker).not.toHaveBeenCalled();
+
+		const press = { button: 0, clientX: 400, clientY: 200, pointerId: 3 };
+		fireEvent.pointerDown(viewport, { ...press, pointerType: "mouse" });
+		fireEvent.mouseDown(viewport, press);
+		fireEvent.pointerUp(viewport, { ...press, pointerType: "mouse" });
+		fireEvent.click(viewport, press);
+
+		await waitFor(() =>
+			expect(screen.queryByText("Inspecting library")).toBeNull(),
+		);
+		expect(onMapPress).not.toHaveBeenCalled();
+
+		fireEvent.pointerDown(viewport, {
+			...press,
+			pointerId: 4,
+			pointerType: "mouse",
+		});
+		fireEvent.pointerUp(viewport, {
+			...press,
+			pointerId: 4,
+			pointerType: "mouse",
+		});
+		expect(onMapPress).toHaveBeenCalledOnce();
+	});
+
 	it("uses the selected focus override without moving the rendered marker", () => {
 		renderWorkspace({
 			image: { ...DEFAULT_IMAGE, width: 2_000 },

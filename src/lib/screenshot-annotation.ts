@@ -64,7 +64,6 @@ export function shapeFromDrag(
 	};
 }
 
-/** Adds a freehand point, skipping jitter closer than `minDistance` to the last one. */
 export function extendPenStroke(
 	points: AnnotationPoint[],
 	point: AnnotationPoint,
@@ -223,7 +222,6 @@ function snapToEighth(
 	const dx = Math.cos(angle);
 	const dy = Math.sin(angle);
 	let length = distance(start, end);
-	// Shorten along the snapped direction so the tip stays inside the image.
 	if (bounds) {
 		if (dx > 1e-9) length = Math.min(length, (bounds.width - start.x) / dx);
 		if (dx < -1e-9) length = Math.min(length, start.x / -dx);
